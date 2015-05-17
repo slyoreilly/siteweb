@@ -1,0 +1,246 @@
+<HTML> 
+<HEAD> 
+	<title>Créer une ligue</title>
+		<link rel="stylesheet" href="/style/general.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+		<script type="text/javascript" charset="utf-8">
+
+			function afficheSelectionZA(choix) {
+				return function() {
+					videNoeud('mbody');
+					if (window.m != '1') {
+						genereEntete();
+						genereMenu(5);
+						genMenuZoneAdmin(choix);
+						//			alert('22')
+						m = 0;
+					}
+
+					switch(choix) {
+						case 1:
+							window.location.href = '/gestionligue.html?ligueId=' + ligueId;
+							break;
+						case 2:
+							window.location.href = '/gestionjoueursligue.html?ligueId=' + ligueId;
+							break;
+						case 3:
+							window.location.href = '/zeroconfig.html?ligueId=' + ligueId;
+							//	afficheMeneurs(window.statsJSON, window.gJSON);
+							break;
+						case 4:
+							if (getCookie("ligueId"))
+								document.cookie = "ligueId" + "=" + (("/" ) ? ";path=" + "/" : "") + (("" ) ? ";domain=" + "" : "" ) + ";expires=Thu, 01-Jan-1970 00:00:01 GMT";
+							window.location.href = '/statistiques.html';
+
+							break;
+						case 5:
+							/*					alert('HEp!')
+							 //setCookie('ligueId',null,7);
+							 //					deleteCookie("ligueId","/","");
+							 */
+							break;
+						default:
+					}
+				}
+			}
+			
+						function btnOkCreeLigue() {
+				//return function() {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/admin/modifierligue.php";
+
+				//	alert(url);
+				var params = "code=" + getValue("code") + "&ligueid=" + window.ligueId + "&userId=" + getValue("userId")+ "&nom=" + window.inNom.value + "&horaire="+window.inHoraire.value+"&lieu="+window.inLieu.value+"&cleValeur=\"{}\"";
+				//		alert(params);
+				requete_ajax.open('POST', url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				//		alert('yo');
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						//			alert(requete_ajax.responseText);
+						window.location.href = '/index.html';
+					}
+					//else
+					//alert("Problème de communcation, "+requete_ajax.readyState+", "+requete_ajax.status == 200);
+				}
+				requete_ajax.send(params);
+				//		alert(requete_ajax.responseText);
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				//}
+			}
+
+
+</script>
+
+<style>
+</style> 
+</HEAD>
+
+<body id="mbody">
+		<script type="text/javascript" charset="utf-8">
+
+	if (window.m != "1") {
+				genereEntete();
+				genereMenu(5);
+				genMenuZoneAdmin(1);
+				m = 0;
+
+			}
+
+</script>
+		<DIV ID="divCentrale">
+
+<form name="myForm" id ="maForme" action="/admin/modifierligue.php" enctype="multipart/form-data" method="post">
+
+<!--p>
+
+Lieu de la ligue: <input id="nom"  type="text" name="nom" size="12" />
+<br />
+Horaire: <input id="horaire" type="text" name="horaire" size="20" />
+<br />
+<input type="hidden" name="ligueid" value="<?=$_POST['ligueId']; ?>"/>
+<input type="hidden" name="admin" value="<?=$_POST['id']; ?>"/>
+<input type="hidden" name="code" value="<?=$_POST['code']; ?>"/>
+Lieu: <input id="lieu" type="text" name="lieu" size="20" value="<?=$_POST['lieu']; ?>"/-->
+
+
+
+
+
+<table id="tabTeleverse">
+<tr>
+<td width="246">
+<input type="hidden" name="MAX_FILE_SIZE" value="2000000">
+<input name="userfile" type="file" id="userfile">
+</td>
+<td width="80"><input name="upload" type="submit" id="upload" value="Téléverser"></td>
+</tr>
+</table>
+<br />
+<!--input type="submit" value="Enregistrer" />
+<input type="reset" value="Recommencer" /-->
+
+</form>
+
+		<script type="text/javascript" charset="utf-8">
+maForme= document.getElementById("maForme");
+
+divParentNom=document.createElement('DIV');
+divNom=document.createElement('DIV');
+divNom.id="divNom";
+divNom.innerHTML="Nom de la ligue: ";
+divNom.className="formGauche";
+divInNom=document.createElement('DIV');
+divInNom.className="formDroite";
+inNom=document.createElement('INPUT');
+inNom.id="inNom";
+inNom.type="text";
+inNom.name="nom";
+brNom = document.createElement('BR');
+brNom.style.clear="both";
+
+divParentNom.appendChild(divNom);
+divInNom.appendChild(inNom);
+divParentNom.appendChild(divInNom);
+divParentNom.appendChild(brNom);
+
+
+divParentHoraire=document.createElement('DIV');
+divHoraire=document.createElement('DIV');
+divHoraire.id="divHoraire";
+divHoraire.className="formGauche";
+divHoraire.innerHTML="Horaire de la ligue: ";
+divInHoraire=document.createElement('DIV');
+divInHoraire.className="formDroite";
+inHoraire=document.createElement('INPUT');
+inHoraire.id="inHoraire";
+inHoraire.type="text";
+inHoraire.name="nom";
+brNom = document.createElement('BR');
+brNom.style.clear="both";
+
+divParentHoraire.appendChild(divHoraire);
+divInHoraire.appendChild(inHoraire);
+divParentHoraire.appendChild(divInHoraire);
+divParentHoraire.appendChild(brNom);
+
+
+
+
+divParentLieu=document.createElement('DIV');
+divLieu=document.createElement('DIV');
+divLieu.id="divLieu";
+divLieu.className="formGauche";
+divLieu.innerHTML="Emplacement de la ligue: ";
+divInLieu=document.createElement('DIV');
+divInLieu.className="formDroite";
+inLieu=document.createElement('INPUT');
+inLieu.id="inLieu";
+inLieu.type="text";
+inLieu.name="nom";
+brNom = document.createElement('BR');
+brNom.style.clear="both";
+
+divParentLieu.appendChild(divLieu);
+divInLieu.appendChild(inLieu);
+divParentLieu.appendChild(divInLieu);
+divParentLieu.appendChild(brNom);
+
+
+maForme.insertBefore(divParentNom,document.getElementById("tabTeleverse"));
+maForme.insertBefore(divParentHoraire,document.getElementById("tabTeleverse"));
+maForme.insertBefore(divParentLieu,document.getElementById("tabTeleverse"));
+
+inOk=document.createElement('INPUT');
+inOk.id="inOk";
+inOk.type="BUTTON";
+inOk.name="nInOk";
+inOk.value="Enregistrer";
+inOk.onclick=function(){btnOkCreeLigue();}
+
+maForme.appendChild(inOk);
+
+</script>
+
+<script type="text/javascript">
+
+
+
+try{
+if(getValue("code")==1)
+{    var nom = document.getElementById("inNom") ;
+    nom.value="";
+     var horaire = document.getElementById("inHoraire") ;
+    horaire.value="";
+     var lieu = document.getElementById("inLieu") ;
+    lieu.value="" ;
+   
+}
+if(getValue("code")==10)
+{
+   
+	
+}
+}catch(err){}
+
+
+		
+
+</script>
+
+</DIV> <!-- Ferme div centrale-->
+</body> 
+</html>

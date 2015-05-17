@@ -1,0 +1,499 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+	<HEAD>
+		<title>Boîte Courriel</title>
+		<link rel="stylesheet" href="/style/general.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+		<link rel="shortcut icon" href="/favicon.ico" />
+
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<style>
+		</style>
+		<script type="text/javascript" charset="utf-8">
+			gereLangue();
+		</script>
+	</HEAD>
+	<script type="text/javascript">
+		function getMessages(receveur) {
+
+			var requete_ajax = new XMLHttpRequest();
+
+			var url = "/scriptsphp/getMessages.php";
+
+			var strReceveurId = "userId=" + receveur;
+			params = strReceveurId;
+			requete_ajax.open('POST', url, true);
+			requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			requete_ajax.setRequestHeader("Content-length", params.length);
+			requete_ajax.setRequestHeader("Connection", "close");
+
+			requete_ajax.send(params);
+
+			requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+					//					alert(requete_ajax.responseText);
+
+					messages = eval('(' + requete_ajax.responseText + ')');
+					rempliTableau(messages);
+					window.messageId=chercheMessage(messages);
+					if(window.messageId!=null)
+					{
+						if(window.mode=="reply")
+						{repondre(window.messageId);}
+						if(window.mode=="read")
+						{lireMessage(window.messageId);}
+						
+					}
+				}
+			}
+		}
+		function chercheMessage(messages)
+		{
+			for(var a=0;a<messages.length;a++)
+			{
+				if(window.messageId==messages[a].messageId)
+				{return a;}
+			}
+			return null;
+			
+		}
+
+		function okRepondre(no) {
+
+			var requete_ajax = new XMLHttpRequest();
+
+			var url = "/scriptsphp/sendMessage.php";
+
+			var strExp = "expediteur=" + window.userId;
+			var strRec = "recepteur=" + window.messages[no].expediteur;
+			var strCorps = "corps=" + document.getElementById('iRep').value;
+			var strTitre = "titre=" + 'RE: ' + window.messages[no].titre;
+			params = strExp + '&' + strRec + '&' + strCorps + '&' + strTitre;
+			requete_ajax.open('POST', url, true);
+			requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			requete_ajax.setRequestHeader("Content-length", params.length);
+			requete_ajax.setRequestHeader("Connection", "close");
+
+			requete_ajax.send(params);
+
+			requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+					//				alert(requete_ajax.responseText);
+					lireMessage(no);
+
+				}
+			}
+		}
+
+
+
+		function lireMessage(no) {
+			faireBoiteLire();
+			
+			dLJS = document.getElementById('divCorps');
+			pLireJS = document.createElement('P');
+			pLireJS.innerHTML = window.messages[no].corps;
+			document.getElementById('divTitre').innerHTML=window.messages[no].titre;
+			document.getElementById('divExped').innerHTML=window.messages[no].expediteur;
+			dLJS.appendChild(pLireJS);
+		}
+
+		function repondre(no) {
+		faireBoiteEcrire();
+			document.getElementById('iOK').onclick = function() {
+				okRepondre(no)
+			};
+
+		}
+
+		function okCompose() {
+
+			var requete_ajax = new XMLHttpRequest();
+
+			var url = "/scriptsphp/sendMessage.php";
+			var arrIdCont = [];
+			for(var a=0;a<window.arrContact.length;a++){
+				arrIdCont.push(window.arrContact[a].noCompte);
+			}
+
+
+			var strExp = "expediteur=" + window.userId;
+			var strRec = "recepteur=" + JSON.stringify(arrIdCont);
+			var strCorps = "corps=" + document.getElementById('iRep').value;
+			var strTitre = "titre=" + document.getElementById('divTitre').value;
+			params = strExp + '&' + strRec + '&' + strCorps + '&' + strTitre;
+//			alert(params);
+			requete_ajax.open('POST', url, true);
+			requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			requete_ajax.setRequestHeader("Content-length", params.length);
+			requete_ajax.setRequestHeader("Connection", "close");
+
+			requete_ajax.send(params);
+
+			requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+					//				alert(requete_ajax.responseText);
+					window.location.reload(true);
+				}
+			}
+		}
+
+		
+		function faireBoiteLire()
+		{
+			detruitNoeud('divLire');
+			divLireJS = document.createElement('DIV');
+				divLireJS.id = "divLire";
+			document.getElementById("divCentrale").appendChild(divLireJS);
+		
+			tTitreJS=document.createElement('DIV');
+			tTitreJS.innerHTML="Titre";
+							divTitreJS = document.createElement('DIV');
+				divTitreJS.id = "divTitre";
+				divTitreJS.style.width = "100%";
+				divTitreJS.style.height = "30px";
+			tExpedJS=document.createElement('DIV');
+			tExpedJS.innerHTML="Expéditeur";
+				divExpedJS = document.createElement('DIV');
+				divExpedJS.id = "divExped";
+				divExpedJS.style.width = "100%";
+				divExpedJS.style.height = "30px";
+
+			tCorpsJS=document.createElement('DIV');
+			tCorpsJS.innerHTML="Message";
+			iRepJS = document.createElement('DIV');
+			iRepJS.id = 'divCorps';
+			iRepJS.style.width = "100%";
+			iRepJS.style.height = "100px";
+			iOKJS = document.createElement('DIV');
+			iOKJS.id = 'iOK';
+			iOKJS.type = 'BUTTON';
+			iOKJS.value = 'Envoyer';
+			divLireJS.appendChild(tExpedJS);
+			divLireJS.appendChild(divExpedJS);
+			divLireJS.appendChild(tTitreJS);	
+			divLireJS.appendChild(divTitreJS);	
+			divLireJS.appendChild(tCorpsJS);
+			divLireJS.appendChild(iRepJS);
+			divLireJS.appendChild(iOKJS);	
+		}
+
+		function faireBoiteEcrire()
+		{
+		//	detruitNoeud('divLire');
+		//	divLireJS = document.createElement('DIV');
+		//		divLireJS.id = "divLire";
+		construitDialogue();
+		divDial=document.getElementById('divDialogue');
+		
+//			document.getElementById("divCentrale").appendChild(divLireJS);
+		
+			
+							divTitreJS = document.createElement('INPUT');
+							tTitreJS=document.createElement('h2');
+			tTitreJS.innerHTML="Titre";
+				divTitreJS.id = "divTitre";
+				divTitreJS.type = 'TEXT';
+				divTitreJS.style.width = "100%";
+				divTitreJS.style.height = "30px";
+							tExpedJS=document.createElement('h2');
+			tExpedJS.innerHTML="Destinataire";
+				divExpedJS = document.createElement('DIV');
+				divExpedJS.id = "divExped";
+			
+			
+				inExpedJS = document.createElement('INPUT');
+				inExpedJS.id = "inExped";
+				inExpedJS.type = 'TEXT';
+				inExpedJS.style.width = "100%";
+				inExpedJS.style.height = "30px";
+				inExpedJS.onkeyup=function(){
+					boule=true;
+					n=0;
+					while(boule&&n<10)
+					{
+					try{detruitNoeud("dDispo");}
+					catch(err){boule=false}
+					n++;
+					}
+					afficheSuggContacts(this.value);
+				};
+			divExpedJS.appendChild(inExpedJS);
+
+			tCorpsJS=document.createElement('h2');
+			tCorpsJS.innerHTML="Message";
+			iRepJS = document.createElement('INPUT');
+			iRepJS.id = 'iRep';
+			iRepJS.type = 'TEXT';
+			iRepJS.style.width = "100%";
+			iRepJS.style.height = "100px";
+			iOKJS = document.createElement('INPUT');
+			iOKJS.id = 'iOK';
+			iOKJS.type = 'BUTTON';
+			iOKJS.value = 'Envoyer';
+			divDial.appendChild(tExpedJS);
+			divDial.appendChild(divExpedJS);
+			$(divDial).append($('<br></br>'));
+			divDial.appendChild(tTitreJS);	
+			divDial.appendChild(divTitreJS);	
+			divDial.appendChild(tCorpsJS);			
+			divDial.appendChild(iRepJS);
+			divDial.appendChild(iOKJS);	
+		}
+		
+		function afficheSuggContacts(str){
+			retCon=[];
+			for(var a=0;a<window.contacts.length;a++){
+				if(window.contacts[a].username.toLowerCase().indexOf(str) != -1){
+					{retCon.push(window.contacts[a]);}
+				}
+			}
+//			alert(JSON.stringify(retCon));
+				detruitNoeud('boiteContacts');
+				if(str.length>0){
+				
+				
+				($('<div id="boiteContacts"></div>').css("position", "absolute").css("text-align", "left").css("background", "#fff").css("z-index", "20")).insertAfter($('#divExped'));
+				for (var a = 0; a < retCon.length; a++) {
+					
+
+				$(document).ready(function(){
+					$("#boiteContacts").append($('<div></div>').text(retCon[a].username).hover(function() {
+						$(this).css("background", "#AAAAAA")
+					}, function() {
+						$(this).css("background", "#FFFFFF")
+					}).click({
+						contact : retCon[a]
+					}, function(event) {
+						window.arrContact.push(event.data.contact);
+						var divFermeX =$('<div class="btnFerme id="btnFerme_'+event.data.contact.noCompte+'"></div>').text('x');
+						$('<div class="etiquetteContact"></div>').append($('<div class="nomContact"></div>').text(event.data.contact.username),divFermeX).insertAfter($('#divExped'));
+						detruitNoeud('boiteContacts');
+						$('#inExped').val('');
+						$(divFermeX).click({
+							contact2 : event.data.contact
+							},function(event){
+							$(this).parent().remove();
+							
+
+							$(function (){
+//									alert(event.data.contact2.noCompte);
+								var rm=0;
+								for(var b=0;b<window.arrContact.length;b++){
+								if(window.arrContact[b].noCompte==event.data.contact2.noCompte){
+									rm=b;
+									}
+								}
+									window.arrContact.splice(rm,1);
+	//								alert(JSON.stringify(window.arrContact));
+
+							});
+								
+							});
+						
+						//alert(JSON.stringify(event.data.contact));
+					}));
+					});
+				}
+				}
+/**/
+			
+		}
+
+			function verifUser(mUser) {
+	
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/admin/verifinscription.php";
+				var params = "usager=" + mUser + "&code=30";
+				requete_ajax.open("POST", url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						strRepErreur = requete_ajax.responseText;
+						//alert(strRepErreur);
+						var repErreur = eval('(' + strRepErreur + ')');
+					boule=true;
+					n=0;
+					while(boule&&n<10)
+					{
+					try{detruitNoeud("dDispo");}
+					catch(err){boule=false}
+					n++;
+					}
+
+						if (repErreur.succes != 1) {
+							dDispoJS=document.createElement('DIV');
+							dDispoJS.id="dDispo";
+							dDispoJS.className="formDroite";
+							dDispoJS.innerHTML=mUser+" est valide";
+							dDispoJS.style.color="#8DDB42";
+							document.getElementById("divExped").appendChild(dDispoJS);
+								btnEUJS=document.getElementById("iOK");
+								btnEUJS.style.display="inline";
+								/*btnEUJS.onclick=function(){
+								sauvegardeUser();
+								};*/
+				
+							
+						} else {
+							dDispoJS=document.createElement('DIV');
+							dDispoJS.id="dDispo";
+							dDispoJS.className="formDroite";
+							dDispoJS.innerHTML=mUser+" n'est pas valide";
+							dDispoJS.style.color="#8D2222";
+							document.getElementById("divExped").appendChild(dDispoJS);
+							btnEUJS=document.getElementById("iOK");
+								btnEUJS.style.display="none";
+								/*btnEUJS.onclick=function(){
+								};*/
+						}
+
+					}
+				}
+				requete_ajax.send(params);
+				return requete_ajax.responseText;
+
+				//	alert(requete_ajax.responseText);
+
+			}
+
+
+
+
+		function rempliTableau(messages) {
+
+			J0 = 0;
+			Jf = messages.length;
+
+			for ( J = J0; J < Jf; J = J + 1) {
+
+				//	if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
+				rangee = document.createElement('TR');
+				amettre = document.getElementById('rangeeTitre');
+				amettre.parentNode.appendChild(rangee);
+
+				var lesCols = new Array();
+				lesCols[0] = messages[J].expediteur;
+				lesCols[1] = messages[J].dateEmission;
+				lesCols[2] = messages[J].titre;
+				lesCols[3] = "<img src=\"\/images\/icones\/view.png\" onclick=lireMessage(" + J + "); width=\"32\" height=\"32\" alt=\"Edit\"\>" + "<img src=\"\/images\/icones\/reply.png\" onclick=repondre(" + J + "); width=\"32\" height=\"32\" alt=\"Edit\"\>";
+
+				var lesLiens = new Array();
+				lesLiens[0] = null;
+				lesLiens[1] = null;
+				lesLiens[2] = null;
+				lesLiens[3] = null;
+
+				for ( K = 0; K < lesCols.length; K++) {
+					cellule = document.createElement('TD');
+					if (lesCols[K] != undefined) {
+						if (lesLiens[K] != null) {
+							lien = document.createElement('A');
+
+							lien.innerHTML = lesCols[K];
+							lien.href = lesLiens[K];
+							cellule.appendChild(lien);
+						} else {
+							ptexte = document.createElement('P');
+							ptexte.innerHTML = lesCols[K];
+							//					texte = document.createTextNode(lesCols[K]);
+							cellule.appendChild(ptexte);
+						}
+					}
+					J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
+					rangee.appendChild(cellule);
+				}
+				enveloppeTable('tableauMessages',0,3);
+
+			}//Fin des rangées;
+
+		}
+		function composer(contenu){
+			
+					faireBoiteEcrire();
+			document.getElementById('iOK').onclick = function() {
+				okCompose();
+			};
+
+		}
+
+	</script>
+
+	<body id="body" >
+
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+		<div id="divMenuHaut"></div>
+		<div id="divCentrale">
+			<div id="topOptions">
+				<h1 style="display:inline;float:left;">Votre Courrier</h1>
+				<div id="composer" class="lien" style="display:inline;float:left;">
+					Composer un message
+				</div>
+			</div>
+		</div>
+
+		</div>
+		<div id="divDroite"></div>
+		<script type="text/javascript">
+				developper(35);
+
+				userId = null;
+				if (getCookie('userId') != null) {
+					userId = getCookie('userId');
+				} else {
+					if (getValue('userId') == "") {
+						//	window.location.href = "/listeligues.html" + "?code=10";
+					}//Code 10: origine de statistique
+					else {
+						userId = getValue('userId');
+					}
+				}
+
+				mJS = {};
+				mJS.id = "tableauMessages";
+				mJS.parentId = "divCentrale";
+				mJS.titre = "Messages";
+				mJS.rangeeTitre = new Array();
+				mJS.rangeeTitre[0] = "Expéditeur";
+				mJS.rangeeTitre[1] = "Date";
+				mJS.rangeeTitre[2] = "<br></br>Titre";
+				mJS.rangeeTitre[3] = "Options";
+				genTableau(mJS);
+
+				messageId =getCookie('messageId');
+				mode=getCookie('mode');
+				getMessages(userId);
+				 
+				var contenu=null;
+				document.getElementById('composer').onclick=function(){composer(null);}
+				arrContact=[];
+				
+				$.ajax({
+					url:"/scriptsphp/getContact.php",
+					data:{username:getCookie("userId")},
+					type:"POST",
+					 error: function(jqXHR, textStatus, errorThrown) {
+      				// En cas d'erreur, on le signale
+    				},
+					 success: function(data, textStatus, jqXHR) {
+					contacts = eval('(' + data + ')');
+   						}
+   			});
+		</script>
+
+	</body>
+</html>
+

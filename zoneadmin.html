@@ -1,0 +1,201 @@
+<HTML>
+	<HEAD>
+		<title>Zone Admin</title>
+		<link rel="stylesheet" href="style/general.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<style>
+		</style>
+	</HEAD>
+	<body id="mbody">
+		<script type="text/javascript" charset="utf-8">
+			if(window.m != "1") {
+				genereEntete();
+				genereMenu(5);
+			}
+		</script>
+		<script type="text/javascript">
+			function afficheNonPermis() {
+		
+						divC = document.getElementById('mbody')
+						pTexte = document.createElement('P');
+						pTexte.style.marginTop="100px";
+						pTexte.innerHTML = "Vous n'avez pas les privilèges suffisants pour effectuer l'opération demandée dans cette ligue."
+						divC.appendChild(pTexte);
+					}
+
+			function afficheOptions(Perm) {
+			try {
+					if(Perm < 19) {
+						//Create an input type dynamically.
+						var element = document.createElement('input');
+
+						//Assign different attributes to the element.
+						element.type = 'button';
+						element.value = 'Modifier Ligue';
+						element.style.margin = "30px";
+						//	var poste = "<?=$_POST['id']; ?>";
+						var codeLigue = 10;
+
+						var postLigue = {
+							id : aJSON.userId,
+							code : codeLigue,
+							nom : lJSON.Ligues[0].nomLigue,
+							horaire : lJSON.Ligues[0].horaire,
+							lieu : lJSON.Ligues[0].lieu,
+							ligueId : lJSON.Ligues[0].ligueId
+						};
+
+						element.onclick = 'postwith(\"creerligue.php\",postLigue);';
+
+						var foo = document.getElementById('mbody');
+						foo.appendChild(element);
+
+						//Create an input type dynamically.
+						var element = document.createElement('input');
+						element.type = 'button';
+						element.value = 'Créer Équipe';
+						element.style.margin = "30px";
+						//	var poste = "<?=$_POST['id']; ?>";
+						var moncode = 1;
+
+						var person = {
+							id : aJSON.userId,
+							code : moncode,
+							nom : lJSON.Ligues[0].nomLigue,
+							ligueId : lJSON.Ligues[0].ligueId
+						};
+
+//						element.onclick = 'postwith(\"creerequipe.php\",person);';
+						element.onclick = window.location.href="/creerequipe.html?ligueId="+lJSON.Ligues[0].ligueId+"&code="+moncode;
+
+						var foo = document.getElementById('mbody');
+
+						//Append the element in page (in span).
+						foo.appendChild(element);
+						return true;
+					} 
+				} catch(err) {
+				}
+
+		
+			}
+		
+			function verifiePermission() {
+				userId = null;
+				if(getCookie('userId') != null) {
+					userId = getCookie('userId');
+				} else {
+					if(getValue('userId') == "") {
+					}//Code 10: origine de statistique
+					else {
+						userId = getValue('userId');
+					}
+				}
+
+				var strAbon = getJSONabonnementDeLigueID(window.ligueId);
+				//alert(strAbon);
+				var aJSON = eval('(' + strAbon + ')');
+				// check permission seulement si changement.
+				try{
+				if(window.recLigueId != window.ligueId || window.recUserId != window.userId || Perm == undefined)
+				{
+					var Perm = getPermissions(window.ligueId, window.userId)
+					window.recLigueId = window.ligueId;
+					window.recUserId = window.userId;
+					//			alert(Perm);
+				}}catch(err){};
+			return Perm;
+			
+			}
+
+			function afficheSelectionZA(choix) {
+				return function() {
+					videNoeud('mbody');
+					if(window.m != '1') {
+						genereEntete();
+						genereMenu(5);
+						genMenuZoneAdmin(choix);
+						//			alert('22')
+						m = 0;
+					}
+
+					switch(choix) {
+						case 1:
+							if(verifiePermission()<10)
+								window.location.href = '/gestionligue.html?ligueId=' + ligueId;
+								else
+								afficheNonPermis();
+							break;
+						case 2:
+							if(verifiePermission()<19)
+							window.location.href = '/gestionjoueursligue.html?ligueId=' + ligueId;
+								else
+								afficheNonPermis();
+							break;
+						case 3:
+							window.location.href = '/zeroconfig.html?ligueId=' + ligueId;
+							//	afficheMeneurs(window.statsJSON, window.gJSON);
+							break;
+						case 4:
+							if(getCookie("ligueId"))
+								document.cookie = "ligueId" + "=" + (("/" ) ? ";path=" + "/" : "") + (("" ) ? ";domain=" + "" : "" ) + ";expires=Thu, 01-Jan-1970 00:00:01 GMT";
+							window.location.href = '/listeligues.html?code=11';
+
+							break;
+						case 5:
+							/*					alert('HEp!')
+							 //setCookie('ligueId',null,7);
+							 //					deleteCookie("ligueId","/","");
+							 if ( getCookie( "ligueId" ) ) document.cookie = "ligueId" + "=" +
+							 ( ( "/" ) ? ";path=" + "/" : "") +
+							 ( ( "" ) ? ";domain=" + "" : "" ) +
+							 ";expires=Thu, 01-Jan-1970 00:00:01 GMT";
+							 window.location.href='/statistiques.html';
+							 */
+							break;
+						default:
+					}
+				}
+			}
+		</script>
+		<DIV id="divCentrale"></DIV>
+		<script type="text/javascript">
+			//alert(window.location.href);
+			ligueId = null;
+			if(getCookie('ligueId') != null) {
+				ligueId = getCookie('ligueId');
+			} else {
+				if(getValue('ligueId') == "") {
+					window.location.href = "/listeligues.html" + "?code=11";
+				}//Code 10: origine de statistique
+				else {
+					ligueId = getValue('ligueId');
+				}
+			}
+
+			var strLigue = getJSONdeLigueID(ligueId);
+			//alert(strLigue);
+			var lJSON = eval('(' + strLigue + ')');
+
+
+
+			if(getValue('m2') == "" && verifiePermission<19) {
+//				alert(verifiePermission);
+				window.onload = afficheSelectionZA(1);
+//				afficheOptions(verifiePermission);
+			} else {
+				if(verifiePermission()<19)
+					{//alert(verifiePermission);
+					window.onload = afficheSelectionZA(parseInt(getValue('m2')));
+					afficheOptions(function(){return verifiePermission;});
+					} else {
+//						alert(verifiePermission);
+						afficheNonPermis();}
+						afficheLigueIdAvecCode(11);
+			}
+		</script>
+	</body>
+</html>

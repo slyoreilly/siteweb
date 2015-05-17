@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<HTML>
+	<HEAD>
+		<title>Arbitres</title>
+
+				<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible"/>
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+
+		<script type="text/javascript" charset="utf-8">
+
+			
+			function getArbitres() {
+				//	return function() {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/getArbitres.php";
+				//		alert(url);
+				//alert("Params a setMatchAVenir" + params);
+				requete_ajax.open('POST', url, true);
+				params="";
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						listeArbitres = eval('(' + requete_ajax.responseText + ')');
+						remplirTableau();
+						//requete_ajax.responseText;
+						
+						//window.location.reload(true);
+					}
+				}
+				requete_ajax.send(params);
+				var pourMAV = new Array();
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				//		}
+			}
+
+		
+		function remplirTableau(){
+			
+					
+			
+					//rJSON.periodes.shift();
+					if (window.listeArbitres.length == 0) {
+						rangee = document.createElement('TR');
+						rangee.id = "rangeeVide";
+						amettre = document.getElementById("rangeeTitre");
+						amettre.parentNode.appendChild(rangee);
+						td1 = document.createElement('TD');
+						td1.className = "titreTableau";
+						td1.colSpan = "8";
+						td1.innerHTML = window.tl_general_noData;
+						rangee.appendChild(td1);
+					}
+					for ( J = 0; J < listeArbitres.length; J = J + 1) {
+
+						//	if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
+						rangee = document.createElement('TR');
+						amettre = document.getElementById('rangeeTitre');
+						amettre.parentNode.appendChild(rangee);
+//						strImg = "<img src=\"\/images\/icones\/edit.png\" onclick=editMatch(" + J + "); width=\"32\" height=\"32\" alt=\"Edit\"\>";
+//						strImg2 = "<img src=\"\/images\/icones\/view.png\" onclick=window.location.href='" + menus[12].lien + "?ligueId=" + window.ligueId + "&mavId=" + listeArbitres[J].mavId + "'; width=\"32\" height=\"32\" alt=\"Edit\"\>";
+//						strImg3 = "<img src=\"\/images\/icones\/poubelle.png\" onclick=effaceMatch(" + J + "); width=\"32\" height=\"32\" alt=\"Edit\"\>";
+
+						var lesCols = new Array();
+						lesCols[0] = listeArbitres[J].nom;
+						lesCols[1] = listeArbitres[J].prenom;	
+						lesCols[2] = "Voir";
+
+						var lesLiens = new Array();
+						lesLiens[0] = null;
+						lesLiens[1] = null;
+						lesLiens[2] = "/zarbitre/profilArbitre.html?arbitreId="+listeArbitres[J].arbitreId+"&m="+window.m+"&ligueId="+getValue('ligueId');
+
+						for ( K = 0; K < lesCols.length; K++) {
+							cellule = document.createElement('TD');
+							if (lesCols[K] != undefined) {
+								if (lesLiens[K] != null) {
+									lien = document.createElement('A');
+									lien.innerHTML = lesCols[K];
+									lien.href = lesLiens[K];
+									cellule.appendChild(lien);
+								} else {
+									ptexte = document.createElement('P');
+									ptexte.innerHTML = lesCols[K];
+									//					texte = document.createTextNode(lesCols[K]);
+									cellule.appendChild(ptexte);
+								}
+							}
+							J % 2 == 0 ? cellule.className = 'lignePaire' : cellule.className = 'ligneImpaire';
+							rangee.appendChild(cellule);
+						}
+
+					}//Fin des rangées;
+			
+			
+		}
+
+		</script>
+	</HEAD>
+	<body id="mbody">
+
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+				<div id="divMenuHaut"></div>
+
+		<div id="divCentrale"></div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+
+			developper(23);
+
+			mJS = {};
+			mJS.id = "tableauArbitres";
+			mJS.parentId = "divCentrale";
+			mJS.titre = "Liste des arbitres";
+			mJS.rangeeTitre = new Array();
+			mJS.rangeeTitre[0] = "Nom";
+			mJS.rangeeTitre[1] = "Prenom";
+			mJS.rangeeTitre[2] = "Options";
+			genTableau(mJS);
+
+
+
+			getArbitres();
+
+
+
+			// 	rangee = document.createElement('TD');
+			//	yo2
+		</script>
+
+		</DIV>
+
+	</body>
+</html>

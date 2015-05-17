@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<?xml version="1.0" encoding="utf-8"?>
+<html>
+<head>
+<title>SyncStats to your league</title>
+	<meta name="description" content="SyncStats helps your league by making your game more fun: An app for stats, a scoreboard to be connected during the game and more...">
+	<meta name="keyword" content="hockey,statistics,android,mobile app, scoreboard, website">
+	<meta name="author" content="Sylvain O'Reilly">
+
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+				 		
+				 		
+				 		function structurePage(){
+					 			//////////////////////////////////////
+				 			//
+				 			///	Section sousPli
+				 			
+
+				 			mLi=document.getElementById('liSS1');
+				 			mLi.innerHTML=window.tl_produitDescSS1;
+				 			mA=document.getElementById('aGooglePlay');
+				 			mA.innerHTML=window.tl_produitDescSS2;
+				 			mLi=document.getElementById('liSS3');
+				 			mLi.innerHTML=window.tl_produitDescSS3;
+				 			mLi=document.getElementById('liSS4');
+				 			mLi.innerHTML=window.tl_produitDescSS4;
+				 			mLi=document.getElementById('liSS5');
+				 			mLi.innerHTML=window.tl_produitDescSS5;
+				 			mA=document.getElementById('aDoodle');
+				 			mA.innerHTML=window.tl_produitDescSS6;
+				 			mA=document.getElementById('aInfo');
+				 			mA.innerHTML=window.tl_produitDescSS8;
+				 			
+
+				 			
+				 		}
+		</script>
+</head>
+<body id="mbody">
+
+				<div id="divHaut">
+		</div>
+		<div id="divGauche">
+		</div>
+		<div id="divCentrale">
+			<div id="divProduitSousPli">
+				<div id="divDescSS">
+					<div id="divTitreSS">
+						<div id="logo" class="logoSS">
+							<img class="imgLogoSS" src="/images/logoSeul.png" alt="SyncStats Logo"></img>
+							<h2>SYNCSTATS</h2>
+						</div>
+					</div>
+					<ul>
+						<li id="liSS1">Is a free app that allows to keep track of stats on your smartphone. All updates are free.</li>
+						<li id="liSS2"><a href="https://play.google.com/store/apps/details?id=hockey.ref" id="aGooglePlay">Download it for free on GooglePlay</a></li>
+						<li id="liSS3">Transfer your data to us! We will take care of display these detailed stats for you on our website</li>
+						<li id="liSS4">Pay only for games that you want. Get rid of timewasting retyping. No scorekeeper required!</li>
+						<li id="liSS5">Free web site, available to all</li>
+						<li id="liSS6"><a href="http://www.doodle.com/kq58ask849bgki3w" id="aDoodle">For a 3 month free trial, fill in this form and we will come to see you on your next game!</a></li>
+						<li id="liSS7"><a href="mailto:info@syncstats.com" id="aInfo">Or contact us!<a></li>
+						
+					</ul>
+				</div>
+				<div id="divSSSS">
+					<img src="/images/SSSS.png" alt="Screenshot of the in-game main page of the app"></img>
+				</div>
+				
+			</div>
+
+				 			
+
+
+
+		</div>
+		<div id="divDroite">
+		</div>
+		<div id="divBas">
+		</div>
+		
+		
+		 	<script type="text/javascript" charset="utf-8">
+		 		
+		
+		 	developper(28);
+			detruitDivGaucheDroite(); 	
+/*			document.getElementById('divBas').position="absolute";
+			document.getElementById('divBas').bottom="0";
+	*/		
+			bN=document.getElementById('barreTitreContexte');
+			for(var a=0;a<bN.childNodes.length;a++)
+			{
+				bN.childNodes[a].style.display="none";
+		
+			}	
+		document.getElementById('barreNav').style.display="none";
+		
+		structurePage();
+		 		
+		 	</script>
+
+
+
+</body>
+</html>

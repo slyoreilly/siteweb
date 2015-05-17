@@ -1,0 +1,773 @@
+
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<title>Meneurs</title>
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+				<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+
+		<script type="text/javascript" charset="utf-8">
+		function getStatsJoueurJSON(joueurId)
+	{
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/statsJoueur2JSON.php";
+				var strJoueurId="joueurId="+joueurId;
+				params = strJoueurId;
+				url = url+"?"+params;
+				requete_ajax.open('POST', url, true);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						statsJSONHome = eval('(' + requete_ajax.responseText + ')');
+						afficheStatsCarriere(statsJSONHome,2);
+
+					}
+				}
+}
+
+function getProfilDeJoueurId(joueurId)
+	{
+	var requete_ajax = new XMLHttpRequest();
+		params='joueurId='+joueurId;
+	var url='/stats2/profilDeJoueurId.php';
+				url = url+"?"+params;
+				requete_ajax.open('POST', url, true);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						var profilJoueur = eval('(' + requete_ajax.responseText + ')');
+
+			try {
+				logoEquipe = document.getElementById('logoEquipe');
+				//logoLigue.setAttribute('src','images/ligues/logo/'+getValue('ligueId')+'.jpg');
+				logoEquipe.setAttribute('src', '/admin/afficheImage.php?ficId=' + profilJoueur.ficIdPortrait);
+			} catch(err) {
+			}
+
+
+			try {
+
+				liste = document.createElement('p');
+				amettre = document.getElementById('descriptionFiche');
+
+				nomJ = document.createElement('H1');
+				nomJ.innerHTML=profilJoueur.nomJoueur;
+
+				amettre.appendChild(nomJ);
+				texteFiche = document.createTextNode(tl_profil_nom + ': ' + profilJoueur.nom);
+
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+				texteFiche = document.createTextNode(tl_profil_prenom + ': ' + profilJoueur.prenom);
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+				texteFiche = document.createTextNode(tl_profil_taille + ': ' + profilJoueur.taille + ' cm');
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+				texteFiche = document.createTextNode(tl_profil_poids + ': ' + profilJoueur.poids + ' kg');
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+				texteFiche = document.createTextNode(tl_profil_ville + ': ' + profilJoueur.villeOrigine);
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+				texteFiche = document.createTextNode(tl_profil_annee + ': ' + profilJoueur.anneeNaissance);
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+
+				//	amettre.appendChild(liste);
+
+				//document.getElementById('descriptionFiche').innerHTML='Nom: '+profilJoueur.nom+"</br>"+"Prenom: "+profilJoueur.prenom+"</br>"+"Ville d'origine: "+profilJoueur.villeOrigine;
+			} catch(err) {
+			}
+
+
+					}
+				}	
+				
+	}
+
+
+
+	var requete_ajax = new XMLHttpRequest();
+//	alert(requete_ajax.responseText);
+
+		
+			function getStatsJSON(ligueId, saisonId) {
+				//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/joueursDansLigue2JSON.php";
+
+				var strSaisonId = "saisonId=" + saisonId;
+				var strLigueId = "ligueId=" + ligueId;
+				params = strLigueId + '&' + strSaisonId;
+				url = url+"?"+params;
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						statsJSON = eval('(' + requete_ajax.responseText + ')');
+
+						statsJSON.joueurs.sort(function(a, b) {
+							A = (parseInt(b.nbButs) + parseInt(b.nbPasses)) - (parseInt(a.nbButs) + parseInt(a.nbPasses));
+							B = A ? A : (parseInt(b.nbButs) - parseInt(a.nbButs));
+							return B
+						});
+//						alert(JSON.stringify(statsJSON));
+//				alert(requete_ajax.responseText);
+					afficheMeneursPatineurs(statsJSON, 1);
+					if(window.m!=1){
+					defileFiches();}
+
+
+					}
+				}
+				//				alert(JSON.stringify(listeMatch));
+				//	return vecMAV;
+				//}
+			}
+
+			function getStatsGardiens(saisonId,ligueId, equipeId) {
+				//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/gardiens2JSON.php";
+
+				var strSaisonId = "saisonId=" + saisonId;
+				var strLigueId = "ligueId=" + ligueId;
+				var strEquipeId = "equipeId=" + equipeId;
+				
+				params = strLigueId + '&' + strSaisonId+ '&' + strEquipeId;
+				url = url+"?"+params;
+				//		alert(url+'?'+param);
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+					var gJSON = eval('(' + requete_ajax.responseText + ')');
+					afficheMeneursGardiens(gJSON);
+				
+					}
+				}
+				//alert(requete_ajax.responseText);
+				//				alert(JSON.stringify(listeMatch));
+				//	return vecMAV;
+				//}
+			}
+
+			function getMeneursUnitesSpeciales(ligueId, saisonId) {
+				//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/meneursUnitesSpeciales.php";
+
+				var strSaisonId = "saisonId=" + saisonId;
+				var strLigueId = "ligueId=" + ligueId;
+				
+				params = strLigueId + '&' + strSaisonId;
+				url = url+"?"+params;
+				//	alert(url);
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						var unitesSpeciales = eval('(' + requete_ajax.responseText + ')');
+				//alert(requete_ajax.responseText);
+				unitesSpeciales.joueurs.sort(function(a, b) {
+							A = (parseInt(b.nbButs) + parseInt(b.nbPasses)) - (parseInt(a.nbButs) + parseInt(a.nbPasses));
+							B = A ? A : (parseInt(b.nbButs) - parseInt(a.nbButs));
+							return B
+						});
+//				alert(requete_ajax.responseText);
+
+						afficheMeneursPatineurs(unitesSpeciales, 2);
+			
+					}
+				}
+				//				alert(JSON.stringify(listeMatch));
+				//	return vecMAV;
+				//}
+			}
+
+
+			function getMeneursDN(ligueId, saisonId) {
+				//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/meneursDN.php";
+
+				var strSaisonId = "saisonId=" + saisonId;
+				var strLigueId = "ligueId=" + ligueId;
+				
+				params = strLigueId + '&' + strSaisonId;
+								url = url+"?"+params;
+
+//						alert(url);
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+//						alert(requete_ajax.responseText );
+					var DN = eval('(' + requete_ajax.responseText + ')');
+					
+					DN.joueurs.sort(function(a, b) {
+							A = (parseInt(b.nbButs) + parseInt(b.nbPasses)) - (parseInt(a.nbButs) + parseInt(a.nbPasses));
+							B = A ? A : (parseInt(b.nbButs) - parseInt(a.nbButs));
+							return B
+						});
+					afficheMeneursPatineurs(DN, 3);
+			
+					}
+				}
+				//alert(requete_ajax.responseText);
+				//				alert(JSON.stringify(listeMatch));
+				//	return vecMAV;
+				//}
+			}
+			
+			
+			function getInfoLigue(ligueId) {
+				//	return function(){
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/infoLigue2JSON.php";
+				//	alert(url);
+				var params = "ligueId=" + ligueId;
+				//alert(params);
+				requete_ajax.open('POST', url, true);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+				requete_ajax.send(params);
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						vecEquipe = eval('(' + requete_ajax.responseText + ')');
+							//alert(vecEquipe.Ligue.saisons.length);
+
+
+						try {
+											vecEquipe.Ligue.saisons.sort(function(a, b) {
+							var d1 = new Date(a.pm);
+							var d2 = new Date(b.pm);
+							return (d1 - d2)
+							});
+
+
+							//statsJSONHome.joueurs.triPar("nbButs",1,1);
+
+													if(window.m!=1)
+								{
+							selSaisonJS = document.getElementById('selSaison');
+							selSaisonJS.onchange = function(){changeSaison()};
+
+							for ( K = 0; K < vecEquipe.Ligue.saisons.length; K = K + 1) {
+								opt = document.createElement('OPTION');
+								if(vecEquipe.Ligue.saisons[K].nom!=undefined)
+								{opt.innerHTML = vecEquipe.Ligue.saisons[K].nom + " - " + vecEquipe.Ligue.saisons[K].pm.split(" ")[0] + " au " + vecEquipe.Ligue.saisons[K].dm.split(" ")[0];}
+								else
+								{opt.innerHTML =  vecEquipe.Ligue.saisons[K].pm.split(" ")[0] + " au " + vecEquipe.Ligue.saisons[K].dm.split(" ")[0];}
+								opt.value = vecEquipe.Ligue.saisons[K].saisonId;
+								if (K == vecEquipe.Ligue.saisons.length - 1)
+									opt.selected = "selected";
+								selSaisonJS.appendChild(opt);
+								/*vecEquipe.Saisons[K].joueurs.sort(function(a, b) {
+									return (parseInt(b.nbButs) + parseInt(b.nbPasses)) - (parseInt(a.nbButs) + parseInt(a.nbPasses))
+								});*/
+
+							}
+							}
+							//afficheStatsDom(vecEquipe.Saisons[0], 3);
+
+							//	document.body.rangee.cellule.innerHTML ='yo';
+						} catch(err) {
+						}
+
+
+
+					}
+				}
+				//	}
+			}
+
+
+function changeSaison(){
+	
+
+	saisonId=window.vecEquipe.Ligue.saisons[document.getElementById("selSaison").selectedIndex].saisonId;
+	videNoeud('divCentrale');
+	videNoeud('selSaison');
+	faitEntete();
+	selectOnglet(0);
+
+
+					getStatsJSON(window.ligueId, saisonId);
+			getStatsGardiens(saisonId, window.ligueId, null);
+
+			getMeneursUnitesSpeciales(window.ligueId, saisonId);
+						getMeneursDN(window.ligueId, saisonId);
+
+
+						if(window.m!=1)	
+						{
+							selSaisonJS = document.getElementById('selSaison');
+							selSaisonJS.onchange = function(){changeSaison()};
+
+							for ( K = 0; K < vecEquipe.Ligue.saisons.length; K = K + 1) {
+								opt = document.createElement('OPTION');
+								if(vecEquipe.Ligue.saisons[K].nom!=undefined)
+								{opt.innerHTML = vecEquipe.Ligue.saisons[K].nom + " - " + vecEquipe.Ligue.saisons[K].pm.split(" ")[0] + " au " + vecEquipe.Ligue.saisons[K].dm.split(" ")[0];}
+								else
+								{opt.innerHTML =  vecEquipe.Ligue.saisons[K].pm.split(" ")[0] + " au " + vecEquipe.Ligue.saisons[K].dm.split(" ")[0];}
+								opt.value = vecEquipe.Ligue.saisons[K].saisonId;
+								if (vecEquipe.Ligue.saisons[K].saisonId==saisonId)
+									opt.selected = "selected";
+								selSaisonJS.appendChild(opt);
+								/*vecEquipe.Saisons[K].joueurs.sort(function(a, b) {
+									return (parseInt(b.nbButs) + parseInt(b.nbPasses)) - (parseInt(a.nbButs) + parseInt(a.nbPasses))
+								});*/
+
+							}
+						}
+}
+
+function selectOnglet(a){
+	for(var b=0;b<window.vecTab.length;b++)
+	{
+	if(a==b)
+		{
+		document.getElementById(window.vecTab[a]).className='visible';
+		document.getElementById('dTitre_'+a).className='titreOnglet actif';
+	}
+	else
+	{
+		document.getElementById(window.vecTab[b]).className='cache';
+		document.getElementById('dTitre_'+b).className='titreOnglet passif';
+	}
+}
+	
+}
+
+function faitEntete(){
+	
+	divC = document.getElementById("divCentrale");
+			
+			divClass=document.createElement('DIV');
+			divClass.className="tabs";
+			
+//			divC.appendChild(window.dSS);
+			divC.appendChild(divClass);
+//			alert(document.getElementById('divCentrale').style.width);
+					frac=100/window.vecTab.length;
+	for(var a=0;a<window.vecTab.length;a++)
+	{
+			sec1=document.createElement('SECTION');
+			sec1.id=window.vecTab[a];
+			dTitre1JS=document.createElement('DIV');
+			dTitre1JS.className='titreOnglet';
+			dTitre1JS.id='dTitre_'+a;
+			h2_1=document.createElement('H2');
+			dTitre1JS.onclick=  (function(a) {
+							return function(){selectOnglet(a);};
+						})(a);
+						
+				dTitre1JS.style.width=frac+'%';
+
+			
+			
+			h2_1.id='a'+vecTab[a];
+			h2_1.innerHTML=window.vecNomTab[a];
+			
+			divC.appendChild(sec1);
+			divClass.appendChild(dTitre1JS);
+			dTitre1JS.appendChild(h2_1);
+		}
+			
+					
+			
+	
+}	
+
+function ficheMeneur(){
+	
+	contFicheMeneurJS=document.createElement('DIV');
+	contFicheMeneurJS.id='contFicheMeneur';
+	imgPFJS=document.createElement('IMG');
+	imgPFJS.id="CFMImg";
+	imgPFJS.className="grosLogo";
+	vecCle = ['Buts','Passes','Points'];
+				
+	nomJS=	document.createElement('H2');
+	noJS=	document.createElement('DIV');
+	rangJS=	document.createElement('H1');
+	equipeJS=	document.createElement('H3');
+	
+	
+	document.getElementById('divGauche').appendChild(contFicheMeneurJS);
+	contFicheMeneurJS.appendChild(imgPFJS);
+	contFicheMeneurJS.appendChild(rangJS);
+	contFicheMeneurJS.appendChild(nomJS);
+	contFicheMeneurJS.appendChild(equipeJS);
+		
+	for(a=0;a<vecCle.length;a++)
+	{
+		cleStatsJS=document.createElement('div');
+		cleStatsJS.className='cleStats';
+		cleStatsJS.innerHTML=vecCle[a]+': ';
+		valeurStatsJS=document.createElement('div');
+		valeurStatsJS.className='valeurStats';
+		valeurStatsJS.id='valeurStats_'+a;
+		contFicheMeneurJS.appendChild(cleStatsJS);
+		contFicheMeneurJS.appendChild(valeurStatsJS);
+		contFicheMeneurJS.appendChild(document.createElement('BR'));
+	}
+
+	
+}
+
+function defileFiches(){
+	try{
+	clearInterval(window.idInter);}
+	catch(err){}
+	idInter = setInterval(function(){rempliFiche((window.rang++)%window.statsJSON.joueurs.length);},3000);
+	
+	
+}
+
+function rempliFiche(a){
+	if(a<window.statsJSON.joueurs.length-1)
+	{preload(a+1);}
+	window.nomJS.innerHTML= window.statsJSON.joueurs[a].nom;
+	window.equipeJS.innerHTML= window.statsJSON.joueurs[a].nomEquipe;
+	var rangAff=rang%window.statsJSON.joueurs.length;
+	window.rangJS.innerHTML= '#'+rangAff;
+	trouve=false;
+	indice=0;
+	if(window.statsJSON.joueurs[a].ficIdPortrait==0)
+	{window.statsJSON.joueurs[a].ficIdPortrait=95;}
+	
+	for(b=0;b<window.vecImg.length&&!trouve;b++)
+	{
+//		alert(window.vecImg[b].id+' - '+window.statsJSON.joueurs[a].ficIdPortrait);
+		if(window.vecImg[b].id==window.statsJSON.joueurs[a].ficIdPortrait)
+		{
+			trouve=true;
+			indice=b;
+		}
+	}
+	if(trouve)
+	{
+	//	alert(window.vecImg[indice].image.src);
+//	alert(window.vecImg[indice].image.id);
+		document.getElementById('contFicheMeneur').replaceChild(document.getElementById(window.vecImg[indice].image.id).cloneNode(true),document.getElementById('contFicheMeneur').firstChild);
+		document.getElementById('contFicheMeneur').firstChild.style.display="inline";
+//		window.imgPFJS= document.getElementById(window.vecImg[indice].image.id);
+		//window.imgPFJS.src= window.vecImg[indice].image.src;
+		document.getElementById('contFicheMeneur').firstChild.cassName="grosLogo";
+		}
+	else
+	{
+		uneIm=document.createElement('img');
+		uneIm.src="/admin/afficheImage.php?ficId=" + window.statsJSON.joueurs[a].ficIdPortrait;
+		uneIm.id='vecImg_'+window.statsJSON.joueurs[a].ficIdPortrait;
+		uneIm.style.display="none";
+		document.getElementsByTagName('body')[0].appendChild(uneIm);
+		unObj= new Object();
+		unObj.image=uneIm;
+		unObj.id=window.statsJSON.joueurs[a].ficIdPortrait;
+				window.vecImg.push(unObj);
+//				alert(JSON.stringify(window.vecImg));
+			try {
+				//logoLigue.setAttribute('src','images/ligues/logo/'+getValue('ligueId')+'.jpg');
+				//window.imgPFJS.src = (window.statsJSON.joueurs[a].ficIdPortrait!=0) ?"/admin/afficheImage.php?ficId=" + window.statsJSON.joueurs[a].ficIdPortrait:"/admin/afficheImage.php?ficId=95";
+				window.imgPFJS= unObj.image;
+//				var preload = "/admin/afficheImage.php?ficId=" + window.statsJSON.joueurs[a].ficIdPortrait;
+			} catch(err) {
+			}		
+	}
+		
+			
+			if(window.rang>0)
+			{
+				rangTr=0;
+				trouve=0;
+				lesTr=document.getElementsByTagName('TR');
+				while(rangTr<lesTr.length&&trouve==0)
+				{if(lesTr[rangTr].firstChild.innerHTML==window.rang)
+					{
+						if(window.bufClass!=0)
+						{
+						lesTr[rangTr-1].className=window.bufClass;
+						}
+						window.bufClass=lesTr[rangTr].className;
+						lesTr[rangTr].className='surligne';
+					trouve=1;
+					}
+					rangTr++;
+				}
+				
+			}
+			else
+			{window.bufClass=0;}
+			document.getElementById('valeurStats_0').innerHTML= window.statsJSON.joueurs[a].nbButs;
+			document.getElementById('valeurStats_1').innerHTML= window.statsJSON.joueurs[a].nbPasses;
+			document.getElementById('valeurStats_2').innerHTML= window.statsJSON.joueurs[a].nbButs+ window.statsJSON.joueurs[a].nbPasses;
+
+
+	
+}
+
+
+function preload(a)
+{
+	trouve=false;
+	indice=0;
+	if(window.statsJSON.joueurs[a].ficIdPortrait==0)
+	{window.statsJSON.joueurs[a].ficIdPortrait=95;}
+	
+	for(b=0;b<window.vecImg.length&&!trouve;b++)
+	{
+//		alert(window.vecImg[b].id+' - '+window.statsJSON.joueurs[a].ficIdPortrait);
+		if(window.vecImg[b].id==window.statsJSON.joueurs[a].ficIdPortrait)
+		{
+			trouve=true;
+			indice=b;
+		}
+	}
+	if(!trouve)
+	{
+		uneIm=document.createElement('img');
+		uneIm.src="/admin/afficheImage.php?ficId=" + window.statsJSON.joueurs[a].ficIdPortrait;
+		uneIm.id='vecImg_'+window.statsJSON.joueurs[a].ficIdPortrait;
+		uneIm.style.display="none";
+		document.getElementsByTagName('body')[0].appendChild(uneIm);
+		unObj= new Object();
+		unObj.image=uneIm;
+		unObj.id=window.statsJSON.joueurs[a].ficIdPortrait;
+				window.vecImg.push(unObj);
+	}
+	
+	
+	
+}
+
+
+function faireFiche(joueurId){
+	
+	amettre=document.getElementById('divDialogue');
+	pF=document.createElement('DIV');
+	imgPF=document.createElement('IMG');
+	pF.id="photoFiche";
+	imgPF.id="logoEquipe";
+	imgPF.className="grosLogo";
+	pF.appendChild(imgPF);
+	
+	amettre.appendChild(pF);
+	
+	dF=document.createElement('DIV');
+	dF.id="descriptionFiche";
+	dF.style.cssFloat="left";
+	dF.style.display="inline";
+	
+	cF=document.createElement('DIV');
+	cF.style.cssFloat="left";
+	cF.style.display="inline";
+	cF.style.margin="20px";
+	cF.style.padding="3px";
+	
+	amettre.appendChild(dF);
+	amettre.appendChild(cF);
+	
+	
+	
+			loadCondition=0;
+				getStatsJoueurJSON(joueurId);
+			var strProfilJoueur = getProfilDeJoueurId(joueurId);
+			//alert(strProfilJoueur);
+			var profilJoueur = eval('(' + strProfilJoueur + ')');
+
+			try {
+				logoEquipe = document.getElementById('logoEquipe');
+				//logoLigue.setAttribute('src','images/ligues/logo/'+getValue('ligueId')+'.jpg');
+				logoEquipe.setAttribute('src', '/admin/afficheImage.php?ficId=' + profilJoueur.ficIdPortrait);
+			} catch(err) {
+			}
+
+
+			try {
+
+				liste = document.createElement('p');
+				amettre = document.getElementById('descriptionFiche');
+
+				nomJ = document.createElement('H1');
+				nomJ.innerHTML=profilJoueur.NomJoueur;
+
+				amettre.appendChild(nomJ);
+				texteFiche = document.createTextNode(tl_profil_nom + ': ' + profilJoueur.nom);
+
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+				texteFiche = document.createTextNode(tl_profil_prenom + ': ' + profilJoueur.prenom);
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+				texteFiche = document.createTextNode(tl_profil_taille + ': ' + profilJoueur.taille + ' cm');
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+				texteFiche = document.createTextNode(tl_profil_poids + ': ' + profilJoueur.poids + ' kg');
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+				texteFiche = document.createTextNode(tl_profil_ville + ': ' + profilJoueur.villeOrigine);
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+				texteFiche = document.createTextNode(tl_profil_annee + ': ' + profilJoueur.anneeNaissance);
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+
+				//	amettre.appendChild(liste);
+
+				//document.getElementById('descriptionFiche').innerHTML='Nom: '+profilJoueur.nom+"</br>"+"Prenom: "+profilJoueur.prenom+"</br>"+"Ville d'origine: "+profilJoueur.villeOrigine;
+			} catch(err) {
+			}
+
+
+}
+
+
+		</script>
+
+	</HEAD>
+	<!--script type="text/javascript">
+
+	</script-->
+
+	<body name="mCbody" id="mbody">
+
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+		<div id="divMenuHaut"></div>
+		<div id="divCentrale">
+
+
+		</div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+				 	
+
+	developper(4);
+	
+				vecTab=['tabMenPat','tabMenGard','tabMenAN','tabMenDN'];
+			vecNomTab=[window.tl_meneurs_Patineurs,window.tl_meneurs_Gardiens,window.tl_meneurs_ANLong,window.tl_meneurs_DNLong];
+
+				if(window.m!=1)
+				{
+							dSS = document.getElementById('divSelSaison');
+				dSS.innerHTML = window.tl_statseq_Saison + ": ";
+				SS = document.createElement('SELECT');
+				SS.id = "selSaison";
+				dSS.appendChild(SS);
+				}
+		</script>
+
+		<script type="text/javascript">
+			//try{
+
+
+			//				genereSousMenu(3);
+
+			//try{
+
+			//var ligueId = getValue('ligueId');
+			//alert(getValue('saisonId'));
+			rang=0;
+			bufClass=0;
+						faitEntete();
+						selectOnglet(0);
+												vecImg=new Array();
+
+						if(window.m!=1)
+						{ficheMeneur();}
+			getStatsJSON(window.ligueId, getValue('saisonId'));
+			getStatsGardiens(getValue('saisonId'), window.ligueId, null);
+
+			getMeneursUnitesSpeciales(window.ligueId, getValue('saisonId'));
+						getMeneursDN(window.ligueId, getValue('saisonId'));
+						getInfoLigue(window.ligueId);
+
+			//var strLigue = getLigueDeEquipeID(equipeId);
+			//alert('lJSON :'+strLigue);
+
+			//alert(strGardiens);
+	
+			//			genereSousMenu(3);
+			//		genereMenuN3Meneurs(1);
+
+		</script>
+
+	</body>
+</html>

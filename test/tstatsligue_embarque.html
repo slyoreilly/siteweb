@@ -1,0 +1,300 @@
+<HTML> 
+<HEAD> 
+	<title>Statistiques de la ligue</title>
+<link rel="stylesheet" href="/style/embarque.css" type="text/css">
+<script src="/test/tfonctions.js" type="text/javascript"charset="utf-8"></script>
+<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+</style> 
+</HEAD>
+<script type="text/javascript">
+		
+</script>
+
+
+<body id="body">
+	
+
+ <DIV ID="divCentrale">
+
+
+
+ <table id="tableauEquipe" class="c_tableau">
+ 	
+ 	
+ <tr><td class="titreTableau" colspan="8">Statistiques des joueurs</td></tr>
+ <tr id="rangeeTitreEquipe">
+<td class="rangeetitre">Rang</td>
+<td class="rangeetitre">Numero</td>
+<td class="rangeetitre">Joueur</td>
+<td class="rangeetitre">Equipe</td>
+<td class="rangeetitre">Parties jouées</td>
+<td class="rangeetitre">Buts</td>
+<td class="rangeetitre">Passes</td>
+<td class="rangeetitre">Points</td>
+</tr>
+
+  	
+ 	
+ </table>
+
+ <table id="tableauGardiens" class="c_tableau">
+ 	
+ 	
+ <tr><td class="titreTableau" colspan="8">Statistiques des gardiens</td></tr>
+ <tr id="rangeeTitreGardiens">
+<td class="rangeetitre">Rang</td>
+<td class="rangeetitre">Gardien</td>
+<td class="rangeetitre">Parties jouées</td>
+<td class="rangeetitre">Victoires</td>
+<td class="rangeetitre">Défaites</td>
+<td class="rangeetitre">Nulles</td>
+<td class="rangeetitre">Buts alloués</td>
+<td class="rangeetitre">Moy. buts alloués</td>
+</tr>
+
+  	
+ 	
+ </table>
+
+  </DIV>
+
+ 	<script type="text/javascript">
+
+//try{
+
+var ligueId = getValue('ligueId');
+
+var stringStats = getStatsLigueJSON(ligueId);
+//alert(stringStats);
+
+var statsJSON = eval('(' +stringStats+')');
+
+//var strLigue = getLigueDeEquipeID(equipeId);
+//alert('lJSON :'+strLigue);
+
+var strGardiens = getStatsGardiens(null, ligueId,null);
+//alert(strGardiens);
+var gJSON = eval('(' +strGardiens+')');
+
+</script>
+
+ 	<script type="text/javascript">
+
+try{
+
+
+
+//statsJSON.joueurs.triPar("nbButs",1,1);
+statsJSON.joueurs.sort(function(a,b) {   
+	
+	A = (parseInt(b.nbButs)+parseInt(b.nbPasses)) - (parseInt(a.nbButs)+parseInt(a.nbPasses));
+	B = A ? A :(parseInt(b.nbButs) - parseInt(a.nbButs));
+	   return B  } );
+
+
+for (J=0;J<=statsJSON.joueurs.length;J=J+1)
+{
+//	if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
+	if(!statsJSON.joueurs[J].nom.isNull)
+	{
+
+
+	rangee = document.createElement('TR');
+	amettre = document.getElementById('rangeeTitreEquipe');
+	amettre.parentNode.appendChild(rangee);
+
+	celluleRang = document.createElement('TD');
+	texteRang = document.createTextNode(parseInt(J+1));
+	celluleRang.appendChild(texteRang);
+	J%2==0 ? celluleRang.setAttribute('class','lignePaire') :celluleRang.setAttribute('class','ligneImpaire');
+	rangee.appendChild(celluleRang);
+
+	
+	celluleNo = document.createElement('TD');
+	texteNo = document.createTextNode(statsJSON.joueurs[J].nomEquipe==null ? " " : statsJSON.joueurs[J].numero);
+	celluleNo.appendChild(texteNo);
+	J%2==0 ? celluleNo.setAttribute('class','lignePaire') :celluleNo.setAttribute('class','ligneImpaire');
+	rangee.appendChild(celluleNo);
+
+	celluleNom = document.createElement('TD');
+	texteNom = document.createTextNode(statsJSON.joueurs[J].nom);
+	celluleNom.appendChild(texteNom);
+	J%2==0 ? celluleNom.setAttribute('class','lignePaire') :celluleNom.setAttribute('class','ligneImpaire');
+	rangee.appendChild(celluleNom);
+
+
+	celluleEq = document.createElement('TD');
+	texteEq = document.createTextNode(statsJSON.joueurs[J].nomEquipe==null ? " " : statsJSON.joueurs[J].nomEquipe);
+	celluleEq.appendChild(texteEq);
+		if(J%2==0)
+		celluleEq.setAttribute('class','lignePaire');
+	else
+		celluleEq.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleEq);
+
+
+
+	cellulePj = document.createElement('TD');
+	textePj = document.createTextNode(statsJSON.joueurs[J].pj);
+	cellulePj.appendChild(textePj);
+		if(J%2==0)
+		cellulePj.setAttribute('class','lignePaire');
+	else
+		cellulePj.setAttribute('class','ligneImpaire');
+rangee.appendChild(cellulePj);
+
+	celluleNom = document.createElement('TD');
+	texteNom = document.createTextNode(statsJSON.joueurs[J].nbButs);
+	celluleNom.appendChild(texteNom);
+		if(J%2==0)
+		celluleNom.setAttribute('class','lignePaire');
+	else
+		celluleNom.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleNom);
+
+
+
+	cellulePas1 = document.createElement('TD');
+	textePas1 = document.createTextNode(statsJSON.joueurs[J].nbPasses);
+	cellulePas1.appendChild(textePas1);
+		if(J%2==0)
+		cellulePas1.setAttribute('class','lignePaire');
+	else
+		cellulePas1.setAttribute('class','ligneImpaire');
+rangee.appendChild(cellulePas1);
+
+
+
+	celluleChrono = document.createElement('TD');
+	texteChrono = document.createTextNode(parseInt(statsJSON.joueurs[J].nbButs)+parseInt(statsJSON.joueurs[J].nbPasses));
+	celluleChrono.appendChild(texteChrono);
+		if(J%2==0)
+		celluleChrono.setAttribute('class','lignePaire');
+	else
+		celluleChrono.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleChrono);
+	}
+
+}
+	
+	
+	
+//	document.body.rangee.cellule.innerHTML ='yo';	
+	}
+	catch(err){}
+
+
+//////////////////////////////////////////////////////
+//	Tableau gardien
+//////////////////////////////////////////////////////
+
+try{
+
+gJSON.gardiens.sort(function(a,b) {   
+
+
+buts1 = parseInt(a.nbButs);
+match1 = parseInt(a.victoires)+parseInt(a.defaites)+parseInt(a.nulles);
+m1 = buts1/match1;
+moy1 = Math.round(m1*1000)/1000;
+
+buts2 = parseInt(b.nbButs);
+match2 = parseInt(b.victoires)+parseInt(b.defaites)+parseInt(b.nulles);
+m2 = buts2/match2;
+moy2 = Math.round(m2*1000)/1000;
+
+	A = moy1 - moy2;
+	B = A ? A :(parseInt(b.victoires) - parseInt(a.victoires));
+	   return B  } );
+
+
+
+
+
+for (J=0;J<gJSON.gardiens.length;J=J+1)
+{
+//	if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
+	if(gJSON.gardiens[J].nom!=null)
+	{
+//		alert("dans le if:" + gJSON.gardiens[J].nom);
+	rangee = document.createElement('TR');
+	amettre = document.getElementById('rangeeTitreGardiens');
+	amettre.parentNode.appendChild(rangee);
+
+	celluleRang = document.createElement('TD');
+	texteRang = document.createTextNode(parseInt(J+1));
+	celluleRang.appendChild(texteRang);
+	J%2==0 ? celluleRang.setAttribute('class','lignePaire') :celluleRang.setAttribute('class','ligneImpaire');
+	rangee.appendChild(celluleRang);
+
+	
+	celluleEq = document.createElement('TD');
+	texteEq = document.createTextNode(gJSON.gardiens[J].nom);
+	celluleEq.appendChild(texteEq);
+	J%2==0 ? celluleEq.setAttribute('class','lignePaire') :celluleEq.setAttribute('class','ligneImpaire');
+	rangee.appendChild(celluleEq);
+
+	var matchs = parseInt(gJSON.gardiens[J].victoires)+parseInt(gJSON.gardiens[J].defaites)+parseInt(gJSON.gardiens[J].nulles);
+
+	cellulePj = document.createElement('TD');
+	textePj = document.createTextNode(matchs);
+	cellulePj.appendChild(textePj);
+	J%2==0 ? cellulePj.setAttribute('class','lignePaire') :cellulePj.setAttribute('class','ligneImpaire');
+	rangee.appendChild(cellulePj);
+
+	celluleNom = document.createElement('TD');
+	texteNom = document.createTextNode(gJSON.gardiens[J].victoires);
+	celluleNom.appendChild(texteNom);
+	J%2==0 ? celluleNom.setAttribute('class','lignePaire') :celluleNom.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleNom);
+
+
+
+	cellulePas1 = document.createElement('TD');
+	textePas1 = document.createTextNode(gJSON.gardiens[J].defaites);
+	cellulePas1.appendChild(textePas1);
+	J%2==0 ? cellulePas1.setAttribute('class','lignePaire') :cellulePas1.setAttribute('class','ligneImpaire');
+rangee.appendChild(cellulePas1);
+
+
+
+	celluleChrono = document.createElement('TD');
+	texteChrono = document.createTextNode(gJSON.gardiens[J].nulles);
+	celluleChrono.appendChild(texteChrono);
+	J%2==0 ? celluleChrono.setAttribute('class','lignePaire') :celluleChrono.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleChrono);
+
+	celluleButs = document.createElement('TD');
+	texteButs = document.createTextNode(gJSON.gardiens[J].nbButs);
+	celluleButs.appendChild(texteButs);
+	J%2==0 ? celluleButs.setAttribute('class','lignePaire') :celluleButs.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleButs);
+
+	var buts = parseInt(gJSON.gardiens[J].nbButs);
+	var moy = buts/matchs;
+	celluleMoy = document.createElement('TD');
+	texteMoy = document.createTextNode(Math.round(moy*1000)/1000);
+	celluleMoy.appendChild(texteMoy);
+	J%2==0 ? celluleMoy.setAttribute('class','lignePaire') :celluleMoy.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleMoy);
+
+	}
+
+}	
+	
+//	document.body.rangee.cellule.innerHTML ='yo';	
+	}
+	catch(err){}
+
+
+
+
+
+ 	</script>
+
+
+
+</body> 
+</html> 		

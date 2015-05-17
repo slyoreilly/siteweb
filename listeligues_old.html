@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<HTML> 
+<HEAD> 
+	<title>Ligues inscrites</title>
+<link rel="stylesheet" href="/style/general.css" type="text/css">
+        <script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<style>
+</style> 
+    	 	<script type="text/javascript" charset="utf-8">
+					function surSelection(ligueId)
+					{
+						return function(){setCookie('ligueId',ligueId,120);}
+//						setCookie('ligueId',ligueId,120);
+					//window.location.href='statistiques.html?ligueId='+ligueId;
+					}
+		</script>
+</HEAD>
+<body id="mbody">
+    	 	<script type="text/javascript" charset="utf-8">
+				genereEntete();    
+				genereMenu(2);    
+				
+
+		</script>
+<!--DIV id="titre"></DIV>
+<DIV id="format-date"></DIV>
+	
+	
+	
+<DIV id="corps"> </DIV>
+  <DIV id="divGauche"></DIV-->
+  <DIV id="divCentrale">
+	 
+ <table id="tableau" class="c_tableau">
+ 	
+ <tr id="date2"><td class="titreTableau" colspan="4">Liste des ligues inscrites</td></tr>
+ <tr id="rangeeTitreLigues">
+<td class="rangeetitre">Ligue ID</td>
+<td class="rangeetitre">Nom de la ligue</td>
+<td class="rangeetitre">Lieu</td>
+<td class="rangeetitre">Horaire</td>
+</tr>
+
+  	
+ 	
+ </table>
+    <!--DIV ID="divDroite"></DIV-->
+
+ 	<script type="text/javascript" charset="utf-8">
+
+
+var uneString = getJSONdeLigueID(null,null);
+//if(verifiePermission()<3)
+	alert(uneString);
+try{
+var rJSON = eval('(' +uneString+')');
+
+	}
+	catch(err){alert('Le serveur éprouve quelques problêmes. Merci de réessayer plus tard.');}
+//  document.getElementById('format-date').innerHTML = formatDate(new Date());
+
+</script>
+
+ 	<script type="text/javascript">
+ 	
+try{
+
+mCode = getValue('code');
+for (J=0;J<=rJSON.Ligues.length;J=J+1)
+{
+	
+	
+	rangee = document.createElement('TR');
+	amettre = document.getElementById('rangeeTitreLigues');
+	amettre.parentNode.appendChild(rangee);
+	
+	celluleEq = document.createElement('TD');
+	lien = document.createElement('A');
+	lien.innerHTML = rJSON.Ligues[J].nomLigue;
+	var ligueId = rJSON.Ligues[J].ligueId;
+	
+	switch(mCode)
+	{
+		case '10':
+	lien.href="/statistiques.html?ligueId="+ligueId;//"javascript:void(0)";//'statistiques.html?ligueId='+rJSON.Ligues[J].ligueId);
+	lien.onclick=surSelection(ligueId);// setCookie
+	//window.location.href='statistiques.html?ligueId='+ligueId;
+	break;
+		case '11':
+	lien.href="/zoneadmin.html?ligueId="+ligueId;
+	lien.onclick=surSelection(ligueId);	
+	window.a2.className="";
+	window.a5.className="actif_b";	
+	break;
+				
+	default:
+	lien.href="/listematchs.html?ligueId="+ligueId;
+	lien.onclick=surSelection(ligueId);	
+	break;
+	}
+	celluleEq.className = (J%2==0)?"lignePaire":"ligneImpaire";
+	celluleEq.appendChild(lien);
+	rangee.appendChild(celluleEq);
+
+	celluleNom = document.createElement('TD');
+	texteNom = document.createTextNode(rJSON.Ligues[J].nomLigue);
+	celluleNom.className = (J%2==0)?"lignePaire":"ligneImpaire";
+	celluleNom.appendChild(texteNom);
+	rangee.appendChild(celluleNom);
+	cellulePas1 = document.createElement('TD');
+	textePas1 = document.createTextNode(rJSON.Ligues[J].lieu);
+	cellulePas1.className = (J%2==0)?"lignePaire":"ligneImpaire";
+
+	cellulePas1.appendChild(textePas1);
+	rangee.appendChild(cellulePas1);
+	cellulePas2 = document.createElement('TD');
+	textePas2 = document.createTextNode(rJSON.Ligues[J].horaire);
+
+	cellulePas2.className = (J%2==0)?"lignePaire":"ligneImpaire";
+
+	cellulePas2.appendChild(textePas2);
+	rangee.appendChild(cellulePas2);
+}//Fin du for
+	
+	
+	
+//	document.body.rangee.cellule.innerHTML ='yo';	
+	}
+	catch(err){}
+ 	
+ 	
+// 	rangee = document.createElement('TD');
+//	document.body.appendChild(rangee)
+//	yo2
+ 	</script>
+
+</DIV>
+  
+
+</body> 
+</html> 	

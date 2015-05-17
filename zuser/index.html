@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<?xml version="1.0" encoding="utf-8"?>
+<html>
+<head>
+<title>SyncStats</title>
+		<link rel="stylesheet" href="/style/general_v4.css" type="text/css">
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<style>
+		a {
+			color:#8DBB22;
+		}
+		</style>
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+</head>
+<body id="mbody">
+
+				<div id="divHaut">
+		</div>
+		<div id="divGauche">
+		</div>
+						<div id="divMenuHaut"></div>
+		<div id="divCentrale">
+
+
+<DIV class="centrale">
+
+<DIV ID="titre">
+
+	<h1 id="index_h1" style="margin-top: 50px;margin-bottom: 10px;"></h1></br>
+	</DIV>
+	
+<DIV class="ligneCentrale">
+<DIV class="blocCouleurGauche">
+<DIV class="blocTexteGauche">
+	<p class="texteAvecStyle"><ul class="listeCrochet" id="liste1"></ul>
+	</DIV>
+	</DIV>
+<DIV class="blocImageDroite" >
+<!--img src="/images/noRetranscription.png" style="max-width:90px" alt="Le web, l'arbitre et l'utilisateur sont synchronisés."-->
+<a href="https://play.google.com/store/apps/details?id=hockey.ref&feature=search_result#?t=W251bGwsMSwyLDEsImhvY2tleS5yZWYiXQ..">
+<img src="/images/telephoneSyncStatsGoogleApp.png" height="132px" width="88"/>
+</a>					
+	</DIV>
+</DIV>
+<DIV class="ligneCentrale">
+<DIV class="blocImageGauche">
+<a href="/zdoc/videos.html"><img src="/images/video.png" style="width:95%" alt="Le web, l'arbitre et l'utilisateur sont synchronisés."></a>
+	</DIV>
+<DIV class="blocCouleurDroite">
+	
+<DIV class="blocTexteDroite">
+	<p class="texteAvecStyle">	<ul id="liste2" class="listeCrochet"></ul>
+	</DIV>
+	</DIV>
+</DIV>
+
+
+
+	
+<!--p>Syncstats est la nouvelle façon d'afficher vos résultats de hockey. Syncstats synchronise <b>sans le moindre effort</b> les résultats de vos matchs. À l'aide d'une application Androïd que l'aribtre (ou autre teneur de livre) aura sous la main durant la partie, les statistiques sont enregistrées <b>en temps réel</b>. De là, plus aucun effort n'est nécessaire avant la consultation en ligne.</p> 
+<img src="images/concept.png" height="200sp" alt="Le web, l'arbitre et l'utilisateur sont synchronisés.">
+
+<p>	Nous sommes encore en développement. Néanmoins, nous nous efforçons de faire progresser aussi vite que possible ce beau projet. N'hésitez pas à nous suivre en ligne!</p>
+<ul>
+	<li><a href="listeligues.html" target="content">Stats</a></li>
+	<li><a href="faq.html" target="content">FAQ</a></li>
+</ul-->
+</div>
+
+
+
+		</div>
+		<div id="divDroite">
+		</div>
+		 	<script type="text/javascript" charset="utf-8">
+		 		
+		 		window.onload = function () { 
+		 		peupleDivHaut();
+		 		genereLiensContext(1);
+		 		genereBoites();
+		 		
+		 		
+		 		
+		 		maListe = document.getElementById("liste1");
+		 		li1 = document.createElement('LI')
+		 		li1.innerHTML=window.tl_l1e1;
+		 		li2 = document.createElement('LI')
+		 		li2.innerHTML=window.tl_l1e2;
+		 		li3 = document.createElement('LI')
+		 		li3.innerHTML=window.tl_l1e3;
+		 		maListe.appendChild(li1);
+		 		maListe.appendChild(li2);
+		 		maListe.appendChild(li3);
+
+		 		maListe = document.getElementById("liste2");
+		 		li1 = document.createElement('LI')
+		 		li1.innerHTML=window.tl_l2e1;
+		 		li2 = document.createElement('LI')
+		 		li2.innerHTML=window.tl_l2e2;
+		 		maListe.appendChild(li1);
+		 		maListe.appendChild(li2);
+
+
+		 		document.getElementById('index_h1').innerHTML=window.tl_index_h1;
+		 		
+		 		}
+		 		
+		 	</script>
+
+
+
+</body>
+</html>

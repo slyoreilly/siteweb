@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<title>Gestion des arenas</title>
+		<link rel="stylesheet" href="/style/dhtmlgoodies_calendar.css" type="text/css">
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="stylesheet" href="/style/general_v4.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/equipes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+
+		<script type="text/javascript" charset="utf-8">
+			function btnOkCreeSaison() {
+				//return function() {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/admin/modifiersaison.php";
+
+				//	alert(url);
+				monType = document.getElementById("selSaisonType").selectedIndex + 1;
+				var params = "type=" + monType + "&ligueId=" + window.ligueId + "&dateDeb=" + window.dateDeb.value + "&dateFin=" + window.dateFin.value + "&code=1";
+				//		alert(params);
+				requete_ajax.open('POST', url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				//		alert('yo');
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						//			alert(requete_ajax.responseText);
+						//alert(requete_ajax.responseText);
+						getInfoLigue(window.ligueId);
+						window.location.reload();
+					}
+					//else
+					//alert("Problème de communcation, "+requete_ajax.readyState+", "+requete_ajax.status == 200);
+				}
+				requete_ajax.send(params);
+				//		alert(requete_ajax.responseText);
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				//}
+			}
+
+			function getMatchAVenir() {
+				//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/getMatchAVenir.php";
+
+				var strMAVId = "mavId=";
+				var strLigueId = "ligueId=" + window.ligueId;
+				params = strMAVId + '&' + strLigueId;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						var mav = eval('(' + requete_ajax.responseText + ')');
+
+						mDiv = document.createElement('div');
+						mDiv.className = "texteEtOption";
+
+						mTex = document.createElement('div');
+						mTex.className = "texte";
+
+						mOpt = document.createElement('div');
+						mOpt.className = "option";
+						mA = document.createElement('A');
+						mA.href = menus[5].lien;
+						mA.innerHTML = "Gérer l'horaire";
+						mOpt.appendChild(mA);
+
+						mDiv.appendChild(mTex);
+						mDiv.appendChild(mOpt);
+						if (mav.length <= 0) {
+							mTex.innerHTML = "Il n'y a pas de match à l'horaire pour cette saison";
+						} else {
+							mTex.innerHTML = "Il y a " + mav.length + " matchs à l'horaire pour cette saison.";
+						}
+						document.getElementById('mavGesLig').appendChild(mDiv);
+
+					}
+				}
+				requete_ajax.send(params);
+			}
+
+			function postwith(to, p) {
+				//  alert(to);
+				return function() {
+					var myForm = document.createElement("form");
+					myForm.method = "post";
+					myForm.action = to;
+					for (var k in p) {
+						var myInput = document.createElement("input");
+						myInput.setAttribute("name", k);
+						myInput.setAttribute("value", p[k]);
+						myInput.setAttribute("type", "hidden");
+						myForm.appendChild(myInput);
+					}
+					document.body.appendChild(myForm);
+					myForm.submit();
+					document.body.removeChild(myForm);
+				}
+			}
+
+			function getArena(ligueId) {
+				//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/getArena.php";
+
+				var strLigueId = "ligueId=" + ligueId;
+				params = strLigueId;
+				requete_ajax.open('POST', url, true);
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						//alert(requete_ajax.responseText);
+						if (ligueId != 0) {
+							vecArena = eval('(' + requete_ajax.responseText + ')');
+							//	alert(requete_ajax.responseText);
+
+							var k = 0;
+							listeArena = new Array();
+							while (k < vecArena.length) {
+								listeArena[k] = vecArena[k].arenaId;
+								k++;
+							}
+							remplirTableau(vecArena);
+						}
+						else
+						{
+							
+							toutesArenas=eval('(' + requete_ajax.responseText + ')');
+						ajouteArena();}
+					}
+				}
+				//				alert(JSON.stringify(listeMatch));
+				//	return vecMAV;
+				//}
+			}
+
+			function remplirTableau(vecArena) {
+				for ( J = 0; J < vecArena.length; J = J + 1) {
+					//try{
+
+					rangee = document.createElement('TR');
+					amettre = document.getElementById('tabGesArena_tbody');
+					amettre.appendChild(rangee);
+
+					try {
+						strImg = "<img src=\"\/images\/icones\/delete.png\" onclick=enleveArena(" + J + ") width=\"32\" height=\"32\" alt=\"Edit\"\>";
+
+						var lesCols = new Array();
+						lesCols[0] = vecArena[J].nomArena;
+						lesCols[1] = vecArena[J].nomGlace;
+						lesCols[2] = strImg;
+
+					} catch(err) {
+					}
+
+					var lesLiens = new Array();
+					lesLiens[0] = null;
+					lesLiens[1] = null;
+					lesLiens[2] = null;
+
+					strCols = "";
+
+					for ( K = 0; K < lesCols.length; K++) {
+						cellule = document.createElement('TD');
+						if (lesCols[K] != undefined) {
+							if (lesLiens[K] != null) {
+								lien = document.createElement('A');
+								lien.innerHTML = lesCols[K];
+								lien.href = lesLiens[K];
+								cellule.appendChild(lien);
+							} else {
+								ptexte = document.createElement('P');
+								ptexte.innerHTML = lesCols[K];
+								//					texte = document.createTextNode(lesCols[K]);
+								cellule.appendChild(ptexte);
+							}
+						}
+						J % 2 == 0 ? cellule.className = 'lignePaire' : cellule.className = 'ligneImpaire';
+						rangee.appendChild(cellule);
+					}
+
+				}
+
+				rangeePlus2 = document.createElement('TR');
+				cellPlus2 = document.createElement('TD');
+				cellPlus2.colSpan = document.getElementById("tabGesArena_tbody").firstChild.childNodes.length;
+
+				element2 = document.createElement('input');
+
+				//Assign different attributes to the element.
+				element2.type = "button";
+				element2.value = "Ajouter une arena";
+
+				element2.onclick = function(){getArena(0)};
+				cellPlus2.appendChild(element2);
+				rangeePlus2.appendChild(cellPlus2);
+				amettre = document.getElementById('tabGesArena_tbody');
+				amettre.appendChild(rangeePlus2);
+
+			}
+
+			function ajouteArena() {
+				
+
+				divCentraleJS = document.getElementById('divCentrale');
+				divListeJS = document.createElement('DIV');
+				divListeJS.id="divListe";
+				
+				divCentraleJS.appendChild(divListeJS);
+				
+
+				//alert(JSON.stringify(equipe));
+				for (var K = 0; K < window.toutesArenas.length; K = K + 1) {
+					//				window.jMAV[boiteId-1]=window.jMAV[boiteId-1]+equipe.joueur[K].joueurId+',';
+					divElement = document.createElement('DIV');
+					divElement.id="divElement_"+K;
+					divElement.innerHTML= window.toutesArenas[K].nomArena+", Glace "+window.toutesArenas[K].nomGlace;
+					
+
+					divElement.onclick = (function(arenaId){
+						return function() {
+							abonneArena(arenaId,window.ligueId);
+							detruitNoeud("divListe");
+						};
+					})(window.toutesArenas[K].arenaId);
+					divListeJS.appendChild(divElement);
+					}
+			}
+
+			function enleveArena() {
+			}
+			function abonneArena(arenaId,ligueId) {
+				
+					//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/setAbonArena.php";
+
+				var strLigueId = "ligueId=" + ligueId;
+				var strArenaId = "arenaId=" + arenaId;
+				
+				params = strLigueId+'&'+strArenaId;
+				requete_ajax.open('POST', url, true);
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						alert(requete_ajax.responseText);
+							window.location.reload(true);
+
+					}
+				}
+				//				alert(JSON.stringify(listeMatch));
+				//	return vecMAV;
+				//}
+				
+				
+			}
+			
+			
+		</script>
+
+		<style>
+		</style>
+	</HEAD>
+
+	<body id="mbody">
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+		<div id="divMenuHaut"></div>
+
+		<div id="divCentrale">
+
+			<div>
+				<div id="infoGesArena" style="margin-bottom:15px;">
+					<h1>Informations sur la ligue</h1>
+					<div class="formGauche">
+						Nom de l'arena:
+					</div>
+					<div class="formDroite" id="nomArena"></div>
+					<br style="clear:both"/>
+					<div class="formGauche">
+						Nom de la glace:
+					</div>
+					<div class="formDroite" id="nomGlace"></div>
+					<br style="clear:both"/>
+				</div>
+
+			</div>
+		</div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+			ligueId = null;
+			if (getCookie('ligueId') != null) {
+				ligueId = getCookie('ligueId');
+			} else {
+				if (getValue('ligueId') == "") {
+					moncode = (getValue("code") == "" ) ? 11 : getValue("code");
+					window.location.href = "/listeligues.html" + "?code=" + moncode;
+				}//Code 10: origine de statistique // Code 11: origine de zone admin
+				else {
+					ligueId = getValue('ligueId');
+				}
+			}
+			perm = verifiePermission();
+			var m = getValue('m');
+			if (getCookie('userId') == null)
+				window.location.href = "/zuser/login.html";
+
+			mJS = {};
+			mJS.id = "tabGesArena";
+			mJS.parentId = "infoGesArena";
+			mJS.titre = "Arena";
+			mJS.rangeeTitre = new Array();
+			mJS.rangeeTitre[0] = "Nom de l'arena";
+			mJS.rangeeTitre[1] = "Nom de la glace";
+			genTableau(mJS);
+
+			getArena(ligueId);
+
+		 		window.onload = function () { 
+			peupleDivHaut();
+			genereLiensContext(2);
+			genereBoites();
+			}
+			/*if(window.perm>19)
+			 {afficheNonPermis('tabGesSai');}*/
+
+		</script>
+	</body>
+</html>

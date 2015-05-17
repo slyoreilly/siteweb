@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<title>Statistiques du joueur</title>
+		<link rel="stylesheet" href="/style/general_v4.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		<script type="text/javascript" charset="utf-8">
+			gereLangue();
+		</script>
+
+		<script type="text/javascript" charset="utf-8">
+			function getCritere() {
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/getGenerique.php";
+				//		alert(url);
+				//alert("Params a setMatchAVenir" + params);
+				requete_ajax.open('POST', url, true);
+				params = "table=CritereEvaluation";
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						lesCriteres = eval('(' + requete_ajax.responseText + ')');
+						window.loadCondition++;
+						if (window.loadCondition >= 2) {
+							afficheSommaireEval();
+						}
+						//requete_ajax.responseText;
+
+						//window.location.reload(true);
+					}
+				}
+				requete_ajax.send(params);
+
+			}
+
+			function getVideos() {
+				var requete_ajax = new XMLHttpRequest();
+				var url = "/scriptsphp/getVideos.php";
+				var joueurId = "joueurId=" + window.joueurId;
+				params = joueurId;
+				requete_ajax.open('POST', url, true);
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {
+					//					return function() {
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						//	alert(requete_ajax.responseText);
+						try {
+							videos = eval('(' + requete_ajax.responseText + ')');
+							window.loadVidsCond++;
+							if (loadVidsCond >= nbVidsCond) {
+								afficheVideos(0);
+							}
+						} catch(err) {
+						}
+
+					}//fin if request_state...
+					//					};  // fin return function
+				}//);
+			}
+
+			function getEvaluation() {
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/getGenerique.php";
+				//		alert(url);
+				requete_ajax.open('POST', url, true);
+				params = "table=EvaluationJoueurs&ou='evalue=" + window.joueurId + "'";
+				//alert("Params a setMatchAVenir" + params);
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						lesEvals = eval('(' + requete_ajax.responseText + ')');
+						window.loadCondition++;
+						if (window.loadCondition >= 2) {
+							afficheSommaireEval();
+						}
+						//requete_ajax.responseText;
+
+						//window.location.reload(true);
+					}
+				}
+				requete_ajax.send(params);
+
+			}
+
+			function setEvaluation(monCrit) {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/setGenerique.php";
+
+				var valeur = {
+					valeur : document.getElementById('input_' + monCrit).value,
+					evalue : window.joueurId,
+					critereId : monCrit,
+					evaluateur : window.usager.id,
+					ligueId : window.ligueId,
+				};
+
+				var strTable = "table=EvaluationJoueurs";
+				var strValeur = "valeur=" + JSON.stringify(valeur);
+				var strMode = "mode=ecrase";
+				var strCrit = "critere='critereId=" + monCrit + " AND evalue=" + window.joueurId + " AND evaluateur=" + window.usager.id + " AND ligueId=" + window.ligueId + "'";
+				params = strTable + '&' + strValeur + '&' + strMode + '&' + strCrit;
+				//alert(params);
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						//alert(requete_ajax.responseText);
+						//window.location.reload();
+						// requete_ajax.responseText;
+
+					}
+				}
+				requete_ajax.send(params);
+
+			}
+
+			function afficheSommaireEval() {
+				somme = 0;
+				compteur = 0;
+				window.loadConditions=0;
+				detruitNoeud('divChiffre');
+				divChiffre = document.createElement('P');
+				$(divChiffre).attr("id","divChiffre");
+
+				for (var a = 0; a < window.lesEvals.length; a++) {
+
+					for (var b = 0; b < window.lesCriteres.length; b++) {
+						if (window.lesCriteres[b].critereId == window.lesEvals[a].critereId) {
+							echelleHaut = window.lesCriteres[b].echelleHaut;
+							echelleBas = window.lesCriteres[b].echelleBas;
+						}
+
+					}
+					somme += window.lesEvals[a].valeur / (echelleHaut - echelleBas);
+					compteur++;
+				}
+				if (compteur > 0) {
+					divChiffre.innerHTML = Math.round(somme / compteur * 100);
+				} else {
+					divChiffre.innerHTML = "Pas d'évaluation";
+				}
+				document.getElementById('commentaireFiche').appendChild(divChiffre);
+			}
+
+			function sauvegardeEval() {
+
+				mesDivCrit = document.getElementById('listeCriteres').childNodes;
+
+				for (var a = 0; a < mesDivCrit.length; a++) {
+					critId = mesDivCrit[a].childNodes[1].id.split('_')[1];
+
+					for (var b = 0; b < window.lesCriteres.length; b++) {
+						if (window.lesCriteres[b].critereId == critId) {
+							echelleHaut = parseInt(window.lesCriteres[b].echelleHaut);
+							echelleBas = parseInt(window.lesCriteres[b].echelleBas);
+						}
+
+					}
+
+					if ((mesDivCrit[a].childNodes[1].value.length > 0) && (parseInt(mesDivCrit[a].childNodes[1].value) >= echelleBas) && (parseInt(mesDivCrit[a].childNodes[1].value) <= echelleHaut)) {
+						setEvaluation(critId);
+					}
+
+				}
+
+				videNoeud('listeCriteres');
+					getEvaluation();
+
+			}
+
+			function trouveEval(critereId) {
+
+				for (var a = 0; a < lesEvals.length; a++) {
+					if (lesEvals[a].critereId == critereId && window.usager.id == lesEvals[a].evaluateur) {
+						return lesEvals[a].valeur;
+					}
+
+				}
+				return "";
+			}
+
+			function evaluer() {
+				construitDialogue();
+				dial = document.getElementById('divDialogue');
+				$(dial).append($('<h1></h1>').text("Grille d'évaluation"),$('<DIV></DIV>').attr("id","listeCriteres"),$("<div></div>").attr("id","divSave").text("Sauvegarder").on("click",function(){
+					sauvegardeEval();
+					detruitDialogue();
+				})
+				);
+				
+
+				
+				//					alert('Doh');
+				parent = document.getElementById('divDialogue');
+				parent.className = "visible";
+				listeCrit = document.getElementById('listeCriteres');
+				for (var a = 0; a < lesCriteres.length; a++) {
+					//						alert(lesCriteres[a].contexte);
+					if (lesCriteres[a].contexte == "joueur") {
+						divSimpleCrit = document.createElement('DIV');
+						divSimpleCrit.className = "critere";
+						pA = document.createElement('P');
+						pA.innerHTML = lesCriteres[a].nom_fr + " : (" + lesCriteres[a].echelleBas + " à " + lesCriteres[a].echelleHaut + ")";
+						inA = document.createElement('INPUT');
+						inA.type = "text";
+						inA.id = "input_" + lesCriteres[a].critereId;
+						inA.value = trouveEval(lesCriteres[a].critereId);
+						//alert(lesCriteres[a].nom_fr);
+						divSimpleCrit.appendChild(pA);
+
+						//						divSimpleCrit.appendChild(document.createElement('BR'));
+						divSimpleCrit.appendChild(inA);
+
+						listeCrit.appendChild(divSimpleCrit);
+					}
+				}
+			}
+
+			function videos() {
+				$('<div></div>').attr("id", "corpsTabVidsTop").appendTo('#contVideo').show().append($('<div></div>').attr("id", "gaucheTabVidsTop").attr("class", "spinneur").text("<").click(function() {
+					var nouvPage = window.page > 0 ? window.page - 1 : 0;
+					var affPage = nouvPage + 1;
+					$("#pageVidTop").text("Page " + affPage);
+					afficheVideos(nouvPage);
+				})).append($('<div id="pageVidTop"></div>').css("display", "inline").text("Page 1")).append($('<div></div>').attr("id", "droiteTabVidsTop").attr("class", "spinneur").text(">").click(function() {
+					var nouvPage = window.page + 1 + 1;
+					$("#pageVidTop").text("Page " + nouvPage);
+					afficheVideos(window.page + 1);
+				}));
+				getVideos();
+			}
+
+			function afficheVideos(mPage) {
+				page = mPage;
+				limit = 15;
+				$('#corpsTabVidsTop .rangee').remove();
+				for (var i = page * limit; i < window.videos.topVideos.length && i < limit * (page + 1); i++) {
+					mDate = new Date(parseInt(window.videos.topVideos[i].chrono));
+					mois = parseInt(mDate.getMonth() + 1) < 10 ? "0" + parseInt(mDate.getMonth() + 1) : parseInt(mDate.getMonth() + 1);
+					jour = parseInt(mDate.getDate()) < 10 ? "0" + parseInt(mDate.getDate()) : parseInt(mDate.getDate());
+
+					$('#corpsTabVidsTop').append($('<div></div').attr("class", "cliquable rangee").append($('<div></div').text(mDate.getFullYear() + "-" + mois + "-" + jour), $('<div></div').text(window.videos.topVideos[i].eval)).on("click", {
+						i : i
+					}, function(event) {
+						getSommaireMatchPourVideo(window.videos.topVideos[event.data.i].nomMatch, window.videos.topVideos[event.data.i]);
+						$(this).css("cursor", "progress");
+					}));
+
+				}
+
+			}
+			function getSommaireMatchPourVideo(matchId, mStrV) {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/sommaire2JSON.php";
+				strV = mStrV;
+				var strMatchId = "matchId=" + matchId;
+
+				params = strMatchId;
+				url = url + "?" + params;
+				//alert(url);
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				//				requete_ajax.setRequestHeader("Content-length", params.length);
+				//				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						rJSON = eval('(' + requete_ajax.responseText + ')');
+						//alert(requete_ajax.responseText);
+
+						function surVideoChoisi() {
+							//							alert(strV);
+							videNoeud('ficheVid');
+							document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + strV.nomFichier
+							vidSVC = document.getElementById('vid1');
+							vidSVC.load();
+							$('<p></p>').appendTo('#ficheVid').text("Ce vidéo a été vu " + strV.nbVues + " fois").css({
+								'text-align' : 'center'
+							});
+							$('<p></p>').appendTo('#ficheVid').text("Comment était ce but?").css({
+								'text-align' : 'center'
+							});
+							$('<div id="contEtoile"></div>').appendTo('#ficheVid');
+							$("#contEtoile").css({
+								'font-size' : 'large',
+								'text-align' : 'justify'
+							});
+							$('<p class="etoile1"></p>').appendTo('#contEtoile');
+							$('<p class="etoile2"></p>').appendTo('#contEtoile');
+							$('<p class="etoile3"></p>').appendTo('#contEtoile');
+							$('<p class="etoile4"></p>').appendTo('#contEtoile');
+							$('<p class="etoile5"></p>').appendTo('#contEtoile');
+							$("[class*='etoile']").css({
+								'display' : 'inline',
+								'cursor' : 'pointer',
+								'font-size' : 'large'
+							}).html("&#10029");
+
+							var eval = getCookie('videoId_eval_' + strV.videoId);
+
+							function colori(event) {
+								for (var a = parseInt(event.data.classe); a > 0; a--) {
+									$(".etoile" + a).css('color', '#0000FF')
+								}
+							};
+							function decolori(event) {
+								for (var a = parseInt(event.data.classe); a > 0; a--) {
+									$(".etoile" + a).css('color', '#000000')
+								}
+							};
+
+							if (eval == null) {
+								for (var b = 1; b <= 5; b++) {
+									$('.etoile' + b).on("mouseover", {
+										classe : b
+									}, colori).on("mouseout", {
+										classe : b
+									}, decolori);
+									$('.etoile' + b).on("click", {
+										classe : b
+									}, function(event) {
+										$.post('/scriptsphp/evalueVid.php', {
+											videoId : strV.videoId,
+											eval : event.data.classe
+										});
+										setCookie('videoId_eval_' + strV.videoId, event.data.classe, 1000);
+										$("[class*='etoile']").off('mouseover');
+										$("[class*='etoile']").off('mouseout');
+										$("[class*='etoile']").off('click');
+									});
+								}
+
+							} else {
+								switch(parseInt(eval)) {
+									case 1:
+										$(".etoile1").css('color', '#0000FF');
+										break;
+									case 2:
+										$('.etoile1,.etoile2').css('color', '#0000FF');
+
+										break;
+									case 3:
+										$('.etoile1,.etoile2,.etoile3').css('color', '#0000FF');
+										break;
+									case 4:
+										$(".etoile1,.etoile2,.etoile3,.etoile4").css('color', '#0000FF');
+										break;
+									case 5:
+										$('[class*=etoile]').css('color', '#0000FF');
+										break;
+
+								}
+							}
+
+							$('<div id="scoreBut"></div>').appendTo('#ficheVid').text(parseInt(strV.eval).toFixed(1) + " / 5").css({
+								"font-size" : 'larger',
+								'text-align' : 'center'
+							});
+							$('<div id="divAngleOk"></div>').appendTo('#ficheVid').append($('<div></div>').attr("class", "selectAngleOk").append($('<img src="/images/icones/check.png" width="16" height="16"></img>'), $('<div></div>').text("That angle shows the goal")).click(function() {
+								$.post('/scriptsphp/changeAngleOk.php', {
+									changeAngle : 1,
+									videoId : strV.videoId
+								});
+							}), $('<div></div>').attr("class", "selectAngleOk").append($('<img src="/images/icones/delete.png" width="16" height="16"></img>'), $('<div></div>').text("That angle doesn't show the goal")).click(function() {
+								$.post('/scriptsphp/changeAngleOk.php', {
+									changeAngle : -1,
+									videoId : strV.videoId
+								});
+							}));
+
+							$.post('/scriptsphp/incrementeVidNbVues.php', {
+								videoId : strV.videoId
+							});
+
+						}
+
+						construitDialogue();
+
+						dial = document.getElementById('divDialogue');
+						div12 = document.createElement('DIV');
+						$(div12).css('float', 'left');
+
+						dial.appendChild(div12);
+						$('<div id="ficheVid"></div>').insertAfter(div12);
+
+						$(dial).prepend('<div id="divEnteteVid"></div>');
+
+						mVid = document.createElement('VIDEO');
+						//						alert(mVid);
+						mVid.videoWidth = 320;
+						mVid.videoHeight = 240;
+						mVid.controls = "controls";
+						mVid.load();
+						mVid.id = "vid1";
+						mSource = document.createElement('SOURCE');
+						mSource.type = "video/mp4";
+						// 'h263, amr'";
+
+						//alert(mSource.src);
+						mVid.appendChild(mSource);
+						div12.appendChild(mVid);
+
+						surVideoChoisi();
+
+						if (mVid.error) {
+							switch (mVid.error.code) {
+								case MEDIA_ERR_ABORTED:
+									alert("You stopped the video.");
+									break;
+								case MEDIA_ERR_NETWORK:
+									alert("Network error - please try again later.");
+									break;
+								case MEDIA_ERR_DECODE:
+									alert("Video is broken..");
+									break;
+								case MEDIA_ERR_SRC_NOT_SUPPORTED:
+									alert("Sorry, your browser can't play this video.");
+									break;
+							}
+						}
+
+					}
+				}
+			}
+
+			</script>
+
+			</HEAD>
+			<body id="mbody">
+
+			<div id="divHaut"></div>
+			<div id="divGauche"></div>
+			<div id="divMenuHaut"></div>
+			<div id="divCentrale">
+			<DIV ID="photoFiche"><img id="logoEquipe" class="grosLogo"></DIV>
+
+			<DIV ID="descriptionFiche" style="float:left; display:inline; "></DIV>
+			<DIV ID="commentaireFiche" class="fiche" style="float:left; clear:right; display:inline; margin:20px; padding:3px;">
+			<h2>Évaluation du joueur (%)</h2>
+			</DIV>
+			<DIV ID="contVideo" class="fiche" style="  margin:20px; padding:3px; width:300px;">
+			<h2>Vidéos</h2>
+			</DIV>
+
+			</div>
+			<div id="divDroite"></div>
+			</body>
+
+			<script type="text/javascript" charset="utf-8">
+				developper(26);
+				detruitDivGauche();
+		</script>
+
+		<script type="text/javascript">
+			//try{
+
+			joueurId = getValue('joueurId');
+			loadCondition = 0;
+			var stringStatsHome = getStatsJoueurJSON(joueurId);
+			//alert(stringStatsHome);
+			var statsJSONHome = eval('(' + stringStatsHome + ')');
+
+			//////////////////////////////////////////////////
+			//
+			//////// ATENTIION!!!!!!!!!!!!!!! No -fonctionnel
+			var strProfilJoueur = getProfilDeJoueurId(joueurId);
+			//alert(strProfilJoueur);
+			var profilJoueur = eval('(' + strProfilJoueur + ')');
+
+			//alert('uId :'+window.userId);
+
+			var strUser = getJSONdePerso(window.userId)
+			//alert(window.userId);
+			if (window.userId != undefined)// L'utilisateur du site est loggé.
+				usager = eval('(' + strUser + ')');
+
+			//var Perm = getPermissions(joueurId, window.userId);
+			getCritere();
+			getEvaluation();
+			//
+			//var strJoueurDUsager = getProfilDeJoueurId(joueurId);
+			//alert(strProfilJoueur);
+			//var profilJoueur = eval('(' +strProfilJoueur+')');
+
+			try {
+				logoEquipe = document.getElementById('logoEquipe');
+				//logoLigue.setAttribute('src','images/ligues/logo/'+getValue('ligueId')+'.jpg');
+				logoEquipe.setAttribute('src', '/admin/afficheImage.php?ficId=' + profilJoueur.ficIdPortrait);
+			} catch(err) {
+			}
+
+			if (window.userId != undefined)// L'utilisateur du site est loggé.
+			{
+				if (usager.id == profilJoueur.proprio)// L'utilisateur du site est le joueur.
+				{
+					declaration = document.createElement('H2');
+					amettre = document.getElementById('descriptionFiche');
+					texteFiche = document.createTextNode(window.userId + ", " + tl_profil_cestVous);
+					declaration.appendChild(texteFiche);
+					amettre.appendChild(declaration);
+					amettre.appendChild(document.createElement('BR'));
+
+					forme = document.createElement('form');
+					forme.setAttribute('method', 'get');
+					forme.setAttribute('action', '/admin/entreprofil.html');
+					bouton = document.createElement('input');
+					bouton.setAttribute('type', 'submit');
+					bouton.setAttribute('value', window.tl_bouton_modifier);
+					entree = document.createElement('input');
+					entree.setAttribute('type', 'hidden');
+					entree.setAttribute('value', joueurId);
+					entree.setAttribute('name', "joueurId");
+					amettre = document.getElementById('descriptionFiche');
+					amettre.appendChild(forme);
+					forme.appendChild(bouton);
+					forme.appendChild(entree);
+
+				}
+
+				if (profilJoueur.joueurId != usager.joueurs[0] && usager.joueurs[0] != undefined/*&&parseInt(profilJoueur.proprio)!=0*/)// Le joueur n'est pas l'utilisateur du site et l'utilisateur a déjé son joueur.
+				{
+					declaration = document.createElement('H2');
+					amettre = document.getElementById('descriptionFiche');
+					texteFiche = document.createTextNode(profilJoueur.nomJoueur);
+					declaration.appendChild(texteFiche);
+					amettre.appendChild(declaration);
+					divEvalueJS = document.createElement('div');
+					divEvalueJS.innerHTML = "Evaluer";
+					divEvalueJS.onclick = function() {
+						evaluer();
+					}
+					divEvalueJS.className = "lien";
+					document.getElementById('commentaireFiche').appendChild(divEvalueJS);
+
+				}
+				if (parseInt(profilJoueur.proprio) == 0 && usager.joueurs[0] == undefined)//Le joueur n'est pas utilisé et l'utilisateur n'a pas déjé son joueur.
+				{
+					declaration = document.createElement('H2');
+					amettre = document.getElementById('descriptionFiche');
+					texteFiche = document.createTextNode(window.tl_profil_vousEtes + profilJoueur.nomJoueur + "? ");
+					declaration.appendChild(texteFiche);
+
+					lienAttribue = document.createElement('A');
+					lienAttribue.innerHTML = 'Réclamez-le!';
+					lienAttribue.setAttribute('href', '/admin/attribueJoueur.php?usager=' + usager.id + '&joueurId=' + joueurId);
+					declaration.appendChild(lienAttribue);
+					amettre.appendChild(declaration);
+					divEvalueJS = document.createElement('div');
+					divEvalueJS.innerHTML = "Evaluer";
+					divEvalueJS.onclick = function() {
+						evaluer();
+					}
+					divEvalueJS.className = "lien";
+					document.getElementById('commentaireFiche').appendChild(divEvalueJS);
+					//	amettre.appendChild(document.createElement('BR'));
+				}
+
+				if (parseInt(profilJoueur.proprio) == 0 && window.Perm < 20)//Le joueur n'est pas utilisé et l'utilisateur est un administrateur.
+				{
+					declaration = document.createElement('H2');
+					amettre = document.getElementById('descriptionFiche');
+					texteFiche = document.createTextNode(profilJoueur.nomJoueur + " " + "est dans votre ligue.");
+					declaration.appendChild(texteFiche);
+					amettre.appendChild(declaration);
+					amettre.appendChild(document.createElement('BR'));
+
+					forme = document.createElement('form');
+					forme.setAttribute('method', 'get');
+					forme.setAttribute('action', '/admin/entreprofil.html');
+					bouton = document.createElement('input');
+					bouton.setAttribute('type', 'submit');
+					bouton.setAttribute('value', window.tl_bouton_modifier);
+					entree = document.createElement('input');
+					entree.setAttribute('type', 'hidden');
+					entree.setAttribute('value', joueurId);
+					entree.setAttribute('name', "joueurId");
+					amettre = document.getElementById('descriptionFiche');
+					amettre.appendChild(forme);
+					forme.appendChild(bouton);
+					forme.appendChild(entree);
+					//	amettre.appendChild(document.createElement('BR'));
+				}
+
+			} else// Personne n'est loggé.
+			{
+
+				declaration = document.createElement('H2');
+				amettre = document.getElementById('descriptionFiche');
+				texteFiche = document.createTextNode(window.tl_profil_vousEtes + profilJoueur.nomJoueur + "? ");
+				declaration.appendChild(texteFiche);
+				declaration.appendChild(document.createElement('BR'));
+				lienAttribue = document.createElement('A');
+				lienAttribue.innerHTML = tl_profil_connectezVous;
+				lienAttribue.onclick = function() {
+					connexion();
+				}
+				declaration.appendChild(lienAttribue);
+				texteFiche2 = document.createTextNode(tl_profil_puisReclame);
+				declaration.appendChild(texteFiche2);
+
+				amettre.appendChild(declaration);
+				//	amettre.appendChild(document.createElement('BR'));
+
+			}
+
+			//}
+			//	catch(err){alert('bug 3.');}
+		</script>
+
+		<script type="text/javascript">
+			try {
+
+				liste = document.createElement('p');
+				amettre = document.getElementById('descriptionFiche');
+
+				texteFiche = document.createTextNode(tl_profil_nom + ': ' + profilJoueur.nom);
+
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+				texteFiche = document.createTextNode(tl_profil_prenom + ': ' + profilJoueur.prenom);
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+				texteFiche = document.createTextNode(tl_profil_taille + ': ' + profilJoueur.taille + ' cm');
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+				texteFiche = document.createTextNode(tl_profil_poids + ': ' + profilJoueur.poids + ' kg');
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+				texteFiche = document.createTextNode(tl_profil_ville + ': ' + profilJoueur.villeOrigine);
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+				texteFiche = document.createTextNode(tl_profil_annee + ': ' + profilJoueur.anneeNaissance);
+				amettre.appendChild(texteFiche);
+				amettre.appendChild(document.createElement('BR'));
+
+				//	amettre.appendChild(liste);
+
+				//document.getElementById('descriptionFiche').innerHTML='Nom: '+profilJoueur.nom+"</br>"+"Prenom: "+profilJoueur.prenom+"</br>"+"Ville d'origine: "+profilJoueur.villeOrigine;
+			} catch(err) {
+			}
+
+			afficheStatsCarriere(statsJSONHome);
+			loadVidsCond = 0;
+			nbVidsCond = 1;
+
+			videos();
+		</script>
+
+</html>

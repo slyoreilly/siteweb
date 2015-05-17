@@ -1,0 +1,548 @@
+<HTML>
+	<HEAD>
+		<title>Horaire des matchs</title>
+		<link rel="stylesheet" href="style/general.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<style>
+		</style>
+		<script type="text/javascript" charset="utf-8">
+		
+					function afficheSelection(choix) {
+			videNoeud('mbody');
+			//		if(getValue('m')!="1")
+			//		{
+			genereEntete();
+			genereMenu(2);
+			genereSousMenu(choix);
+			if(getValue('m')!="1")
+			{
+			afficheLigueId();}
+
+			switch(choix) {
+			case 1:
+			window.location.href='/horaire.html?ligueId='+window.ligueId;
+
+			break;
+			case 2:
+			window.location.href='statistiques.html?m2=2';
+			//	afficheResultats(window.rJSON);
+			break;
+			case 3:
+			//						afficheMeneurs(window.statsJSON, window.gJSON);
+			window.location.href='statistiques.html?m2=3';
+			break;
+			case 4:
+			//						afficheClassement(window.cJSON);
+			window.location.href='statistiques.html?m2=4';
+
+			break;
+			case 5:
+			//setCookie('ligueId',null,7);
+			//					deleteCookie("ligueId","/","");
+			if ( getCookie( "ligueId" ) ) document.cookie = "ligueId" + "=" +
+			( ( "/" ) ? ";path=" + "/" : "") +
+			( ( "" ) ? ";domain=" + "" : "" ) +
+			";expires=Thu, 01-Jan-1970 00:00:01 GMT";
+			window.location.href='statistiques.html';
+			break;
+
+			default:
+			break;
+			}
+			}
+		</script>
+
+	</HEAD>
+	<body id="mbody">
+		<script type="text/javascript" charset="utf-8">
+			if (getValue('m') != "1") {
+				genereEntete();
+				genereMenu(2);
+				genereSousMenu(1);
+				afficheLigueId();
+			} 
+			
+		</script>
+		<script type="text/javascript" charset="utf-8">
+
+
+			function afficheSelectionNiv3(N3) {
+				return function() {
+					videNoeud('mbody');
+					if (window.m != '1') {
+
+						genereEntete();
+						genereMenu(2);
+						genereSousMenu(2);
+					}
+					genereMenuNiveau3(N3);
+					if (window.m != '1') {
+						afficheLigueId();
+					}
+
+					switch(N3) {
+						case 2:
+							afficheSommaireButs(window.rJSON);
+							break;
+						case 3:
+							afficheSommairePunitions(window.rJSON);
+							break;
+						case 4:
+							afficheStatsDom(window.statsJSONHome);
+							break;
+						case 5:
+							afficheStatsDom(window.statsJSONVis);
+							break;
+						case 1:
+							afficheResumeMatch(window.infoMatch);
+							break;
+						default:
+					}
+				}
+			}
+
+			function nouveauMatch() {
+				var dt = new Date();
+
+				var month = dt.getMonth() + 1;
+				var day = dt.getDate();
+				var year = dt.getFullYear();
+
+				var m = window.vecMAV.length;
+				window.vecMAV[m]=Array();
+				window.vecMAV[m].mavId = -1;
+				window.vecMAV[m].ligueId = window.ligueId;
+				window.vecMAV[m].date = "AAAA-MM-JJ HH:MM";
+				window.vecMAV[m].dateFin = "2030-01-01 00:00";
+				window.vecMAV[m].eqDom = 0;
+				window.vecMAV[m].eqVis = 0;
+				window.vecMAV[m].alignementDom = "[]";
+				window.vecMAV[m].alignementVis = "[]";
+				window.vecMAV[m].gardienDom = 0;
+				window.vecMAV[m].gardienVis = 0;
+				window.vecMAV[m].dernierMAJ = year + "-" + month + "-" + day;
+				window.vecMAV[m].arenaId = 0;
+
+				var k = 0;
+				enf = document.getElementById('rangeeTitre');
+				//alert(k+" "+no);
+
+				while (enf.parentNode.lastChild != enf) {
+					enf = enf.nextSibling;
+					if (enf.nodeName == 'TR')
+						k++;
+				}
+
+				rNM = document.createElement('TR');
+
+				for ( K = 0; K < 7; K++) {
+					cellule = document.createElement('TD');
+							ptexte = document.createElement('P');
+							ptexte.innerHTML = "-";
+							//					texte = document.createTextNode(lesCols[K]);
+							cellule.appendChild(ptexte);
+					K % 2 == 0 ? cellule.className = 'lignePaire' : cellule.className = 'ligneImpaire';
+					rNM.appendChild(cellule);
+				}
+				enf.parentNode.insertBefore(rNM,enf.parentNode.lastChild);
+				editMatch(m);
+
+			}
+
+			function sauvegardeMAV(no) {
+
+				var k = 0;
+				enf = document.getElementById('rangeeTitre');
+				//alert(k+" "+no);
+				while (k <= no) {
+					enf = enf.nextSibling;
+					if (enf.nodeName == 'TR')
+						k++;
+				}
+				tdEnf = enf.firstChild;
+				mDate = tdEnf.firstChild.value;
+				tdEnf = tdEnf.nextSibling.nextSibling;
+				mHeure = tdEnf.firstChild.value;
+				tdEnf = tdEnf.nextSibling;
+				mArena = tdEnf.firstChild.value;
+				tdEnf = tdEnf.nextSibling;
+				mEqDom = tdEnf.firstChild.value;
+				tdEnf = tdEnf.nextSibling;
+				mEqVis = tdEnf.firstChild.value;
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/setMatchAVenir.php";
+				//		alert(url);
+				var strJDom = "jDom=" + window.vecMAV[no].alignementDom;
+				var strJVis = "jVis=" + window.vecMAV[no].alignementVis;
+				var strGDom = "gDom=" + window.vecMAV[no].gardienDom;
+				var strGVis = "gVis=" + window.vecMAV[no].gardienVis;
+				var strEqDom = "eqDom=" + mEqDom;
+				var strEqVis = "eqVis=" + mEqVis;
+				var strDateDeb = "dateDeb=" + mDate + " " + mHeure;
+				var strDateFin = "dateFin=" + window.vecMAV[no].dateFin;
+				var strLigueId = "ligueId=" + getValue('ligueId');
+				var strMAVId = "mavId=" + window.vecMAV[no].mavId;
+				var strArena = "arenaId=" + mArena;
+				var params = strJDom + "&" + strJVis + "&" + strGDom + "&" + strGVis + "&" + strEqDom + "&" + strEqVis + "&" + strDateDeb + "&" + strDateFin + "&" + strLigueId + "&" + strMAVId + "&" + strArena;
+				//alert(params);
+				requete_ajax.open('POST', url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+								//alert(requete_ajax.responseText);
+						if(window.perm<9)
+							alert(requete_ajax.responseText);
+						window.location.reload(true);
+					}
+				}
+				requete_ajax.send(params);
+			}
+
+			function getMatchAVenir() {
+				//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/getMatchAVenir.php";
+
+				var strMAVId = "mavId=" + window.mavId;
+				var strLigueId = "ligueId=" + getValue('ligueId');
+				params = strMAVId + '&' + strLigueId;
+				//		alert(url+'?'+param);
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						vecMAV = eval('(' + requete_ajax.responseText + ')');
+						var k = 0;
+						listeMatch = new Array();
+						while (k < vecMAV.length) {
+							listeMatch[k] = vecMAV[k].mavId;
+							k++;
+						}
+
+						remplirTableau();
+
+						//							window.location.reload(true);
+					}
+				}
+				//alert(requete_ajax.responseText);
+				//				alert(JSON.stringify(listeMatch));
+				//	return vecMAV;
+				//}
+			}
+
+			function extirpeArena(id) {
+				//			alert(window.vecArena.length);
+				var k = 0;
+				while (k < window.vecArena.length) {
+					//				alert(window.vecArena[k].arenaId);
+					if (id == window.vecArena[k].arenaId) {
+						return k;
+					}
+					k++;
+				}
+				return -1;
+			}
+
+			function extirpeEquipe(id) {
+				//			alert(window.vecEquipe.equipes.length);
+				var k = 0;
+				while (k < window.vecEquipe.equipes.length) {
+					//					alert(window.vecEquipe.equipes.equipeId);
+					if (id == window.vecEquipe.equipes[k].equipeId) {
+						return k;
+					}
+					k++;
+				}
+				return -1;
+			}
+
+			function getInfoLigue(ligueId) {
+				//	return function(){
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/infoLigue2JSON.php";
+				//	alert(url);
+				var params = "ligueId=" + ligueId;
+				//alert(params);
+				requete_ajax.open('POST', url, false);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+				requete_ajax.send(params);
+
+				vecEquipe = eval('(' + requete_ajax.responseText + ')');
+				//				alert(requete_ajax.responseText);
+
+				var k = 0;
+				listeEquipe = new Array();
+				while (k < vecEquipe.equipes.length) {
+					//					alert(vecEquipe.equipes[k].equipeId);
+					listeEquipe[k] = vecEquipe.equipes[k].equipeId;
+					k++;
+				}
+
+				//	}
+			}
+
+			function getArena() {
+				//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/getArena.php";
+
+				var strLigueId = "ligueId=" + getValue('ligueId');
+				params = strLigueId;
+				requete_ajax.open('POST', url, false);
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				vecArena = eval('(' + requete_ajax.responseText + ')');
+				//	alert(requete_ajax.responseText);
+
+				var k = 0;
+				listeArena = new Array();
+				while (k < vecArena.length) {
+					listeArena[k] = vecArena[k].arenaId;
+					k++;
+				}
+				//				alert(JSON.stringify(listeMatch));
+				//	return vecMAV;
+				//}
+			}
+
+			function editMatch(no) {
+				//						amettre = document.getElementById('rangeeTitre');
+				var k = 0;
+				enf = document.getElementById('rangeeTitre');
+				//alert(k+" "+no);
+				while (k <= no) {
+					enf = enf.nextSibling;
+					if (enf.nodeName == 'TR')
+						k++;
+				}
+				tdEnf = enf.firstChild;
+				nTd = document.createElement('INPUT');
+				nTd.type = "TEXT";
+				nTd.value = tdEnf.firstChild.innerHTML;
+				tdEnf.replaceChild(nTd, tdEnf.firstChild);
+				////////////////
+				tdEnf = tdEnf.nextSibling.nextSibling;
+				nTd = document.createElement('INPUT');
+				nTd.type = "TEXT";
+				nTd.value = tdEnf.firstChild.innerHTML;
+				tdEnf.replaceChild(nTd, tdEnf.firstChild);
+				///////////////
+				tdEnf = tdEnf.nextSibling;
+				nTd = document.createElement('SELECT');
+				strIn = "";
+				for ( a = 0; a < window.vecArena.length; a++) {
+					opt = document.createElement('OPTION');
+					opt.innerHTML = window.vecArena[a].nomArena;
+					opt.value = window.vecArena[a].arenaId;
+					if (tdEnf.firstChild.innerHTML.split(",")[0] == window.vecArena[a].nomArena)
+						opt.selected = "selected";
+					nTd.appendChild(opt);
+					//strIn += "indice: " + a + ", valeur: " + opt.value + "\n ";
+				}
+				tdEnf.replaceChild(nTd, tdEnf.firstChild);
+				///////////////
+				tdEnf = tdEnf.nextSibling;
+				nTd = document.createElement('SELECT');
+				strIn = "";
+				for ( a = 0; a < window.vecEquipe.equipes.length; a++) {
+					opt = document.createElement('OPTION');
+					opt.innerHTML = window.vecEquipe.equipes[a].nom;
+					opt.value = window.vecEquipe.equipes[a].equipeId;
+					if (tdEnf.firstChild.innerHTML == window.vecEquipe.equipes[a].nom)
+						opt.selected = "selected";
+					nTd.appendChild(opt);
+					//strIn += "indice: " + a + ", valeur: " + opt.value + "\n ";
+				}
+				tdEnf.replaceChild(nTd, tdEnf.firstChild);
+				///////////////
+				tdEnf = tdEnf.nextSibling;
+				nTd = document.createElement('SELECT');
+				strIn = "";
+				for ( a = 0; a < window.vecEquipe.equipes.length; a++) {
+					opt = document.createElement('OPTION');
+					opt.innerHTML = window.vecEquipe.equipes[a].nom;
+					opt.value = window.vecEquipe.equipes[a].equipeId;
+					if (tdEnf.firstChild.innerHTML == window.vecEquipe.equipes[a].nom)
+						opt.selected = "selected";
+					nTd.appendChild(opt);
+					//strIn += "indice: " + a + ", valeur: " + opt.value + "\n ";
+				}
+				tdEnf.replaceChild(nTd, tdEnf.firstChild);
+
+				//////////////////////
+				tdEnf = tdEnf.nextSibling;
+				tdEnf.firstChild.cssFloat = "right";
+				nTd = document.createElement('IMG');
+				nTd.src = "\/images\/icones\/save.png";
+				nTd.width = "32";
+				nTd.height = "32";
+				nTd.onclick = function() {
+					sauvegardeMAV(no)
+				};
+				nTd.style.cssFloat = "left";
+				tdEnf.appendChild(nTd);
+
+			}
+
+			function remplirTableau() {
+
+				try {
+
+					//rJSON.periodes.shift();
+					for ( J = 0; J < window.vecMAV.length; J = J + 1) {
+
+						//	if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
+						rangee = document.createElement('TR');
+						amettre = document.getElementById('rangeeTitre');
+						amettre.parentNode.appendChild(rangee);
+						mArInd = extirpeArena(window.vecMAV[J].arenaId);
+						mEqDomInd = extirpeEquipe(window.vecMAV[J].eqDom);
+						mEqVisInd = extirpeEquipe(window.vecMAV[J].eqVis);
+						strImg = "<img src=\"\/images\/icones\/edit.png\" onclick=editMatch(" + J + "); width=\"32\" height=\"32\" alt=\"Edit\"\>";
+						strImg2 = "<img src=\"\/images\/icones\/view.png\" onclick=window.location.href='/zeroconfig.html?ligueId="+window.ligueId+"&mavId="+window.vecMAV[J].mavId+"'; width=\"32\" height=\"32\" alt=\"Edit\"\>";
+
+						var lesCols = new Array();
+						lesCols[0] = window.vecMAV[J].date.split(" ")[0];
+						lesCols[1] = null;
+						lesCols[2] = window.vecMAV[J].date.split(" ")[1];
+						lesCols[3] = (mArInd != -1) ? window.vecArena[mArInd].nomArena + ", glace :" + window.vecArena[mArInd].nomGlace : "Non défini";
+						lesCols[4] = (mEqDomInd != -1) ? window.vecEquipe.equipes[mEqDomInd].nom : "Non défini";
+						lesCols[5] = (mEqVisInd != -1) ? window.vecEquipe.equipes[mEqVisInd].nom : "Non défini";
+						lesCols[6] = (window.perm<19)? strImg+strImg2:strImg2 ;
+
+						var lesLiens = new Array();
+						lesLiens[0] = null;
+						lesLiens[1] = null;
+						lesLiens[2] = null;
+						lesLiens[3] = null;
+						lesLiens[4] = null;
+						lesLiens[5] = null;
+						lesLiens[6] = null;
+
+						for ( K = 0; K < lesCols.length; K++) {
+							cellule = document.createElement('TD');
+							if (lesCols[K] != undefined) {
+								if (lesLiens[K] != null) {
+									lien = document.createElement('A');
+									lien.innerHTML = lesCols[K];
+									lien.href = lesLiens[K];
+									cellule.appendChild(lien);
+								} else {
+									ptexte = document.createElement('P');
+									ptexte.innerHTML = lesCols[K];
+									//					texte = document.createTextNode(lesCols[K]);
+									cellule.appendChild(ptexte);
+								}
+							}
+							J % 2 == 0 ? cellule.className = 'lignePaire' : cellule.className = 'ligneImpaire';
+							rangee.appendChild(cellule);
+						}
+
+					}//Fin des rangées;
+					rangeePlus2 = document.createElement('TR');
+					cellPlus2 = document.createElement('TD');
+					cellPlus2.colSpan = 6;
+
+					element2 = document.createElement('input');
+					element2.type = "button";
+					element2.value = "+ Nouveau Match";
+
+					element2.onclick = function(){nouveauMatch()};
+					cellPlus2.appendChild(element2);
+					rangeePlus2.appendChild(cellPlus2);
+					amettre = document.getElementById('rangeeTitre');
+					if(window.perm<19)
+						amettre.parentNode.appendChild(rangeePlus2);
+
+					//	document.body.rangee.cellule.innerHTML ='yo';
+				} catch(err) {
+				}
+
+			}
+
+		</script>
+		<script type="text/javascript" charset="utf-8">
+			/*			if(!getValue('M'))
+			{
+			genereEntete();
+			genereMenu(2);}
+			else {M=0;}*/
+			//genereSousMenu(2);
+			//genereMenuNivea	u3();
+
+		</script>
+		<DIV ID="divCentrale">
+			<TABLE>
+				<tbody>
+					<tr id="date2"><td class="titreTableau" colspan="7">Horaire des matchs</td></tr>
+ 
+					<tr id="rangeeTitre">
+						<td class="rangeetitre">Date</td>
+						<td class="rangeetitre">Jour</td>
+						<td class="rangeetitre">Heure</td>
+						<td class="rangeetitre">Emplacement</td>
+						<td class="rangeetitre">Domicile</td>
+						<td class="rangeetitre">Visiteur</td>
+						<td class="rangeetitre">Opérations</td>
+					</tr>
+				</tbody>
+			</table>
+		</DIV>
+		<script type="text/javascript" charset="utf-8">
+			perm = verifiePermission();
+			ligueId = getValue("ligueId");
+
+			mavId = 1;
+			getArena();
+			getInfoLigue(ligueId);
+			getMatchAVenir();
+			//			alert(strInfoMatch);
+			/////////////////////////////////////////////////////////////
+
+			////////////////////////////////////////////////////////////
+
+			/*			 m = getValue('m');
+			m3 = getValue('m3');
+
+			if(m3=="")
+			{window.onload=afficheSelectionNiv3(1);}
+			else
+			window.onload=afficheSelectionNiv3(parseInt(getValue('m3')));
+			*/
+
+		</script>
+	</body>
+</html>

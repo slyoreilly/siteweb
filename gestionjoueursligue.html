@@ -1,0 +1,318 @@
+<HTML> 
+<HEAD> 
+	<title>Gestion des joueurs de la ligue</title>
+<link rel="stylesheet" href="style/general.css" type="text/css">
+<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+	<script type="text/javascript" charset="utf-8">
+				function afficheSelectionZA(choix) {
+				return function() {
+					videNoeud('mbody');
+					if(window.m != '1') {
+						genereEntete();
+						genereMenu(5);
+						genMenuZoneAdmin(choix);
+						//			alert('22')
+						m = 0;
+					}
+
+					switch(choix) {
+						case 1:							
+							if(verifiePermission()<10)
+								window.location.href = '/gestionligue.html?ligueId=' + ligueId;
+								else
+								afficheNonPermis();
+							break;
+						case 2:
+							if(verifiePermission()<19)
+							window.location.href = '/gestionjoueursligue.html?ligueId=' + ligueId;
+								else
+								afficheNonPermis();
+							break;
+						case 3:
+							window.location.href = '/zeroconfig.html?ligueId=' + ligueId;
+							//	afficheMeneurs(window.statsJSON, window.gJSON);
+							break;
+						case 4:
+						if ( getCookie( "ligueId" ) ) document.cookie = "ligueId" + "=" +
+							 ( ( "/" ) ? ";path=" + "/" : "") +
+							 ( ( "" ) ? ";domain=" + "" : "" ) +
+							 ";expires=Thu, 01-Jan-1970 00:00:01 GMT";
+							 window.location.href='/listeligues.html?code=11';
+							 
+							break;
+						case 5:
+							/*					alert('HEp!')
+							 //setCookie('ligueId',null,7);
+							 //					deleteCookie("ligueId","/","");
+							 */
+							break;
+						default:
+					}
+				}
+			}
+
+	
+	function clicCB(nbCol,noSeq,jId,eId){
+		return function(){
+	//		alert('heyhey')
+		var x = new Array();
+		x= document.getElementsByTagName("input");// NE PAS OUBLIER LES DEUX BOUTONS AVANT LE TABLEAU!!!
+//		alert(x.shift());		
+		var r = new Array();
+		r= document.getElementsByTagName("tr");		
+		ligne = Math.floor( (noSeq )/ nbCol);
+		col = noSeq%nbCol;
+//		alert(nbCol+" "+ noSeq+" "+ligne+" "+col);
+		for(m=0;m<nbCol;m=m+1)
+		{
+		B = nbCol*ligne+m+2;// Le 2: les boutons avant le tableau
+			x[B].checked=false;
+//		alert(B+": "+x[B].checked+" ");
+		}
+			x[noSeq+2].checked=true;
+			pourMAJ.push('{"joueurId":"'+jId+'","equipeId":"'+eId+'"}');
+		//	r[ligne].style.backgroundColor="red";
+//			alert(pourMAJ);
+//		alert(A+": "+x[A].checked+" ");
+		}
+	}
+		</script>
+
+ 	<script type="text/javascript" charset="utf-8">
+
+
+
+						function setJoueursDansEquipes()
+	{
+		return function(){
+		var requete_ajax = new XMLHttpRequest();
+		
+		var url = "/stats2/attribueJoueursDansEquipe.php";
+	//	alert(url);
+		var params = "joueursmaj=["+window.pourMAJ+"]&ligueId="+window.ligueId;
+//		alert(params);
+		requete_ajax.open('POST', url, true);
+
+		//Send the proper header information along with the request
+		requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		requete_ajax.setRequestHeader("Content-length", params.length);
+		requete_ajax.setRequestHeader("Connection", "close");
+
+//		alert('yo');
+		requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+			if(requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+	//			alert(requete_ajax.responseText);
+				window.location.reload();
+				}
+		}
+		requete_ajax.send(params);
+//		alert(requete_ajax.responseText);
+		var pourMAJ = new Array();
+		//requete_ajax.send(null);
+//	return requete_ajax.responseText;
+
+
+}
+	}
+	
+
+
+
+
+ 	</script>
+
+
+<style>
+</style> 
+</HEAD>
+
+
+<body id="mbody">
+    	 	<script type="text/javascript" charset="utf-8">
+			if(window.m != "1") {
+				genereEntete();
+				genereMenu(5);
+				genMenuZoneAdmin(2);
+			m=0;
+
+			}
+		</script>	
+	<DIV ID="divCentrale">
+<DIV ID="optionsTop">
+</DIV>
+</br>
+<DIV ID="divTab" class="centrale">
+	 
+ <DIV ID="divTab1">
+
+ <table id="tableauHome" class="c_tableau">
+ 	
+ 	
+ <tr><td class="titreTableau" colspan="3">Attribution des joueurs</td></tr>
+ <tr id="rangeeTitreHome">
+<td class="rangeetitre">Numéro</td>
+<td class="rangeetitre">Position</td>
+<td class="rangeetitre">Joueur</td>
+</tr>
+
+  	
+ 	
+ </table>
+ </DIV>
+  </DIV>
+  <DIV ID="optionsBas">
+</DIV>
+
+</DIV><!-- Fin de divCentrale  -->
+ 	<script type="text/javascript" charset="utf-8">
+
+//try{
+//alert("yo");
+//alert(getValue('ligueId'));
+ligueId=getValue('ligueId');
+var string2 = getClassementJSON(getValue('ligueId'),null);
+//alert(string2);
+var cJSON = eval('(' +string2+')');
+
+var stringJ = getStatsLigueJSON(getValue('ligueId'),null);
+var stringJ2 = getJSONJoueursEquipes(null,getValue('ligueId'));
+//alert(stringJ2);
+var jJSON = eval('(' +stringJ+')');
+var jJSON2 = eval('(' +stringJ2+')');
+
+var pourMAJ = new Array();
+
+for (J=0;J<=cJSON.equipes.length;J=J+1)
+{	
+	try{
+									uneEquipe = document.createElement('TD');
+							amettre = document.getElementById('rangeeTitreHome');
+							tEq = document.createTextNode(cJSON.equipes[J].nom);
+
+							uneEquipe.appendChild(tEq);
+							amettre.appendChild(uneEquipe);
+	
+		
+
+	}
+	catch(err){}
+}
+
+		uneEquipe = document.createElement('TD');
+		amettre = document.getElementById('rangeeTitreHome');
+		tEq = document.createTextNode("Agent Libres");
+		uneEquipe.appendChild(tEq);
+		amettre.appendChild(uneEquipe);
+seq=0;
+for (J=0;J<jJSON2.equipe.length;J=J+1)
+{
+jJSON2.equipe[J].joueur.sort(function(a,b) { return  (a.noJoueur - b.noJoueur)} );	
+	for (K=0;K<jJSON2.equipe[J].joueur.length;K=K+1)
+	{
+		rangee = document.createElement('TR');
+	amettre = document.getElementById('rangeeTitreHome');
+	amettre.parentNode.appendChild(rangee);
+	
+	celluleNo = document.createElement('TD');
+	texteNo = document.createTextNode(jJSON2.equipe[J].joueur[K].noJoueur);
+	celluleNo.appendChild(texteNo);
+			(K%2==0) ? celluleNo.setAttribute('class','lignePaire') :celluleNo.setAttribute('class','ligneImpaire');
+		rangee.appendChild(celluleNo);
+
+	cellulePos = document.createElement('TD');
+	textePos = document.createTextNode(jJSON2.equipe[J].joueur[K].position);
+	cellulePos.appendChild(textePos);
+			(K%2==0) ? cellulePos.setAttribute('class','lignePaire') :cellulePos.setAttribute('class','ligneImpaire');
+		rangee.appendChild(cellulePos);
+
+
+					celluleNom = document.createElement('TD');
+					lien = document.createElement('A');
+					lien.innerHTML = jJSON2.equipe[J].joueur[K].nomJoueur;
+					lien.setAttribute('href', '/admin/entreprofil.html?joueurId=' + jJSON2.equipe[J].joueur[K].joueurId+'&ligueId='+getValue('ligueId')+'&code=41');//Code 41: modif par admin
+
+					celluleNom.appendChild(lien);
+
+			(K%2==0) ? celluleNom.setAttribute('class','lignePaire') :celluleNom.setAttribute('class','ligneImpaire');
+
+
+
+		rangee.appendChild(celluleNom);
+
+	for (L=0;L<jJSON2.equipe.length;L=L+1)
+		{	
+		celluleCB = document.createElement('TD');		
+		var checkbox = document.createElement('input');
+		checkbox.type = "checkbox";
+		checkbox.name = "name";
+		checkbox.value = "value";
+		checkbox.id = "id";
+		(L==J) ? checkbox.checked = true :checkbox.checked = false;
+		//var seq = (jJSON2.equipe.length)*K+L;
+		checkbox.onclick= clicCB(jJSON2.equipe.length,seq,jJSON2.equipe[J].joueur[K].joueurId,jJSON2.equipe[L].equipeId);
+		seq=seq+1;
+		//clicCB(jJSON.joueurs.length,cJSON.equipes.length,cJSON.equipes.length*J+K);
+
+			(K%2==0) ? celluleCB.setAttribute('class','lignePaire') :celluleCB.setAttribute('class','ligneImpaire');
+		celluleCB.appendChild(checkbox);
+		rangee.appendChild(celluleCB);
+		}
+
+
+
+	}		
+
+}
+
+	
+
+ 	</script>
+
+			<script type="text/javascript" charset="utf-8">
+			
+		var btnNJ = document.createElement('input');
+		btnNJ.type = "button";
+		btnNJ.value = "Nouveau joueur";
+		btnNJ.onclick= function(){window.location.href="/admin/entreprofil.html?code=40&ligueId="+ligueId;};
+		document.getElementById("optionsTop").appendChild(btnNJ);
+ 
+ 		var btnOK = document.createElement('input');
+		btnOK.type = "button";
+		btnOK.value = "Enregistrer";
+		btnOK.style.marginTop="10px";
+		btnOK.onclick= setJoueursDansEquipes();
+		
+	
+		//clicCB(jJSON.joueurs.length,cJSON.equipes.length,cJSON.equipes.length*J+K);
+
+		document.getElementById("optionsTop").appendChild(btnOK);
+		
+
+ 	</script>
+
+
+			<script type="text/javascript" charset="utf-8">
+		var btnNJ = document.createElement('input');
+		btnNJ.type = "button";
+		btnNJ.value = "Nouveau joueur";
+		btnNJ.onclick= function(){window.location.href="/admin/entreprofil.html?code=40&ligueId="+ligueId;};
+		document.getElementById("optionsBas").appendChild(btnNJ);
+
+			
+		var btnOK = document.createElement('input');
+		btnOK.type = "button";
+		btnOK.value = "Enregistrer";
+		btnOK.onclick= setJoueursDansEquipes();
+		//clicCB(jJSON.joueurs.length,cJSON.equipes.length,cJSON.equipes.length*J+K);
+
+		document.getElementById("optionsBas").appendChild(btnOK);
+
+ 	</script>
+
+
+
+</body> 
+</html> 	

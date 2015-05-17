@@ -1,0 +1,173 @@
+<HTML>
+	<HEAD>
+		<title>Meneurs</title>
+		<link rel="stylesheet" href="style/general.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" /> 
+
+		<script type="text/javascript" charset="utf-8">
+
+			function afficheSelection(choix) {
+			videNoeud('mbody');
+			//		if(getValue('m')!="1")
+			//		{
+			genereEntete();
+			genereMenu(2);
+			genereSousMenu(choix);
+			if(getValue('m')!="1")
+			{
+			afficheLigueId();}
+
+			switch(choix) {
+			case 1:
+			window.location.href='/horaire.html?ligueId='+window.ligueId;
+
+			break;
+			case 2:
+			window.location.href='statistiques.html?m2=2';
+			//	afficheResultats(window.rJSON);
+			break;
+			case 3:
+			//						afficheMeneurs(window.statsJSON, window.gJSON);
+			window.location.href='statistiques.html?m2=3';
+			break;
+			case 4:
+			//						afficheClassement(window.cJSON);
+			window.location.href='statistiques.html?m2=4';
+
+			break;
+			case 5:
+			//setCookie('ligueId',null,7);
+			//					deleteCookie("ligueId","/","");
+			if ( getCookie( "ligueId" ) ) document.cookie = "ligueId" + "=" +
+			( ( "/" ) ? ";path=" + "/" : "") +
+			( ( "" ) ? ";domain=" + "" : "" ) +
+			";expires=Thu, 01-Jan-1970 00:00:01 GMT";
+			window.location.href='statistiques.html';
+			break;
+
+			default:
+			break;
+			}
+			}
+
+			function afficheSelectN3Meneurs(N3) {
+			return function(){
+			videNoeud('mbody');
+			if(window.m!='1')
+			{
+			genereEntete();
+			genereMenu(2);
+			genereSousMenu(3);
+			}
+			genereMenuN3Meneurs(N3);
+			if(window.m!='1')
+			{
+			afficheLigueId(); }
+
+			switch(N3) {
+			case 1:
+			afficheMeneursPatineurs(window.statsJSON);
+			break;
+			case 2:
+			afficheMeneursGardiens(window.gJSON);
+			break;
+			case 3:
+			afficheMeneursPatineurs(window.unitesSpeciales);
+			break;
+			case 4:
+			afficheMeneursPatineurs(window.DN);
+			break;
+			default:
+			}
+			}
+			}
+		</script>
+
+	</HEAD>
+	<!--script type="text/javascript">
+
+	</script-->
+
+	<body name="mCbody" id="mbody">
+
+		<script type="text/javascript" charset="utf-8">
+			if (getValue('m') != "1") {
+				genereEntete();
+				genereMenu(2);
+				genereSousMenu(3);
+				afficheLigueId();
+			} else
+				var k = 0;
+
+		</script>
+
+		<script type="text/javascript">
+			//try{
+			ligueId = null;
+			if (getCookie('ligueId') != null) {
+				ligueId = getCookie('ligueId');
+			} else {
+				if (getValue('ligueId') == "") {
+					window.location.href = "/listeligues.html" + "?code=10";
+				}//Code 10: origine de statistique
+				else {
+					ligueId = getValue('ligueId');
+				}
+			}
+			var m = getValue('m');
+			var m3 = getValue('m3');
+
+			//				genereSousMenu(3);
+
+			if (m3 == "") {
+				window.onload = afficheSelectN3Meneurs(1);
+			} else {
+				window.onload = afficheSelectN3Meneurs(parseInt(getValue('m3')));
+			}
+			//			genereMenuN3Meneurs();
+
+		</script>
+
+		<DIV id="divCentrale">
+
+		</DIV>
+
+		<script type="text/javascript">
+			//try{
+
+			//var ligueId = getValue('ligueId');
+			//alert(getValue('saisonId'));
+			var stringStats = getStatsLigueJSON(ligueId, getValue('saisonId'));
+			if(verifiePermission()<9)
+				alert(stringStats);
+
+			var statsJSON = eval('(' + stringStats + ')');
+
+			statsJSON.joueurs.sort(function(a, b) {
+				A = (parseInt(b.nbButs) + parseInt(b.nbPasses)) - (parseInt(a.nbButs) + parseInt(a.nbPasses));
+				B = A ? A : (parseInt(b.nbButs) - parseInt(a.nbButs));
+				return B
+			});
+
+			var strUS = getMeneursUnitesSpeciales(ligueId, getValue('saisonId'));
+			var unitesSpeciales = eval('(' + strUS + ')');
+			var strDN = getMeneursDN(ligueId, getValue('saisonId'));
+			var DN = eval('(' + strDN + ')');
+
+			//var strLigue = getLigueDeEquipeID(equipeId);
+			//alert('lJSON :'+strLigue);
+
+			var strGardiens = getStatsGardiens(getValue('saisonId'), ligueId, null);
+			//alert(strGardiens);
+			var gJSON = eval('(' + strGardiens + ')');
+
+			//			genereSousMenu(3);
+			//		genereMenuN3Meneurs(1);
+
+		</script>
+
+	</body>
+</html>

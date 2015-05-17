@@ -1,0 +1,184 @@
+<HTML>
+	<HEAD>
+		<title>Statistiques</title>
+		<link rel="stylesheet" href="style/general.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<style>
+		</style>
+	</HEAD>
+	<body id="mbody">
+		<script type="text/javascript" charset="utf-8">
+			if(window.m!="1")
+			{
+				genereEntete();    
+				genereMenu(2);    				
+				afficheLigueId();
+			}
+			
+
+		</script>
+		<script type="text/javascript">
+			function afficheSelection(choix) {
+				videNoeud('mbody');
+				if(window.m!='1')
+			{
+			
+				genereEntete();
+				genereMenu(2);
+				genereSousMenu(choix);
+				afficheLigueId();
+			m=0;
+			}
+			
+				switch(choix) {
+					case 1:
+					
+					window.location.href='/horaire.html?ligueId='+window.ligueId;
+						break;
+					case 2:
+						afficheResultats(window.ligueId);
+						break;
+					case 3:
+					window.location.href='meneurs.html';
+					//	afficheMeneurs(window.statsJSON, window.gJSON);
+						break;
+					case 4:
+						afficheClassement(window.ligueId,null);
+
+						break;
+					case 5:
+					//setCookie('ligueId',null,7);
+//					deleteCookie("ligueId","/","");
+
+					if ( getCookie( "ligueId" ) ) document.cookie = "ligueId" + "=" +
+					( ( "/" ) ? ";path=" + "/" : "") +
+					( ( "" ) ? ";domain=" + "" : "" ) +
+					";expires=Thu, 01-Jan-1970 00:00:01 GMT";
+//					window.location.href = '/listeligues.html?code=10';
+
+					window.location.href='/statistiques.html';
+						break;
+					default:
+				}
+			}
+
+		</script>
+		<DIV id="divCentrale"></DIV>
+		<script type="text/javascript">
+			//alert(window.location.href);
+			
+			
+			
+			ligueId = null;
+			if(getCookie('ligueId')!=null)
+			{ligueId=getCookie('ligueId');}
+			else 
+			{if(getValue('ligueId')=="")
+			{
+				moncode  = (getValue("code")=="" )? 10: getValue("code");
+				 window.location.href = "/listeligues.html"+"?code="+moncode;} //Code 10: origine de statistique // Code 11: origine de zone admin
+				 else 
+				 {ligueId=getValue('ligueId');}
+			}
+						var m = getValue('m');
+
+		</script>
+		<script type="text/javascript">
+			
+			//var uneString = getMatchsdeLigueID(ligueId);
+			//alert(uneString);
+			//var rJSON = eval('(' + uneString + ')');
+
+			var strLigue = getJSONdeLigueID(ligueId);
+			//alert(strLigue);
+			var lJSON = eval('(' + strLigue + ')');
+			//	alert(getValue('ligueId')+' '+getValue('userId'));
+
+		//	var stringStats = getStatsLigueJSON(ligueId);
+			//alert(stringStats);
+
+		//	var statsJSON = eval('(' + stringStats + ')');
+
+			//var strLigue = getLigueDeEquipeID(equipeId);
+			//alert('lJSON :'+strLigue);
+
+		//	var strGardiens = getStatsGardiens(null, ligueId, null);
+			//alert(strGardiens);
+		//	var gJSON = eval('(' + strGardiens + ')');
+
+			var Perm = getPermissions(ligueId, getValue('userId'))
+
+
+			try {
+				if(Perm < 19) {
+					//Create an input type dynamically.
+					var element = document.createElement('input');
+
+					//Assign different attributes to the element.
+					element.setAttribute('type', 'button');
+					element.setAttribute('value', 'Modifier Ligue');
+					//	var poste = "<?=$_POST['id']; ?>";
+					var codeLigue = 10;
+
+					var postLigue = {
+						id : aJSON.userId,
+						code : codeLigue,
+						nom : lJSON.Ligues[0].nomLigue,
+						horaire : lJSON.Ligues[0].horaire,
+						lieu : lJSON.Ligues[0].lieu,
+						ligueId : lJSON.Ligues[0].ligueId
+					};
+
+					element.setAttribute('onClick', 'postwith(\"creerligue.php\",postLigue);');
+
+					var foo = document.getElementById('topOptions');
+
+					//Append the element in page (in span).
+					foo.appendChild(element);
+
+				}
+
+				if(Perm < 19) {
+					//Create an input type dynamically.
+					var element = document.createElement('input');
+
+					//Assign different attributes to the element.
+					element.setAttribute('type', 'button');
+					element.setAttribute('value', 'CrÃ©er Ã©quipe');
+					//	var poste = "<?=$_POST['id']; ?>";
+					var moncode = 1;
+
+					var person = {
+						id : aJSON.userId,
+						code : moncode,
+						nom : lJSON.Ligues[0].nomLigue,
+						ligueId : lJSON.Ligues[0].ligueId
+					};
+
+					element.setAttribute('onClick', 'postwith(\"creerequipe.php\",person);');
+
+					var foo = document.getElementById('topOptions');
+
+					//Append the element in page (in span).
+					foo.appendChild(element);
+
+				}
+
+			} catch(err) {
+			}
+			if(getValue('m2')=="")
+			{afficheSelection(4);}
+			else
+			afficheSelection(parseInt(getValue('m2')));
+			
+			///////////////////////////////////////////////////////
+
+			// 	rangee = document.createElement('TD');
+			//	document.body.appendChild(rangee)
+			//	yo2
+		</script>
+	</body>
+</html>

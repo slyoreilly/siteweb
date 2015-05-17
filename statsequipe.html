@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<HTML> 
+<HEAD> 
+	<title>Statistiques d'équipe</title>
+<link rel="stylesheet" href="style/general.css" type="text/css">
+<script src="/scripts/fonctions.js" type="text/javascript"charset="utf-8"></script>
+<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+</style> 
+</HEAD>
+<script type="text/javascript">
+			function reaffiche(){
+				return function() {detruitNoeud("divStatsDom"); 
+									afficheStatsDom(window.statsJSONHome.Saisons[window.selSaison.selectedIndex]);
+									var strUnit = getUnitesSpeciales(window.lJSON.Ligues[0].ligueId,statsJSONHome.Saisons[window.selSaison.selectedIndex].saisonId);
+									uJSON = eval('(' +strUnit+')');
+									afficheUnitesSpeciales();
+									var strClassement = getClassementJSON(lJSON.Ligues[0].ligueId,statsJSONHome.Saisons[window.selSaison.selectedIndex].saisonId);
+									cJSON = eval('(' +strClassement+')');
+									ficheClassement();
+									}
+				}
+		function ficheClassement(){
+				window.cJSON.equipes.sort(function(a,b) { return (parseInt(2*b.vicDom)+2*parseInt(b.vicVis)+parseInt(b.nulDom)+parseInt(b.nulVis))-(parseInt(2*a.vicDom)+2*parseInt(a.vicVis)+parseInt(a.nulDom)+parseInt(a.nulVis));} );
+				monEq = trouveIndiceJson(window.cJSON.equipes,'id',getValue('equipeId'));
+				videNoeud('fiche');
+				document.getElementById('fiche').innerHTML="Fiche (V-D-N): "+parseInt(window.cJSON.equipes[monEq].vicDom+window.cJSON.equipes[monEq].vicVis)+" - "+
+												parseInt(window.cJSON.equipes[monEq].defDom+window.cJSON.equipes[monEq].defVis)+" - "+
+												parseInt(window.cJSON.equipes[monEq].nulDom+window.cJSON.equipes[monEq].nulVis)+" <br /> "+
+											"Rang: "+parseInt(monEq+1)+" sur "+parseInt(window.cJSON.equipes.length)+" equipes"+" <br /> "+" <br /> ";
+				}
+		
+</script>
+
+
+<body id="body">
+    	 	<script type="text/javascript" charset="utf-8">
+				if(getValue('m')!="1")
+			{
+			genereEntete();    
+				genereMenu(2);    
+			}
+			</script>
+<DIV ID="topOptions"></DIV>
+	
+	
+<DIV ID="titre"><H1> Statistiques d'équipe </H1></DIV>
+	
+	
+
+ <DIV ID="divCentrale">
+<DIV>Saison: <SELECT id="selSaison" >
+	
+</SELECT>
+</DIV>
+<DIV ID="ligneCentrale1">
+	<DIV ID="descriptionFiche">
+<DIV ID="fiche"></DIV>
+<DIV ID="commentaireFiche"></DIV>
+<DIV ID="unitesSpeciales"></DIV>
+	</DIV>
+			<DIV ID="photoFiche"><img id="logoEquipe" class="grosLogo"></DIV>
+		
+
+</DIV>
+
+
+ <!--table id="tableauEquipe" class="c_tableau">
+ 	
+ 	
+ <tr><td class="titreTableau" colspan="5">Statistiques des joueurs</td></tr>
+ <tr id="rangeeTitreEquipe">
+<td class="rangeetitre">Joueur</td>
+<td class="rangeetitre">Parties jouées</td>
+<td class="rangeetitre">Buts</td>
+<td class="rangeetitre">Passes</td>
+<td class="rangeetitre">Points</td>
+</tr>
+
+  	
+ 	
+ </table>
+
+ <table id="tableauGardiens" class="c_tableau">
+ 	
+ 	
+ <tr><td class="titreTableau" colspan="7">Statistiques des gardiens</td></tr>
+ <tr id="rangeeTitreGardiens">
+<td class="rangeetitre">Gardien</td>
+<td class="rangeetitre">Parties jouées</td>
+<td class="rangeetitre">Victoires</td>
+<td class="rangeetitre">Défaites</td>
+<td class="rangeetitre">Nulles</td>
+<td class="rangeetitre">Buts alloués</td>
+<td class="rangeetitre">Moy. buts alloués</td>
+</tr>
+
+  	
+ 	
+ </table-->
+
+  </DIV>
+
+ 	<script type="text/javascript">
+
+//try{
+
+var equipeId = getValue('equipeId');
+
+var stringStatsHome = getStatsEquipeJSON(equipeId);
+
+if(verifiePermission()<3)
+	alert(stringStatsHome);
+
+var statsJSONHome = eval('(' +stringStatsHome+')');
+
+
+try{
+
+
+
+//statsJSONHome.joueurs.triPar("nbButs",1,1);
+
+selSaison=document.getElementById('selSaison');
+selSaison.onchange=reaffiche();
+
+for (K=0;K<statsJSONHome.Saisons.length;K=K+1)
+{
+opt = document.createElement('OPTION');
+opt.innerHTML=statsJSONHome.Saisons[K].nom+" - "+	statsJSONHome.Saisons[K].pm+" au "+statsJSONHome.Saisons[K].dm
+opt.value=statsJSONHome.Saisons[K].saisonId;
+if(K==statsJSONHome.Saisons.length-1)
+	opt.selected="selected";
+selSaison.appendChild(opt);
+statsJSONHome.Saisons[K].joueurs.sort(function(a,b) { return (parseInt(b.nbButs)+parseInt(b.nbPasses)) - (parseInt(a.nbButs)+parseInt(a.nbPasses)) } );
+
+}
+afficheStatsDom(statsJSONHome.Saisons[0]);
+	
+//	document.body.rangee.cellule.innerHTML ='yo';	
+	}
+	catch(err){}
+
+
+
+
+
+
+
+var strLigue = getLigueDeEquipeID(equipeId);
+//alert('lJSON :'+strLigue);
+var lJSON = eval('(' +strLigue+')');
+var userId = getCookie("userId");
+//alert('uId :'+userId);
+
+var strEquipe = getJSONdeEquipeID(equipeId);
+var eJSON = eval('(' +strEquipe+')');
+//alert('eJSON :'+strEquipe);
+
+var strClassement = getClassementJSON(lJSON.Ligues[0].ligueId,statsJSONHome.Saisons[window.selSaison.selectedIndex].saisonId);
+if(verifiePermission()<3)
+	alert('cJSON :'+strClassement);
+var cJSON = eval('(' +strClassement+')');
+
+var strUnit = getUnitesSpeciales(lJSON.Ligues[0].ligueId,statsJSONHome.Saisons[window.selSaison.selectedIndex].saisonId);
+if(verifiePermission()<3)
+	{alert('uJSON :'+strUnit);}
+var uJSON = eval('(' +strUnit+')');
+
+
+var strGardiens = getStatsGardiens(null, lJSON.Ligues[0].ligueId,equipeId);
+//alert(strGardiens);
+var gJSON = eval('(' +strGardiens+')');
+
+//alert('eJSON :'+strEquipe);
+
+try{
+
+	descFiche = document.createElement('P');
+	descFiche.innerHTML='Ligue: '+lJSON.Ligues[0].nomLigue+"</br>"+"Nom de l\'équipe: "+eJSON.Equipes[0].nomEquipe+"</br>";
+
+
+divDesc = document.getElementById('descriptionFiche')
+		//	divDesc.appendChild(descFiche);
+	divDesc.insertBefore(descFiche,divDesc.firstChild);
+
+	logoEquipe = document.getElementById('logoEquipe');
+//logoLigue.setAttribute('src','images/ligues/logo/'+getValue('ligueId')+'.jpg');
+logoEquipe.setAttribute('src','admin/afficheImage.php?ficId='+eJSON.Equipes[0].ficId);
+
+
+	}
+	catch(err){}
+</script>
+<script type="text/javascript">
+ficheClassement();
+afficheUnitesSpeciales();
+</script>
+
+
+
+
+
+</body> 
+</html> 		

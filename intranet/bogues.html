@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="promo.css" type="text/css">
+		<link rel="stylesheet" href="/style/general_v4.css" type="text/css">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+
+<title>Bogues
+</title>
+<script type="text/javascript" charset="utf-8">
+
+			function getBogues() {
+				//	return function() {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/intranet/scriptsintranet/getGenerique.php";
+				//		alert(url);
+				//alert("Params a setMatchAVenir" + params);
+				requete_ajax.open('POST', url, true);
+				params="table=bogues";
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						listeBogues = eval('(' + requete_ajax.responseText + ')');
+						listeBogues.sort(function(a, b) {
+							prog=(a.progression - b.progression);
+							
+							aret= (prog==0) ? (b.gravite*b.facilite*b.occurence-a.gravite*a.facilite*a.occurence): prog;
+							return aret;
+							});
+
+						
+						
+						remplirTableau();
+						//requete_ajax.responseText;
+						
+						//window.location.reload(true);
+					}
+				}
+				requete_ajax.send(params);
+				var pourMAV = new Array();
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				//		}
+			}
+
+		
+		function getProjets() {
+				//	return function() {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/intranet/scriptsintranet/getGenerique.php";
+				//		alert(url);
+				//alert("Params a setMatchAVenir" + params);
+				requete_ajax.open('POST', url, true);
+				params="table=projets";
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						listeProjets = eval('(' + requete_ajax.responseText + ')');
+						selJS=document.getElementById('projet');
+						
+						for(var a=0;a<listeProjets.length;a++)
+						{
+							opt = document.createElement('OPTION');
+							opt.value=listeProjets[a].projetId;
+							opt.innerHTML=listeProjets[a].nom;
+							
+							selJS.appendChild(opt);
+							
+						}
+						//requete_ajax.responseText;
+						
+						//window.location.reload(true);
+					}
+				}
+				requete_ajax.send(params);
+				var pourMAV = new Array();
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				//		}
+			}
+		
+		function remplirTableau(){
+			
+				
+					//rJSON.periodes.shift();
+					if (window.listeBogues.length == 0) {
+						rangee = document.createElement('TR');
+						rangee.id = "rangeeVide";
+						amettre = document.getElementById("rangeeTitre");
+						amettre.parentNode.appendChild(rangee);
+						td1 = document.createElement('TD');
+						td1.className = "titreTableau";
+						td1.colSpan = "8";
+						td1.innerHTML = window.tl_general_noData;
+						rangee.appendChild(td1);
+					}
+					for ( J = 0; J < listeBogues.length; J = J + 1) {
+
+						//	if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
+						rangee = document.createElement('TR');
+						amettre = document.getElementById('rangeeTitre');
+						amettre.parentNode.appendChild(rangee);
+						strMod = "<div class=\"lien\" onclick=modifBogue(" + listeBogues[J].bogueId + "); >Modif</div>";
+//						strImg2 = "<img src=\"\/images\/icones\/view.png\" onclick=window.location.href='" + menus[12].lien + "?ligueId=" + window.ligueId + "&mavId=" + listeFdT[J].mavId + "'; width=\"32\" height=\"32\" alt=\"Edit\"\>";
+//						strImg3 = "<img src=\"\/images\/icones\/poubelle.png\" onclick=effaceMatch(" + J + "); width=\"32\" height=\"32\" alt=\"Edit\"\>";
+
+						var lesCols = new Array();
+						lesCols[0] = listeBogues[J].bogueId;
+						lesCols[1] = listeBogues[J].description;	
+						lesCols[2] = listeBogues[J].projet;	
+						lesCols[3] = listeBogues[J].categorie;	
+						lesCols[4] = listeBogues[J].occurence;
+						lesCols[5] = listeBogues[J].gravite;	
+						lesCols[6] = listeBogues[J].facilite;	
+						lesCols[7] = listeBogues[J].dateEntre;	
+						lesCols[8] = listeBogues[J].dateRegle==null?'':listeBogues[J].dateRegle;	
+						lesCols[9] = listeBogues[J].progression;	
+						lesCols[10] = listeBogues[J].commentaire;	
+						lesCols[11] = strMod;	
+						
+						var lesLiens = new Array();
+						lesLiens[0] = null;
+						lesLiens[1] = null;
+						lesLiens[2] = null;
+						lesLiens[3] = null;
+						lesLiens[4] = null;
+						lesLiens[5] = null;
+						lesLiens[6] = null;
+						lesLiens[7] = null;
+						lesLiens[8] = null;
+						lesLiens[9] = null;
+						lesLiens[10] = null;
+						lesLiens[11] = null;
+
+						for ( K = 0; K < lesCols.length; K++) {
+							cellule = document.createElement('TD');
+							if (lesCols[K] != undefined) {
+								if (lesLiens[K] != null) {
+									lien = document.createElement('A');
+									lien.innerHTML = lesCols[K];
+									lien.href = lesLiens[K];
+									cellule.appendChild(lien);
+								} else {
+									ptexte = document.createElement('P');
+									ptexte.innerHTML = lesCols[K];
+									//					texte = document.createTextNode(lesCols[K]);
+									cellule.appendChild(ptexte);
+								}
+							}
+							J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
+							rangee.appendChild(cellule);
+						}
+
+							
+					}//Fin des rangées;
+			
+			enveloppeTable('tableauBogues',0,30);
+
+		}
+function setBogue()
+{
+	
+				var requete_ajax = new XMLHttpRequest();
+
+			var url = "/intranet/scriptsintranet/setGenerique.php";
+			
+			var valeur ={
+			description:document.getElementById('description2').value,
+			dateEntre:document.getElementById('dateEntre').value,
+			dateRegle:document.getElementById('dateRegle').value==''?'NULL':document.getElementById('dateRegle').value,
+			occurence:document.getElementById('occurence').value,
+			gravite:document.getElementById('gravite').value,
+			facilite:document.getElementById('facilite').value,
+			progression:document.getElementById('progression').value,
+			commentaire:document.getElementById('commentaire').value,
+			projet:document.getElementById('projet').options[document.getElementById('projet').selectedIndex].value,
+			categorie:document.getElementById('categorie').options[document.getElementById('categorie').selectedIndex].value};
+
+			
+			
+			
+			var strTable = "table=bogues";
+			var strValeur = "valeur=" + JSON.stringify(valeur);
+			var strMode = "mode=creer";
+			
+			params = strTable + '&' + strValeur+ '&' + strMode ;
+			alert(params);
+			//requete_ajax.send(null);
+			//	return requete_ajax.responseText;
+
+			requete_ajax.open('POST', url, true);
+			//				requete_ajax.send(null);
+
+			requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			requete_ajax.setRequestHeader("Content-length", params.length);
+			requete_ajax.setRequestHeader("Connection", "close");
+
+			requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+					alert(requete_ajax.responseText);
+					window.location.reload();
+					// requete_ajax.responseText;
+
+				}
+			}
+			requete_ajax.send(params);
+
+	
+
+	
+}
+
+function modifBogue(bogueId)
+{
+	
+	lesRangees =document.getElementsByTagName('TR');
+	for(var a=0;a<lesRangees.length;a++)
+	{
+//			alert(lesRangees[a].firstChild.innerHTML);
+		if(lesRangees[a].firstChild.firstChild.innerHTML==bogueId)
+		{
+			td=lesRangees[a].firstChild;
+			td = td.nextSibling;
+			iDescr = document.createElement('INPUT');
+			iDescr.type="TEXT";
+			iDescr.id='descriptionMod';
+			iDescr.style.width="95%";
+			iDescr.value=td.firstChild.innerHTML;
+			td.innerHTML="";
+			td.appendChild(iDescr);
+			
+			td = td.nextSibling;
+			iSel = document.createElement('SELECT');
+			iSel.id='projetMod';
+			iSel.style.width="95%";
+//			iSel.value=td.firstChild.innerHTML;
+			for(var b=0;b<window.listeProjets.length;b++)
+			{
+			opt1=document.createElement('OPTION');
+			opt1.innerHTML=window.listeProjets[b].nom;
+			opt1.value=window.listeProjets[b].projetId;
+				if(td.firstChild.innerHTML==opt1.value)
+				{opt1.selected=true;}
+			iSel.appendChild(opt1);				
+			}
+			
+			td.innerHTML="";
+			td.appendChild(iSel);
+
+			td = td.nextSibling;
+			iSel = document.createElement('SELECT');
+			iSel.id='categorieMod';
+			iSel.style.width="95%";
+//			iSel.value=td.firstChild.innerHTML;
+			opt1=document.createElement('OPTION');
+			opt2=document.createElement('OPTION');
+			opt3=document.createElement('OPTION');
+			opt4=document.createElement('OPTION');
+			opt1.innerHTML="Bogue";
+			opt2.innerHTML="Bogue Potentiel";
+			opt3.innerHTML="Amélioration";
+			opt4.innerHTML="Ajout";
+			opt1.value="Bogue";
+			opt2.value="Potentiel";
+			opt3.value="Amelioration";
+			opt4.value="Ajout";
+			if(td.firstChild.innerHTML==opt1.value)
+			{opt1.selected=true;}
+			if(td.firstChild.innerHTML.value==opt2.value)
+			{opt2.selected=true;}
+			if(td.firstChild.innerHTML==opt3.value)
+			{opt3selected=true;}
+			if(td.firstChild.innerHTML==opt4.value)
+			{opt4.selected=true;}
+			iSel.appendChild(opt1);
+			iSel.appendChild(opt2);
+			iSel.appendChild(opt3);
+			iSel.appendChild(opt4);
+			
+			td.innerHTML="";
+			td.appendChild(iSel);
+
+			td = td.nextSibling;
+			iDescr = document.createElement('INPUT');
+			iDescr.type="TEXT";
+			iDescr.id='occurenceMod';
+			iDescr.style.width="95%";
+			iDescr.value=td.firstChild.innerHTML;
+			td.innerHTML="";
+			td.appendChild(iDescr);
+
+			td = td.nextSibling;
+			iDescr = document.createElement('INPUT');
+			iDescr.type="TEXT";
+			iDescr.id='graviteMod';
+			iDescr.style.width="95%";
+			iDescr.value=td.firstChild.innerHTML;
+			td.innerHTML="";
+			td.appendChild(iDescr);
+
+			td = td.nextSibling;
+			iDescr = document.createElement('INPUT');
+			iDescr.type="TEXT";
+			iDescr.id='faciliteMod';
+			iDescr.style.width="95%";
+			iDescr.value=td.firstChild.innerHTML;
+			td.innerHTML="";
+			td.appendChild(iDescr);
+
+			td = td.nextSibling;
+			iDescr = document.createElement('INPUT');
+			iDescr.type="TEXT";
+			iDescr.id='dateEntreMod';
+			iDescr.style.width="95%";
+			iDescr.value=td.firstChild.innerHTML;
+			td.innerHTML="";
+			td.appendChild(iDescr);
+			
+			td = td.nextSibling;
+			iDescr = document.createElement('INPUT');
+			iDescr.type="TEXT";
+			iDescr.id='dateRegleMod';
+			iDescr.style.width="95%";
+			iDescr.value=td.firstChild.innerHTML;
+			td.innerHTML="";
+			td.appendChild(iDescr);
+
+			td = td.nextSibling;
+			iDescr = document.createElement('INPUT');
+			iDescr.type="TEXT";
+			iDescr.id='progressionMod';
+			iDescr.style.width="95%";
+			iDescr.value=td.firstChild.innerHTML;
+			td.innerHTML="";
+			td.appendChild(iDescr);
+
+			td = td.nextSibling;
+			iDescr = document.createElement('INPUT');
+			iDescr.type="TEXT";
+			iDescr.id='commentaireMod';
+			iDescr.style.width="95%";
+			iDescr.value=td.firstChild.innerHTML;
+			td.innerHTML="";
+			td.appendChild(iDescr);
+
+
+	strSet = "<div class=\"lien\" onclick=setModBogue("+bogueId+"); >Enreg</div>";
+	strAnnule = "<div class=\"lien\" onclick=window.location.reload(true) >Annuler</div>";
+			td = td.nextSibling;
+			td.innerHTML=strSet+strAnnule;
+
+
+
+
+		}
+		
+	}
+	
+}		
+		function setModBogue(bogueId)
+{				var requete_ajax = new XMLHttpRequest();
+
+			var url = "/intranet/scriptsintranet/setGenerique.php";
+			
+			var valeur ={
+			description:document.getElementById('descriptionMod').value,
+			dateEntre:document.getElementById('dateEntreMod').value,
+			dateRegle:document.getElementById('dateRegleMod').value==''?'NULL':document.getElementById('dateRegleMod').value,
+			occurence:document.getElementById('occurenceMod').value,
+			gravite:document.getElementById('graviteMod').value,
+			facilite:document.getElementById('faciliteMod').value,
+			progression:document.getElementById('progressionMod').value,
+			commentaire:document.getElementById('commentaireMod').value,
+			projet:document.getElementById('projetMod').options[document.getElementById('projetMod').selectedIndex].value,
+			categorie:document.getElementById('categorieMod').options[document.getElementById('categorieMod').selectedIndex].value};
+
+			
+			
+			
+			var strTable = "table=bogues";
+			var strValeur = "valeur=" + JSON.stringify(valeur);
+			var strMode = "mode=modif";
+			var strCrit = "critere='bogueId="+bogueId+"'";
+			params = strTable + '&' + strValeur+ '&' + strMode+ '&' + strCrit ;
+			alert(params);
+			//requete_ajax.send(null);
+			//	return requete_ajax.responseText;
+
+			requete_ajax.open('POST', url, true);
+			//				requete_ajax.send(null);
+
+			requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			requete_ajax.setRequestHeader("Content-length", params.length);
+			requete_ajax.setRequestHeader("Connection", "close");
+
+			requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+					alert(requete_ajax.responseText);
+					window.location.reload();
+					// requete_ajax.responseText;
+
+				}
+			}
+			requete_ajax.send(params);
+
+	
+
+}
+
+
+
+</script>
+</head>
+<body>
+<div id="divCentrale" style="width:100%;">
+Description: <input type="text" id='description2' value=''/>
+Date Entré: <input id='dateEntre' type="text" value=''/>
+Date Réglé: <input id='dateRegle' type="text" value=''/>
+Occurence: <input id='occurence' type="text" value='0'/>
+Gravité: <input id='gravite' type="text" value='0'/>
+Facilité à régler: <input id='facilite' type="text" value='0'/>
+Progression <input id='progression' type="text" value='0'/>
+Catégorie 
+<select id='categorie'>
+	<option value='Bogue'>Bogue</option>
+	<option value='Potentiel'>Bogue potentiel</option>
+	<option value='Amelioration'>Amélioration</option>
+	<option value='Ajout'>Ajout</option>	
+	</select>
+Projet: 
+<select id='projet'>
+	</select>Commentaires:
+ <input type="text" id='commentaire' value=''/>
+
+
+ <input type="button" value="Insérer" id="inserer" />
+
+<script type="text/javascript" charset="utf-8">
+
+			mJS = {};
+			mJS.id = "tableauBogues";
+			mJS.parentId = "divCentrale";
+			mJS.titre = "Bogues";
+			mJS.rangeeTitre = new Array();
+			mJS.rangeeTitre[0] = "ID Bogues";
+			mJS.rangeeTitre[1] = "Description";
+			mJS.rangeeTitre[2] = "No projet";
+			mJS.rangeeTitre[3] = "Catégorie de bogue";
+			mJS.rangeeTitre[4] = "Occurence";
+			mJS.rangeeTitre[5] = "Gravité";
+			mJS.rangeeTitre[6] = "Facilité";
+			mJS.rangeeTitre[7] = "Date d'entrée";
+			mJS.rangeeTitre[8] = "Date Réglé";
+			mJS.rangeeTitre[9] = "Progression (%)";
+			mJS.rangeeTitre[10] = "Commentaires";
+			mJS.rangeeTitre[11] = "Options";
+			genTableau(mJS);
+			
+			
+			
+			getBogues();
+			getProjets();
+			document.getElementById('inserer').onclick=function(){setBogue();}
+
+
+</script>
+</div>
+</body>
+
+
+</html>

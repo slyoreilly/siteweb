@@ -1,0 +1,717 @@
+<html>
+	<HEAD>
+		<title>Modification du profil de membre</title>
+		<link rel="stylesheet" href="/style/general_v4.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+
+		<script type="text/javascript">
+			
+			function sauvegardeProfil(maForme)
+			{
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/modifierMembre.php";
+				var params = "usager=" + window.userId + "&prenom=" + maForme.prenom.value + "&nom=" + maForme.nom.value + "&codePostal=" + maForme.codePostal.value + "&courriel=" + maForme.courriel.value;
+				requete_ajax.open("POST", url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						strRepErreur = requete_ajax.responseText;
+						//alert(strRepErreur);
+						//var repErreur = eval('(' + strRepErreur + ')');
+
+
+
+					}
+				}
+				requete_ajax.send(params);
+				return requete_ajax.responseText;
+
+				//	alert(requete_ajax.responseText);
+				
+				
+			}
+
+			function sauvegardePass()
+			{
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/admin/verifinscription.php";
+				var params = "usager=" + window.userId  + "&ancienPass=" + document.getElementById("aMPid").value + "&pass=" + document.getElementById("iEPnID").value + "&pass2=" +document.getElementById("iEPcID").value + "&code=" + 13;
+				requete_ajax.open("POST", url, true);
+				//alert(params);
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						strRepErreur = requete_ajax.responseText;
+			//			alert(strRepErreur);
+						var repErreur = eval('(' + strRepErreur + ')');
+				videNoeud('divEditPass');
+				pEPJS=document.getElementById('divEditPass');
+				pEPJS.style.backgroundColor=document.getElementById('divCentrale').style.backgroundColor;		
+				dpEPJS=document.createElement('DIV');
+				dpEPJS.innerHTML=window.tl_profil_changePass;
+				dpEPJS.className="lien";
+				dpEPJS.onclick=function(){changePass();}
+				pEPJS.appendChild(dpEPJS);
+						if(repErreur.succes==1)
+						{
+						//var repErreur = eval('(' + strRepErreur + ')');
+						}
+						else
+						{
+				dEPJS=document.createElement('DIV');
+				dEPJS.innerHTML=window.tl_profil_errID;
+				dEPJS.style.color="#8D2222";
+				pEPJS.appendChild(dEPJS);
+				changePass();			
+				
+							
+						}
+						
+
+					}
+				}
+				requete_ajax.send(params);
+				return requete_ajax.responseText;
+
+				//	alert(requete_ajax.responseText);
+				
+				
+			}
+			function sauvegardeUser()
+			{
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/admin/verifinscription.php";
+				var params = "usager=" + window.userId + "&nouveauUsager=" + document.getElementById("nouvUser").value +"&code=" + 12;
+				requete_ajax.open("POST", url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						strRepErreur = requete_ajax.responseText;
+						//alert(strRepErreur);
+						deleteCookie("userId");
+						setCookie("userId",document.getElementById("nouvUser").value,120);
+						window.location.reload(true);
+						
+						//var repErreur = eval('(' + strRepErreur + ')');
+
+
+
+					}
+				}
+				requete_ajax.send(params);
+				return requete_ajax.responseText;
+
+				//	alert(requete_ajax.responseText);
+				
+				
+			}
+
+
+			
+			function changeUser(){
+				mImg=document.createElement('IMG');
+				mImg.src="/images/icones/warning.png";
+				mImg.style.width="32px";
+				mImg.style.height="32px";
+				
+				pEUJS=document.getElementById('divEditUser');
+						br=document.createElement('BR');
+						br.style.clear="both";
+				pEUJS.style.backgroundColor="#EEE";		
+
+				imgFerme=document.createElement('IMG');
+				imgFerme.src="/images/icones/fermer.png";
+				imgFerme.style.width="32px";
+				imgFerme.style.height="32px";
+				imgFerme.style.position="absolute";
+				imgFerme.style.top="0";
+				imgFerme.style.right="0";
+				
+				imgFerme.onclick=function(){
+				videNoeud('divEditUser');
+				pEUJS=document.getElementById('divEditUser');
+				pEUJS.style.backgroundColor=document.getElementById('divCentrale').style.backgroundColor;		
+				dpEUJS=document.createElement('DIV');
+				dpEUJS.innerHTML=window.tl_profil_changeUser;
+				dpEUJS.className="lien";
+				dpEUJS.onclick=function(){changeUser();}
+				pEUJS.appendChild(dpEUJS);
+				}
+				pEUJS.appendChild(imgFerme);
+
+
+				dtEU=document.createElement('DIV');
+				dtEU.className="formGauche";
+				dtEU.innerHTML=window.tl_login_nomUsager;
+				
+				diEU=document.createElement('DIV');
+				diEU.className="formDroite";
+				
+				iEU=document.createElement('INPUT');
+				iEU.type="TEXT";
+				iEU.name="usager";
+				iEU.id="nouvUser";
+				iEU.onkeyup=function(){
+					boule=true;
+					n=0;
+					while(boule&&n<10)
+					{
+					try{detruitNoeud("dDispo");}
+					catch(err){boule=false}
+					n++;
+					}
+					verifUser(this.value);
+				};
+				iEU.value=window.userId;
+				
+				diEU.appendChild(iEU);
+				pEUJS.appendChild(dtEU);
+				pEUJS.appendChild(diEU);
+				
+				pEUJS.appendChild(br);
+//				pEUJS.appendChild(mImg);
+				dAtt=document.createElement('div');
+				dAtt.appendChild(mImg);
+				dAtt.style.display="table-cell";
+				dAtt.appendChild(document.createTextNode(window.tl_profil_attUser));
+				pEUJS.appendChild(dAtt);
+				pEUJS.appendChild(br);
+				
+				btnEUJS=document.createElement('INPUT');
+				btnEUJS.type="BUTTON";
+				btnEUJS.id="btnEU";
+				btnEUJS.value=window.tl_bouton_save;
+				pEUJS.appendChild(btnEUJS);
+			}
+			
+			function verifPass(s1,s2){
+				try{detruitNoeud("dConc")}
+				catch(err){}
+				dConcJS =document.createElement('div');
+				dConcJS.id="dConc";
+				if(s1==s2)
+				{
+					dConcJS.style.color="8DDB42";
+					dConcJS.innerHTML=window.tl_profil_passMatch;
+					btnEUJS=document.getElementById("btnEP");
+					btnEUJS.style.color="#000";
+					btnEUJS.onclick=function(){
+							sauvegardePass();
+					};
+				}
+				else
+									{
+					dConcJS.style.color="#8D2222";
+					dConcJS.innerHTML=window.tl_profil_passNoMatch;
+					btnEUJS=document.getElementById("btnEP");
+					btnEUJS.style.color="#444";
+					btnEUJS.onclick=function(){
+							
+					};
+				}
+				document.getElementById("divEditPass").appendChild(dConcJS);
+			}
+
+			function changePass(){
+				
+				mImg=document.createElement('IMG');
+				mImg.src="/images/icones/warning.png";
+				mImg.style.width="32px";
+				mImg.style.height="32px";
+
+				imgFerme=document.createElement('IMG');
+				imgFerme.src="/images/icones/fermer.png";
+				imgFerme.style.width="32px";
+				imgFerme.style.height="32px";
+				imgFerme.style.position="absolute";
+				imgFerme.style.top="0";
+				imgFerme.style.right="0";
+				
+				
+				pEPJS=document.getElementById('divEditPass');
+						br=document.createElement('BR');
+						br.style.clear="both";
+				pEPJS.style.backgroundColor="#EEE";		
+
+
+				imgFerme.onclick=function(){
+				videNoeud('divEditPass');
+				pEPJS=document.getElementById('divEditPass');
+				pEPJS.style.backgroundColor=document.getElementById('divCentrale').style.backgroundColor;		
+				dpEPJS=document.createElement('DIV');
+				dpEPJS.className="lien";
+				dpEPJS.innerHTML=window.tl_profil_changePass;
+				dpEPJS.onclick=function(){changePass();}
+				pEPJS.appendChild(dpEPJS);
+				}
+
+
+				pEPJS.appendChild(imgFerme);
+				dtEPa=document.createElement('DIV');
+				dtEPa.className="formGauche";
+				dtEPa.innerHTML=window.tl_profil_ancienPass;
+				
+				diEPa=document.createElement('DIV');
+				diEPa.className="formDroite";
+				
+				iEPa=document.createElement('INPUT');
+				iEPa.type="PASSWORD";
+				iEPa.name="ancienMP";
+				iEPa.id="aMPid";
+				iEPa.value="";
+				
+				diEPa.appendChild(iEPa);
+				pEPJS.appendChild(dtEPa);
+				pEPJS.appendChild(diEPa);
+				
+				pEPJS.appendChild(br);
+
+
+				dtEPn=document.createElement('DIV');
+				dtEPn.className="formGauche";
+				dtEPn.innerHTML=window.tl_profil_nouveauPass;
+				
+				diEPn=document.createElement('DIV');
+				diEPn.className="formDroite";
+
+				
+				iEPn=document.createElement('INPUT');
+				iEPn.type="PASSWORD";
+				iEPn.name="pass";
+				iEPn.value="";
+				iEPn.id="iEPnID";
+				iEPn.onkeyup=function(){
+					verifPass(this.value,document.getElementById("iEPcID").value);
+				};
+
+				
+				diEPn.appendChild(iEPn);
+				pEPJS.appendChild(dtEPn);
+				pEPJS.appendChild(diEPn);
+								
+				pEPJS.appendChild(br);
+
+
+				dtEPc=document.createElement('DIV');
+				dtEPc.className="formGauche";
+				dtEPc.innerHTML=window.tl_profil_confirmePass;
+				
+				diEPc=document.createElement('DIV');
+				diEPc.className="formDroite";
+				
+				iEPc=document.createElement('INPUT');
+				iEPc.type="PASSWORD";
+				iEPc.name="pass2";
+				iEPc.id="iEPcID";
+				iEPc.value="";
+				iEPc.onkeyup=function(){
+					verifPass(this.value,document.getElementById("iEPnID").value);
+				};
+				
+				diEPc.appendChild(iEPc);
+				pEPJS.appendChild(dtEPc);
+				pEPJS.appendChild(diEPc);
+				
+				pEPJS.appendChild(br);
+
+				pEPJS.appendChild(mImg);
+				pEPJS.appendChild(document.createTextNode(window.tl_profil_attPass))
+				pEPJS.appendChild(br);
+				
+				btnEPJS=document.createElement('INPUT');
+				btnEPJS.type="BUTTON";
+				btnEPJS.id="btnEP";
+				btnEPJS.onclick=function(){
+										sauvegardePass();
+					};
+				btnEPJS.value=window.tl_bouton_save;
+				pEPJS.appendChild(btnEPJS);
+
+
+				
+			}
+
+
+			
+			/*function traiteForme(maForme) {
+				uneString = verifForme(maForme);
+				var rJSON = eval('(' + uneString + ')');
+
+				if (rJSON.idCheck == "true") {
+
+					amettre2 = document.getElementById('lienInscription');
+					document.getElementById('texteErreur').innerHTML = 'ID valide';
+					setCookie("userId", rJSON.id, 7);
+					var person = {
+						id : rJSON.id
+					};
+					//postwith("pageperso.php",person);
+					postwith("/index.html", person);
+				} else {
+					amettre2 = document.getElementById('lienInscription');
+					document.getElementById('texteErreur').innerHTML = 'Identification invalide';
+				}
+
+			}
+*/
+			function getProfilMembre(id) {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/perso2JSON.php";
+				//	alert(url);
+				var strUser = "id=" + id;
+				var params = strUser;
+				//alert(params);
+				requete_ajax.open('POST', url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+					//	alert(requete_ajax.responseText);
+						var profilMembre = eval('(' + requete_ajax.responseText + ')');
+						var joueurId;
+						for ( M = 0; M < profilMembre.joueurs.length; M = M + 1) {
+							joueurId = profilMembre.joueurs[M];
+						}
+
+						maFormeJS = document.getElementById("maForme");
+
+						maFormeJS.elements["prenom"].value = profilMembre.prenom;
+						maFormeJS.elements["nom"].value = profilMembre.nom;
+						maFormeJS.elements["courriel"].value = profilMembre.courriel;
+						maFormeJS.elements["codePostal"].value = profilMembre.codePostal;
+						
+						mLog = document.getElementById("logPass");
+						mG = document.createElement('DIV');
+						mG.className="formGauche";
+						mG.innerHTML=tl_login_nomUsager+": ";
+						mD = document.createElement('DIV');
+						mD.className="formDroite";
+						mD.innerHTML="<h1>"+userId+"</h1>";
+						
+						
+						
+						mLog.appendChild(mG);
+						mLog.appendChild(mD);
+						
+						br=document.createElement('BR');
+						br.style.clear="both";
+						
+						divEditUserJS=document.createElement('DIV');
+						divEditUserJS.id="divEditUser";
+						
+						divEditPassJS=document.createElement('DIV');
+						divEditPassJS.id="divEditPass";
+						
+						
+						
+						pEUJS=document.createElement('P');
+						pEUJS.id=("pEU");
+						pEUJS.innerHTML=tl_profil_changeUser;
+						pEUJS.className="lien";
+
+						pEUJS.onclick=function(){changeUser();}
+
+						pEPJS=document.createElement('P');
+						pEPJS.id=("pEP");
+						pEPJS.innerHTML=tl_profil_changePass;
+						pEPJS.className="lien";
+
+						pEPJS.onclick=function(){changePass();}
+						
+
+						divEditUserJS.appendChild(br);
+						divEditUserJS.appendChild(pEUJS);
+						divEditUserJS.appendChild(br);
+						divEditPassJS.appendChild(pEPJS);
+						mLog.appendChild(br);
+						mLog.appendChild(divEditUserJS);
+						mLog.appendChild(divEditPassJS);
+						
+						
+						mImg=document.createElement('IMG');
+						mImg.id="imgEditMembre";
+						mImg.onclick= function(){
+							alert("a");
+/*							videNoeud("logPass");
+							divEditJS=document.createElement('DIV');
+							divEditJS.id="divEdit";
+						parent.appendChild(divEditJS);
+							
+						parent = document.getElementById("logPass");
+						mG = document.createElement('DIV');
+						mG.className="formGauche";
+						mG.innerHTML="Usager: ";
+						mD = document.createElement('DIV');
+						mD.className="formDroite";
+						mI=document.createElement('INPUT');
+						mI.type='TEXT';
+						mI.name="usager";
+						mD.appendChild(mI);							
+						divEditJS.appendChild(mG);
+						divEditJS.appendChild(mD);
+	*/		
+				};
+/*						mImg.src="/images/icones/edit.png";
+						mImg.style.width="32px";
+						mImg.style.height="32px";
+						mLog.appendChild(mImg);
+*/
+					}
+				}
+				requete_ajax.send(params);
+
+			}
+
+			function verifUser(mUser) {
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/admin/verifinscription.php";
+				var params = "usager=" + mUser + "&code=30";
+				requete_ajax.open("POST", url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						strRepErreur = requete_ajax.responseText;
+						//alert(strRepErreur);
+						var repErreur = eval('(' + strRepErreur + ')');
+					boule=true;
+					n=0;
+					while(boule&&n<10)
+					{
+					try{detruitNoeud("dDispo");}
+					catch(err){boule=false}
+					n++;
+					}
+
+						if (repErreur.succes == 1) {
+							dDispoJS=document.createElement('DIV');
+							dDispoJS.id="dDispo";
+							dDispoJS.className="formDroite";
+							dDispoJS.innerHTML=window.tl_profil_userDispoP1+mUser+window.tl_profil_userDispoP2;
+							dDispoJS.style.color="#8DDB42";
+							document.getElementById("divEditUser").appendChild(dDispoJS);
+								btnEUJS=document.getElementById("btnEU");
+								btnEUJS.style.color="#000";
+								btnEUJS.onclick=function(){
+								sauvegardeUser();
+								};
+				
+							
+						} else {
+							dDispoJS=document.createElement('DIV');
+							dDispoJS.id="dDispo";
+							dDispoJS.className="formDroite";
+							dDispoJS.innerHTML=tl_profil_userDispoP1+mUser+tl_profil_userDispoP3;
+							dDispoJS.style.color="#8D2222";
+							document.getElementById("divEditUser").appendChild(dDispoJS);
+							btnEUJS=document.getElementById("btnEU");
+								btnEUJS.style.color="#444";
+								btnEUJS.onclick=function(){
+								};
+						}
+
+					}
+				}
+				requete_ajax.send(params);
+				return requete_ajax.responseText;
+
+				//	alert(requete_ajax.responseText);
+
+			}
+
+/*
+			function verifForme(maForme) {
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/admin/verifinscription.php";
+				var params = "usager=" + maForme.usager.value + "&prenom=" + maForme.prenom.value + "&nom=" + maForme.nom.value + "&pass=" + maForme.pass.value + "&pass2=" + maForme.pass2.value + "&codePostal=" + maForme.codePostal.value + "&courriel=" + maForme.courriel.value + "&code=1";
+				requete_ajax.open("POST", url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						strRepErreur = requete_ajax.responseText;
+						//alert(strRepErreur);
+						var repErreur = eval('(' + strRepErreur + ')');
+
+						if (repErreur.succes == 1) {
+							setCookie("userId", repErreur.usager, 120);
+							var person = {
+								id : repErreur.usager
+							};
+							//postwith("pageperso.php",person);
+							postwith("/zuser/login.html", person);
+						} else {
+							//				alert("Echec");
+							if (repErreur.erreurExist == 1) {
+								amettre2 = document.getElementById('pHaut');
+								amettre2.innerHTML = 'Choisissez un autre identifiant!';
+								//				alert("id Exist");
+							}
+							if (repErreur.erreurPass == 1) {
+								amettre2 = document.getElementById('pHaut');
+								amettre2.innerHTML = 'Les mots de passes ne concordent pas!';
+								//				alert("mot de passe");
+							}
+						}
+
+					}
+				}
+				requete_ajax.send(params);
+				return requete_ajax.responseText;
+
+				//	alert(requete_ajax.responseText);
+
+			}
+*/
+		</script>
+	</HEAD>
+
+	<body id="body">
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+		<div id="divMenuHaut"></div>
+		<div id="divCentrale">
+
+			<div id="logPass" >
+
+			</div>
+			<!--b><i>Attention!</i> Non fonctionnel pour l'instant!</b-->
+			<div id="detail">
+				<form name="myForm" id="maForme">
+
+					<p id="pHaut">
+						<!--div class="formGauche">Nom d'usager:</div> <div class="formDroite"><input type="text" name="usager" /></div><br style="clear:both"/-->
+						<div class="formGauche" id="dPrenom">
+							Prénom :
+						</div>
+						<div class="formDroite">
+							<input type="text" name="prenom" id="iPrenom" />
+						</div>
+						<br style="clear:both"/>
+						<div class="formGauche" id="dNom">
+							Nom :
+						</div>
+						<div class="formDroite">
+							<input type="text" name="nom" id="iNom"/>
+						</div>
+						<br style="clear:both"/>
+						<div class="formGauche" id="dCodePostal">
+							Code Postal :
+						</div>
+						<div class="formDroite">
+							<input type="text" name="codePostal" id="iCodePostal"/>
+						</div>
+						<br style="clear:both"/>
+						<div class="formGauche" id="dCourriel">
+							Courriel :
+						</div>
+						<div class="formDroite">
+							<input type="text" name="courriel" id="iCourriel"/>
+						</div>
+						<br style="clear:both"/>
+					</p>
+
+
+				</form>
+
+			</div>
+			<!--table border="0">
+			<tr valign="top">
+			<td>
+			<p>
+			J'aimerais recevoir :<br />
+			<input type="checkbox" name="check1" value="Computer-Zine" checked="checked" /> Les courriels de nouveaut�s Syncstats <br />
+			<input type="checkbox" name="check2" value="Fisher-Zine" /> Des offres privilégiées de Syncstats <br />
+			<input type="checkbox" name="check3" value="Cat-O-Zine" /> Tout ce que vous avez pour moi!
+			</p>
+			</td>
+
+			<td>
+			<!--p>
+			Commentaires: <br>
+			<textarea name="special" rows="3" cols="35" wrap="yes">
+			</textarea>
+
+			</td>
+			</tr>
+			</table-->
+
+		</div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+ 			developper(30);
+			
+			document.getElementById("dNom").innerHTML=window.tl_profil_nom+": ";
+			document.getElementById("dPrenom").innerHTML=window.tl_profil_prenom+": ";
+			document.getElementById("dCodePostal").innerHTML=window.tl_profil_CodePostal+": ";
+			document.getElementById("dCourriel").innerHTML=window.tl_profil_Courriel+": ";
+			
+			userId = getCookie("userId");
+			getProfilMembre(userId);
+			iPrenomJS=document.getElementById('iPrenom');
+			iPrenomJS.onkeyup=function(){
+				sauvegardeProfil(document.getElementsByTagName('FORM')[0]);				
+			}
+			iNomJS=document.getElementById('iNom');
+			iNomJS.onkeyup=function(){
+				sauvegardeProfil(document.getElementsByTagName('FORM')[0]);				
+			}
+			iCPJS=document.getElementById('iCodePostal');
+			iCPJS.onkeyup=function(){
+				sauvegardeProfil(document.getElementsByTagName('FORM')[0]);				
+			}
+			iCourrielJS=document.getElementById('iCourriel');
+			iCourrielJS.onkeyup=function(){
+				sauvegardeProfil(document.getElementsByTagName('FORM')[0]);				
+			}
+
+		</script>
+
+	</body>
+</html>

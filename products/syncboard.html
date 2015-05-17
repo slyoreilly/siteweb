@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<?xml version="1.0" encoding="utf-8"?>
+<html>
+<head>
+<title>SyncStats to your league</title>
+	<meta name="description" content="SyncStats helps your league by making your game more fun: An app for stats, a scoreboard to be connected during the game and more...">
+	<meta name="keyword" content="hockey,statistics,android,mobile app, scoreboard, website">
+	<meta name="author" content="Sylvain O'Reilly">
+
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+				 		
+				 		
+				 		function structurePage(){
+					 			//////////////////////////////////////
+				 			//
+				 			///	Section sousPli
+				 			
+				 			
+
+				 			mLi=document.getElementById('liSB1');
+				 			mLi.innerHTML=window.tl_produitDescSB1;
+				 			
+
+				 			
+				 		}
+		</script>
+</head>
+<body id="mbody">
+
+				<div id="divHaut">
+		</div>
+		<div id="divGauche">
+		</div>
+		<div id="divCentrale">
+			<div id="divBreadcrums">
+				<a href="/">Home</a><span> > </span><a href="/produits.html">Products</a><span> > </span><a href="#">SyncBoard</a> 
+			</div>
+			<div id="divProduitSousPli">
+				<div id="divDescSB">
+
+					<div id="divTitreSB">
+						<div id="logo2" class="logoSS">
+							<img class="imgLogoSS" src="/images/logoSeul.png" alt="SyncStats Logo"></img>
+							<h2>SYNCBOARD</h2>
+						</div>
+					</div>
+						<h2>What's SyncBoard</h2>
+						<ul>
+							<li id="liSB1">Is a scoreboard that can be remotely controlledwith our SyncStats app. Can be displayed on any flatscreen and doesn't need an internet connection.</li>
+						</ul>
+						
+					<h2>Features</h2>
+						<ul>
+							<li id="liSC21">Displays score, time, penalties</li>
+							<li id="liSC22">But also stats, videos, ads (up to you)</li>
+							<li id="liSC23">Different size avalaible: Small portable, Medium semi-portable (like for tournaments), Large (fixed)</li>
+							<li id="liSC24">No internet connection needed</li>
+						</ul>
+					
+					<h2>Cost</h2>
+						<ul>
+							<li id="liSC31">It really depends on several parameters, you have to contact us lucky you!</li>
+							<li id="liSC32">Can be rented for tournaments</li>
+							<li id="liSC33">Cost saving options are possible, like providing your own screen, we would then only provide the "brain"</li>
+						</ul>
+					<h2>Where to start</h2>
+						<ul>
+							<li id="liSC41">Contact us</li>
+							
+						</ul>
+
+						
+						
+				</div>
+				
+			</div>
+
+				 			
+
+
+
+		</div>
+		<div id="divDroite">
+		</div>
+		<div id="divBas">
+		</div>
+		
+		
+		 	<script type="text/javascript" charset="utf-8">
+		 		
+		
+		 	developper(28);
+			detruitDivGaucheDroite(); 	
+/*			document.getElementById('divBas').position="absolute";
+			document.getElementById('divBas').bottom="0";
+	*/		
+			bN=document.getElementById('barreTitreContexte');
+			for(var a=0;a<bN.childNodes.length;a++)
+			{
+				bN.childNodes[a].style.display="none";
+		
+			}	
+		document.getElementById('barreNav').style.display="none";
+		
+		structurePage();
+		 		
+		 	</script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,194 @@
+<HTML> 
+<HEAD> 
+	<title>Statistiques du joueur</title>
+<link rel="stylesheet" href="style/general.css" type="text/css">
+<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+</HEAD>
+<body id="mbody">
+    	 	<script type="text/javascript" charset="utf-8">
+				genereEntete();    
+				genereMenu(2);    
+		</script>
+	
+	
+	
+	
+<DIV ID="corps"> </DIV>
+
+ <DIV ID="divCentrale">
+
+<DIV ID="ligneCentrale1">
+<DIV ID="photoFiche"><img id="logoEquipe" class="grosLogo"></DIV>
+
+<DIV ID="descriptionFiche"></DIV></DIV>
+<DIV ID="commentaireFiche"></DIV>
+
+
+ 	<script type="text/javascript">
+
+//try{
+
+var joueurId = getValue('joueurId');
+
+var stringStatsHome = getStatsJoueurJSON(joueurId);
+//alert(stringStatsHome);
+var statsJSONHome = eval('(' +stringStatsHome+')');
+
+
+//////////////////////////////////////////////////
+//
+//////// ATENTIION!!!!!!!!!!!!!!! No -fonctionnel
+var strProfilJoueur = getProfilDeJoueurId(joueurId);
+//alert(strProfilJoueur);
+var profilJoueur = eval('(' +strProfilJoueur+')');
+
+
+var userId = getCookie("userId");
+//alert('uId :'+userId);
+
+var strUser = getJSONdePerso(userId)
+//alert(userId);
+if(userId!=undefined) // L'utilisateur du site est loggé.
+var usager = eval('(' +strUser+')');
+
+
+var Perm = getPermissions(joueurId,userId);
+
+// 
+//var strJoueurDUsager = getProfilDeJoueurId(joueurId);
+//alert(strProfilJoueur);
+//var profilJoueur = eval('(' +strProfilJoueur+')');
+
+		try{
+			logoEquipe = document.getElementById('logoEquipe');
+			//logoLigue.setAttribute('src','images/ligues/logo/'+getValue('ligueId')+'.jpg');
+			logoEquipe.setAttribute('src','admin/afficheImage.php?ficId='+profilJoueur.ficIdPortrait);
+			}
+			catch(err){}
+
+
+
+if(userId!=undefined) // L'utilisateur du site est loggé.
+	{
+		if(usager.id==profilJoueur.proprio)  // L'utilisateur du site est le joueur. 
+		{
+		declaration = document.createElement('H2');
+		amettre = document.getElementById('descriptionFiche');
+		texteFiche = document.createTextNode(userId+", c'est vous!");
+		declaration.appendChild(texteFiche);
+		amettre.appendChild(declaration);
+		amettre.appendChild(document.createElement('BR'));
+		
+		
+		forme = document.createElement('form');
+		forme.setAttribute('method','get');
+		forme.setAttribute('action','/admin/entreprofil.html');
+		bouton = document.createElement('input');
+		bouton.setAttribute('type','submit');
+		bouton.setAttribute('value',"Modifier");
+		entree = document.createElement('input');
+		entree.setAttribute('type','hidden');
+		entree.setAttribute('value',joueurId);
+		entree.setAttribute('name',"joueurId");
+		amettre = document.getElementById('descriptionFiche');
+		amettre.appendChild(forme);
+		forme.appendChild(bouton);
+		forme.appendChild(entree);
+		
+		
+		}
+
+	if(profilJoueur.joueurId!=usager.joueurs[0]&&usager.joueurs[0]!=undefined/*&&parseInt(profilJoueur.proprio)!=0*/) // Le joueur n'est pas l'utilisateur du site et l'utilisateur a déjé son joueur.
+				{
+				declaration = document.createElement('H2');
+				amettre = document.getElementById('descriptionFiche');
+				texteFiche = document.createTextNode(profilJoueur.nomJoueur);
+				declaration.appendChild(texteFiche);
+				amettre.appendChild(declaration);
+				}
+		if(parseInt(profilJoueur.proprio)==0&&usager.joueurs[0]==undefined) //Le joueur n'est pas utilisé et l'utilisateur n'a pas déjé son joueur.
+				{
+				declaration = document.createElement('H2');
+				amettre = document.getElementById('descriptionFiche');
+				texteFiche = document.createTextNode("Vous étes "+profilJoueur.nomJoueur+"? ");
+				declaration.appendChild(texteFiche);
+
+				lienAttribue = document.createElement('A');
+				lienAttribue.innerHTML = 'Réclamez-le!' ;
+				lienAttribue.setAttribute('href','/admin/attribueJoueur.php?usager='+usager.id+'&joueurId='+joueurId);
+				declaration.appendChild(lienAttribue);
+				amettre.appendChild(declaration);
+			//	amettre.appendChild(document.createElement('BR'));
+				}
+
+		}
+		else // Personne n'est loggé.
+		{		
+
+			declaration = document.createElement('H2');
+				amettre = document.getElementById('descriptionFiche');
+				texteFiche = document.createTextNode("Vous êtes "+profilJoueur.nomJoueur+"? ");
+				declaration.appendChild(texteFiche);
+				declaration.appendChild(document.createElement('BR'));
+				lienAttribue = document.createElement('A');
+				lienAttribue.innerHTML = 'Connectez-vous!' ;
+				lienAttribue.setAttribute('href','/login.html');
+				declaration.appendChild(lienAttribue);
+				texteFiche2 = document.createTextNode(", puis réclamez-le.");
+				declaration.appendChild(texteFiche2);
+
+				amettre.appendChild(declaration);
+			//	amettre.appendChild(document.createElement('BR'));
+
+		}
+
+	//}
+//	catch(err){alert('bug 3.');}
+</script>
+
+ 	<script type="text/javascript">	
+
+try{
+
+	liste = document.createElement('p');
+	amettre = document.getElementById('descriptionFiche');
+	
+	texteFiche = document.createTextNode('Nom: '+profilJoueur.nom);
+	
+	amettre.appendChild(texteFiche);
+	amettre.appendChild(document.createElement('BR'));
+	texteFiche = document.createTextNode('Prenom: '+profilJoueur.prenom);
+	amettre.appendChild(texteFiche);
+	amettre.appendChild(document.createElement('BR'));
+	texteFiche = document.createTextNode('Taille: '+profilJoueur.taille+' cm');
+	amettre.appendChild(texteFiche);
+	amettre.appendChild(document.createElement('BR'));
+	texteFiche = document.createTextNode('Poids: '+profilJoueur.poids+' kg');
+	amettre.appendChild(texteFiche);
+	amettre.appendChild(document.createElement('BR'));
+	texteFiche = document.createTextNode('Ville d\'origine: '+profilJoueur.villeOrigine);
+	amettre.appendChild(texteFiche);
+	amettre.appendChild(document.createElement('BR'));
+	texteFiche = document.createTextNode('Année de naissance: '+profilJoueur.anneeNaissance);
+	amettre.appendChild(texteFiche);
+	amettre.appendChild(document.createElement('BR'));
+
+//	amettre.appendChild(liste);
+
+
+//document.getElementById('descriptionFiche').innerHTML='Nom: '+profilJoueur.nom+"</br>"+"Prenom: "+profilJoueur.prenom+"</br>"+"Ville d'origine: "+profilJoueur.villeOrigine;
+	}
+	catch(err){}
+
+
+afficheStatsCarriere(statsJSONHome);
+ 	</script>
+
+
+
+</body> 
+</html> 	

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<?xml version="1.0" encoding="utf-8"?>
+
+<HTML>
+	<HEAD>
+		<title>Statistiques d'équipe</title>
+		<link rel="stylesheet" href="/style/dhtmlgoodies_calendar.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>		
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		<style>
+		</style>
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+	</HEAD>
+	<script type="text/javascript">
+	
+	function getUnitesSpeciales(LigueID,saisonId)
+	{
+	var requete_ajax = new XMLHttpRequest();
+	
+
+				var url = "/stats2/unitesSpeciales2JSON.php";
+
+				var strSaisonId = "saisonId=" + saisonId;
+				var strLigueId = "ligueId=" + LigueID;
+				params = strLigueId + '&' + strSaisonId;
+				url = url + "?" + params;
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+	
+	
+	requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						uJSON = eval('(' + requete_ajax.responseText + ')');
+						afficheUnitesSpeciales();
+				
+					}
+				}
+//	alert(requete_ajax.responseText);
+//	return requete_ajax.responseText;
+	}
+	
+	
+		function getClassementJSON(LigueID,saisonId)
+	{
+	var requete_ajax = new XMLHttpRequest();
+	
+
+				var url = "/stats2/classement2JSONPOST.php";
+
+				var strSaisonId = "saisonId=" + saisonId;
+				var strLigueId = "ligueId=" + LigueID;
+				params = strLigueId + '&' + strSaisonId;
+				url = url + "?" + params;
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+	
+	requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+				cJSON = eval('(' + requete_ajax.responseText + ')');
+				ficheClassement();
+				
+					}
+				}
+//	alert(requete_ajax.responseText);
+//	return requete_ajax.responseText;
+	}
+	
+		function reaffiche() {
+			return function() {
+				videNoeud("divStats");
+				afficheStatsDom(window.statsJSONHome.Saisons[window.selSaison.selectedIndex],3);
+				getUnitesSpeciales(window.ligueId, statsJSONHome.Saisons[window.selSaison.selectedIndex].saisonId);
+				getClassementJSON(window.ligueId, statsJSONHome.Saisons[window.selSaison.selectedIndex].saisonId);
+			}
+		}
+
+		function ficheClassement() {
+			//window.statsJSONHome.Saisons[window.selSaison.selectedIndex].saisonId
+			//alert(window.statsJSONHome.Saisons[window.selSaison.selectedIndex].saisonId);
+			//alert(JSON.stringify(window.cJSON.saisons));
+			maSai = trouveIndiceJson(window.cJSON.saisons, 'saisonId',window.statsJSONHome.Saisons[window.selSaison.selectedIndex].saisonId);
+			monEq = trouveIndiceJson(window.cJSON.saisons[maSai].equipe, 'id', getValue('equipeId'));
+			window.cJSON.saisons[maSai].equipe.sort(function(a, b) {
+				return (parseInt(2 * b.vicDom) + 2 * parseInt(b.vicVis) + parseInt(b.nulDom) + parseInt(b.nulVis)) - (parseInt(2 * a.vicDom) + 2 * parseInt(a.vicVis) + parseInt(a.nulDom) + parseInt(a.nulVis));
+			});
+			//alert(JSON.stringify(window.cJSON.saisons[window.selSaison.selectedIndex].equipe));
+			//alert(monEq);
+			videNoeud('fiche');
+			//alert(window.selSaison.selectedIndex);
+			//alert(monEq);
+			document.getElementById('fiche').innerHTML = window.tl_statseq_ficheVDN + parseInt(window.cJSON.saisons[maSai].equipe[monEq].vicDom + window.cJSON.saisons[maSai].equipe[monEq].vicVis) 
+			+ " - " + parseInt(window.cJSON.saisons[maSai].equipe[monEq].defDom + window.cJSON.saisons[maSai].equipe[monEq].defVis) + " - " + parseInt(window.cJSON.saisons[maSai].equipe[monEq].nulDom 
+				+ window.cJSON.saisons[maSai].equipe[monEq].nulVis) + " <br /> " + window.tl_meneurs_Rang+": " + parseInt(monEq + 1) + " sur " + parseInt(window.cJSON.saisons[maSai].equipe.length) 
+				+ " equipes" + " <br /> " + " <br /> ";
+		}
+
+	</script>
+
+	<body id="body">
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+		<div id="divMenuHaut"></div>
+
+		<div id="divCentrale">
+
+			<DIV id="divSelSaison">
+
+			</DIV>
+				<DIV ID="descriptionFicheEq">
+					<DIV ID="fiche"></DIV>
+					<DIV ID="commentaireFiche"></DIV>
+					<DIV ID="unitesSpeciales"></DIV>
+				</DIV>
+				<DIV ID="photoFiche"><img id="logoEquipe" class="grosLogo">
+				</DIV>
+					<DIV ID="divStats"></DIV>
+	
+		</div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+
+			developper(9);
+
+			detruitDivGauche();
+			
+			dSS = document.getElementById('divSelSaison');
+			dSS.innerHTML=window.tl_statseq_Saison+": ";
+			SS =document.createElement('SELECT');
+			SS.id="selSaison";
+			dSS.appendChild(SS);
+
+			//try{
+
+			var equipeId = getValue('equipeId');
+
+			var stringStatsHome = getStatsEquipeJSON(equipeId);
+
+		//	if (verifiePermission() < 3)
+		//		{
+		//			alert(stringStatsHome);}
+
+			statsJSONHome = eval('(' + stringStatsHome + ')');
+
+			try {
+
+				//statsJSONHome.joueurs.triPar("nbButs",1,1);
+
+				selSaison = document.getElementById('selSaison');
+				selSaison.onchange = reaffiche();
+	
+				for ( K = 0; K < statsJSONHome.Saisons.length; K = K + 1) {
+					opt = document.createElement('OPTION');
+					opt.innerHTML = statsJSONHome.Saisons[K].nom + " - " + statsJSONHome.Saisons[K].pm + " au " + statsJSONHome.Saisons[K].dm
+					opt.value = statsJSONHome.Saisons[K].saisonId;
+					if (K == statsJSONHome.Saisons.length - 1)
+						opt.selected = "selected";
+					selSaison.appendChild(opt);
+					statsJSONHome.Saisons[K].joueurs.sort(function(a, b) {
+						return (parseInt(b.nbButs) + parseInt(b.nbPasses)) - (parseInt(a.nbButs) + parseInt(a.nbPasses))
+					});
+
+				}
+				afficheStatsDom(statsJSONHome.Saisons[selSaison.selectedIndex],3);
+
+				//	document.body.rangee.cellule.innerHTML ='yo';
+			} catch(err) {
+			}
+
+			var strLigue = getLigueDeEquipeID(equipeId);
+			//alert('lJSON :'+strLigue);
+			var lJSON = eval('(' +strLigue + ')');
+			//var userId = getCookie("userId");
+			//alert('uId :'+userId);
+
+			var strEquipe = getJSONdeEquipeID(equipeId);
+			var eJSON = eval('(' + strEquipe + ')');
+			//alert('eJSON :'+strEquipe);
+
+//			var strClassement = getClassementJSON(lJSON.Ligues[0].ligueId, statsJSONHome.Saisons[window.selSaison.selectedIndex].saisonId);
+try{			getClassementJSON(window.ligueId, statsJSONHome.Saisons[window.selSaison.selectedIndex].saisonId);
+			getUnitesSpeciales(window.ligueId, statsJSONHome.Saisons[window.selSaison.selectedIndex].saisonId);
+}
+ catch(err) {
+			}
+
+			try {
+
+				descFiche = document.createElement('P');
+				descFiche.innerHTML = window.tl_statseq_Ligue+': ' + window.lJSON.Ligues[0].nomLigue + "</br>" +  window.tl_statseq_nomEq+': '+ eJSON.Equipes[0].nomEquipe + "</br>";
+
+				divDesc = document.getElementById('descriptionFicheEq')
+				//	divDesc.appendChild(descFiche);
+				divDesc.insertBefore(descFiche, divDesc.firstChild);
+
+				logoEquipe = document.getElementById('logoEquipe');
+				//logoLigue.setAttribute('src','images/ligues/logo/'+getValue('ligueId')+'.jpg');
+				logoEquipe.src = '/admin/afficheImage.php?ficId=' + eJSON.Equipes[0].ficId;
+
+			} catch(err) {
+				alert("pwoblaime");
+			}
+
+		</script>
+		<script type="text/javascript">
+//			ficheClassement();
+//			afficheUnitesSpeciales();
+		</script>
+
+	</body>
+</html>

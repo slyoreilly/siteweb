@@ -1,0 +1,870 @@
+<HTML>
+	<HEAD>
+		<title>Gestion de la ligue</title>
+		<link rel="stylesheet" href="style/general.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+		<script type="text/javascript" charset="utf-8">
+			function afficheSelectionZA(choix) {
+				return function() {
+					videNoeud('mbody');
+					if (window.m != '1') {
+						genereEntete();
+						genereMenu(5);
+						genMenuZoneAdmin(choix);
+						//			alert('22')
+						m = 0;
+					}
+
+					switch(choix) {
+						case 1:
+							if (verifiePermission() < 10)
+								window.location.href = '/gestionligue.html?ligueId=' + ligueId;
+							else
+								afficheNonPermis();
+							break;
+						case 2:
+							if (verifiePermission() < 19)
+								window.location.href = '/gestionjoueursligue.html?ligueId=' + ligueId;
+							else
+								afficheNonPermis();
+							break;
+						case 3:
+							window.location.href = '/zeroconfig.html?ligueId=' + ligueId;
+							//	afficheMeneurs(window.statsJSON, window.gJSON);
+							break;
+						case 4:
+							if (getCookie("ligueId"))
+								document.cookie = "ligueId" + "=" + (("/" ) ? ";path=" + "/" : "") + (("" ) ? ";domain=" + "" : "" ) + ";expires=Thu, 01-Jan-1970 00:00:01 GMT";
+							window.location.href = '/listeligues.html?code=11';
+
+							break;
+						default:
+					}
+				}
+			}
+
+			function afficheSelectionNiv3(N3) {
+				return function() {
+					videNoeud('mbody');
+					if (window.m != '1') {
+
+						genereEntete();
+						genereMenu(5);
+						genMenuZoneAdmin(1);
+					}
+					genereMenuN3ZA(N3);
+					if (window.m != '1') {
+						afficheLigueId();
+					}
+					ligueId = getValue('ligueId');
+
+					switch(N3) {
+						case 0:
+							break;
+						case 1:
+							createHTML(document.getElementsByTagName('BODY')[0]);
+							frameModif = document.createElement('IFRAME');
+							frameModif.className = "cache";
+							frameModif.id = "frameModif";
+							document.getElementsByTagName('BODY')[0].appendChild(frameModif);
+
+							var string2 = getInfoLigue(window.ligueId);
+							break;
+						case 2:
+							window.location.href = '/admin/equipes.html?ligueId=' + window.ligueId;
+							break;
+						case 3:
+							afficheStatsDom(window.statsJSONVis);
+							break;
+						case 4:
+							afficheResumeMatch(window.infoMatch);
+							break;
+						default:
+					}
+				}
+			}
+
+			function btnOkCreeSaison() {
+				//return function() {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/admin/modifiersaison.php";
+
+				//	alert(url);
+				monType = document.getElementById("selSaisonType").selectedIndex + 1;
+				var params = "type=" + monType + "&ligueId=" + window.ligueId + "&dateDeb=" + window.dateDeb.value + "&dateFin=" + window.dateFin.value + "&code=1";
+				//		alert(params);
+				requete_ajax.open('POST', url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				//		alert('yo');
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						//			alert(requete_ajax.responseText);
+						//alert(requete_ajax.responseText);
+						getInfoLigue(window.ligueId);
+						window.location.reload();
+					}
+					//else
+					//alert("Problème de communcation, "+requete_ajax.readyState+", "+requete_ajax.status == 200);
+				}
+				requete_ajax.send(params);
+				//		alert(requete_ajax.responseText);
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				//}
+			}
+
+			function postwith(to, p) {
+				//  alert(to);
+				return function() {
+					var myForm = document.createElement("form");
+					myForm.method = "post";
+					myForm.action = to;
+					for (var k in p) {
+						var myInput = document.createElement("input");
+						myInput.setAttribute("name", k);
+						myInput.setAttribute("value", p[k]);
+						myInput.setAttribute("type", "hidden");
+						myForm.appendChild(myInput);
+					}
+					document.body.appendChild(myForm);
+					myForm.submit();
+					document.body.removeChild(myForm);
+				}
+			}
+
+			function creeSaison2() {
+				return function() {
+
+					rangeeNouvSai = document.createElement('TR');
+
+					cDD = document.createElement('TD');
+
+					dateDeb = document.createElement('INPUT');
+					dateDeb.type = "text";
+					dateDeb.value = "2012-09-01";
+					dateDeb.name = "deb";
+					dateDeb.id = "dateDeb";
+
+					btnDeb = document.createElement('INPUT');
+					btnDeb.type = "button";
+					btnDeb.value = "Calendrier...";
+					btnDeb.onclick = function() {
+						displayCalendar(dateDeb, 'yyyy/mm/dd hh:ii', this, true);
+					};
+					// Si on ne met pas le "function", la valeur de retour est erronément associée à "onclick". On pourrait aussi enlever les parenthèses d'ici displayCalendar.
+
+					cDD.appendChild(dateDeb);
+					cDD.appendChild(btnDeb);
+
+					cDF = document.createElement('TD');
+					dateFin = document.createElement('INPUT');
+					dateFin.type = "text";
+					dateFin.value = "2012-09-01";
+					dateFin.name = "fin";
+					dateFin.id = "dateFin";
+
+					btnFin = document.createElement('INPUT');
+					btnFin.type = "button";
+					btnFin.value = "Calendrier...";
+					btnFin.onclick = function() {
+						displayCalendar(dateFin, 'yyyy/mm/dd hh:ii', this, true);
+					};
+
+					cDF.appendChild(dateFin);
+					cDF.appendChild(btnFin);
+
+					cTS = document.createElement('TD');
+					selSaisonType = document.createElement('SELECT');
+					selSaisonType.id = "selSaisonType"
+
+					opt = document.createElement('OPTION');
+					opt.innerHTML = "Régulier";
+					opt.setAttribute("selected", "true");
+					selSaisonType.appendChild(opt);
+
+					opt = document.createElement('OPTION');
+					opt.innerHTML = "Série";
+					selSaisonType.appendChild(opt);
+					cTS.appendChild(selSaisonType);
+
+					cOpt = document.createElement('TD');
+					btnAnnul = document.createElement('INPUT');
+					btnAnnul.id = "btnAnnulSai";
+					btnAnnul.type = "button";
+					btnAnnul.value = "Annuler";
+					btnAnnul.onclick = function() {
+						window.location.reload();
+					}
+					boutOK = document.createElement('INPUT');
+					boutOK.id = "boutOKSai";
+					boutOK.type = "button";
+					boutOK.value = "OK";
+					boutOK.onclick = function() {
+						//alert("Script pour créer saison...");
+						btnOkCreeSaison();
+						//						window.location.reload();
+
+					};
+					cOpt.appendChild(boutOK);
+					cOpt.appendChild(btnAnnul);
+
+					rangeeNouvSai.appendChild(cDD);
+					rangeeNouvSai.appendChild(cDF);
+					rangeeNouvSai.appendChild(cTS);
+					rangeeNouvSai.appendChild(cOpt);
+					tabPrec = document.getElementById('tableauSaisons');
+					b = 0;
+					for ( a = 0; a < tabPrec.childNodes.length; a++) {
+						//						alert(tabPrec.childNodes[a].nodeName);
+						if (tabPrec.childNodes[a].nodeName == "TBODY")
+							b = a;
+					}
+					mTBody = tabPrec.childNodes[b];
+
+					mTBody.removeChild(mTBody.lastChild);
+					mTBody.appendChild(rangeeNouvSai);
+
+				}
+			}
+
+			function tableauEquipes(saison) {
+				try {
+					videNoeud('tableauEquipes')
+				} catch(err) {
+				}
+
+				frameModif = document.getElementById("frameModif")
+				frameModif.className = "affiche";
+				//	frameModif.onload = function()
+				//{
+
+				var doc = frameModif.contentDocument || frameModif.contentWindow.document;
+
+				var otherhead = doc.getElementsByTagName("head")[0];
+				var link = doc.createElement("link");
+				link.setAttribute("rel", "stylesheet");
+				link.setAttribute("type", "text/css");
+				link.setAttribute("href", "/style/general.css");
+				otherhead.appendChild(link);
+
+				var lesCols = new Array();
+				lesCols[0] = "#ID";
+				lesCols[1] = "Nom d'équipe";
+				lesCols[2] = " ";
+
+				tabPrec = document.getElementById('tableauSaisons');
+				tabAct = document.createElement('TABLE');
+				tabAct.id = "tableauEquipes";
+				//				tabAct.className="c_tableau";
+				leTitre = document.createElement('TR');
+				tdTitre = document.createElement('TD');
+				tdTitre.colSpan = lesCols.length;
+				tdTitre.innerHTML = "Liste des équipes";
+				tdTitre.className = "titreTableau";
+				leTitre.appendChild(tdTitre);
+
+				rangeeTitre = document.createElement('TR');
+				nbCells = 2;
+
+				doc.body.appendChild(tabAct);
+				doc.body.id = "frameBody";
+
+				for ( a = 0; a < lesCols.length; a++) {
+					c1 = document.createElement('TD');
+					c1.innerHTML = lesCols[a];
+					rangeeTitre.appendChild(c1);
+				}
+				//				tabPrec.parentNode.appendChild(tabAct);
+				tabAct.appendChild(leTitre);
+				tabAct.appendChild(rangeeTitre);
+
+				for ( J = 0; J < window.lJSON.Ligue.saisons[saison].equipes.length; J = J + 1) {
+					//try{
+					rangee = document.createElement('TR');
+					tabAct.appendChild(rangee);
+					nom = "Non défini";
+
+					for ( K = 0; K < window.lJSON.equipes.length; K = K + 1) {
+						if (window.lJSON.equipes[K].equipeId == window.lJSON.Ligue.saisons[saison].equipes[J]) {
+							nom = window.lJSON.equipes[K].nom;
+						}
+
+					}
+
+					try {
+
+						var lesCols = new Array();
+						lesCols[0] = window.lJSON.Ligue.saisons[saison].equipes[J];
+						lesCols[1] = nom;
+						lesCols[2] = null;
+						//lesCols[3] =(vPerm < 19) ?  parseHTML(strImg) : null;
+						lesCols[3] = null;
+
+					} catch(err) {
+					}
+
+					var lesLiens = new Array();
+					lesLiens[0] = null;
+					lesLiens[1] = null;
+					lesLiens[2] = null;
+					lesLiens[3] = null;
+
+					strCols = "";
+
+					for ( K = 0; K < lesCols.length; K++) {
+						cellule = document.createElement('TD');
+						if (lesCols[K] != undefined) {
+							if (lesLiens[K] != null) {
+								lien = document.createElement('A');
+								lien.innerHTML = lesCols[K];
+								lien.href = lesLiens[K];
+								cellule.appendChild(lien);
+							} else {
+								ptexte = document.createElement('P');
+								ptexte.innerHTML = lesCols[K];
+								//					texte = document.createTextNode(lesCols[K]);
+								cellule.appendChild(ptexte);
+							}
+						}
+						J % 2 == 0 ? cellule.className = 'lignePaire' : cellule.className = 'ligneImpaire';
+						rangee.appendChild(cellule);
+					}
+
+				}
+
+				///////////////////////
+				// Ajouter équipe
+				///////////////////////
+				divAjoutEq = document.createElement('DIV');
+				divAjoutEq.innerHTML = "Abonner cette équipe: ";
+				selEquipes = document.createElement('SELECT');
+				strIn = "";
+				for ( a = 0; a < window.lJSON.equipes.length; a++) {
+					opt = document.createElement('OPTION');
+					opt.innerHTML = window.lJSON.equipes[a].nom;
+					opt.value = window.lJSON.equipes[a].equipeId;
+					selEquipes.appendChild(opt);
+					strIn += "indice: " + a + ", valeur: " + opt.value + "\n ";
+				}
+
+				divAjoutEq.appendChild(selEquipes);
+				//alert(strIn);
+				btnAjEq = document.createElement('input');
+				btnAjEq.type = "button";
+				btnAjEq.value = "Abonner!";
+
+				//	var poste = "<?=$_POST['id']; ?>";
+				var moncode = 1;
+
+				//				btnAjEq.onclick = postwith("/admin/abonequipeligue.php", abon);
+				btnAjEq.onclick = function() {
+					//		return function(){
+					var requete_ajax = new XMLHttpRequest();
+					abon = {
+						equipeId : selEquipes.options[selEquipes.selectedIndex].value,
+						ligueId : window.lJSON.Ligue.ligueId,
+						premierMatch : window.lJSON.Ligue.saisons[saison].pm,
+						dernierMatch : window.lJSON.Ligue.saisons[saison].dm,
+						code : 1
+					};
+
+					var url = "/admin/abonequipeligue.php";
+					//	alert(url);
+					var params = "";
+					for (var k in abon) {
+						params += k + "=" + abon[k] + "&";
+					}
+
+					//		alert(params);
+					requete_ajax.open('POST', url, true);
+					requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+					requete_ajax.setRequestHeader("Content-length", params.length);
+					requete_ajax.setRequestHeader("Connection", "close");
+
+					requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+						if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+							//		alert(requete_ajax.responseText);
+							//			window.location.reload();
+
+							if (doc.body.hasChildNodes()) {
+								while (doc.body.childNodes.length >= 1) {
+									doc.body.removeChild(doc.body.firstChild);
+								}
+							}
+							frameModif.className = "cache";
+							var string2 = getInfoLigue(window.ligueId);
+							window.lJSON = eval('(' + string2 + ')');
+
+						}
+					}
+					requete_ajax.send(params);
+				}
+				//}
+
+				divAjoutEq.appendChild(btnAjEq);
+
+				doc.body.appendChild(divAjoutEq);
+
+				rangeePlus = document.createElement('TR');
+				cellPlus = document.createElement('TD');
+				cellPlus.colSpan = lesCols.length;
+
+				element = document.createElement('input');
+
+				//Assign different attributes to the element.
+				element.type = "button";
+				element.value = "Créer équipe";
+
+				//	var poste = "<?=$_POST['id']; ?>";
+				var moncode = 1;
+
+				person = {
+					code : moncode,
+					nom : window.lJSON.Ligue.nom,
+					ligueId : window.lJSON.Ligue.ligueId
+				};
+
+				//				element.onclick = postwith("creerequipe.php", person);
+				element.onclick = function() {
+					window.location.href = "/admin/creerequipe.html?code=" + moncode + "&ligueId=" + window.lJSON.Ligue.ligueId;
+				};
+				cellPlus.appendChild(element);
+				rangeePlus.appendChild(cellPlus);
+				tabAct.appendChild(rangeePlus);
+
+				btnFerme = document.createElement('input');
+
+				//Assign different attributes to the element.
+				btnFerme.type = "button";
+				btnFerme.value = "Fermer";
+				btnFerme.onclick = function() {
+
+					if (doc.body.hasChildNodes()) {
+						while (doc.body.childNodes.length >= 1) {
+							doc.body.removeChild(doc.body.firstChild);
+						}
+					}
+					frameModif.className = "cache";
+				}
+				doc.body.appendChild(btnFerme);
+
+			}
+
+			function modifierSaison(saison) {
+				try {
+					videNoeud('tableauEquipes');
+				} catch(err) {
+				}
+
+				frameModif = document.getElementById("frameModif")
+				frameModif.className = "affiche";
+				//	frameModif.onload = function()
+				//{
+
+				var doc = frameModif.contentDocument || frameModif.contentWindow.document;
+
+				var otherhead = doc.getElementsByTagName("head")[0];
+				var link = doc.createElement("link");
+				link.setAttribute("rel", "stylesheet");
+				link.setAttribute("type", "text/css");
+				link.setAttribute("href", "/style/general.css");
+				otherhead.appendChild(link);
+
+				divParentPm = document.createElement('DIV');
+				divPm = document.createElement('DIV');
+				divPm.id = "divPm";
+				divPm.innerHTML = "Début de la saison: ";
+				divPm.className = "formGauche";
+				divInPm = document.createElement('DIV');
+				divInPm.className = "formDroite";
+				inputPm = document.createElement('INPUT');
+				inputPm.type = 'TEXT';
+				inputPm.value = window.lJSON.Ligue.saisons[saison].pm;
+				brNom = document.createElement('BR');
+				brNom.style.clear = "both";
+
+				divParentPm.appendChild(divPm);
+				divInPm.appendChild(inputPm);
+				divParentPm.appendChild(divInPm);
+				divParentPm.appendChild(brNom);
+
+				divParentDm = document.createElement('DIV');
+				divDm = document.createElement('DIV');
+				divDm.id = "divDm";
+				divDm.innerHTML = "Fin de la saison: ";
+				divDm.className = "formGauche";
+				divInDm = document.createElement('DIV');
+				divInDm.className = "formDroite";
+				inputDm = document.createElement('INPUT');
+				inputDm.type = 'TEXT';
+				inputDm.value = window.lJSON.Ligue.saisons[saison].dm;
+				brNom = document.createElement('BR');
+				brNom.style.clear = "both";
+
+				divParentDm.appendChild(divDm);
+				divInDm.appendChild(inputDm);
+				divParentDm.appendChild(divInDm);
+				divParentDm.appendChild(brNom);
+
+				divParentType = document.createElement('DIV');
+				divType = document.createElement('DIV');
+				divType.id = "divType";
+				divType.innerHTML = "Type de saison: ";
+				divType.className = "formGauche";
+				divInType = document.createElement('DIV');
+				divInType.className = "formDroite";
+				inType = document.createElement('SELECT');
+				inType.id = "inType";
+				inType.name = "selType";
+
+				var mTypes = ["Régulière", "Séries"];
+				a = 0;
+				while (a < mTypes.length) {
+					opt = document.createElement('OPTION');
+					opt.innerHTML = mTypes[a];
+					opt.value = a + 1;
+					opt.id = mTypes[a];
+					if (window.lJSON.Ligue.saisons[saison].type == opt.value)
+						opt.selected = "selected";
+					inType.appendChild(opt);
+					a++;
+				}
+
+				brNom = document.createElement('BR');
+				brNom.style.clear = "both";
+
+				divParentType.appendChild(divType);
+				divInType.appendChild(inType);
+				divParentType.appendChild(divInType);
+				divParentType.appendChild(brNom);
+
+				doc.body.appendChild(divParentPm);
+				doc.body.appendChild(divParentDm);
+				doc.body.appendChild(divParentType);
+
+				tabPrec = document.getElementById('tableauSaisons');
+				//				tabAct.className="c_tableau";
+				nbCells = 2;
+
+				doc.body.id = "frameBody";
+
+				////////////////////////////////				//				tabPrec.parentNode.appendChild(tabAct);
+
+				//alert(strIn);
+				btnModSaison = document.createElement('input');
+				btnModSaison.type = "button";
+				btnModSaison.value = "Modifier";
+
+				doc.body.appendChild(btnModSaison);
+
+				//	var poste = "<?=$_POST['id']; ?>";
+
+				//				btnAjEq.onclick = postwith("/admin/abonequipeligue.php", abon);
+				btnModSaison.onclick = function() {
+					//		return function(){
+					var requete_ajax = new XMLHttpRequest();
+					abon = {
+						ligueId : window.lJSON.Ligue.ligueId,
+						dateDeb : window.inputPm.value,
+						dateFin : window.inputDm.value,
+						saisonId : window.lJSON.Ligue.saisons[saison].saisonId,
+						code : 10,
+						type : window.inType[window.inType.selectedIndex].value
+					};
+
+					var url = "/admin/modifiersaison.php";
+					//	alert(url);
+					var params = "";
+					for (var k in abon) {
+						params += k + "=" + abon[k] + "&";
+					}
+
+					alert(params);
+					requete_ajax.open('POST', url, true);
+					requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+					requete_ajax.setRequestHeader("Content-length", params.length);
+					requete_ajax.setRequestHeader("Connection", "close");
+
+					requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+						if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+							//	alert(requete_ajax.responseText);
+							//			window.location.reload();
+							videNoeud('mTbody');
+							frameModif.className = "cache";
+							if (doc.body.hasChildNodes()) {
+								while (doc.body.childNodes.length >= 1) {
+									doc.body.removeChild(doc.body.firstChild);
+								}
+							}
+							var string2 = getInfoLigue(window.ligueId);
+							//alert(string2);
+							//remplirTableauLigue(string2);
+							//window.lJSON = eval('(' + string2 + ')');
+
+						}
+					}
+					requete_ajax.send(params);
+				}
+				//}
+
+				//				doc.body.appendChild(inputPm);
+				//				doc.body.appendChild(inputDm);
+
+				btnFerme = document.createElement('input');
+
+				//Assign different attributes to the element.
+				btnFerme.type = "button";
+				btnFerme.value = "Fermer";
+				btnFerme.onclick = function() {
+
+					if (doc.body.hasChildNodes()) {
+						while (doc.body.childNodes.length >= 1) {
+							doc.body.removeChild(doc.body.firstChild);
+						}
+					}
+					frameModif.className = "cache";
+				}
+				doc.body.appendChild(btnFerme);
+
+			}
+
+			function getInfoLigue(ligueId) {
+				//	return function(){
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/infoLigue2JSON.php";
+				//	alert(url);
+				var params = "ligueId=" + ligueId;
+				//alert(params);
+				requete_ajax.open('POST', url, true);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						//		alert(requete_ajax.responseText);
+						//			window.location.reload();
+						remplirTableauLigue(requete_ajax.responseText);
+						return requete_ajax.responseText;
+					}
+					//		else{alert("Petit problème de développement");}
+				}
+				requete_ajax.send(params);
+				//alert(requete_ajax.responseText);
+				var pourMAJ = new Array();
+
+				//	}
+			}
+
+			function remplirTableauLigue(string2) {
+				lJSON = eval('(' + string2 + ')');
+				//alert(string2);
+				//alert(lJSON.Ligue.saisons.length);
+				vPerm = 1;
+				//verifiePermission();
+
+				for ( J = 0; J < lJSON.Ligue.saisons.length; J = J + 1) {
+					//try{
+
+					rangee = document.createElement('TR');
+					amettre = document.getElementById('mTbody');
+					amettre.appendChild(rangee);
+
+					try {
+						strImg = "<img src=\"\/images\/icones\/edit.png\" onclick=modifierSaison(" + J + ") width=\"32\" height=\"32\" alt=\"Edit\"\>";
+						strImg2 = "<img src=\"\/images\/icones\/edit.png\" onclick=tableauEquipes(" + J + ") width=\"32\" height=\"32\" alt=\"Edit\"\>";
+
+						var lesCols = new Array();
+						lesCols[0] = lJSON.Ligue.saisons[J].pm;
+						lesCols[1] = lJSON.Ligue.saisons[J].dm;
+						lesCols[2] = parseInt(lJSON.Ligue.saisons[J].type) == 1 ? 'Régulière' : 'Série';
+						//lesCols[3] =(vPerm < 19) ?  parseHTML(strImg) : null;
+						lesCols[3] = strImg + strImg2;
+
+					} catch(err) {
+					}
+
+					var lesLiens = new Array();
+					lesLiens[0] = null;
+					lesLiens[1] = null;
+					lesLiens[2] = null;
+					lesLiens[3] = null;
+
+					strCols = "";
+
+					for ( K = 0; K < lesCols.length; K++) {
+						cellule = document.createElement('TD');
+						if (lesCols[K] != undefined) {
+							if (lesLiens[K] != null) {
+								lien = document.createElement('A');
+								lien.innerHTML = lesCols[K];
+								lien.href = lesLiens[K];
+								cellule.appendChild(lien);
+							} else {
+								ptexte = document.createElement('P');
+								ptexte.innerHTML = lesCols[K];
+								//					texte = document.createTextNode(lesCols[K]);
+								cellule.appendChild(ptexte);
+							}
+						}
+						J % 2 == 0 ? cellule.className = 'lignePaire' : cellule.className = 'ligneImpaire';
+						rangee.appendChild(cellule);
+					}
+
+				}
+
+				rangeePlus2 = document.createElement('TR');
+				cellPlus2 = document.createElement('TD');
+				cellPlus2.colSpan = document.getElementById("tdTitre").colSpan;
+
+				element2 = document.createElement('input');
+
+				//Assign different attributes to the element.
+				element2.type = "button";
+				element2.value = "Créer saison";
+
+				element2.onclick = creeSaison2();
+				cellPlus2.appendChild(element2);
+				rangeePlus2.appendChild(cellPlus2);
+				amettre = document.getElementById('mTbody');
+				amettre.appendChild(rangeePlus2);
+			}
+
+			function createHTML(root) {
+
+				var oDIV = root.appendChild(document.createElement("DIV"));
+				with (oDIV) {
+					ID = "divCentrale";
+				}
+
+				var oDIV = root.appendChild(document.createElement("DIV"));
+				with (oDIV) {
+					ID = "divTab";
+					className = "centrale";
+				}
+
+				var oDIV = oDIV.appendChild(document.createElement("DIV"));
+				with (oDIV) {
+					ID = "divTab1";
+				}
+
+				var oTable = oDIV.appendChild(document.createElement("table"));
+				with (oTable) {
+					id = "tableauSaisons";
+					className = "c_tableau";
+				}
+
+				var oTbody = oTable.appendChild(document.createElement("tbody"));
+				with (oTbody) {
+					id = "mTbody";
+				}
+
+				var oTr = oTbody.appendChild(document.createElement("tr"));
+
+				var oTd = oTr.appendChild(document.createElement("td"));
+				with (oTd) {
+					id = "tdTitre";
+					className = "titreTableau";
+					colspan = "4";
+				}
+
+				var oText = oTd.appendChild(document.createTextNode("Saisons liées à la ligue"));
+				var oTr = oTbody.appendChild(document.createElement("tr"));
+				with (oTr) {
+					id = "rangeeTitreSaison";
+				}
+
+				var oTd = oTr.appendChild(document.createElement("td"));
+				with (oTd) {
+					className = "rangeetitre";
+				}
+
+				var oText = oTd.appendChild(document.createTextNode("Début de la saison"));
+				var oTd = oTr.appendChild(document.createElement("td"));
+				with (oTd) {
+					className = "rangeetitre";
+				}
+
+				var oText = oTd.appendChild(document.createTextNode("Fin de la saison"));
+				var oTd = oTr.appendChild(document.createElement("td"));
+				with (oTd) {
+					className = "rangeetitre";
+				}
+
+				var oText = oTd.appendChild(document.createTextNode("Type de saison"));
+			}
+
+		</script>
+
+		<style>
+		</style>
+	</HEAD>
+
+	<body id="mbody">
+		<!--script type="text/javascript" charset="utf-8">
+		if (window.m != "1") {
+		genereEntete();
+		genereMenu(5);
+		genMenuZoneAdmin(1);
+		m = 0;
+
+		}
+		</script-->
+
+		<!--DIV ID="divCentrale">
+
+		</br>
+		<!--DIV ID="divTab" class="centrale">
+
+		<DIV ID="divTab1">
+
+		<table id="tableauSaisons" class="c_tableau">
+		<tbody id="mTbody">
+		<tr>
+		<td id="tdTitre" class="titreTableau" colspan="4">Saisons liées à la ligue</td>
+		</tr>
+		<tr id="rangeeTitreSaison">
+		<td class="rangeetitre">Début de la saison</td>
+		<td class="rangeetitre">Fin de la saison</td>
+		<td class="rangeetitre">Type de saison</td>
+		</tr>
+		</tbody>
+		</table>
+		</DIV>
+		</DIV>
+		</DIV-->
+		<script type="text/javascript" charset="utf-8">
+			//try{
+			//alert("yo");
+			//alert(getValue('ligueId'));
+			ligueId = getValue('ligueId');
+			//alert(string2);
+
+			m = getValue('m');
+			m3 = getValue('m3');
+
+			if (m3 == "") {
+				window.onload = afficheSelectionNiv3(0);
+			} else
+				window.onload = afficheSelectionNiv3(parseInt(getValue('m3')));
+
+			lecorps = document.getElementById('mbody');
+
+		</script>
+
+	</body>
+</html>

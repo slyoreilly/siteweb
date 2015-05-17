@@ -1,0 +1,90 @@
+<?php
+
+/////////////////////////////////////////////////////////////
+//
+//  D�finitions des variables
+//
+////////////////////////////////////////////////////////////
+
+$db_host = "localhost";
+$db_user = "syncsta1_u01";
+$db_pwd = "test";
+
+$database = 'syncsta1_900';
+$tableLigue = 'Ligue';
+$tableJoueur = 'TableJoueur';
+$tableEvent = 'TableEvenement0';
+$tableEquipe = 'TableEquipe';
+$tableUser = 'TableUser';
+
+////////////////////////////////////////////////////////////
+//
+// 	Connections � la base de donn�es
+//
+////////////////////////////////////////////////////////////
+
+if (!mysql_connect($db_host, $db_user, $db_pwd))
+	die("Can't connect to database");
+
+if (!mysql_select_db($database)) {
+	echo "<h1>Database: {$database}</h1>";
+	die("Can't select database");
+
+}
+
+function trouveIDParNomLigue($ligue) {
+	$fResultLigue = mysql_query("SELECT * FROM Ligue") or die(mysql_error());
+	while ($fRangeeLigue = mysql_fetch_array($fResultLigue)) {
+		if (!strcmp($fRangeeLigue['Nom_Ligue'], $ligue)) {$equipeID = $fRangeeLigue['ID_Ligue'];
+			// Ce sont de INT
+		}
+	}
+	return $equipeID;
+}
+
+$ligueIdInter = $_GET['ligueId'];
+$userId = $_GET['userId'];
+
+$ligueId = $ligueIdInter;
+
+//if(is_numeric($ligueIdInter)&&!is_null($ligueIdInter))
+//{$ligueId = trouveIDParNomLigue($ligueIdInter);}
+//if(!is_numeric($ligueIdInter)&&!is_null($ligueIdInter))
+//{$ligueId = $ligueIdInter;}
+
+if (is_numeric($ligueId)) {
+	$resultEquipe = mysql_query("SELECT * FROM AbonnementLigue WHERE ligueid='{$ligueId}' AND contexte='ligue'") or die(mysql_error());
+
+	$boule = 0;
+	while ($rangee = mysql_fetch_array($resultEquipe)) {
+		$boule = 1;
+		$JSONstring = "{\"userId\": \"" . $rangee['userid'] . "\",";
+		$JSONstring .= "\"type\": \"" . $rangee['type'] . "\",";
+		$JSONstring .= "\"ligueId\": \"" . $rangee['ligueid'] . "\"}";
+	}
+	if ($boule == 0) {
+		$JSONstring = "{\"userId\": \"null\",";
+		$JSONstring .= "\"type\": \"30\",";
+		$JSONstring .= "\"ligueId\": \"null\"}";
+
+	}
+} else {
+	if (isset($userId)) {
+		$resultEquipe = mysql_query("SELECT * FROM AbonnementLigue
+					JOIN TableUser
+						ON(TableUser.noCompte=AbonnementLigue.userid)
+					 WHERE username='{$userId}' AND contexte='ligue'") or die(mysql_error());
+		$abon=array();
+		$IA=0;
+		while ($rangee = mysql_fetch_array($resultEquipe)) {
+			$abon[$IA]['ligueId']=$rangee['ligueid'];
+			$abon[$IA]['type']=$rangee['type'];
+		}
+		$JSONstring=json_encode($abon);
+	}
+
+}
+
+echo $JSONstring;
+?>
+

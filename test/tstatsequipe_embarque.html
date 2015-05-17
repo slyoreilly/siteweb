@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<HTML> 
+<HEAD> 
+	<title>Statistiques d'Équipe</title>
+<link rel="stylesheet" href="/style/embarque.css" type="text/css">
+<script src="/test/tfonctions.js" type="text/javascript"charset="utf-8"></script>
+<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+</style> 
+</HEAD>
+<script type="text/javascript">
+		
+</script>
+
+
+<body id="mbody">
+<DIV ID="topOptions"></DIV>
+	
+	
+<DIV ID="titre"><H1> Statistiques d'Équipe </H1></DIV>
+	
+	
+
+ <DIV ID="divCentrale">
+
+<DIV ID="ligneCentrale1">
+	<DIV ID="descriptionFiche"></DIV>
+	<DIV ID="photoFiche"><img id="logoEquipe" class="grosLogo"></DIV>
+
+</DIV>
+<DIV ID="commentaireFiche"></DIV>
+
+
+ <table id="tableauEquipe" class="c_tableau">
+ 	
+ 	
+ <tr><td class="titreTableau" colspan="5">Statistiques des joueurs</td></tr>
+ <tr id="rangeeTitreEquipe">
+<td class="rangeetitre">No</td>
+<td class="rangeetitre">Joueur</td>
+<td class="rangeetitre">Parties jouées</td>
+<td class="rangeetitre">Buts</td>
+<td class="rangeetitre">Passes</td>
+<td class="rangeetitre">Points</td>
+</tr>
+
+  	
+ 	
+ </table>
+
+ <table id="tableauGardiens" class="c_tableau">
+ 	
+ 	
+ <tr><td class="titreTableau" colspan="7">Statistiques des gardiens</td></tr>
+ <tr id="rangeeTitreGardiens">
+<td class="rangeetitre">Gardien</td>
+<td class="rangeetitre">Parties jouées</td>
+<td class="rangeetitre">Victoires</td>
+<td class="rangeetitre">Défaites</td>
+<td class="rangeetitre">Nulles</td>
+<td class="rangeetitre">Buts alloués</td>
+<td class="rangeetitre">Moy. buts alloués</td>
+</tr>
+
+  	
+ 	
+ </table>
+
+  </DIV>
+
+ 	<script type="text/javascript">
+
+//try{
+
+var equipeId = getValue('equipeId');
+var stringStatsHome = getStatsEquipeJSON(equipeId);
+
+var statsJSONHome = eval('(' +stringStatsHome+')');
+
+
+
+var strLigue = getLigueDeEquipeID(equipeId);
+//alert('lJSON :'+strLigue);
+var lJSON = eval('(' +strLigue+')');
+var userId = getCookie("userId");
+//alert('uId :'+userId);
+var Perm = getPermissions(lJSON.Ligues[0].ligueId,userId);
+//alert('Perm :'+Perm);
+
+var strEquipe = getJSONdeEquipeID(equipeId);
+var eJSON = eval('(' +strEquipe+')');
+//alert('eJSON :'+strEquipe);
+
+var strGardiens = getStatsGardiens(null, lJSON.Ligues[0].ligueId,equipeId);
+//alert(strGardiens);
+var gJSON = eval('(' +strGardiens+')');
+
+//alert('eJSON :'+strEquipe);
+
+try{
+var strAbon = getJSONabonnementDeLigueID(lJSON.Ligues[0].ligueId);
+//alert(strAbon);
+var aJSON = eval('(' +strAbon+')');
+
+document.getElementById('descriptionFiche').innerHTML='Ligue: '+lJSON.Ligues[0].nomLigue+"</br>"+"Nom de l\'équipe: "+eJSON.Equipes[0].nomEquipe+"</br>";
+
+	logoEquipe = document.getElementById('logoEquipe');
+//logoLigue.setAttribute('src','images/ligues/logo/'+getValue('ligueId')+'.jpg');
+logoEquipe.setAttribute('src','admin/afficheImage.php?ficId='+eJSON.Equipes[0].ficId);
+
+
+	}
+	catch(err){}
+/*
+if(Perm<19)
+	{
+		    //Create an input type dynamically.
+    var element = document.createElement('input');
+ 
+    //Assign different attributes to the element.
+    element.setAttribute('type', 'button');
+    element.setAttribute('value','Modifier équipe');
+//	var poste = "<?=$_POST['id']; ?>";
+	var moncode =10;
+		
+	var person={id:aJSON.userId,code:moncode, nomLigue:lJSON.Ligues[0].nomLigue, ligueId:lJSON.Ligues[0].ligueId, nomEquipe:eJSON.Equipes[0].nomEquipe, logo:eJSON.Equipes[0].logo, equipeId:eJSON.Equipes[0].equipeId};
+    
+    element.setAttribute('onClick', 'postwith(\"creerequipe.php\",person);');
+ 
+    var foo = document.getElementById('topOptions');
+ 
+    //Append the element in page (in span).
+    foo.appendChild(element);
+		
+	}*/ 	
+
+
+	//}
+//	catch(err){alert('bug 3.');}
+</script>
+
+ 	<script type="text/javascript">
+
+try{
+
+
+
+//statsJSONHome.joueurs.triPar("nbButs",1,1);
+statsJSONHome.joueurs.sort(function(a,b) { return (parseInt(b.nbButs)+parseInt(b.nbPasses)) - (parseInt(a.nbButs)+parseInt(a.nbPasses)) } );
+
+
+for (J=0;J<=statsJSONHome.joueurs.length;J=J+1)
+{
+//	if(!statsJSONHome.joueurs[J].nom.isNull&&statsJSONHome.joueurs[J].nom!='Anonyme')
+	if(!statsJSONHome.joueurs[J].nom.isNull)
+	{
+	rangee = document.createElement('TR');
+	amettre = document.getElementById('rangeeTitreEquipe');
+	amettre.parentNode.appendChild(rangee);
+
+	celluleNo = document.createElement('TD');
+	texteNo = document.createTextNode(statsJSONHome.joueurs[J].no);
+	celluleNo.appendChild(texteNo);
+		if(J%2==0)
+		celluleNo.setAttribute('class','lignePaire');
+	else
+		celluleNo.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleNo);
+
+
+	
+	celluleEq = document.createElement('TD');
+	texteEq = document.createTextNode(statsJSONHome.joueurs[J].nom);
+	celluleEq.appendChild(texteEq);
+		if(J%2==0)
+		celluleEq.setAttribute('class','lignePaire');
+	else
+		celluleEq.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleEq);
+
+	cellulePj = document.createElement('TD');
+	textePj = document.createTextNode(statsJSONHome.joueurs[J].pj);
+	cellulePj.appendChild(textePj);
+		if(J%2==0)
+		cellulePj.setAttribute('class','lignePaire');
+	else
+		cellulePj.setAttribute('class','ligneImpaire');
+rangee.appendChild(cellulePj);
+
+	celluleNom = document.createElement('TD');
+	texteNom = document.createTextNode(statsJSONHome.joueurs[J].nbButs);
+	celluleNom.appendChild(texteNom);
+		if(J%2==0)
+		celluleNom.setAttribute('class','lignePaire');
+	else
+		celluleNom.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleNom);
+
+
+
+	cellulePas1 = document.createElement('TD');
+	textePas1 = document.createTextNode(statsJSONHome.joueurs[J].nbPasses);
+	cellulePas1.appendChild(textePas1);
+		if(J%2==0)
+		cellulePas1.setAttribute('class','lignePaire');
+	else
+		cellulePas1.setAttribute('class','ligneImpaire');
+rangee.appendChild(cellulePas1);
+
+
+
+	celluleChrono = document.createElement('TD');
+	texteChrono = document.createTextNode(parseInt(statsJSONHome.joueurs[J].nbButs)+parseInt(statsJSONHome.joueurs[J].nbPasses));
+	celluleChrono.appendChild(texteChrono);
+		if(J%2==0)
+		celluleChrono.setAttribute('class','lignePaire');
+	else
+		celluleChrono.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleChrono);
+	}
+
+}
+	
+	
+	
+//	document.body.rangee.cellule.innerHTML ='yo';	
+	}
+	catch(err){}
+
+
+//////////////////////////////////////////////////////
+//	Tableau gardien
+//////////////////////////////////////////////////////
+
+try{
+
+for (J=0;J<gJSON.gardiens.length;J=J+1)
+{
+//	if(!statsJSONHome.joueurs[J].nom.isNull&&statsJSONHome.joueurs[J].nom!='Anonyme')
+	if(gJSON.gardiens[J].nom!=null)
+	{
+//		alert("dans le if:" + gJSON.gardiens[J].nom);
+	rangee = document.createElement('TR');
+	amettre = document.getElementById('rangeeTitreGardiens');
+	amettre.parentNode.appendChild(rangee);
+	
+	celluleEq = document.createElement('TD');
+	texteEq = document.createTextNode(gJSON.gardiens[J].nom);
+	celluleEq.appendChild(texteEq);
+	if(J%2==0)
+		celluleEq.setAttribute('class','lignePaire');
+	else
+		celluleEq.setAttribute('class','ligneImpaire');
+	rangee.appendChild(celluleEq);
+
+	var matchs = parseInt(gJSON.gardiens[J].victoires)+parseInt(gJSON.gardiens[J].defaites)+parseInt(gJSON.gardiens[J].nulles);
+
+	cellulePj = document.createElement('TD');
+	textePj = document.createTextNode(matchs);
+	cellulePj.appendChild(textePj);
+		if(J%2==0)
+		cellulePj.setAttribute('class','lignePaire');
+	else
+		cellulePj.setAttribute('class','ligneImpaire');
+rangee.appendChild(cellulePj);
+
+	celluleNom = document.createElement('TD');
+	texteNom = document.createTextNode(gJSON.gardiens[J].victoires);
+	celluleNom.appendChild(texteNom);
+		if(J%2==0)
+		celluleNom.setAttribute('class','lignePaire');
+	else
+		celluleNom.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleNom);
+
+
+
+	cellulePas1 = document.createElement('TD');
+	textePas1 = document.createTextNode(gJSON.gardiens[J].defaites);
+	cellulePas1.appendChild(textePas1);
+		if(J%2==0)
+		cellulePas1.setAttribute('class','lignePaire');
+	else
+		cellulePas1.setAttribute('class','ligneImpaire');
+rangee.appendChild(cellulePas1);
+
+
+
+	celluleChrono = document.createElement('TD');
+	texteChrono = document.createTextNode(gJSON.gardiens[J].nulles);
+	celluleChrono.appendChild(texteChrono);
+		if(J%2==0)
+		celluleChrono.setAttribute('class','lignePaire');
+	else
+		celluleChrono.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleChrono);
+
+	celluleButs = document.createElement('TD');
+	texteButs = document.createTextNode(gJSON.gardiens[J].nbButs);
+	celluleButs.appendChild(texteButs);
+		if(J%2==0)
+		celluleButs.setAttribute('class','lignePaire');
+	else
+		celluleButs.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleButs);
+
+	var buts = parseInt(gJSON.gardiens[J].nbButs);
+	var moy = buts/matchs;
+	celluleMoy = document.createElement('TD');
+	texteMoy = document.createTextNode(Math.round(moy*1000)/1000);
+	celluleMoy.appendChild(texteMoy);
+		if(J%2==0)
+		celluleMoy.setAttribute('class','lignePaire');
+	else
+		celluleMoy.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleMoy);
+
+	}
+
+}
+	
+	
+	
+//	document.body.rangee.cellule.innerHTML ='yo';	
+	}
+	catch(err){}
+
+
+
+
+
+ 	</script>
+
+
+
+</body> 
+</html> 		

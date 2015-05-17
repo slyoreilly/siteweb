@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Démarrer avec SyncStats</title>
+		<link rel="stylesheet" href="/style/general_v4.css" type="text/css">
+				<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+
+<style>
+p, li {
+	font-family:"Times New Roman",arial;
+/*font-family:verdana,arial, fantasy;*/
+font-size:small;
+	padding-left:20px;
+	color:#555;
+}
+
+
+h2 {
+	font-weight:italic;
+}
+
+div.blocReponse
+{padding-left:20px;}
+
+h3 {
+font-size:95%;
+	
+	
+}
+
+</style>
+
+</head>
+<body id="mbody">
+ 
+ 		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+				<div id="divMenuHaut"></div>
+
+
+ <DIV ID="divCentrale" >
+
+						<div class="tabs">
+				<section id="tabDocInsc">
+					
+					<h2><a href="#tabDocInsc" id="aTab1"></a></h2>
+					<div style="padding:10px;">
+					<img src="/images/SyncStatsHockeyGooglePlay.png" height="240px" width="160"/>
+					<img src="/images/screenshots_zdoc/menuSyncStats.png" height="240px" width="160"/>
+					<img src="/images/screenshots_zdoc/seConnecterSyncStats.png" height="240px" width="160"/>
+					<img src="/images/screenshots_zdoc/homeMenuFastAccessSettings.png" height="240px" width="160"/>
+					</div>
+					<ol id="ol1">
+					</ol>
+					<div style="padding:10px;">
+					<img src="/images/screenshots_zdoc/phoneSettings.png" height="240px" width="160"/>
+					<img src="/images/screenshots_zdoc/AccountSyncStats.png" height="240px" width="160"/>
+					<img src="/images/screenshots_zdoc/syncStatsAccountON.png" height="240px" width="160"/>
+					<img src="/images/screenshots_zdoc/AccountSyncStatsON.png" height="240px" width="160"/>
+					</div>
+				</section>
+				<section id="tabDocPrep">
+					<h2><a href="#tabDocPrep" id="aTab2"></a></h2>
+					<div style="padding:10px;">
+					<img src="/images/screenshots_zdoc/menuSyncStats.png" height="240px" width="160"/>
+					<img src="/images/screenshots_zdoc/SyncStatsTeam.jpg" height="240px" width="160"/>
+					<img src="/images/screenshots_zdoc/SyncStatsLineUp.jpg" height="240px" width="160"/>
+					<img src="/images/screenshots_zdoc/SyncStatsScoreBoard.jpg" height="240px" width="160"/>
+					</div>
+					<ol id="ol2">
+
+
+					</ol>
+					
+				</section>
+				<section id="tabDocSoir">
+					<h2><a href="#tabDocSoir" id="aTab3"></a></h2>
+					<div style="padding:10px;">
+					<img src="/images/screenshots_zdoc/SyncStatsScoreBoard.jpg" height="240px" width="160"/>
+					<img src="/images/screenshots_zdoc/SyncStats_PlayerSelection.jpg" height="240px" width="160"/>
+					<img src="/images/screenshots_zdoc/SyncStatsGoal.jpg" height="240px" width="160"/>
+					<img src="/images/screenshots_zdoc/SyncStatsPenalty.jpg" height="240px" width="160"/>
+					</div>
+					<ul>
+						<li id="ulli1"></li>
+						<ol id="ulol1">
+
+							</ol>
+						<li id="ulli2"></li>
+						<ol id="ulol2">
+
+							</ol>
+						<li id="ulli3"></li>
+						<ol id="ulol3">
+
+							</ol>
+						
+					</ul>
+					
+				</section>
+				<section id="tabDocApres">
+					<h2><a href="#tabDocApres" id="aTab4"></a></h2>
+					
+				</section>
+			
+			</div>
+
+
+
+
+</div>
+
+				<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+				 		developper(19);
+				 		detruitDivGauche();
+				 					
+			document.getElementById("aTab1").innerHTML=window.tl_demarrer_aTab1;
+			document.getElementById("aTab2").innerHTML=window.tl_demarrer_aTab2;
+			document.getElementById("aTab3").innerHTML=window.tl_demarrer_aTab3;
+			document.getElementById("aTab4").innerHTML=window.tl_demarrer_aTab4;
+			
+			ol1li1 = document.createElement('LI');
+			ol1li1.innerHTML=tl_demarrer_ol1li1;
+			ol1li2 = document.createElement('LI');
+			ol1li2.innerHTML=tl_demarrer_ol1li2;
+			ol1li3 = document.createElement('LI');
+			ol1li3.innerHTML=tl_demarrer_ol1li3;
+			ol1li4 = document.createElement('LI');
+			ol1li4.innerHTML=tl_demarrer_ol1li4;
+			ol1li5 = document.createElement('LI');
+			ol1li5.innerHTML=tl_demarrer_ol1li5;
+			ol1=document.getElementById("ol1");
+			ol1.appendChild(ol1li1);
+			ol1.appendChild(ol1li2);
+			ol1.appendChild(ol1li3);
+			ol1.appendChild(ol1li4);
+			ol1.appendChild(ol1li5);
+			
+						ol2li1 = document.createElement('LI');
+			ol2li1.innerHTML=tl_demarrer_ol2li1;
+			ol2li2 = document.createElement('LI');
+			ol2li2.innerHTML=tl_demarrer_ol2li2;
+			ol2li3 = document.createElement('LI');
+			ol2li3.innerHTML=tl_demarrer_ol2li3;
+			ol2li4 = document.createElement('LI');
+			ol2li4.innerHTML=tl_demarrer_ol2li4;
+			ol2li5 = document.createElement('LI');
+			ol2li5.innerHTML=tl_demarrer_ol2li5;
+			ol2=document.getElementById("ol2");
+			ol2.appendChild(ol2li1);
+			ol2.appendChild(ol2li2);
+			ol2.appendChild(ol2li3);
+			ol2.appendChild(ol2li4);
+			ol2.appendChild(ol2li5);
+			
+			document.getElementById("ulli1").innerHTML=window.tl_stats_Buts;
+			document.getElementById("ulli2").innerHTML=window.tl_match_Penalites;
+			document.getElementById("ulli3").innerHTML=window.tl_match_periode+"s";
+
+			ulol1li1 = document.createElement('LI');
+			ulol1li1.innerHTML=tl_demarrer_ulol1li1;
+			ulol1li2 = document.createElement('LI');
+			ulol1li2.innerHTML=tl_demarrer_ulol1li2;
+			ulol1li3 = document.createElement('LI');
+			ulol1li3.innerHTML=tl_demarrer_ulol1li3;
+			ulol1li4 = document.createElement('LI');
+			ulol1li4.innerHTML=tl_demarrer_ulol1li4;
+
+			ulol1=document.getElementById("ulol1");
+			ulol1.appendChild(ulol1li1);
+			ulol1.appendChild(ulol1li2);
+			ulol1.appendChild(ulol1li3);
+			ulol1.appendChild(ulol1li4);
+			
+						ulol2li1 = document.createElement('LI');
+			ulol2li1.innerHTML=tl_demarrer_ulol2li1;
+			ulol2li2 = document.createElement('LI');
+			ulol2li2.innerHTML=tl_demarrer_ulol2li2;
+			ulol2li3 = document.createElement('LI');
+			ulol2li3.innerHTML=tl_demarrer_ulol2li3;
+			ulol2li4 = document.createElement('LI');
+			ulol2li4.innerHTML=tl_demarrer_ulol2li4;
+
+			ulol2=document.getElementById("ulol2");
+			ulol2.appendChild(ulol2li1);
+			ulol2.appendChild(ulol2li2);
+			ulol2.appendChild(ulol2li3);
+			ulol2.appendChild(ulol2li4);
+
+						ulol3li1 = document.createElement('LI');
+			ulol3li1.innerHTML=tl_demarrer_ulol3li1;
+			ulol3li2 = document.createElement('LI');
+			ulol3li2.innerHTML=tl_demarrer_ulol3li2;
+			ulol3li3 = document.createElement('LI');
+			ulol3li3.innerHTML=tl_demarrer_ulol3li3;
+
+
+			ulol3=document.getElementById("ulol3");
+			ulol3.appendChild(ulol3li1);
+			ulol3.appendChild(ulol3li2);
+			ulol3.appendChild(ulol3li3);
+
+			
+
+			
+		</script>
+</body>
+</html>

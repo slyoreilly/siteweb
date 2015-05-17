@@ -1,0 +1,421 @@
+<HTML> 
+<HEAD> 
+	<title>Sommaire du match</title>
+<link rel="stylesheet" href="style/general.css" type="text/css">
+<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<style>
+</style> 
+</HEAD>
+<script type="text/javascript" charset="utf-8">
+	
+</script>
+
+
+<body id="mbody">
+    	 	<script type="text/javascript" charset="utf-8">
+			if(!getValue('M'))
+			{
+				genereEntete();    
+				genereMenu(2);}    
+				else {M=0;}
+		</script>
+	
+	<DIV ID="divCentrale">
+
+		<div>
+			<DIV ID="nomLigue"></DIV>
+		</div>
+		<div>
+			<DIV ID="scoreDom">  </DIV>
+			<DIV>-</DIV>
+			<DIV ID="scoreVis"></DIV>
+		</div>
+	
+	
+	
+		<DIV ID="ligneCentrale1">
+			<DIV ID="logoDom" class="ligne"><img id="logoEquipeDom" class="grosLogo"></DIV>
+			<DIV ID="scoreDom" class="ligne"><p id="tScoreDom" class="grosTexte"></DIV>
+			<DIV class="ligne"><p class="grosTexte">-</DIV>
+			<DIV ID="scoreVis" class="ligne"><p id="tScoreVis" class="grosTexte"></DIV>
+			<DIV ID="logoVis" class="ligne"><img id="logoEquipeVis" class="grosLogo"></br></DIV>
+		</DIV>
+
+</br>
+<DIV ID="divTab" class="centrale">
+	 
+ <table class="c_tableau">
+ 	
+ <tr><td class="titreTableau" colspan="5">Sommaire</td></tr>
+ <tr id="rangeeTitreSommaire">
+<td class="rangeetitre">Équipe</td>
+<td class="rangeetitre">Marqueur</td>
+<td class="rangeetitre">Passe 1</td>
+<td class="rangeetitre">Passe 2</td>
+<td class="rangeetitre">Chrono</td>
+</tr>
+
+  	
+ 	
+ </table>
+ <DIV ID="divTab1">
+
+ <table id="tableauHome" class="c_tableau">
+ 	
+ 	
+ <tr><td class="titreTableau" colspan="4">Stats domicile</td></tr>
+ <tr id="rangeeTitreHome">
+<td class="rangeetitre">Joueur</td>
+<td class="rangeetitre">Buts</td>
+<td class="rangeetitre">Passes</td>
+<td class="rangeetitre">Points</td>
+</tr>
+
+  	
+ 	
+ </table>
+ </DIV>
+	<DIV ID="divTab2">
+
+		 <table id="tableauVis" class="c_tableau">
+ 	
+			 <tr><td class="titreTableau" colspan="4">Stats visiteurs</td></tr>
+			 <tr id="rangeeTitreVis">
+				<td class="rangeetitre">Joueur</td>
+				<td class="rangeetitre">Buts</td>
+				<td class="rangeetitre">Passes</td>
+				<td class="rangeetitre">Points</td>
+			</tr>
+ 		</table>
+
+ 	 </DIV>
+  </DIV>
+  </DIV>
+ 	<script type="text/javascript" charset="utf-8">
+
+//try{
+
+var matchID = getValue('match');
+var strInfoMatch = getInfoMatch(matchID);
+var infoMatch = eval('(' +strInfoMatch+')');
+
+	logoEquipe = document.getElementById('logoEquipeDom');
+logoEquipe.setAttribute('src','admin/afficheImage.php?ficId='+infoMatch.equipeFicIdDom);
+
+	logoEquipe2 = document.getElementById('logoEquipeVis');
+logoEquipe2.setAttribute('src','admin/afficheImage.php?ficId='+infoMatch.equipeFicIdVis);
+
+document.getElementById('tScoreDom').innerHTML = infoMatch.equipeScoreDom;
+document.getElementById('tScoreVis').innerHTML =  infoMatch.equipeScoreVis;
+
+
+var uneString = getJSONdeMatchID(matchID);
+//alert(uneString);
+var rJSON = eval('(' +uneString+')');
+//document.getElementById('date').innerHTML = rJSON.date;
+//document.getElementById('date').innerHTML = 'test1';
+//alert(rJSON.date);	
+
+
+var matchSplit = parseMatchID(matchID);
+//var stringStatsHome = getStatsJSON(matchSplit[1],matchID);
+var stringStatsHome = getStatsJSON('H',matchID);
+//alert(matchSplit[1]);
+//alert(stringStatsHome);
+//var stringStatsVis = getStatsJSON(matchSplit[2],matchID);
+var stringStatsVis = getStatsJSON('V',matchID);
+//alert(matchSplit[2]);
+
+//alert(stringStatsVis);
+
+var statsJSONHome = eval('(' +stringStatsHome+')');
+var statsJSONVis = eval('(' +stringStatsVis+')');
+
+
+
+	//}
+//	catch(err){alert('bug 3.');}
+ 	
+try{
+var scoreDom=0;
+var scoreVis=0;
+
+//rJSON.periodes.shift();
+
+maPer = rJSON.periodes[0];
+for (J=0;J<=rJSON.buts.length;J=J+1)
+{	
+	try{
+
+	if(parseInt(rJSON.periodes[0].chrono)<parseInt(rJSON.buts[J].chrono))
+	{
+	maPer = rJSON.periodes.shift();	
+	rangeePer = document.createElement('TR');
+	amettrePer = document.getElementById('rangeeTitreSommaire');
+	amettrePer.parentNode.appendChild(rangeePer);
+	
+	cPer = document.createElement('TD');
+	cPer.setAttribute("colSpan", "5")	
+	cPer.setAttribute("class", "rangeeTitre")	
+	
+	tPer = document.createTextNode("Période "+ maPer.numero);
+	cPer.appendChild(tPer);
+	rangeePer.appendChild(cPer);
+		
+	}
+	}
+	catch(err){}
+ 	
+	
+	rangee = document.createElement('TR');
+	amettre = document.getElementById('rangeeTitreSommaire');
+	amettre.parentNode.appendChild(rangee);
+	
+	celluleEq = document.createElement('TD');
+	texteEq = document.createTextNode(rJSON.buts[J].equipe);
+	celluleEq.appendChild(texteEq);
+			(J%2==0) ? celluleEq.setAttribute('class','lignePaire') :celluleEq.setAttribute('class','ligneImpaire');
+	//if(J%2==0)
+	//	celluleEq.setAttribute('class','lignePaire');
+	//else
+	//	celluleEq.setAttribute('class','ligneImpaire');
+
+	rangee.appendChild(celluleEq);
+	celluleNom = document.createElement('TD');
+	lien = document.createElement('A');
+	lien.innerHTML = rJSON.buts[J].marqueur;
+	lien.setAttribute('href','statsjoueur.html?joueurId='+rJSON.buts[J].marqueurId);
+
+	celluleNom.appendChild(lien);
+		if(J%2==0)
+		celluleNom.setAttribute('class','lignePaire');
+	else
+		celluleNom.setAttribute('class','ligneImpaire');
+
+	rangee.appendChild(celluleNom);
+
+
+	cellulePas1 = document.createElement('TD');
+	if(rJSON.buts[J].passeur1 != undefined)
+	{
+	lien2 = document.createElement('A');
+	lien2.innerHTML = rJSON.buts[J].passeur1;
+	lien2.setAttribute('href','statsjoueur.html?joueurId='+rJSON.buts[J].passeur1Id);
+	}
+	else
+	{lien2 = document.createTextNode("");}
+	cellulePas1.appendChild(lien2);
+		if(J%2==0)
+		cellulePas1.setAttribute('class','lignePaire');
+	else
+		cellulePas1.setAttribute('class','ligneImpaire');
+
+	rangee.appendChild(cellulePas1);
+
+	cellulePas2 = document.createElement('TD');
+	if(rJSON.buts[J].passeur2 != undefined)
+	{
+	lien3 = document.createElement('A');
+	lien3.innerHTML = rJSON.buts[J].passeur2;
+	lien3.setAttribute('href','statsjoueur.html?joueurId='+rJSON.buts[J].passeur2Id);
+	}
+	else
+	{lien3 = document.createTextNode("");}
+	cellulePas2.appendChild(lien3);
+		if(J%2==0)
+		cellulePas2.setAttribute('class','lignePaire');
+	else
+		cellulePas2.setAttribute('class','ligneImpaire');
+
+rangee.appendChild(cellulePas2);
+
+	try{
+		celluleChrono = document.createElement('TD');
+	minutes = Math.floor((parseInt(rJSON.buts[J].chrono)-parseInt(maPer.chrono))/60000);
+//	alert("minutes"+minutes+" ");
+	dizSecondes = Math.floor(((parseInt(rJSON.buts[J].chrono)-parseInt(maPer.chrono))-minutes*60000)/10000);
+	secondes = Math.floor(((parseInt(rJSON.buts[J].chrono)-parseInt(maPer.chrono))-minutes*60000-dizSecondes*10000)/1000);
+//	alert("secondes"+secondes+" ");
+	strChrono=minutes+":"+dizSecondes+secondes;
+	if(rJSON.buts[J].qualif!=null)
+	{strChrono = strChrono + " - ";
+	nbQ=0;
+	while(nbQ<rJSON.buts[J].qualif.length)
+	{
+		strChrono = strChrono + "("+rJSON.buts[J].qualif[nbQ]+")";
+		nbQ++;
+	}}	
+		texteChrono = document.createTextNode(strChrono);
+	celluleChrono.appendChild(texteChrono);
+
+		if(J%2==0)
+		celluleChrono.setAttribute('class','lignePaire');
+	else
+		celluleChrono.setAttribute('class','ligneImpaire');
+
+	rangee.appendChild(celluleChrono);
+
+	}
+	catch(err){
+	celluleChrono = document.createElement('TD');
+	texteChrono = document.createTextNode(rJSON.buts[J].chrono);
+	celluleChrono.appendChild(texteChrono);
+		if(J%2==0)
+		celluleChrono.setAttribute('class','lignePaire');
+	else
+		celluleChrono.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleChrono);
+	}
+}
+	
+	
+	
+//	document.body.rangee.cellule.innerHTML ='yo';	
+	}
+	catch(err){}
+ 	
+try{
+
+for (J=0;J<=statsJSONHome.joueurs.length;J=J+1)
+{
+//	if(!statsJSONHome.joueurs[J].nom.isNull&&statsJSONHome.joueurs[J].nom!='Anonyme')
+	if(!statsJSONHome.joueurs[J].nom.isNull)
+	{
+	rangee = document.createElement('TR');
+	amettre = document.getElementById('rangeeTitreHome');
+	amettre.parentNode.appendChild(rangee);
+	
+	celluleEq = document.createElement('TD');
+	lien = document.createElement('A');
+	lien.innerHTML = statsJSONHome.joueurs[J].nom;
+	lien.setAttribute('href','statsjoueur.html?joueurId='+statsJSONHome.joueurs[J].joueurId);
+
+	celluleEq.appendChild(lien);
+		if(J%2==0)
+		celluleEq.setAttribute('class','lignePaire');
+	else
+		celluleEq.setAttribute('class','ligneImpaire');
+
+	rangee.appendChild(celluleEq);
+	
+	
+	celluleNom = document.createElement('TD');
+	texteNom = document.createTextNode(statsJSONHome.joueurs[J].nbButs);
+	celluleNom.appendChild(texteNom);
+		if(J%2==0)
+		celluleNom.setAttribute('class','lignePaire');
+	else
+		celluleNom.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleNom);
+
+scoreDom+=parseInt(statsJSONHome.joueurs[J].nbButs);
+
+
+	cellulePas1 = document.createElement('TD');
+	textePas1 = document.createTextNode(statsJSONHome.joueurs[J].nbPasses);
+	cellulePas1.appendChild(textePas1);
+		if(J%2==0)
+		cellulePas1.setAttribute('class','lignePaire');
+	else
+		cellulePas1.setAttribute('class','ligneImpaire');
+rangee.appendChild(cellulePas1);
+
+
+
+	celluleChrono = document.createElement('TD');
+	texteChrono = document.createTextNode(parseInt(statsJSONHome.joueurs[J].nbButs)+parseInt(statsJSONHome.joueurs[J].nbPasses));
+	celluleChrono.appendChild(texteChrono);
+		if(J%2==0)
+		celluleChrono.setAttribute('class','lignePaire');
+	else
+		celluleChrono.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleChrono);
+	}
+
+}
+	
+	
+	
+//	document.body.rangee.cellule.innerHTML ='yo';	
+	}
+	catch(err){}
+ 	
+try{
+
+for (J=0;J<=statsJSONVis.joueurs.length;J=J+1)
+{
+//	if(!statsJSONVis.joueurs[J].nom.isNull&&statsJSONVis.joueurs[J].nom!='Anonyme')
+	if(!statsJSONVis.joueurs[J].nom.isNull)
+{
+	rangee = document.createElement('TR');
+	amettre = document.getElementById('rangeeTitreVis');
+	amettre.parentNode.appendChild(rangee);
+	
+	celluleEq = document.createElement('TD');
+	
+	lien = document.createElement('A');
+	lien.innerHTML = statsJSONVis.joueurs[J].nom;
+	lien.setAttribute('href','statsjoueur.html?joueurId='+statsJSONVis.joueurs[J].joueurId);
+
+	
+	celluleEq.appendChild(lien);
+		if(J%2==0)
+		celluleEq.setAttribute('class','lignePaire');
+	else
+		celluleEq.setAttribute('class','ligneImpaire');
+rangee.appendChild(celluleEq);
+	celluleNom = document.createElement('TD');
+	texteNom = document.createTextNode(statsJSONVis.joueurs[J].nbButs);
+	celluleNom.appendChild(texteNom);
+		if(J%2==0)
+		celluleNom.setAttribute('class','lignePaire');
+	else
+		celluleNom.setAttribute('class','ligneImpaire');
+
+	rangee.appendChild(celluleNom);
+scoreVis+=parseInt(statsJSONVis.joueurs[J].nbButs);
+
+	cellulePas1 = document.createElement('TD');
+	textePas1 = document.createTextNode(statsJSONVis.joueurs[J].nbPasses);
+	cellulePas1.appendChild(textePas1);
+		if(J%2==0)
+		cellulePas1.setAttribute('class','lignePaire');
+	else
+		cellulePas1.setAttribute('class','ligneImpaire');
+rangee.appendChild(cellulePas1);
+
+
+
+	celluleChrono = document.createElement('TD');
+	texteChrono = document.createTextNode(parseInt(statsJSONVis.joueurs[J].nbButs)+parseInt(statsJSONVis.joueurs[J].nbPasses));
+	celluleChrono.appendChild(texteChrono);
+	if(J%2==0)
+		celluleChrono.setAttribute('class','lignePaire');
+	else
+		celluleChrono.setAttribute('class','ligneImpaire');
+
+	rangee.appendChild(celluleChrono);
+}
+
+document.getElementById('scoreDom').innerHTML = matchSplit[1]+' : ' +scoreDom;
+document.getElementById('scoreVis').innerHTML =  matchSplit[2]+' : ' +scoreVis;
+
+}
+	
+	
+//	document.body.rangee.cellule.innerHTML ='yo';	
+	}
+	catch(err){}
+ 	
+// 	rangee = document.createElement('TD');
+//	document.body.appendChild(rangee)
+//	yo2
+ 	</script>
+
+
+
+</body> 
+</html> 	

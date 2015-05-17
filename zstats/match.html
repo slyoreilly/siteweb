@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<title>Résultats des matchs</title>
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		<!--meta http-equiv="refresh" content="10" -->
+		<style>
+		</style>
+		<script type="text/javascript" charset="utf-8">
+			gereLangue();
+		</script>
+
+		<script type="text/javascript" charset="utf-8">
+			function getInfoMatch(matchId) {
+				//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/infoMatch2JSON.php";
+
+				var strMatchId = "matchId=" + matchId;
+
+				params = strMatchId;
+				url = url + "?" + params;
+
+				//		alert(url+'?'+param);
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				//				requete_ajax.setRequestHeader("Content-length", params.length);
+				//				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						infoMatch = eval('(' + requete_ajax.responseText + ')');
+						ligueId = infoMatch.ligueId;
+						//alert(getCookie('ligueId')==null||getCookie('ligueId')=="");
+						if (getCookie('ligueId') == null || getCookie('ligueId') == "") {
+							setCookie('ligueId', ligueId, 120);
+							//alert(getCookie('ligueId'));
+						}
+						//				alert(document.getElementById("tabResume").href);
+						afficheResumeMatch(infoMatch);
+						getJSONdeMatchID(matchID);
+
+						window.etoileConditions++;
+						if (window.etoileConditions >= 4) {
+							afficheEtoiles();
+						}
+
+					}
+				}
+				//alert(requete_ajax.responseText);
+				//				alert(JSON.stringify(listeMatch));
+				//	return vecMAV;
+				//}
+			}
+
+			function getJSONdeMatchID(matchId) {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/sommaire2JSON.php";
+
+				var strMatchId = "matchId=" + matchId;
+
+				params = strMatchId;
+				url = url + "?" + params;
+				//alert(url);
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				//				requete_ajax.setRequestHeader("Content-length", params.length);
+				//				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						rJSON = eval('(' + requete_ajax.responseText + ')');
+						//alert(requete_ajax.responseText);
+
+						afficheSommaireButs(rJSON);
+						affichePlusHighlights(rJSON);
+						afficheSommairePunitions(rJSON);
+						afficheTabVent(rJSON);
+						afficheFusillade(rJSON);
+						window.etoileConditions++;
+						if (window.etoileConditions >= 4) {
+							afficheEtoiles();
+						}
+
+					}
+				}
+			}
+
+			function getStatsJSON(equipe, matchId) {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/stats2JSON.php";
+
+				var strMatchId = "matchId=" + matchId;
+				var strEquipe = "equipe=" + equipe;
+
+				params = strMatchId + '&' + strEquipe;
+				url = url + "?" + params;
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				//				requete_ajax.setRequestHeader("Content-length", params.length);
+				//				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				if (equipe == 'H') {
+					requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+						if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+							statsJSONHome = eval('(' + requete_ajax.responseText + ')');
+							afficheStatsDom(statsJSONHome, 1);
+							window.etoileConditions++;
+							if (window.etoileConditions >= 4) {
+								afficheEtoiles();
+							}
+
+						}
+					}
+				}
+				if (equipe == 'V') {
+					requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+						if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+							//alert(requete_ajax.responseText);
+							statsJSONVis = eval('(' + requete_ajax.responseText + ')');
+							afficheStatsDom(statsJSONVis, 2);
+							window.etoileConditions++;
+							if (window.etoileConditions >= 4) {
+								afficheEtoiles();
+							}
+
+						}
+					}
+				}
+			}
+
+			function afficheResumeMatch(infoMatch) {
+
+				div1 = document.getElementById("tabResume");
+				//alert(div1.id);
+				divLigne = document.createElement('DIV');
+				divLigne.id = "contResumeMatch";
+
+				divLogoDom = document.createElement('DIV');
+				divLogoDom.id = "logoDom";
+				//	divLogoDom.className = "grosLogo";
+				divLogoVis = document.createElement('DIV');
+				divLogoVis.id = "logoVis";
+				//	divLogoVis.className = "grosLogo";
+
+				lienImgDomJS = document.createElement('A');
+				lienImgDomJS.id = "lienImgDom";
+				lienImgDomJS.href = "/zstats/statsequipe.html?equipeId=" + infoMatch.equipeIdDom + "&ligueId=" + infoMatch.ligueId;
+				divImgDom = document.createElement('IMG');
+				divImgDom.id = "logoEquipeDom";
+				divImgDom.className = "grosLogo";
+				pNomEqDom = document.createElement('P');
+				pNomEqDom.id = "nomEqDom";
+				pNomEqDom.innerHTML = infoMatch.equipeNomDom + "<br/>";
+
+				pNomEqDom.className = "moyenTexte";
+				pVilleEqDom = document.createElement('P');
+				pVilleEqDom.id = "villeEqDom";
+				pVilleEqDom.innerHTML = infoMatch.equipeVilleDom + "<br/>";
+				pVilleEqDom.className = "moyenTexte";
+				lienImgVisJS = document.createElement('A');
+				lienImgVisJS.id = "lienImgVis";
+				lienImgVisJS.href = "/zstats/statsequipe.html?equipeId=" + infoMatch.equipeIdVis + "&ligueId=" + infoMatch.ligueId;
+				divImgVis = document.createElement('IMG');
+				divImgVis.id = "logoEquipeVis";
+				divImgVis.className = "grosLogo";
+				pNomEqVis = document.createElement('P');
+				pNomEqVis.id = "nomEqVis";
+				pNomEqVis.innerHTML = infoMatch.equipeNomVis + "<br/>";
+
+				pNomEqVis.className = "moyenTexte";
+				pVilleEqVis = document.createElement('P');
+				pVilleEqVis.id = "villeEqVis";
+				pVilleEqVis.innerHTML = infoMatch.equipeVilleVis + "<br/>";
+				pVilleEqDom.className = "moyenTexte";
+				divPDom = document.createElement('P');
+				divPDom.id = "tScoreDom";
+				divPDom.className = "grosTexte";
+				divPVis = document.createElement('P');
+				divPVis.id = "tScoreVis";
+				divPVis.className = "grosTexte";
+				divScoreDom = document.createElement('DIV');
+				divScoreDom.id = "scoreDom";
+				divScoreDom.className = "grosTexte";
+				divScoreVis = document.createElement('DIV');
+				divScoreVis.id = "scoreVis";
+				divScoreVis.className = "grosTexte";
+				//	divScoreDom.style.margin="5%";
+				//	divScoreVis.style.margin="5%";
+				pDash = document.createElement('P');
+				pDash.className = "grosTexte";
+				pDash.innerHTML = "-";
+				divDash = document.createElement('DIV');
+				divDash.className = "grosTexte";
+
+				divCont = document.createElement('DIV');
+				divCont.style.textAlign = "center";
+				divCont.style.display = "table";
+				divCont.style.margin = "0px auto";
+
+				infoMatch.equipeVilleDom.length > 0 ? divLogoDom.appendChild(pVilleEqDom) : "";
+				divLogoDom.appendChild(pNomEqDom);
+				divLogoDom.appendChild(lienImgDomJS);
+				lienImgDomJS.appendChild(divImgDom);
+				divCont.appendChild(divLogoDom);
+				divScoreDom.appendChild(divPDom);
+				divCont.appendChild(divScoreDom);
+				divDash.appendChild(pDash);
+				divCont.appendChild(divDash);
+				divScoreVis.appendChild(divPVis);
+				divCont.appendChild(divScoreVis);
+				infoMatch.equipeVilleVis.length > 0 ? divLogoVis.appendChild(pVilleEqVis) : "";
+				//divLogoVis.appendChild(pVilleEqVis);
+				divLogoVis.appendChild(pNomEqVis);
+				divLogoVis.appendChild(lienImgVisJS);
+				lienImgVisJS.appendChild(divImgVis);
+				divCont.appendChild(divLogoVis);
+				//	lecorps = document.getElementById('mbody');
+				divImgDom.src = '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdDom;
+				divImgVis.src = '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdVis;
+
+				divPDom.innerHTML = infoMatch.equipeScoreDom;
+				divPVis.innerHTML = infoMatch.equipeScoreVis;
+				//	lecorps.appendChild(divLigne);
+
+				divLigne.appendChild(divCont);
+				div1.appendChild(divLigne);
+
+			}
+
+			function afficheEtoiles() {
+
+				div1 = document.getElementById('tabResume');
+
+				if (window.infoMatch.cleValeur.etoile1 != undefined) {
+
+					joueur1 = "";
+
+					for (var a = 0; a < window.statsJSONHome.joueurs.length; a++) {
+
+						if (window.statsJSONHome.joueurs[a].joueurId == window.infoMatch.cleValeur.etoile1) {
+							joueur1 = window.statsJSONHome.joueurs[a].nom;
+						}
+					}
+					if (joueur1.length < 1) {
+						for (var a = 0; a < window.statsJSONVis.joueurs.length; a++) {
+							if (window.statsJSONVis.joueurs[a].joueurId == window.infoMatch.cleValeur.etoile1) {
+								joueur1 = window.statsJSONVis.joueurs[a].nom;
+							}
+						}
+					}
+
+					p1 = document.createElement('P');
+					p1.innerHTML = "&#9734 - " + joueur1;
+					if (joueur1.length > 0)
+						div1.appendChild(p1);
+
+				}
+				if (window.infoMatch.cleValeur.etoile2 != undefined) {
+
+					joueur2 = "";
+					for (var a = 0; a < window.statsJSONHome.joueurs.length; a++) {
+						if (window.statsJSONHome.joueurs[a].joueurId == window.infoMatch.cleValeur.etoile2) {
+							joueur2 = window.statsJSONHome.joueurs[a].nom;
+						}
+					}
+					if (joueur2.length < 1) {
+						for (var a = 0; a < window.statsJSONVis.joueurs.length; a++) {
+							if (window.statsJSONVis.joueurs[a].joueurId == window.infoMatch.cleValeur.etoile2) {
+								joueur2 = window.statsJSONVis.joueurs[a].nom;
+							}
+						}
+					}
+					p2 = document.createElement('P');
+					p2.innerHTML = "&#9734 &#9734  - " + joueur2;
+					if (joueur2.length > 0)
+						div1.appendChild(p2);
+
+				}
+				if (window.infoMatch.cleValeur.etoile3 != undefined) {
+					joueur3 = "";
+					for (var a = 0; a < window.statsJSONHome.joueurs.length; a++) {
+						if (window.statsJSONHome.joueurs[a].joueurId == window.infoMatch.cleValeur.etoile3) {
+							joueur3 = window.statsJSONHome.joueurs[a].nom;
+						}
+					}
+					if (joueur3.length < 1) {
+						for (var a = 0; a < window.statsJSONVis.joueurs.length; a++) {
+							if (window.statsJSONVis.joueurs[a].joueurId == window.infoMatch.cleValeur.etoile3) {
+								joueur3 = window.statsJSONVis.joueurs[a].nom;
+							}
+						}
+					}
+					p3 = document.createElement('P');
+					p3.innerHTML = "&#9734 &#9734 &#9734 - " + joueur3;
+					if (joueur3.length > 0)
+						div1.appendChild(p3);
+				}
+
+			}
+
+			function selectOnglet(a) {
+				for (var b = 0; b < window.vecTab.length; b++) {
+					if (a == b) {
+						document.getElementById(window.vecTab[a]).className = 'visible';
+						document.getElementById('dTitre_' + a).className = 'titreOnglet actif';
+					} else {
+						document.getElementById(window.vecTab[b]).className = 'cache';
+						document.getElementById('dTitre_' + b).className = 'titreOnglet passif';
+					}
+				}
+
+			}
+
+			function faitEntete() {
+
+				divC = document.getElementById("divCentrale");
+				divClass = document.createElement('DIV');
+				divClass.className = "tabs";
+
+				//			divC.appendChild(window.dSS);
+				divC.appendChild(divClass);
+
+				for (var a = 0; a < window.vecTab.length; a++) {
+					sec1 = document.createElement('SECTION');
+					sec1.id = window.vecTab[a];
+					dTitre1JS = document.createElement('DIV');
+					dTitre1JS.className = 'titreOnglet';
+					dTitre1JS.id = 'dTitre_' + a;
+					h2_1 = document.createElement('H2');
+					frac = 100 / window.vecTab.length;
+
+					dTitre1JS.onclick = (function(a) {
+						return function() {
+							selectOnglet(a);
+						};
+					})(a);
+
+					dTitre1JS.style.width = frac + '%';
+
+					h2_1.id = 'a' + vecTab[a];
+					h2_1.innerHTML = window.vecNomTab[a];
+
+					divC.appendChild(sec1);
+					divClass.appendChild(dTitre1JS);
+					dTitre1JS.appendChild(h2_1);
+				}
+
+			}
+
+			function afficheSommaireButs(rSMB) {
+				var lesTitres = new Array();
+				lesTitres[0] = window.tl_match_Equipe;
+				lesTitres[1] = "";
+				lesTitres[2] = window.tl_match_Marqueur;
+				lesTitres[3] = window.tl_match_Passe1;
+				lesTitres[4] = window.tl_match_Passe2;
+				lesTitres[5] = window.tl_match_Chrono;
+				lesTitres[6] = "";
+				div1 = document.getElementById('tabButs');
+				if (window.vPerm < 19) {
+					$(div1).append('<div></div>').append('<h2 id="admin_title"></h2>', '<img id="admin_vids"></img>');
+					$('#admin_title').text("Admin Tools").css("margin;10px", "display;inline");
+					$('#admin_vids').attr("src", "/images/icones/movie.png").attr("alt", "Video").on("click", {
+						rjson : rSMB
+					}, function(event) {
+						construitDialogue();
+						rJSON_loc = event.data.rjson;
+						//		alert(JSON.stringify(rJSON));
+						dial = document.getElementById('divDialogue');
+						$('<div id="divt"></div>').text("Available cams").appendTo(dial);
+						var arrayCam = [];
+						for (var a = 0; a < rJSON_loc.buts.length; a++) {
+							//				alert("but"+a);
+							for (var b = 0; b < rJSON_loc.buts[a].video.length; b++) {
+								//					alert("vid"+rJSON.buts[a].video[b].cam);
+								if (jQuery.inArray(rJSON_loc.buts[a].video[b].cam, arrayCam) < 0) {
+									arrayCam.push(rJSON_loc.buts[a].video[b].cam);
+								}
+							}
+						}
+						//			alert(arrayCam.length);
+						for (var a = 0; a < arrayCam.length; a++) {
+							$('<div></div>').attr("id", "ligneCam_" + a).addClass("ligneBloc").appendTo(dial);
+							$('<div></div>').attr("id", "blocGauche_" + a).addClass("blocGauche").text("Camera #" + arrayCam[a]).appendTo($('#ligneCam_' + a));
+							$('<div></div>').attr("id", "blocDroit_" + a).addClass("blocDroit").appendTo($('#ligneCam_' + a));
+							$('<div></div>').attr("id", "cellTableProm_" + a).addClass("cliquable cellTableCourt").appendTo($("#blocDroit_" + a)).append('<img src="/images/icones/arrow-up-double.png" alt="promote"></img>');
+							$('<div></div>').attr("id", "cellTableDem_" + a).addClass("cliquable cellTableCourt").appendTo($("#blocDroit_" + a)).append('<img src="/images/icones/arrow-down-double.png" alt="demote"></img>')
+							$('<div></div>').attr("id", "cellTableDel_" + a).addClass("cliquable cellTableCourt").appendTo($("#blocDroit_" + a)).append('<img src="/images/icones/delete.png" alt="delete"></img>')
+						}
+						$('[id^=cellTableDel_]').on("click", {
+							arrayCam : arrayCam
+						}, function(event) {
+							var id = $(this).attr("id").split('_')[1];
+							var camId = event.data.arrayCam[id];
+							$('#blocDroit_' + id).fadeOut(200, function() {
+								$('<div></div>').attr("id", "askErase").addClass("blocDroit").text("Do you really want to erase this camera?").appendTo($('#ligneCam_' + id)).fadeIn();
+								$('<br></br>').appendTo('#askErase');
+								$('<div></div>').addClass("cliquable cellTableCourt").text("Yup!").appendTo('#askErase').on("click", {
+									camId : camId
+								}, function(event) {
+									$.ajax({
+										url : "/scriptsphp/effaceCam.php",
+										type : "POST",
+										data : {
+											camId : event.data.camId,
+											matchId : window.matchID
+										},
+										dataType : "html"
+									});
+
+									//				window.location.reload(true);
+								});
+								$('<div></div>').addClass("cliquable cellTableCourt").text("Noooo!").appendTo('#askErase').on("click", function() {
+									$('#askErase').remove();
+									$('[id^=blocDroit]').show();
+								});
+
+							});
+						});
+
+						$('.cellTableCourt').css("margin", "10px");
+
+					});
+					$(div1).append('<hline></hline>');
+				}
+				//div1.id = "divSommaireButs";
+				//div1.className = "centrale";
+
+				//	lecorps = document.getElementById('divCentrale');
+				table1 = document.createElement('TABLE');
+				table1.id = "tableSommaireButs";
+				table1.className = "c_tableau";
+				tb = document.createElement('TBODY');
+				tb.id = "bodyTable";
+				tr1 = document.createElement('TR');
+				tr1.id = "date2";
+				td1 = document.createElement('TD');
+				td1.className = "titreTableau";
+				td1.colSpan = lesTitres.length;
+				td1.innerHTML = window.tl_match_titreTab;
+				tr2 = document.createElement('TR');
+				tr2.id = "rangeeTitreSommaireButs";
+
+				for ( i = 0; i < lesTitres.length; i++) {
+					tdi = document.createElement('TD');
+					tdi.className = "rangeeTitre";
+					tdi.innerHTML = lesTitres[i];
+					tr2.appendChild(tdi);
+				}
+
+				tr1.appendChild(td1);
+				tb.appendChild(tr1);
+				tb.appendChild(tr2);
+				table1.appendChild(tb);
+				div1.appendChild(table1);
+				//lecorps.appendChild(div1);
+				//lecorps.appendChild(frameModif);
+
+				/////////////////////////////////////////////////////////////
+
+				////////////////////////////////////////////////////////////
+
+				try
+				{
+					var scoreDom = 0;
+					var scoreVis = 0;
+					maPer = new Array();
+					//rSMB.periodes.shift();
+
+					if (rSMB.periodes.length > 0)
+						maPer = rSMB.periodes[0];
+					else {
+
+						maPer.chrono = rSMB.buts[0].chrono;
+					}
+					var Iper = 0;
+					for (var J = 0; J < rSMB.buts.length; J = J + 1) {
+
+						//						try {
+						var perStop = false;
+						if (rSMB.periodes.length > 0) {
+							//if (parseInt(rSMB.periodes[Iper].chrono) < parseInt(rSMB.buts[J].chrono)) {
+							while (Iper < rSMB.periodes.length && !perStop) {
+								//					maPer = rSMB.periodes.shift();
+
+								//			alert(parseInt(rSMB.periodes[Iper].chrono)-parseInt(rSMB.buts[J].chrono)+" , Iper: "+Iper+", J: "+J);
+
+								if (parseInt(rSMB.periodes[Iper].chrono) < parseInt(rSMB.buts[J].chrono)) {
+									maPer = rSMB.periodes[Iper];
+									rangeePer = document.createElement('TR');
+									amettrePer = document.getElementById('rangeeTitreSommaireButs');
+									amettrePer.parentNode.appendChild(rangeePer);
+									cPer = document.createElement('TD');
+									cPer.setAttribute("colSpan", "5")
+									cPer.setAttribute("class", "rangeeTitre")
+									tPer = document.createTextNode(window.tl_match_periode + " " + maPer.numero);
+									cPer.appendChild(tPer);
+									rangeePer.appendChild(cPer);
+									Iper++;
+									if (Iper < rSMB.periodes.length) {
+										if (parseInt(rSMB.periodes[Iper].chrono) > parseInt(rSMB.buts[J].chrono)) {
+											perStop = true;
+										}
+									} else {
+										perStop = true;
+									}
+
+								} else {
+									perStop = true;
+								}
+
+							}
+
+							//								}
+						}
+						//						} catch(err) {
+						//						}
+
+						//	if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
+						rangee = document.createElement('TR');
+						amettre = document.getElementById('rangeeTitreSommaireButs');
+						amettre.parentNode.appendChild(rangee);
+						minutes = Math.floor((parseInt(rSMB.buts[J].chrono) - parseInt(maPer.chrono)) / 60000);
+						//	alert("minutes"+minutes+" ");
+						dizSecondes = Math.floor(((parseInt(rSMB.buts[J].chrono) - parseInt(maPer.chrono)) - minutes * 60000) / 10000);
+						secondes = Math.floor(((parseInt(rSMB.buts[J].chrono) - parseInt(maPer.chrono)) - minutes * 60000 - dizSecondes * 10000) / 1000);
+						//	alert("secondes"+secondes+" ");
+						strChrono = minutes + ":" + dizSecondes + secondes;
+
+						if (rSMB.buts[J].qualif != null) {
+							strChrono = strChrono + " - ";
+							nbQ = 0;
+							while (nbQ < rSMB.buts[J].qualif.length) {
+								strChrono = strChrono + "(" + rSMB.buts[J].qualif[nbQ] + ")";
+								nbQ++;
+							}
+						}
+						mSrc = (rSMB.eqDom == rSMB.buts[J].equipe) ? window.divImgDom.src : window.divImgVis.src;
+						strImg = '<img src=\"\/images\/icones\/edit.png\" onclick=corrigeBut(' + J + ') class=\"tresPetitLogo\"  alt=\"Edit\"\\/\>';
+
+						var lesCols = new Array();
+						//
+						//alert('mSrc');
+						//alert(mSrc);
+						try {
+							lesCols[0] = '<img src=\"' + mSrc + '\" alt=\"' + rSMB.buts[J].equipe + '\" class=\"tresPetitLogo\" \\/\>';
+						} catch(err) {
+							lesCols[0] = rSMB.buts[J].equipe;
+						}
+						//alert(rSMB.buts[J].equipe);
+						//
+						window.vPerm < 19 ? lesCols[1] = strImg : lesCols[1] = null;
+						lesCols[2] = rSMB.buts[J].marqueur;
+						lesCols[3] = rSMB.buts[J].passeur1;
+						lesCols[4] = rSMB.buts[J].passeur2;
+						lesCols[5] = strChrono;
+						lesCols[6] = "";
+						//			alert(rSMB.buts[J].video.length);
+						//			lesCols[6] = (rSMB.buts[J].video.length <= 0) ? "" : "Voir";
+
+						if (rSMB.buts[J].video.length > 0) {
+
+							var mBut = rSMB.buts[J];
+							strV = mBut.video[0];
+							pVids = document.createElement('A');
+							//			pVids[a].innerHTML= UrlExists("../lookatthis/" + strV.fic)?" Cam  "+b+" ":"";
+							imgVid = document.createElement('IMG');
+							imgVid.src = "/images/icones/movie.png";
+							imgVid.alt = "Video";
+
+							/*$(imgVid).hover(function(){
+							 $(this).attr('src','/images/icones/movie.ico');
+							 },function(){
+							 $(this).attr('src','/images/icones/movie.ico');
+							 });*/
+
+							pVids.appendChild(imgVid);
+							//				pVids.innerHTML= " Video Replay ";
+							pVids.id = "../lookatthis/" + strV.fic;
+							pVids.className = "cliquable";
+							pVids.onclick = (function(mBut) {
+								return function() {
+									//					window.location="../lookatthis/" + strV.fic;
+									/*
+									 *
+									 */
+
+									
+
+									vidIndex = 0;
+									strV = mBut.video[vidIndex];
+									construitDialogue();
+
+									dial = document.getElementById('divDialogue');
+									div12 = document.createElement('DIV');
+									$(div12).css('float', 'left').attr("id","vidCont");
+
+									dial.appendChild(div12);
+									$('<div id="ficheVid"></div>').insertAfter(div12);
+
+									$(dial).prepend('<div id="divEnteteVid"></div>');
+
+									mVid = document.createElement('VIDEO');
+									//						alert(mVid);
+									mVid.videoWidth = 320;
+									mVid.videoHeight = 240;
+									mVid.controls = "controls";
+									mVid.load();
+									mVid.id = "vid1";
+									mSource = document.createElement('SOURCE');
+									mSource.type = "video/mp4";
+									// 'h263, amr'";
+
+									//alert(mSource.src);
+									mVid.appendChild(mSource);
+									div12.appendChild(mVid);
+
+									for (var a = 0; a < mBut.video.length; a++) {
+										$('<div id=lienCam_' + mBut.video[a].cam + '<div>').appendTo('#divEnteteVid').text('Cam ' + mBut.video[a].cam).click({
+											strV : mBut.video[a]
+										}, function(event) {
+											surVideoChoisi(event.data.strV)
+										}).css({
+											'display' : 'inline',
+											'padding-left' : '10px',
+											'cursor' : 'pointer'
+										});
+									}
+
+									surVideoChoisi(strV);
+
+									if (mVid.error) {
+										switch (mVid.error.code) {
+											case MEDIA_ERR_ABORTED:
+												alert("You stopped the video.");
+												break;
+											case MEDIA_ERR_NETWORK:
+												alert("Network error - please try again later.");
+												break;
+											case MEDIA_ERR_DECODE:
+												alert("Video is broken..");
+												break;
+											case MEDIA_ERR_SRC_NOT_SUPPORTED:
+												alert("Sorry, your browser can't play this video.");
+												break;
+										}
+									}
+
+
+								};
+							})(mBut);
+						}// Fin du If video
+
+						var lesLiens = new Array();
+						lesLiens[0] = null;
+						lesLiens[1] = null;
+						lesLiens[2] = '/zstats/statsjoueur.html?joueurId=' + rSMB.buts[J].marqueurId;
+						lesLiens[3] = '/zstats/statsjoueur.html?joueurId=' + rSMB.buts[J].passeur1Id;
+						lesLiens[4] = '/zstats/statsjoueur.html?joueurId=' + rSMB.buts[J].passeur2Id;
+						lesLiens[5] = null;
+						lesLiens[6] = null;
+
+						for ( K = 0; K < lesCols.length; K++) {
+							cellule = document.createElement('TD');
+							if (lesCols[K] != undefined) {
+								if (lesLiens[K] != null) {
+									lien = document.createElement('A');
+									lien.innerHTML = lesCols[K];
+									lien.href = lesLiens[K];
+									cellule.appendChild(lien);
+								} else {
+
+									if (K == 6 && rSMB.buts[J].video.length > 0) {
+										cellule.appendChild(pVids);
+									} else {
+										ptexte = document.createElement('P');
+
+										ptexte.innerHTML = lesCols[K];
+										//					texte = document.createTextNode(lesCols[K]);
+										cellule.appendChild(ptexte);
+									}
+								}
+							}
+							J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
+							rangee.appendChild(cellule);
+						}
+
+					}
+
+					//	document.body.rangee.cellule.innerHTML ='yo';
+				} catch(err) {
+//					alert(err.message);
+				}
+				}
+				//////////////////////////////////////////////////////////
+                //  Fin de afficheSommaireButs
+				//////////////////////////////////////////////////////////
+				
+				//////////////////////////////////////////////////////////
+                //  
+                //   function affichePlusHighlights(rSMB)
+                //
+                // 
+                //////////////////////////////////////////////////////////
+                
+				
+				
+				
+        function affichePlusHighlights(rSMB) {
+                var lesTitres = new Array();
+
+                lesTitres[0] = window.tl_match_Chrono;
+                lesTitres[1] = "";
+                div1 = document.getElementById('tabButs');
+
+                //  lecorps = document.getElementById('divCentrale');
+                table1 = document.createElement('TABLE');
+                table1.id = "tableHighlights";
+                table1.className = "c_tableau";
+                tb = document.createElement('TBODY');
+                tb.id = "bodyTable";
+                tr1 = document.createElement('TR');
+                tr1.id = "rangeeHeaderHighlights";
+                td1 = document.createElement('TD');
+                td1.className = "titreTableau";
+                td1.colSpan = lesTitres.length;
+                td1.innerHTML = "More Highlights";
+                tr2 = document.createElement('TR');
+                tr2.id = "rangeeTitreHighlights";
+
+                for ( i = 0; i < lesTitres.length; i++) {
+                    tdi = document.createElement('TD');
+                    tdi.className = "rangeeTitre";
+                    tdi.innerHTML = lesTitres[i];
+                    tr2.appendChild(tdi);
+                }
+
+                tr1.appendChild(td1);
+                tb.appendChild(tr1);
+                tb.appendChild(tr2);
+                table1.appendChild(tb);
+                div1.appendChild(table1);
+                //lecorps.appendChild(div1);
+                //lecorps.appendChild(frameModif);
+
+                /////////////////////////////////////////////////////////////
+
+                ////////////////////////////////////////////////////////////
+
+                try
+                {
+                    
+                    maPer = new Array();
+                    //rSMB.periodes.shift();
+
+                    if (rSMB.periodes.length > 0)
+                        maPer = rSMB.periodes[0];
+                    else {
+
+                        maPer.chrono = rSMB.clips[0].chrono;
+                    }
+                    var Iper = 0;
+                    for (var J = 0; J < rSMB.clips.length; J = J + 1) {
+
+                        //                      try {
+                        var perStop = false;
+                        if (rSMB.periodes.length > 0) {
+                            //if (parseInt(rSMB.periodes[Iper].chrono) < parseInt(rSMB.buts[J].chrono)) {
+                            while (Iper < rSMB.periodes.length && !perStop) {
+                                //                  maPer = rSMB.periodes.shift();
+
+                                //          alert(parseInt(rSMB.periodes[Iper].chrono)-parseInt(rSMB.buts[J].chrono)+" , Iper: "+Iper+", J: "+J);
+
+                                if (parseInt(rSMB.periodes[Iper].chrono) < parseInt(rSMB.clips[J].chrono)) {
+                                    maPer = rSMB.periodes[Iper];
+                                    rangeePer = document.createElement('TR');
+                                    amettrePer = document.getElementById('rangeeTitreHighlights');
+                                    amettrePer.parentNode.appendChild(rangeePer);
+                                    cPer = document.createElement('TD');
+                                    cPer.setAttribute("colSpan", "2")
+                                    cPer.setAttribute("class", "rangeeTitre")
+                                    tPer = document.createTextNode(window.tl_match_periode + " " + maPer.numero);
+                                    cPer.appendChild(tPer);
+                                    rangeePer.appendChild(cPer);
+                                    Iper++;
+                                    if (Iper < rSMB.periodes.length) {
+                                        if (parseInt(rSMB.periodes[Iper].chrono) > parseInt(rSMB.clips[J].chrono)) {
+                                            perStop = true;
+                                        }
+                                    } else {
+                                        perStop = true;
+                                    }
+
+                                } else {
+                                    perStop = true;
+                                }
+
+                            }
+
+                            //                              }
+                        }
+                        //                      } catch(err) {
+                        //                      }
+
+                        //  if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
+                        rangee = document.createElement('TR');
+                        amettre = document.getElementById('rangeeTitreHighlights');
+                        amettre.parentNode.appendChild(rangee);
+                        minutes = Math.floor((parseInt(rSMB.clips[J].chrono) - parseInt(maPer.chrono)) / 60000);
+                        //  alert("minutes"+minutes+" ");
+                        dizSecondes = Math.floor(((parseInt(rSMB.clips[J].chrono) - parseInt(maPer.chrono)) - minutes * 60000) / 10000);
+                        secondes = Math.floor(((parseInt(rSMB.clips[J].chrono) - parseInt(maPer.chrono)) - minutes * 60000 - dizSecondes * 10000) / 1000);
+                        //  alert("secondes"+secondes+" ");
+                        strChrono = minutes + ":" + dizSecondes + secondes;
+
+
+  
+                        var lesCols = new Array();
+                        //
+                        //alert('mSrc');
+                        //alert(mSrc);
+                       //alert(rSMB.buts[J].equipe);
+                        //
+                        lesCols[0] = strChrono;
+                        lesCols[1] = "";
+
+                        //          alert(rSMB.buts[J].video.length);
+                        //          lesCols[6] = (rSMB.buts[J].video.length <= 0) ? "" : "Voir";
+
+                        if (rSMB.clips.length > 0) {
+
+                            var mBut = rSMB.clips[J];
+                            strV = mBut;
+                            pVids = document.createElement('A');
+                            //          pVids[a].innerHTML= UrlExists("../lookatthis/" + strV.fic)?" Cam  "+b+" ":"";
+                            imgVid = document.createElement('IMG');
+                            imgVid.src = "/images/icones/movie.png";
+                            imgVid.alt = "Video";
+
+                            /*$(imgVid).hover(function(){
+                             $(this).attr('src','/images/icones/movie.ico');
+                             },function(){
+                             $(this).attr('src','/images/icones/movie.ico');
+                             });*/
+
+                            pVids.appendChild(imgVid);
+                            //              pVids.innerHTML= " Video Replay ";
+                            pVids.id = "../lookatthis/" + mBut.fic;
+                            pVids.className = "cliquable";
+                            pVids.onclick = (function(mBut) {
+                                return function() {
+                                    //                  window.location="../lookatthis/" + strV.fic;
+ 
+
+                                    vidIndex = 0;
+                                    //strV = mBut[vidIndex];
+                                    construitDialogue();
+
+                                    dial = document.getElementById('divDialogue');
+                                    div12 = document.createElement('DIV');
+                                    $(div12).css('float', 'left').attr("id","vidCont");
+
+                                    dial.appendChild(div12);
+                                    $('<div id="ficheVid"></div>').insertAfter(div12);
+
+                                    $(dial).prepend('<div id="divEnteteVid"></div>');
+
+                                    mVid = document.createElement('VIDEO');
+                                    //                      alert(mVid);
+                                    mVid.videoWidth = 320;
+                                    mVid.videoHeight = 240;
+                                    mVid.controls = "controls";
+                                    mVid.load();
+                                    mVid.id = "vid1";
+                                    mSource = document.createElement('SOURCE');
+                                    mSource.type = "video/mp4";
+                                    // 'h263, amr'";
+
+                                    //alert(mSource.src);
+                                    mVid.appendChild(mSource);
+                                    div12.appendChild(mVid);
+
+                                    
+                                        $('<div id=lienCam_' + mBut.cam + '<div>').appendTo('#divEnteteVid').text('Cam ' + mBut.cam).click({
+                                            strV : mBut
+                                        }, function(event) {
+                                            surVideoChoisi(event.data.strV)
+                                        }).css({
+                                            'display' : 'inline',
+                                            'padding-left' : '10px',
+                                            'cursor' : 'pointer'
+                                        });
+                                   
+                                    surVideoChoisi(mBut);
+
+                                    if (mVid.error) {
+                                        switch (mVid.error.code) {
+                                            case MEDIA_ERR_ABORTED:
+                                                alert("You stopped the video.");
+                                                break;
+                                            case MEDIA_ERR_NETWORK:
+                                                alert("Network error - please try again later.");
+                                                break;
+                                            case MEDIA_ERR_DECODE:
+                                                alert("Video is broken..");
+                                                break;
+                                            case MEDIA_ERR_SRC_NOT_SUPPORTED:
+                                                alert("Sorry, your browser can't play this video.");
+                                                break;
+                                        }
+                                    }
+
+
+                                };
+                            })(mBut);
+
+                        var lesLiens = new Array();
+                        lesLiens[0] = null;
+                        lesLiens[1] = null;
+
+                        for ( K = 0; K < lesCols.length; K++) {
+                          // alert(K);
+                            cellule = document.createElement('TD');
+                            if (lesCols[K] != undefined) {
+                                if (lesLiens[K] != null) {
+                                    alert("should not");
+                                    lien = document.createElement('A');
+                                    lien.innerHTML = lesCols[K];
+                                    lien.href = lesLiens[K];
+                                    cellule.appendChild(lien);
+                                } else {
+                           //          alert(K );
+ 
+                                    if (K == 1) {
+                                        //  alert('Ss');
+                                        cellule.appendChild(pVids);
+                                        //alert(pVids.id);
+                                    } else {
+                                        ptexte = document.createElement('P');
+
+                                        ptexte.innerHTML = lesCols[K];
+                                        //                  texte = document.createTextNode(lesCols[K]);
+                                        cellule.appendChild(ptexte);
+                                    }
+                                }
+                            }
+                            rangee.appendChild(cellule);
+                          }
+                            J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
+                            
+
+                        }// Fin du If video
+
+                    }
+
+                    //  document.body.rangee.cellule.innerHTML ='yo';
+                } catch(err) {
+//                  alert(err.message);
+                }
+
+			}
+
+                //////////////////////////////////////////////////////////
+                // fin affichePlusHighlights
+                //////////////////////////////////////////////////////////
+
+
+			function afficheTabVent(rJSON) {
+
+				div1 = document.getElementById('tabResume');
+				tabVent = document.createElement('TABLE');
+				tabVent.className = 'c_tableau';
+				tabVent.id = 'tabVent';
+				tBodyVent = document.createElement('TBODY');
+				trTitreVent = document.createElement('TR');
+				trTitreVent.id = 'trTitreVent';
+				trTitreVent.className = 'rangeeTitre';
+				trDomVent = document.createElement('TR');
+				trDomVent.className = 'lignePaire';
+				trDomVent.id = 'trDomVent';
+				trVisVent = document.createElement('TR');
+				trVisVent.id = 'trVisVent';
+				trVisVent.className = 'ligneImpaire';
+				tdRTVent = document.createElement('TD');
+				tdRTVent.id = 'tdTitreTableauFus';
+				tdRTVent.className = 'titreTableau';
+				tdRTVent.innerHTML = window.tl_resultats_Sommaire;
+				tdRTVent.colSpan = 4;
+				trRTVent = document.createElement('TR');
+				trRTVent.id = 'trTitreTableauFus';
+				trRTVent.className = 'titreTableau';
+
+				tdTitreVent = document.createElement('TD');
+				tdTitreVent.id = 'tdTitreVent';
+				tdTitreVent.innerHTML = window.tl_match_Equipe;
+				tdEqDomVent = document.createElement('TD');
+				tdEqDomVent.id = 'tdEqDomVent';
+				tdEqDomVent.innerHTML = rJSON.eqDom;
+				tdEqVisVent = document.createElement('TD');
+				tdEqVisVent.id = 'tdEqVisVent';
+				tdEqVisVent.innerHTML = rJSON.eqVis;
+
+				tabVent.appendChild(tBodyVent);
+				trRTVent.appendChild(tdRTVent);
+				tBodyVent.appendChild(trRTVent);
+
+				tBodyVent.appendChild(trTitreVent);
+				tBodyVent.appendChild(trDomVent);
+				tBodyVent.appendChild(trVisVent);
+				trTitreVent.appendChild(tdTitreVent);
+				trDomVent.appendChild(tdEqDomVent);
+				trVisVent.appendChild(tdEqVisVent);
+
+				div1.appendChild(tabVent);
+
+				try {
+					var scoreDom = 0;
+					var scoreVis = 0;
+
+					//rJSON.periodes.shift();
+					try {
+						maPer = rJSON.periodes[0];
+					} catch(err) {
+					}
+					var Iper = 0;
+					for ( J = 0; J < rJSON.buts.length; J = J + 1) {
+						trouve = false;
+						while (!trouve) {
+
+							try {
+
+								if (parseInt(rJSON.periodes[Iper].chrono) < parseInt(rJSON.buts[J].chrono)) {
+									//					maPer = rJSON.periodes.shift();
+									while (parseInt(rJSON.periodes[Iper].chrono) < parseInt(rJSON.buts[J].chrono) && Iper < rJSON.periodes.length) {
+										maPer = rJSON.periodes[Iper];
+										Iper++;
+//										$('trTitreVent').append('<td>'+maPer.numero+'</td>')
+										tdTitrePer = document.createElement('TD');
+										tdTitrePer.innerHTML = maPer.numero;
+										document.getElementById('trTitreVent').appendChild(tdTitrePer);
+
+										tdDomPer = document.createElement('TD');
+										tdDomPer.innerHTML = 0;
+										document.getElementById('trDomVent').appendChild(tdDomPer);
+										tdVisPer = document.createElement('TD');
+										tdVisPer.innerHTML = 0;
+										document.getElementById('trVisVent').appendChild(tdVisPer);
+									}
+									
+								}
+								else{
+									if(J==0){
+										tdTitrePer = document.createElement('TD');
+										tdTitrePer.innerHTML =0;
+										document.getElementById('trTitreVent').appendChild(tdTitrePer);
+
+										tdDomPer = document.createElement('TD');
+										tdDomPer.innerHTML = 0;
+										document.getElementById('trDomVent').appendChild(tdDomPer);
+										tdVisPer = document.createElement('TD');
+										tdVisPer.innerHTML = 0;
+										document.getElementById('trVisVent').appendChild(tdVisPer);
+									}
+								}
+								
+							} catch(err) {
+								if (Iper == 0) {
+									tdTitrePer = document.createElement('TD');
+									tdTitrePer.innerHTML = 0;
+									document.getElementById('trTitreVent').appendChild(tdTitrePer);
+
+									tdDomPer = document.createElement('TD');
+									tdDomPer.innerHTML = 0;
+									document.getElementById('trDomVent').appendChild(tdDomPer);
+									tdVisPer = document.createElement('TD');
+									tdVisPer.innerHTML = 0;
+									document.getElementById('trVisVent').appendChild(tdVisPer);
+									Iper++;
+								}
+							}
+							if (rJSON.buts[J].equipe == rJSON.eqDom) {
+								tdDomPer.innerHTML = parseInt(tdDomPer.innerHTML) + 1;
+								scoreDom++;
+								trouve = true;
+							}
+							if (rJSON.buts[J].equipe == rJSON.eqVis) {
+								tdVisPer.innerHTML = parseInt(tdVisPer.innerHTML) + 1;
+								scoreVis++;
+								trouve = true;
+							}
+						}//fin while(!trouve)
+					}// fin du for
+					tdTitrePer = document.createElement('TD');
+					tdTitrePer.innerHTML = "F";
+					document.getElementById('trTitreVent').appendChild(tdTitrePer);
+
+					tdDomPer = document.createElement('TD');
+					tdDomPer.innerHTML = scoreDom;
+					document.getElementById('trDomVent').appendChild(tdDomPer);
+					tdVisPer = document.createElement('TD');
+					tdVisPer.innerHTML = scoreVis;
+					document.getElementById('trVisVent').appendChild(tdVisPer);
+
+				}
+
+				//	document.body.rangee.cellule.innerHTML ='yo';
+				catch(err) {
+				}
+
+			}
+
+			function corrigeBut(but) {
+				//	frameModif = document.getElementById("frameModif")
+				//	frameModif.className = "affiche";
+				construitDialogue();
+				doc = document.getElementById('divDialogue');
+
+				//	frameModif.onload = function()
+				//{
+
+				if (window.rJSON.eqDom == window.rJSON.buts[but].equipe) {
+					lequipe = window.statsJSONHome;
+				} else if (window.rJSON.eqVis == window.rJSON.buts[but].equipe) {
+					lequipe = window.statsJSONVis;
+				} else
+					(alert("Erreur d'attribution de nom d'équipe, contactez un membre de Syncstats."))
+				//var doc = frameModif.contentDocument || frameModif.contentWindow.document;
+				//	butModif = new Array();
+
+				selMarq = document.createElement('SELECT');
+				selPass1 = document.createElement('SELECT');
+				selPass2 = document.createElement('SELECT');
+				trouveM = 0;
+				trouveP1 = 0;
+				trouveP2 = 0;
+				for ( a = 0; a < lequipe.joueurs.length; a++) {
+					opt = document.createElement('OPTION');
+					opt.innerHTML = lequipe.joueurs[a].nom;
+					//	vecMarqId[a]=lequipe.joueurs[a].joueurId;
+					if (lequipe.joueurs[a].joueurId == window.rJSON.buts[but].marqueurId) {
+						opt.setAttribute("selected", "true");
+						trouveM = 1;
+					}
+					opt2 = document.createElement('OPTION');
+					opt2.innerHTML = lequipe.joueurs[a].nom;
+					if (lequipe.joueurs[a].joueurId == window.rJSON.buts[but].passeur1Id) {
+						opt2.setAttribute("selected", "true");
+						trouveP1 = 1;
+					}
+					opt3 = document.createElement('OPTION');
+					opt3.innerHTML = lequipe.joueurs[a].nom;
+					if (lequipe.joueurs[a].joueurId == window.rJSON.buts[but].passeur2Id) {
+						opt3.setAttribute("selected", "true");
+						trouveP2 = 1;
+					}
+					//alert("Joueur: "+statsJSONHome.joueurs[a].nom);
+					selMarq.appendChild(opt);
+					selPass1.appendChild(opt2);
+					selPass2.appendChild(opt3);
+				}
+				//	lequipe.joueurs.push(null);
+				opt = document.createElement('OPTION');
+				opt.innerHTML = "- " + window.tl_match_aucun + " -";
+				if (!trouveM)
+					opt.setAttribute("selected", "true");
+				opt2 = document.createElement('OPTION');
+				opt2.innerHTML = "- " + window.tl_match_aucun + " -";
+				if (!trouveP1)
+					opt2.setAttribute("selected", "true");
+				;
+				opt3 = document.createElement('OPTION');
+				opt3.innerHTML = "- " + window.window.tl_match_aucun + " -";
+				if (!trouveP2)
+					opt3.setAttribute("selected", "true");
+				;
+				selMarq.appendChild(opt);
+				selPass1.appendChild(opt2);
+				selPass2.appendChild(opt3);
+
+				doc.appendChild(selMarq);
+				doc.appendChild(selPass1);
+				doc.appendChild(selPass2);
+
+				/////////////////////////////////////////////////////////
+				//
+				//	Structure JSON du but à modifier.
+				//
+				//	noSeq
+				//	matchId
+				//	marqueurId
+				//	passeur1Id
+				//	passeur2Id
+				//
+				//////////////////////////////////////////////////////////
+
+				boutOK = document.createElement('INPUT');
+				boutOK.className = "okFrame";
+				boutOK.id = "boutOK";
+				boutOK.type = "button";
+				boutOK.value = "OK";
+				boutOK.onclick = function() {
+
+					//	butModif.noSeq=but;
+					lequipe.joueurs[selMarq.selectedIndex] != undefined || lequipe.joueurs[selMarq.selectedIndex] != null ? marqueurId = lequipe.joueurs[selMarq.selectedIndex].joueurId : marqueurId = null;
+					lequipe.joueurs[selPass1.selectedIndex] != undefined || lequipe.joueurs[selPass1.selectedIndex] != null ? passeur1Id = lequipe.joueurs[selPass1.selectedIndex].joueurId : passeur1Id = null;
+					lequipe.joueurs[selPass2.selectedIndex] != undefined || lequipe.joueurs[selPass2.selectedIndex] != null ? passeur2Id = lequipe.joueurs[selPass2.selectedIndex].joueurId : passeur2Id = null;
+					butModif = {
+						matchId : window.matchID,
+						noSeq : but,
+						"marqueurId" : marqueurId,
+						"passeur1Id" : passeur1Id,
+						"passeur2Id" : passeur2Id
+					};
+					strBut = JSON.stringify(butModif);
+					//alert(selMarq.selectedIndex);
+					//alert(lequipe.joueurs[selMarq.selectedIndex].joueurId);
+					//alert(strBut);
+
+					setMAJBut(strBut);
+
+					detruitDialogue();
+				};
+				doc.appendChild(boutOK);
+
+				//};
+
+				//document.getElementById("div").appendChild(iframe); //this is a div  that I have in body.
+
+			}
+			function surVideoChoisi(strV) {
+                                        //                          alert(strV);
+                                        videNoeud('ficheVid');
+                                        document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + strV.fic;
+                                        vidSVC = document.getElementById('vid1');
+                                        vidSVC.style.display="block";                                       
+                                        vidSVC.load();
+                                        $('<p></p>').appendTo('#ficheVid').text("Ce vidéo a été vu " + strV.nbVues + " fois").css({
+                                            'text-align' : 'center'
+                                        });
+                                        $('<p></p>').appendTo('#ficheVid').text("Comment était ce but?").css({
+                                            'text-align' : 'center'
+                                        });
+                                        $('<div id="contEtoile"></div>').appendTo('#ficheVid');
+                                        $("#contEtoile").css({
+                                            'font-size' : 'large',
+                                            'text-align' : 'justify'
+                                        });
+                                        $('<p class="etoile1"></p>').appendTo('#contEtoile');
+                                        $('<p class="etoile2"></p>').appendTo('#contEtoile');
+                                        $('<p class="etoile3"></p>').appendTo('#contEtoile');
+                                        $('<p class="etoile4"></p>').appendTo('#contEtoile');
+                                        $('<p class="etoile5"></p>').appendTo('#contEtoile');
+                                        $("[class*='etoile']").css({
+                                            'display' : 'inline',
+                                            'cursor' : 'pointer',
+                                            'font-size' : 'large'
+                                        }).html("&#10029");
+
+                                        var eval = getCookie('videoId_eval_' + strV.videoId);
+
+                                        function colori(event) {
+                                            for (var a = parseInt(event.data.classe); a > 0; a--) {
+                                                $(".etoile" + a).css('color', '#0000FF')
+                                            }
+                                        };
+                                        function decolori(event) {
+                                            for (var a = parseInt(event.data.classe); a > 0; a--) {
+                                                $(".etoile" + a).css('color', '#000000')
+                                            }
+                                        };
+
+                                        if (eval == null) {
+                                            for (var b = 1; b <= 5; b++) {
+                                                $('.etoile' + b).on("mouseover", {
+                                                    classe : b
+                                                }, colori).on("mouseout", {
+                                                    classe : b
+                                                }, decolori);
+                                                $('.etoile' + b).on("click", {
+                                                    classe : b
+                                                }, function(event) {
+                                                    $.post('/scriptsphp/evalueVid.php', {
+                                                        videoId : strV.videoId,
+                                                        eval : event.data.classe
+                                                    });
+                                                    setCookie('videoId_eval_' + strV.videoId, event.data.classe, 1000);
+                                                    $("[class*='etoile']").off('mouseover');
+                                                    $("[class*='etoile']").off('mouseout');
+                                                    $("[class*='etoile']").off('click');
+                                                });
+                                            }
+
+                                        } else {
+                                            switch(parseInt(eval)) {
+                                                case 1:
+                                                    $(".etoile1").css('color', '#0000FF');
+                                                    break;
+                                                case 2:
+                                                    $('.etoile1,.etoile2').css('color', '#0000FF');
+                                                    break;
+                                                case 3:
+                                                    $('.etoile1,.etoile2,.etoile3').css('color', '#0000FF');
+                                                    break;
+                                                case 4:
+                                                    $(".etoile1,.etoile2,.etoile3,.etoile4").css('color', '#0000FF');
+                                                    break;
+                                                case 5:
+                                                    $('[class*=etoile]').css('color', '#0000FF');
+                                                    break;
+
+                                            }
+                                        }
+
+                                        $('<div id="divAngleOk"></div>').appendTo('#ficheVid').append($('<div></div>').attr("class", "selectAngleOk").append($('<img src="/images/icones/check.png" width="16" height="16"></img>'), $('<div></div>').text("That angle shows the goal")).click(function() {
+                                            $.post('/scriptsphp/changeAngleOk.php', {
+                                                changeAngle : 1,
+                                                videoId : strV.videoId
+                                            });
+                                        }), $('<div></div>').attr("class", "selectAngleOk").append($('<img src="/images/icones/delete.png" width="16" height="16"></img>'), $('<div></div>').text("That angle doesn't show the goal")).click(function() {
+                                            $.post('/scriptsphp/changeAngleOk.php', {
+                                                changeAngle : -1,
+                                                videoId : strV.videoId
+                                            });
+                                        }));
+
+                                        $('<div id="scoreBut"></div>').appendTo('#ficheVid').text(parseInt(strV.eval).toFixed(1) + " / 5").css({
+                                            "font-size" : 'larger',
+                                            'text-align' : 'center'
+                                        });
+                                        $.post('/scriptsphp/incrementeVidNbVues.php', {
+                                            videoId : strV.videoId
+                                        });
+
+                                    }
+			
+
+		</script>
+
+	</HEAD>
+	<body id="mbody">
+
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+		<div id="divMenuHaut"></div>
+
+		<div id="divCentrale">
+
+		</div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+			//						alert(JSON.stringify(document.getElementById("divCentrale").all));
+			//		alert(document.getElementsByTagName("A")[0].href);
+
+			developper(22);
+			detruitDivGauche();
+			vecTab = ['tabResume', 'tabButs', 'tabPun', 'tabStatsDom', 'tabStatsVis'];
+			vecNomTab = [window.tl_match_Resume, window.tl_stats_Buts, window.tl_match_Penalites, window.tl_resultats_Domicile, window.tl_resultats_Visiteur];
+			vPerm = verifiePermission();
+
+			faitEntete();
+			selectOnglet(0);
+
+			//		alert(document.getElementById("tabResume").id);
+
+			etoileConditions = 0;
+			var matchID = getValue('match');
+			getInfoMatch(matchID);
+
+			getStatsJSON('H', matchID);
+			getStatsJSON('V', matchID);
+			//		alert(document.getElementById("tabResume").href);
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,631 @@
+<HTML> 
+<HEAD> 
+	<title>Zone Zero Config</title>
+	<link rel="stylesheet" href="style/general.css" type="text/css">
+	<link rel="stylesheet" href="style/dhtmlgoodies_calendar.css" type="text/css">
+<script src="/scripts/fonctions.js" type="text/javascript"charset="utf-8"></script>
+<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+</style>
+<style type="text/css">
+
+
+	.multipleSelectBoxControl span{	/* Labels above select boxes*/
+		font-family:arial;
+		font-size:11px;
+		font-weight:bold;
+	}
+	.multipleSelectBoxControl div select{	/* Select box layout */
+		font-family:arial;
+		height:100%;
+	}
+	.multipleSelectBoxControl input{	/* Small butons */
+		width:25px;	
+	}
+	
+	.multipleSelectBoxControl div{
+		float:left;
+	}
+		
+	.multipleSelectBoxDiv
+	</style>
+	<script type="text/javascript">
+
+
+						function setMatchAVenir()
+	{
+		return function(){
+		var requete_ajax = new XMLHttpRequest();
+		
+		var url = "/stats2/setMatchAVenir.php";
+//		alert(url);
+		var strJDom = "jDom="+JSON.stringify(window.jMAV[0]);
+		var strJVis ="jVis="+JSON.stringify(window.jMAV[1]);
+		var strGDom = "gDom="+window.gardien[0];
+		var strGVis = "gVis="+window.gardien[1];
+		var strEqDom = "eqDom="+window.eq[0];
+		var strEqVis = "eqVis="+window.eq[1];
+		var strDateDeb = "dateDeb="+document.getElementById('dateDeb').value;
+		var strDateFin = "dateFin="+document.getElementById('dateFin').value;
+		var strLigueId = "ligueId="+getValue('ligueId');
+		var strMAVId = "mavId="+window.mavId;
+		var params = strJDom+"&"+strJVis+"&"+strGDom+"&"+strGVis+"&"+strEqDom+"&"+strEqVis+"&"+strDateDeb+"&"+strDateFin+"&"+strLigueId+"&"+strMAVId;
+		alert(params);
+		requete_ajax.open('POST', url, true);
+
+		//Send the proper header information along with the request
+		requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		requete_ajax.setRequestHeader("Content-length", params.length);
+		requete_ajax.setRequestHeader("Connection", "close");
+
+		requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+			if(requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+				alert(requete_ajax.responseText);
+				window.location.reload();
+				}
+		}
+		requete_ajax.send(params);
+		var pourMAV = new Array();
+		//requete_ajax.send(null);
+//	return requete_ajax.responseText;
+
+
+}
+	}
+
+						function getMatchAVenir()
+	{
+	//			return function(){
+
+		var requete_ajax = new XMLHttpRequest();
+		
+		var url = "/stats2/getMatchAVenir.php";
+
+		var strMAVId = "mavId="+window.mavId;
+		var strLigueId = "ligueId="+getValue('ligueId');
+		param=strMAVId+'&'+strLigueId;
+		alert(url+'?'+param);
+		//requete_ajax.send(null);
+//	return requete_ajax.responseText;
+
+	requete_ajax.open('GET',url+'?'+param,false);
+	requete_ajax.send(null);
+
+//	alert(requete_ajax.responseText);
+	vecMAV = eval('(' +requete_ajax.responseText+')');
+	var k=0;
+	listeMatch=new Array();
+	while(k<vecMAV.length)
+	{
+		listeMatch[k]=vecMAV[k].mavId;
+		k++;		
+	}
+
+//	return vecMAV;
+	//}
+}
+						function construitEquipeDAlignement(tMavId)
+	{
+	//	return function(){
+	var k=0;
+	boule=0;
+	alert("On construit!");
+	while(k<window.vecMAV.length&&boule==0)
+	{
+		if(window.vecMAV[k].mavId==tMavId)
+		  {boule=1;}
+		else{k++;}		
+	}
+	if(!boule)
+	alert("Match non trouvé!");
+//	alert(JSON.stringify(window.cJSON));
+	
+	jsonEqDom = new Array();
+	jsonEqVis = new Array();
+	for(i=0;i<window.cJSON.equipe.length;i++)
+	{
+		if(window.vecMAV[k].eqDom==window.cJSON.equipe[i].equipeId)
+		{jsonEqDom=window.cJSON.equipe[i];
+		}
+		if(window.vecMAV[k].eqVis==window.cJSON.equipe[i].equipeId)
+		{jsonEqVis=window.cJSON.equipe[i];
+		}
+	}
+		alert("Equipes assignées!");
+
+	for(i=0;i<jsonEqDom.joueur.length;i++)
+	{
+		jsonEqDom.joueur[i].presence = "absent";
+		for(j=0;j<window.cJSON.equipe.length;j++)
+		{
+			k=0;
+			while(k<window.cJSON.equipe[j].joueur.length)
+			{
+				if(window.cJSON.equipe[j].joueur[k].joueurId==jsonEqDom.joueur[i].joueurId)
+				{
+					if(window.cJSON.equipe[j].equipeId==jsonEqDom.equipeId)
+					{
+								jsonEqDom.joueur[i].presence = "present";
+					}
+					else
+					{
+								jsonEqDom.joueur[i].presence = "remplace";
+					}
+					
+				}
+				k++;
+			}
+		}
+		
+	}
+	
+	for(i=0;i<jsonEqVis.joueur.length;i++)
+	{
+		jsonEqVis.joueur[i].presence = "absent";
+		for(j=0;j<window.cJSON.equipe.length;j++)
+		{
+			k=0;
+			while(k<window.cJSON.equipe[j].joueur.length)
+			{
+				if(window.cJSON.equipe[j].joueur[k].joueurId==jsonEqVis.joueur[i].joueurId)
+				{
+					if(window.cJSON.equipe[j].equipeId==jsonEqVis.equipeId)
+					{
+								jsonEqVis.joueur[i].presence = "present";
+					}
+					else
+					{
+								jsonEqVis.joueur[i].presence = "remplace";
+					}
+					
+				}
+				k++;
+			}
+		}
+		
+	}
+	
+	/**/
+	alert(JSON.stringify(jsonEqDom));
+	alert(JSON.stringify(jsonEqVis));
+	
+	return requete_ajax.responseText;
+
+
+//}
+	}
+
+
+	
+	/************************************************************************************************************
+	(C) www.dhtmlgoodies.com, October 2005
+	
+	This is a script from www.dhtmlgoodies.com. You will find this and a lot of other scripts at our website.	
+	
+	Terms of use:
+	You are free to use this script as long as the copyright message is kept intact. However, you may not
+	redistribute, sell or repost it without our permission.
+	
+	Thank you!
+	
+	www.dhtmlgoodies.com
+	Alf Magne Kalleland
+	
+	************************************************************************************************************/
+	
+		
+	var fromBoxArray = new Array();
+	var toBoxArray = new Array();
+	var selectBoxIndex = 0;
+	var arrayOfItemsToSelect = new Array();
+	var jMAV = new Array();
+	var gardien = new Array();
+	var eq = new Array();
+	
+	function moveSingleElement()
+	{
+		var selectBoxIndex = this.parentNode.parentNode.id.replace(/[^\d]/g,'');
+		var tmpFromBox;
+		var tmpToBox;
+		if(this.tagName.toLowerCase()=='select'){			
+			tmpFromBox = this;
+			if(tmpFromBox==fromBoxArray[selectBoxIndex])tmpToBox = toBoxArray[selectBoxIndex]; else tmpToBox = fromBoxArray[selectBoxIndex];
+		}else{
+		
+			if(this.value.indexOf('>')>=0){
+				tmpFromBox = fromBoxArray[selectBoxIndex];
+				tmpToBox = toBoxArray[selectBoxIndex];			
+			}else{
+				tmpFromBox = toBoxArray[selectBoxIndex];
+				tmpToBox = fromBoxArray[selectBoxIndex];	
+			}
+		}
+		
+		for(var no=0;no<tmpFromBox.options.length;no++){
+			if(tmpFromBox.options[no].selected){
+				tmpFromBox.options[no].selected = false;
+				tmpToBox.options[tmpToBox.options.length] = new Option(tmpFromBox.options[no].text,tmpFromBox.options[no].value);
+				
+				for(var no2=no;no2<(tmpFromBox.options.length-1);no2++){
+					tmpFromBox.options[no2].value = tmpFromBox.options[no2+1].value;
+					tmpFromBox.options[no2].text = tmpFromBox.options[no2+1].text;
+					tmpFromBox.options[no2].selected = tmpFromBox.options[no2+1].selected;
+				}
+				no = no -1;
+				tmpFromBox.options.length = tmpFromBox.options.length-1;
+											
+			}			
+		}
+		
+		
+		var tmpTextArray = new Array();
+		for(var no=0;no<tmpFromBox.options.length;no++){
+			tmpTextArray.push(tmpFromBox.options[no].text + '___' + tmpFromBox.options[no].value);			
+		}
+		tmpTextArray.sort();
+		var tmpTextArray2 = new Array();
+		for(var no=0;no<tmpToBox.options.length;no++){
+			tmpTextArray2.push(tmpToBox.options[no].text + '___' + tmpToBox.options[no].value);			
+		}		
+		tmpTextArray2.sort();
+		
+		for(var no=0;no<tmpTextArray.length;no++){
+			var items = tmpTextArray[no].split('___');
+			tmpFromBox.options[no] = new Option(items[0],items[1]);
+			
+		}		
+		
+		for(var no=0;no<tmpTextArray2.length;no++){
+			var items = tmpTextArray2[no].split('___');
+			tmpToBox.options[no] = new Option(items[0],items[1]);			
+		}
+	}
+	
+	function sortAllElement(boxRef)
+	{
+		var tmpTextArray2 = new Array();
+		for(var no=0;no<boxRef.options.length;no++){
+			tmpTextArray2.push(boxRef.options[no].text + '___' + boxRef.options[no].value);			
+		}		
+		tmpTextArray2.sort();		
+		for(var no=0;no<tmpTextArray2.length;no++){
+			var items = tmpTextArray2[no].split('___');
+			boxRef.options[no] = new Option(items[0],items[1]);			
+		}		
+		
+	}
+	function moveAllElements()
+	{
+		var selectBoxIndex = this.parentNode.parentNode.id.replace(/[^\d]/g,'');
+		var tmpFromBox;
+		var tmpToBox;		
+		if(this.value.indexOf('>')>=0){
+			tmpFromBox = fromBoxArray[selectBoxIndex];
+			tmpToBox = toBoxArray[selectBoxIndex];			
+		}else{
+			tmpFromBox = toBoxArray[selectBoxIndex];
+			tmpToBox = fromBoxArray[selectBoxIndex];	
+		}
+		
+		for(var no=0;no<tmpFromBox.options.length;no++){
+			tmpToBox.options[tmpToBox.options.length] = new Option(tmpFromBox.options[no].text,tmpFromBox.options[no].value);			
+		}	
+		
+		tmpFromBox.options.length=0;
+		sortAllElement(tmpToBox);
+		
+	}
+	
+	
+	/* This function highlights options in the "to-boxes". It is needed if the values should be remembered after submit. Call this function onsubmit for your form */
+	function multipleSelectOnSubmit()
+	{
+		for(var no=0;no<arrayOfItemsToSelect.length;no++){
+			var obj = arrayOfItemsToSelect[no];
+			for(var no2=0;no2<obj.options.length;no2++){
+				obj.options[no2].selected = true;
+			}
+		}
+		
+	}
+	
+	function createMovableOptions(fromBox,toBox,totalWidth,totalHeight,labelLeft,labelRight)
+	{		
+		fromObj = document.getElementById(fromBox);
+		toObj = document.getElementById(toBox);
+		
+		arrayOfItemsToSelect[arrayOfItemsToSelect.length] = toObj;
+
+		
+		fromObj.ondblclick = moveSingleElement;
+		toObj.ondblclick = moveSingleElement;
+
+		
+		fromBoxArray.push(fromObj);
+		toBoxArray.push(toObj);
+		
+		var parentEl = fromObj.parentNode;
+		
+		var parentDiv = document.createElement('DIV');
+		parentDiv.className='multipleSelectBoxControl';
+		parentDiv.id = 'selectBoxGroup' + selectBoxIndex;
+		parentDiv.style.width = totalWidth + 'px';
+		parentDiv.style.height = totalHeight + 'px';
+		parentEl.insertBefore(parentDiv,fromObj);
+		
+		
+		var subDiv = document.createElement('DIV');
+		subDiv.style.width = (Math.floor(totalWidth/2) - 15) + 'px';
+		fromObj.style.width = (Math.floor(totalWidth/2) - 15) + 'px';
+
+		var label = document.createElement('SPAN');
+		label.innerHTML = labelLeft;
+		subDiv.appendChild(label);
+		
+		subDiv.appendChild(fromObj);
+		subDiv.className = 'multipleSelectBoxDiv';
+		parentDiv.appendChild(subDiv);
+		
+		
+		var buttonDiv = document.createElement('DIV');
+		buttonDiv.style.verticalAlign = 'middle';
+		buttonDiv.style.paddingTop = (totalHeight/2) - 50 + 'px';
+		buttonDiv.style.width = '30px';
+		buttonDiv.style.textAlign = 'center';
+		parentDiv.appendChild(buttonDiv);
+		
+		var buttonRight = document.createElement('INPUT');
+		buttonRight.type='button';
+		buttonRight.value = '>';
+		buttonDiv.appendChild(buttonRight);	
+		buttonRight.onclick = moveSingleElement;	
+		
+		var buttonAllRight = document.createElement('INPUT');
+		buttonAllRight.type='button';
+		buttonAllRight.value = '>>';
+		buttonAllRight.onclick = moveAllElements;
+		buttonDiv.appendChild(buttonAllRight);		
+		
+		var buttonLeft = document.createElement('INPUT');
+		buttonLeft.style.marginTop='10px';
+		buttonLeft.type='button';
+		buttonLeft.value = '<';
+		buttonLeft.onclick = moveSingleElement;
+		buttonDiv.appendChild(buttonLeft);		
+		
+		var buttonAllLeft = document.createElement('INPUT');
+		buttonAllLeft.type='button';
+		buttonAllLeft.value = '<<';
+		buttonAllLeft.onclick = moveAllElements;
+		buttonDiv.appendChild(buttonAllLeft);
+		
+		var subDiv = document.createElement('DIV');
+		subDiv.style.width = (Math.floor(totalWidth/2) - 15) + 'px';
+		toObj.style.width = (Math.floor(totalWidth/2) - 15) + 'px';
+
+		var label = document.createElement('SPAN');
+		label.innerHTML = labelRight;
+		subDiv.appendChild(label);
+				
+		subDiv.appendChild(toObj);
+		parentDiv.appendChild(subDiv);		
+		
+		toObj.style.height = (totalHeight - label.offsetHeight) + 'px';
+		fromObj.style.height = (totalHeight - label.offsetHeight) + 'px';
+
+			
+		selectBoxIndex++;
+		
+	}
+	
+	
+	 function RotateSpinner(spinnerId, up) {
+            document.getElementById(spinnerId).value = up ? parseInt(document.getElementById(spinnerId).value) + 1 : parseInt(document.getElementById(spinnerId).value) - 1;
+        }
+
+
+
+	 function RafraichiBoite(boiteId) {
+	 	denom =window.cJSON.equipe.length;
+    switch(boiteId)
+    {
+    	case 1:
+		nomBoite = 'eqDom';
+		nomEq = 'nom10';
+		indiceEquipe=(100*denom+parseInt(document.getElementById('spinEq1').value))%denom;
+    	break;
+    	case 2:
+		nomBoite = 'eqVis';
+		nomEq = 'nom20';
+		indiceEquipe=parseInt(document.getElementById('spinEq2').value)%denom;
+    	break;
+    	case 3:
+		nomBoite = 'ALdom';
+		nomEq = 'nom11';
+		indiceEquipe=parseInt(document.getElementById('spinEq11').value)%denom;
+    	break;
+    	case 4:
+		nomBoite = 'ALvis';
+		nomEq = 'nom21';
+		indiceEquipe=parseInt(document.getElementById('spinEq21').value)%denom;
+    	break;
+    	
+    }
+		cell = document.getElementById(nomBoite);
+    	if ( cell.hasChildNodes() )
+		{
+    		while ( cell.childNodes.length >= 1 )
+    		{
+        	cell.removeChild( cell.firstChild );       
+    		} 
+		}
+		window.jMAV[boiteId-1]= new Array();
+		window.eq[boiteId-1]=window.cJSON.equipe[indiceEquipe].equipeId;
+    	for (K=0;K<window.cJSON.equipe[indiceEquipe].joueur.length;K=K+1)
+				{
+//				window.jMAV[boiteId-1]=window.jMAV[boiteId-1]+window.cJSON.equipe[indiceEquipe].joueur[K].joueurId+',';
+				window.jMAV[boiteId-1].push(window.cJSON.equipe[indiceEquipe].joueur[K].joueurId);
+				if(window.cJSON.equipe[indiceEquipe].joueur[K].position=='G'||window.cJSON.equipe[indiceEquipe].joueur[K].position=='g')
+				{		window.gardien[boiteId-1]= window.cJSON.equipe[indiceEquipe].joueur[K].joueurId;}
+				rangee = document.createElement('OPTION');
+				rangee.value = K;
+				texteRang = document.createTextNode(window.cJSON.equipe[indiceEquipe].joueur[K].nomJoueur);
+				rangee.appendChild(texteRang);
+				cell.appendChild(rangee);
+				}
+				
+				leNom = document.getElementById(nomEq);
+				leNom.innerHTML=window.cJSON.equipe[indiceEquipe].nomEquipe;
+    
+        
+}
+
+
+
+
+	</script>	
+ 
+</HEAD>
+<script type="text/javascript">
+		
+</script>
+
+
+<body id="mbody">
+	
+	
+	
+	    	 	<script type="text/javascript" charset="utf-8">
+							if(window.m != "1") {
+				genereEntete();
+				genereMenu(5);
+				genMenuZoneAdmin(3);
+
+			}
+
+		</script>
+
+	
+	 <DIV ID="divCentrale">
+
+<p> Match no 234</p>
+	
+<form method="post" action="multiple_select.html" onsubmit="multipleSelectOnSubmit()" >
+Début de match<input type="text" value="2012/06/02 12:55" readonly name="deb" id="dateDeb"><input type="button" value="Modifier" onclick="displayCalendar(document.forms[0].deb,'yyyy/mm/dd hh:ii',this,true)">
+Fin de match<input type="text" value="2012/06/02 12:55" readonly name="fin" id="dateFin"><input type="button" value="Modifier" onclick="displayCalendar(document.forms[0].fin,'yyyy/mm/dd hh:ii',this,true)">
+
+
+
+<div id="divHautGauche" style="height:200px;width:40%;float:left;">
+
+
+	<input id="spinEq1" type="hidden" name="usager" value="1" />
+	<div><input type="button" value="&#9650;" onclick="{RotateSpinner('spinEq1', true); RafraichiBoite(1);}" />
+		<p id="nom10"></p>
+   <input type="button" value="&#9660;" onclick="RotateSpinner('spinEq1', false); RafraichiBoite(1);" /></div>
+	<select multiple size = 15 name="nom_eqDom" id="eqDom">
+	</select>
+
+</div>
+
+<div class="espace" style="height:200px;width:20%;float:left;">
+</div>
+
+
+<div id="divHautDroit" style="height:200px;width:40%;float:left;">
+
+
+	<input id="spinEq2" type="hidden" name="usager" value="2" />
+	<div><input type="button" value="&#9650;" onclick="{RotateSpinner('spinEq2', true); RafraichiBoite(2);}" />
+		<p id="nom20"></p>
+   <input type="button" value="&#9660;" onclick="RotateSpinner('spinEq2', false); RafraichiBoite(2);" /></div>
+<select multiple size = 15 name="nom_eqVis" id="eqVis">
+</select>
+
+
+</div>
+
+<div id="divBasGauche" style="height:200px;width:40%;float:left;">
+
+
+	<input id="spinEq11" type="hidden" name="usager" value="2" />
+	<div><input type="button" value="&#9650;" onclick="{RotateSpinner('spinEq11', true); RafraichiBoite(3);}" />
+   		<p id="nom11"></p>
+	<input type="button" value="&#9660;" onclick="RotateSpinner('spinEq11', false); RafraichiBoite(3);" /></div>
+	<select multiple size = 15 name="toBox" id="ALdom">
+	</select>
+
+</div>
+
+<div class="espace" style="height:400px;width:20%;float:left;">
+</div>
+
+
+<div id="divBasDroit" style="height:200px;width:40%;float:left;">
+	<input id="spinEq21" type="hidden" name="usager" value="1" />
+	<div><input type="button" value="&#9650;" onclick="RotateSpinner('spinEq21', true); RafraichiBoite(4);" />
+		<p id="nom21"></p>
+   <input type="button" value="&#9660;" onclick="RotateSpinner('spinEq21', false); RafraichiBoite(4);" /></div>
+	<select multiple size = 15 name="fromBox" id="ALvis">
+	</select>
+</div>
+<script type="text/javascript">
+createMovableOptions("eqDom","ALdom",500,300,'Equipe domicile','Remplaçants');
+</script>
+<script type="text/javascript">
+createMovableOptions("eqVis","ALvis",500,300,'Equipe visiteur','Remplaçants');
+</script>
+
+	</form>
+	<script type="text/javascript">
+
+
+
+
+string2 = getJSONJoueursEquipes(null, getValue('ligueId'));
+//alert(string2);
+var cJSON = eval('(' +string2+')');
+mavId=1;
+getMatchAVenir();
+construitEquipeDAlignement(window.listeMatch.slice(-1)[0]);
+
+denom =cJSON.equipe.length;
+document.getElementById('spinEq1').value="0";  // La permière de la ligue
+document.getElementById('spinEq2').value="1"; // La deuxième de la ligue
+document.getElementById('spinEq11').value=denom-1; // Les agents libres
+document.getElementById('spinEq21').value=denom-1; // Les agents libres
+ RafraichiBoite(1);
+  RafraichiBoite(2);
+   RafraichiBoite(3);
+    RafraichiBoite(4);
+
+//createMovableOptions("eqDom","ALdom",400,300,cJSON.equipe[i10].nomEquipe,cJSON.equipe[i11].nomEquipe);
+//createMovableOptions("eqVis","ALvis",400,300,cJSON.equipe[i20].nomEquipe,cJSON.equipe[i21].nomEquipe);
+
+for (J=0;J<denom;J=J+1)
+{
+
+}
+
+
+</script>
+<p>Déplacer les joueurs en cliquant sur les boutons ou en double-cliquant sur le nom des joueurs.</p>
+			<script type="text/javascript" charset="utf-8">
+		var btnOK = document.createElement('input');
+		btnOK.type = "button";
+		btnOK.value = "Enregistrer";
+		btnOK.onclick= setMatchAVenir();
+		//clicCB(jJSON.joueurs.length,cJSON.equipes.length,cJSON.equipes.length*J+K);
+
+		document.getElementById("mbody").appendChild(btnOK);
+
+ 	</script>
+
+
+</DIV> <!-- Fin de la DIV centrale-->
+
+</body> 
+</html> 		

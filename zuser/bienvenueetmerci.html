@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<?xml version="1.0" encoding="utf-8"?>
+<html>
+<head>
+<title>SyncStats</title>
+		<link rel="stylesheet" href="/style/general_v4.css" type="text/css">
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+				 		
+				 		function creerLigue() {
+
+			window.location = "/zadmin/creerligue.html?userId=" + getCookie('userId') + "&code=" + 1;
+			return true;
+		}
+		</script>
+</head>
+<body id="mbody">
+
+				<div id="divHaut">
+		</div>
+		<div id="divGauche">
+		</div>
+						<div id="divMenuHaut"></div>
+		<div id="divCentrale">
+
+
+
+
+		</div>
+		<div id="divDroite">
+		</div>
+		 	<script type="text/javascript" charset="utf-8">
+		 		
+		
+		 	developper(1);
+		 	
+		 	divC=document.getElementById('divCentrale');
+		 	divCorps=document.createElement('DIV');
+		 	divC.appendChild(divCorps);
+		 	divCorps.style.margin="20px";
+		 	hMerci = document.createElement('H1');
+		 	hMerci.innerHTML="Merci de vous joindre à SyncStats!";
+		 	hMaintenant = document.createElement('H2');
+		 	hMaintenant.innerHTML="Maintenant, que voulez-vous faire?";
+		 	divCorps.appendChild(hMerci);
+		 	divCorps.appendChild(hMaintenant);
+		 	
+		 	ulChoix = document.createElement('UL');
+		 	li1=document.createElement('LI');
+		 	
+		 	lien = document.createElement('A');
+			lien.innerHTML = window.tl_profil_creerLigue ;
+			lien.style.textIndent = "15px";
+			lien.className="lien";
+			//lien.href = menus[18].lien+"?userId="+window.usager.id+"&code=1";
+			lien.onclick = function() {
+				creerLigue()
+			};
+			li1.appendChild(lien);
+			
+			
+			li2=document.createElement('LI');
+			ol2=document.createElement('OL');
+			li2.innerHTML="Vous identifier à un joueur existant:"
+			li21=document.createElement('LI');
+			li21.innerHTML="Allez voir les stats de votre ligue";
+			li22=document.createElement('LI');			
+			li22.innerHTML="Cliquez sur le nom de votre joueur";
+			li23=document.createElement('LI');			
+			li23.innerHTML="Cliquez sur \"Réclamez-le\"";
+			ol2.appendChild(li21);
+			ol2.appendChild(li22);
+			ol2.appendChild(li23);
+			li2.appendChild(ol2);
+			
+			li3=document.createElement('LI');
+		 	
+		 	lien3 = document.createElement('A');
+			lien3.innerHTML = "Consulter/Modifer votre profil" ;
+			lien3.style.textIndent = "15px";
+			lien3.className="lien";
+			//lien.href = menus[18].lien+"?userId="+window.usager.id+"&code=1";
+			lien3.onclick = function() {
+			window.location.href="/zuser/monprofil.html#tabProfil";
+			};
+			li3.appendChild(lien3);
+			
+			li4=document.createElement('LI');
+		 	
+		 	lien4 = document.createElement('A');
+			lien4.innerHTML = "Télécharger l'app via Google Play" ;
+			lien4.style.textIndent = "15px";
+			lien4.className="lien";
+			//lien.href = menus[18].lien+"?userId="+window.usager.id+"&code=1";
+			lien4.onclick = function() {
+			window.location.href="https://play.google.com/store/apps/details?id=hockey.ref&hl=fr";
+			};
+			li4.appendChild(lien4);		
+			
+			
+			
+			ulChoix.appendChild(li1);
+			ulChoix.appendChild(li2);
+			ulChoix.appendChild(li3);
+			ulChoix.appendChild(li4);
+			ulChoix.style.margin="20px";
+			divCorps.appendChild(ulChoix);
+		 	
+		 		
+		 		
+
+		 		
+		 	</script>
+
+
+
+</body>
+</html>

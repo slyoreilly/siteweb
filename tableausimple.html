@@ -1,0 +1,48 @@
+<HTML>
+	<HEAD>
+		<title>Tableau simple</title>
+		<link rel="stylesheet" href="style/general.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<style>
+		</style>
+	</HEAD>
+	<body id="mbody">
+		<script type="text/javascript" charset="utf-8">
+
+		</script>
+		<DIV ID="divCentrale">
+		</DIV>
+		<script type="text/javascript">
+			var fctTableau = getValue('fctTableau');
+			var commande = getValue('commande');
+			var matchID = getValue('matchId');
+			var strInfoMatch = getInfoMatch(matchID);
+			var infoMatch = eval('(' + strInfoMatch + ')');
+			
+			
+			var uneString = getJSONdeMatchID(matchID);
+		//	alert(uneString);
+			var rJSON = eval('(' + uneString + ')');
+			//document.getElementById('date').innerHTML = rJSON.date;
+			//document.getElementById('date').innerHTML = 'test1';
+			//alert(rJSON.date);
+
+			var matchSplit = parseMatchID(matchID);
+			//var stringStatsHome = getStatsJSON(matchSplit[1],matchID);
+			
+			var m = getValue('m');
+			var m3 = getValue('m3');
+			
+			if(m3=="")
+			{window.onload=afficheSelectionNiv3(1);}
+			else
+			window.onload=afficheSelectionNiv3(parseInt(getValue('m3')));
+
+
+
+		</script>
+	</body>
+</html>

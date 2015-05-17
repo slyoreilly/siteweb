@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<?xml version="1.0" encoding="utf-8"?>
+<html>
+	<head>
+		<title>SyncStats</title>
+		<meta name="description" content="With SyncStats, your hockey statistics are put online seamlessly. Based on an easy-to-use mobile app, you also get a nice web site for your stats. Stay tuned, even nicer features to come!	">
+		<meta name="keyword" content="hockey,statistics,android,mobile app, smartphone, scoreboard, video replay,">
+		<meta name="author" content="Sylvain O'Reilly">
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<style>
+			a {
+				color: #8DBB22;
+			}
+		</style>
+		<script type="text/javascript" charset="utf-8">
+			gereLangue();
+
+			function faitDivIndex1() {
+				// ;
+				//
+				// Vos Stats détaillées;
+				//Découvrez SyncStats;
+				elParent = document.getElementById('divCentrale');
+				//elParent.style.height="80%";
+				elParent.style.minHeight = "400px";
+				dIndex1 = document.getElementById('divIndex1');
+
+				titreIndexJS = document.getElementById('titreIndex');
+				titreIndexJS.innerHTML = window.tl_titreIndex;
+				sousTitreIndexJS = document.getElementById('sousTitreIndex');
+				sousTitreIndexJS.innerHTML = window.tl_sousTitreIndex;
+
+				bulle1 = document.getElementById('bulle1Id');
+				bulle1.onclick = function() {
+					window.location.href = window.menus[0].lien;
+				}
+				inBulle1 = document.getElementById('inBulle1Id');
+				inBulle2 = document.getElementById('inBulle2Id');
+				bulle2 = document.getElementById('bulle2Id');
+				bulle2.onclick = function() {
+					window.location.href = window.menus[28].lien;
+				}
+				inBulle1.innerHTML = window.tl_indexBulle1;
+				inBulle2.innerHTML = window.tl_indexBulle2;
+			}
+		</script>
+	</head>
+	<body id="mbody">
+
+		<div id="divHaut">
+			<div id="divTitreDoc">
+				<div id="divLogo">
+					<a href="/"><h1>SYNCSTATS</h1></a>
+					<img id="imgLogo" src="/images/logoSeul.png" alt="SyncStats Logo"> </img> 
+
+				</div>
+				<div id="menuDivHaut">
+					<div id="divMenu">
+
+						<ul id="menu">
+							<li id="1_1">
+								<a href="/zstats/accueilligue.html">Stats</a>
+								<ul>
+									<li>
+										<a href="/zstats/accueilligue.html">Home</a>
+									</li>
+									<li>
+										<a href="/zstats/statistiques.html">Standings</a>
+									</li>
+									<li>
+										<a href="/zstats/meneurs.html">Leaders</a>
+									</li>
+									<li>
+										<a href="/zstats/resultats.html">Results</a>
+									</li>
+									<li>
+										<a href="/zuser/monprofil.html">My profile</a>
+									</li>
+
+								</ul>
+							</li>
+							<li id="1_4">
+								<a href="/zdoc/videos.html">Infos</a>
+								<ul>
+									<li>
+										<a href="/zdoc/videos.html">Infos</a>
+									</li>
+									<li>
+										<a href="/zdoc/videos.html">Video</a>
+									</li>
+									<li>
+										<a href="/zdoc/demarrer.html">Start with SyncStats</a>
+									</li>
+									<li>
+										<a href="/zdoc/faq.html">FAQ</a>
+									</li>
+
+								</ul>
+
+							</li>
+							<li id="1_5">
+
+								<a href="/produits.html">Products</a>
+
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="divGauche"></div>
+		<div id="divMenuHaut"></div>
+		<div id="divCentrale">
+			<div id="divIndex1">
+				<h1 id="titreIndex">Smart Hockey</h1>
+				<p id="sousTitreIndex">
+					Mobile app to replace scoresheets for automated stats management of hockey leagues and tournaments.</h2>
+					<div id="bulle1Id" class="divBulle vert cliquable">
+						<div id="inBulle1Id">
+							Your detailed stats
+						</div>
+					</div>
+					<div id="bulle2Id" class="divBulle bleu cliquable">
+						<div id="inBulle2Id">
+							Discover SyncStats
+						</div>
+
+					</div>
+
+			</div>
+
+		</div>
+		<div id="divDroite">
+			<div id="divIndexDroite">
+				<h1>SyncStats</h1>
+				<h2>Base mobile app</h2>
+				<ul>
+					<li>
+						Keep track of score and statistics during the game
+					</li>
+					<li>
+						Eliminate paperwork and retyping, all synced online automaticaly
+					</li>
+					<li>
+						Enjoy a nice web site for your league
+					</li>
+					<li>
+						Not expensive at all, only need a smartphone!
+					</li>
+				</ul>
+				<h2>Extended features*</h2>
+				<ul>
+					<li>
+						Use a remotely controlled scoreboard
+					</li>
+					<li>
+						Record videos of your goals, get highlights, all automatic!
+					</li>
+				</ul>
+				<p>
+					* Extended features still under development, contact us to try them.
+				</p>
+
+			</div>
+			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+			<!-- boiteContexteAdSense -->
+			<ins class="adsbygoogle"
+			style="display:inline-block;width:250px;height:250px"
+			data-ad-client="ca-pub-2263794877114969"
+			data-ad-slot="9575808332"></ins>
+			<script>
+				( adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
+
+		</div>
+		<div id="divBas"></div>
+
+		<script type="text/javascript" charset="utf-8">
+			developper(1);
+
+			detruitNoeud('divGauche');
+			detruitNoeud('dBC_1');
+			detruitNoeud('dBC_2');
+
+			//		videNoeud('divDroite');
+			document.getElementById('divCentrale').style.width = "66%";
+			document.getElementById('divCentrale').style.marginLeft = "2%";
+			document.getElementById('divCentrale').style.marginRight = "2%";
+
+			document.getElementById('divCentrale').style.left = "0";
+
+			document.getElementById('divDroite').style.width = "26%";
+			document.getElementById('divDroite').style.backgroundColor = "#FFF";
+			//		detruitDivGaucheDroite();
+			bN = document.getElementById('barreTitreContexte');
+			for (var a = 0; a < bN.childNodes.length; a++) {
+				bN.childNodes[a].style.display = "none";
+
+			}
+			document.getElementById('barreNav').style.display = "none";
+			faitDivIndex1();
+
+			/*
+			 maListe = document.getElementById("liste1");
+			 li1 = document.createElement('LI')
+			 li1.innerHTML=window.tl_l1e1;
+			 li2 = document.createElement('LI')
+			 li2.innerHTML=window.tl_l1e2;
+			 li3 = document.createElement('LI')
+			 li3.innerHTML=window.tl_l1e3;
+			 maListe.appendChild(li1);
+			 maListe.appendChild(li2);
+			 maListe.appendChild(li3);
+
+			 maListe = document.getElementById("liste2");
+			 li1 = document.createElement('LI')
+			 li1.innerHTML=window.tl_l2e1;
+			 li2 = document.createElement('LI')
+			 li2.innerHTML=window.tl_l2e2;
+			 maListe.appendChild(li1);
+			 maListe.appendChild(li2);
+
+			 document.getElementById('index_h1').innerHTML=window.tl_index_h1;
+			 */
+			/*window.onload = function () {
+			 document.getElementById('divSync').className="apresGauche";
+			 document.getElementById('divStats').className="apresDroite";
+			 }*/
+
+		</script>
+	</body>
+</html>

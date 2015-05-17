@@ -1,0 +1,47 @@
+<?php
+
+
+$vdhr = date("Y/m/d H:i:s",$vielledateMAV);
+$vdhr= str_replace('/','-',$vdhr);
+	
+	
+//$jDom = json_decode($jDomJSON, true);
+//$jVis = json_decode($jVisJSON, true);
+$qString="SELECT abonEquipeLigue.*, MatchAVenir.*	FROM MatchAVenir 
+						JOIN abonEquipeLigue 
+							ON (abonEquipeLigue.ligueId=MatchAVenir.ligueId)
+						WHERE MatchAVenir.ligueId='{$ligueId}' 
+							AND dernierMAJ>'{$vdhr}'
+							AND abonEquipeLigue.finAbon>NOW()
+							AND MatchAVenir.date>(NOW()-INTERVAL 1 DAY)
+							AND MatchAVenir.date<(NOW()+INTERVAL 2 WEEK)
+							AND (MatchAVenir.eqDom=abonEquipeLigue.equipeId OR MatchAVenir.eqVis=abonEquipeLigue.equipeId)
+						GROUP BY mavId";
+						
+unset($retour);
+$retour = mysql_query($qString) or die(mysql_error());	
+//$strRetour.= mysql_num_rows($retour);
+//$strRetour.="rege";
+
+$vecMatch = array();
+$Im=0;
+while($r = mysql_fetch_array($retour,MYSQL_ASSOC)) {
+    $vecMatch[]=$r;
+    $Im++;
+}
+//$adomper= stripslashes(json_encode($vecMatch));
+//$adomper= str_replace('"[','[',$adomper);
+//$adomper= str_replace(']"',']',$adomper);
+
+$vecMAV=$vecMatch;
+$infoMav = $qString;
+/*
+if(count($vecMatch)!=0)
+echo $adomper;
+else {
+	echo  "";
+}*/
+
+
+	//		header("HTTP/1.1 200 OK");
+?>

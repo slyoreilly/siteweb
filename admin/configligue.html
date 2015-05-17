@@ -1,0 +1,160 @@
+<html>
+	<HEAD> 
+	<title>Configuration de la ligue</title>
+<link rel="stylesheet" href="/style/general.css" type="text/css">
+<script src="/scripts/fonctions.js" type="text/javascript"></script>
+<script src="/scripts/affichage.js" type="text/javascript"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+
+<script type="text/javascript">
+
+ function RotateSpinner(spinnerId, up) {
+            document.getElementById(spinnerId).value = up ? parseInt(document.getElementById(spinnerId).value) + 1 : parseInt(document.getElementById(spinnerId).value) - 1;
+        }
+			function traiteForme(maForme)
+	{
+ uneString = verifForme(maForme);	
+	var rJSON = eval('(' +uneString+')');
+
+
+if(rJSON.idCheck=="true")
+	{	
+		
+	amettre2 = document.getElementById('lienInscription');
+		document.getElementById('texteErreur').innerHTML='ID valide';
+	setCookie("userId",rJSON.id,7);
+	var person={id:rJSON.id};
+//postwith("pageperso.php",person);
+postwith("/index.html",person);
+	}
+	else
+	{
+	amettre2 = document.getElementById('lienInscription');
+		document.getElementById('texteErreur').innerHTML='Identification invalide';
+	}
+
+
+	}
+
+
+		function verifForme(maForme)
+	{
+		
+		var requete_ajax = new XMLHttpRequest();
+		
+//		var url = "/admin/verifinscription.php";
+		var params = "usager="+maForme.usager.value+"&prenom="+maForme.prenom.value+"&nom="+maForme.nom.value+"&pass="+maForme.pass.value+"&pass2="+maForme.pass2.value+"&codePostal="+maForme.codePostal.value+"&courriel="+maForme.courriel.value+"&code=1";
+		requete_ajax.open("POST", url, true);
+
+		//Send the proper header information along with the request
+		requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		requete_ajax.setRequestHeader("Content-length", params.length);
+		requete_ajax.setRequestHeader("Connection", "close");
+
+	
+		requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+			if(requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+				strRepErreur = requete_ajax.responseText;
+//				alert(strRepErreur);
+				var repErreur = eval('(' +strRepErreur+')');
+				
+				if(repErreur.succes==1)
+					{
+					setCookie("userId",repErreur.usager,7);
+					var person={id:repErreur.usager};
+					//postwith("pageperso.php",person);
+					postwith("/login.html",person);
+					}
+					else
+					{
+//				alert("Echec");
+						if(repErreur.erreurExist==1)
+						{
+							amettre2 = document.getElementById('pHaut');
+							amettre2.innerHTML='Choisissez un autre identifiant!';
+//				alert("id Exist");
+						}
+						if(repErreur.erreurPass==1)
+						{	
+							amettre2 = document.getElementById('pHaut');
+							amettre2.innerHTML='Les mots de passes ne concordent pas!';
+//				alert("mot de passe");
+						}
+					}
+				
+				
+				}
+		}
+			requete_ajax.send(params);
+	return requete_ajax.responseText;
+
+//	alert(requete_ajax.responseText);
+
+
+	}
+	
+	</script>
+</HEAD>
+
+
+<body id="body">
+    	 	<script type="text/javascript">
+				genereEntete();    
+				genereMenu(4);    
+		</script>
+	
+<form name="myForm">
+
+
+
+<!--b><i>Attention!</i> Non fonctionnel pour l'instant!</b-->
+
+<p id="pHaut">
+<div class="formGauche">Temps des punitions:</div> <div class="formDroite"><input id="spinPun" type="text" name="usager" value="2" />
+	<div><input type="button" value="&#9650;" onclick="RotateSpinner('spinPun', true)" />
+   <input type="button" value="&#9660;" onclick="RotateSpinner('spinPun', false)" /></div>
+	
+</div><br style="clear:both"/>
+
+<div class="formGauche">Nombre de périodes :</div><div class="formDroite"><input id="spinPer" name="prenom" type="text" value="3" />
+	<div>            
+	<input type="button" value="&#9650;" onclick="RotateSpinner('spinPer', true)" />
+   <input type="button" value="&#9660;" onclick="RotateSpinner('spinPer', false)" /></div>
+    </div><br style="clear:both"/>
+
+
+<div class="formGauche">Prologation :</div> <div class="formDroite"><input type="text" name="nom" /></div><br style="clear:both"/>
+<div class="formGauche">Fusillade :</div> <div class="formDroite"><input type="password" name="pass" /></div><br style="clear:both"/>
+<input type="hidden" name="code" value=1/>
+	
+	
+
+<table border="0">
+<tr valign="top">
+<td>
+<p>
+J'aimerais recevoir :<br />
+<input type="checkbox" name="check1" value="Computer-Zine" checked="checked" /> Les courriels de nouveautés Syncstats <br />
+<input type="checkbox" name="check2" value="Fisher-Zine" /> Des offres privilégiées de Syncstats <br />
+<input type="checkbox" name="check3" value="Cat-O-Zine" /> Tout ce que vous avez pour moi!
+</p>
+</td>
+
+<td>
+<p>
+Commentaires: <br>
+<textarea name="special" rows="3" cols="35" wrap="yes">
+</textarea>
+
+</td>
+</tr>
+</table>
+</p>
+
+<input type="button" onClick="verifForme(this.form)" value="Compléter" />
+<input type="reset" value="Recommencer" />
+
+</form>
+
+</body></html>

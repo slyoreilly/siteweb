@@ -1,0 +1,540 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+	<HEAD>
+		<title>Résultats des matchs</title>
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="stylesheet" href="/style/syncboard.css" type="text/css"/>
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		<!--meta http-equiv="refresh" content="10" -->
+			<style>
+		</style>
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+
+		<script type="text/javascript" charset="utf-8">
+			function getInfoMatch(matchId) {
+				//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/syncboard/scriptsSB/infoMatch2SB.php";
+
+				var strMatchId = "matchId=" + matchId;
+
+				params = strMatchId;
+				url = url + "?" + params;
+
+				//		alert(url+'?'+param);
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						infoMatch = eval('(' + requete_ajax.responseText + ')');
+						ligueId = infoMatch.ligueId;
+						try{setCommande(infoMatch.matchId,"dureePeriode",infoMatch.cvLigue.reglements.dureePeriode);
+												window.dureePeriode=infoMatch.cvLigue.reglements.dureePeriode;
+						}
+						catch(err){}
+						webMatchId=infoMatch.matchId;
+						window.matchId=infoMatch.matchId;
+						var d =new Date();
+						offset = d.getTime()-infoMatch.heure*1000;
+						/*alert(d.getTime());
+						alert(infoMatch.heure*1000);
+						alert(offset);
+						*/
+									getJSONdeMatchID(webMatchId);
+
+						//alert(getCookie('ligueId')==null||getCookie('ligueId')=="");
+						if (getCookie('ligueId') == null || getCookie('ligueId') == "") {
+							setCookie('ligueId', ligueId, 120);
+							//alert(getCookie('ligueId'));
+						}
+		//				alert(document.getElementById("tabResume").href);
+						window.conditions++;
+						if(window.conditions>=2)
+							{afficheMatch();}
+
+
+					}
+				}
+				//alert(requete_ajax.responseText);
+				//				alert(JSON.stringify(listeMatch));
+				//	return vecMAV;
+				//}
+			}
+			
+			function getInfoMatchPourMaj() {
+				//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/syncboard/scriptsSB/infoMatch2SB.php";
+
+				var strMatchId = "matchId=" + window.matchId;
+
+				params = strMatchId;
+				url = url + "?" + params;
+
+				//		alert(url+'?'+param);
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						infoMatch = eval('(' + requete_ajax.responseText + ')');
+						if(	window.webMatchId!=infoMatch.matchId)
+						{window.location.reload(true);}
+							mDomSpan=document.getElementById('domSpan');
+							mVisSpan=document.getElementById('visSpan');
+						var d =new Date();
+										
+						 secs = d.getTime()-parseInt(window.infoMatch.chronoPer)-offset;
+						var d2 =new Date(secs);
+						lesSecs =window.dureePeriode*60-d2.getSeconds()-60*d2.getMinutes();
+						minutes=Math.floor(lesSecs/60);
+						secondes=lesSecs%60;
+						strMin=minutes>=0?minutes:0;
+						strSec=secondes>=0?secondes:0;
+						document.getElementById('divChrono').innerHTML=strMin+":"+strSec;
+					
+							eqIdDom=infoMatch.equipeIdDom;
+							eqIdVis=infoMatch.equipeIdVis;
+
+
+							if(mDomSpan.innerHTML!=window.infoMatch.equipeScoreDom)
+							{mDomSpan.innerHTML=window.infoMatch.equipeScoreDom;
+								//getSommairePourMaj() ;
+								}
+							
+							if(mVisSpan.innerHTML!=window.infoMatch.equipeScoreVis)
+							{mVisSpan.innerHTML=window.infoMatch.equipeScoreVis;
+								//getSommairePourMaj() ;
+								}
+							
+			}
+			}
+			}
+
+			function getJSONdeMatchID(matchId) {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/sommaire2JSON.php";
+
+				var strMatchId = "matchId=" + matchId;
+
+				params = strMatchId;
+				url = url + "?" + params;
+				//alert(url);
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						rJSON = eval('(' + requete_ajax.responseText + ')');
+						//alert(requete_ajax.responseText);
+
+						window.conditions++;
+						if(window.conditions>=2)
+							{afficheMatch();}
+
+					}
+				}
+			}
+
+			function getSommairePourMaj() {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/sommaire2JSON.php";
+
+				var strMatchId = "matchId=" + window.matchId;
+
+				params = strMatchId;
+				url = url + "?" + params;
+				//alert(url);
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						rJSON = eval('(' + requete_ajax.responseText + ')');
+						//alert(requete_ajax.responseText);
+						rJSON.buts[rJSON.buts.length-1];
+							mTButs=document.createElement('div');
+							mTButs.id="tButs";
+							document.getElementByTagName('body')[0].appendChild(mTButs);
+						setTimeOut(function(){detruitNoeud('tButs')},3000);
+
+
+					}
+				}
+			}
+
+
+			function getPunitions(matchId) {
+				//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/syncboard/scriptsSB/punitions2SB.php";
+
+				var strMatchId = "match=" + matchId;
+
+				params = strMatchId;
+				url = url + "?" + params;
+
+				//		alert(url+'?'+param);
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						mesPuns = eval('(' + requete_ajax.responseText + ')');
+						punDom=new Array();
+						punVis=new Array();
+						var d = new Date();
+						
+						for(var a=0;a<mesPuns.length;a++)
+						{
+//							alert(mesPuns[a].equipeId+" "+window.eqIdDom+" "+window.eqIdVis)
+							var laDate =mesPuns[a].chrono.split(' ')[0];
+							var lHeure =mesPuns[a].chrono.split(' ')[1];
+							 
+							var d2 = new Date(laDate.split("-")[0],laDate.split("-")[1]-1,laDate.split("-")[2],lHeure.split(':')[0],lHeure.split(':')[1],lHeure.split(':')[2]);
+							if(mesPuns[a].equipeId==window.eqIdDom)
+							{
+								var discr = (parseInt(mesPuns[a].duree)*60000+d2.getTime())-d.getTime()-window.offset*1000;
+								if(discr>0)
+								{punDom.push(discr);}
+							/*alert(discr);	
+							alert(parseInt(mesPuns[a].duree)*60);
+							alert(d2.getTime());
+							alert(d.getTime());*/
+							}
+							else if(mesPuns[a].equipeId==window.eqIdVis)
+							{
+								var discr = (parseInt(mesPuns[a].duree)*60000+d2.getTime())-d.getTime()-window.offset*1000;
+								if(discr>0)
+								{punVis.push(discr);}
+							/*alert(discr);	
+							alert(parseInt(mesPuns[a].duree)*60);
+							alert(d2.getTime());
+							alert(d.getTime());
+							alert(window.offset);*/
+								
+								
+							}
+						}
+						videNoeud('divPunDom');
+						videNoeud('divPunVis');
+						for(var b=0;b<punDom.length;b++)
+						{
+							var min =Math.floor(punDom[b]/60000);
+							var sec =(punDom[b]/1000)%60;
+							document.getElementById('divPunDom').innerHTML=min+":"+sec;							
+						}
+						for(var c=0;c<punVis.length;c++)
+						{
+							var min =Math.floor(punVis[c]/60000);
+							var sec =(punVis[c]/1000)%60;
+							document.getElementById('divPunVis').innerHTML=min+":"+sec;							
+						}
+						
+						
+					}
+				}
+				//alert(requete_ajax.responseText);
+				//				alert(JSON.stringify(listeMatch));
+				//	return vecMAV;
+				//}
+			}
+
+			function setCommande(matchId,cle,valeur) {
+				//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/syncboard/scriptsSB/setCommandes.php";
+
+				var strMatchId = "matchId=" + matchId;
+				var strCle = "cle=" + cle;
+				var strValeur = "valeur=" + valeur;
+
+				params = strMatchId+'&'+strCle+'&'+strValeur;
+				url = url + "?" + params;
+
+				//		alert(url+'?'+param);
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+//						mesPuns = eval('(' + requete_ajax.responseText + ')');
+						
+					}
+				}
+				//alert(requete_ajax.responseText);
+				//				alert(JSON.stringify(listeMatch));
+				//	return vecMAV;
+				//}
+			}
+
+
+
+			function majMatch(){
+				
+				getInfoMatchPourMaj();
+				getPunitions(window.matchId);
+				
+			}
+
+			function afficheMatch() {
+
+	divCoulDom=document.getElementById('divCouleurDom');
+	divCoulVis=document.getElementById('divCouleurVis');
+	divSDom = document.getElementById('divScoreDom');
+	divSDom.style.width="50%";
+	document.getElementById('domSpan').innerHTML=window.infoMatch.equipeScoreDom;
+	divSVis = document.getElementById('divScoreVis');
+	divSVis.style.width="50%";
+	document.getElementById('visSpan').innerHTML=window.infoMatch.equipeScoreVis;
+	document.getElementById('divPeriode').innerHTML= (window.infoMatch.codeMatch==10) ?'F': window.infoMatch.periode;
+
+
+			rapetisse();
+				setInterval(function(){majMatch();},3000);
+
+
+	if(window.infoMatch.equipeCouleurDom=="mauve")
+	{
+		divCoulDom.style.backgroundColor="#202";}
+		
+		else if(window.infoMatch.equipeCouleurDom=="noir")
+			divCoulDom.style.backgroundColor="#000";
+		else if(window.infoMatch.equipeCouleurDom=="orange")
+			divCoulDom.style.backgroundColor="#F60";
+		else if(window.infoMatch.equipeCouleurDom=="rouge")
+			divCoulDom.style.backgroundColor="#A00";
+		else if(window.infoMatch.equipeCouleurDom=="bleu")
+			divCoulDom.style.backgroundColor="#00A";
+		else if(window.infoMatch.equipeCouleurDom=="blanc")
+			divCoulDom.style.backgroundColor="#FFF";
+		else if(window.infoMatch.equipeCouleurDom=="vert")
+			divCoulDom.style.backgroundColor="#0A0";
+		
+	if(window.infoMatch.equipeCouleurVis=="mauve")
+	{
+		divCoulVis.style.backgroundColor="#202";}
+		
+		else if(window.infoMatch.equipeCouleurVis=="noir")
+			divCoulVis.style.backgroundColor="#000";
+		else if(window.infoMatch.equipeCouleurVis=="orange")
+			divCoulVis.style.backgroundColor="#F60";
+		else if(window.infoMatch.equipeCouleurVis=="rouge")
+			divCoulVis.style.backgroundColor="#A00";
+		else if(window.infoMatch.equipeCouleurVis=="bleu")
+				divCoulVis.style.backgroundColor="#00A";
+		else if(window.infoMatch.equipeCouleurVis=="blanc")
+			divCoulVis.style.backgroundColor="#FFF";
+		else if(window.infoMatch.equipeCouleurVis=="vert")
+			divCoulVis.style.backgroundColor="#0A0";
+//alert(document.getElementById('domSpan').style.fontSize);
+
+
+}
+ function rapetisse()
+    {
+    	var textSpan = document.getElementById("domSpan");
+    	var textDiv = document.getElementById("divScoreDom");
+    	var perDiv = document.getElementById("divPeriode");
+    	var chronoDiv = document.getElementById("divChrono");
+    	var punDomDiv = document.getElementById("divPunDom");
+    	var punVisDiv = document.getElementById("divPunVis");
+    	x=window.innerHeight/20;
+    	p=window.innerHeight/60;
+//alert(x);
+//alert(textDiv.style.fontSize);
+    	textSpan.style.fontSize = x+"em";
+    	textDiv.style.fontSize = x+"em";
+    	perDiv.style.fontSize = p+"em";
+    	chronoDiv.style.fontSize = p+"em";
+    	punDomDiv.style.fontSize = p+"em";
+    	punVisDiv.style.fontSize = p+"em";
+//alert(textSpan.style.fontSize);
+  //  		alert(textSpan.clientHeight);
+  //  		alert(window.innerHeight);
+
+    	while(textSpan.clientHeight> window.innerHeight)
+    	{
+    		strFS=textSpan.style.fontSize.replace("em","");
+    		floatFS = parseFloat(strFS) *0.95;
+    		textSpan.style.fontSize =floatFS+"em";
+    		textDiv.style.fontSize =floatFS+"em";
+  // 		alert(textSpan.style.fontSize);
+     	//	textDiv.style.maxHeight = parseInt(textDiv.style.maxHeight) - 1;
+    	}
+  // 		alert("FS final: "+textSpan.style.fontSize);
+
+    	while(textSpan.clientWidth > window.innerWidth*0.4)
+    	{
+    		strFS=textSpan.style.fontSize.replace("em","");
+    		floatFS = parseFloat(strFS) *0.95;
+    		textSpan.style.fontSize =floatFS+"em";
+    		textDiv.style.fontSize =floatFS+"em";
+ //  		alert(textSpan.style.fontSize);
+ //   		alert(textSpan.clientWidth);
+ //   		alert(window.innerWidth*0.4);
+ //  		alert(textSpan.style.fontSize);
+    	//	textDiv.style.maxWidth = parseInt(textDiv.style.maxWidth) - 1;
+    	}
+  // 		alert("FS final: "+textSpan.style.fontSize);
+
+
+    	var textSpanV = document.getElementById("visSpan");
+    	var textDivV = document.getElementById("divScoreVis");
+
+    	textSpanV.style.fontSize = x+"em";
+   	textDivV.style.fontSize = x+"em";
+
+    	while(textSpanV.clientHeight> window.innerHeight)
+    	{
+    		strFS=textSpanV.style.fontSize.replace("em","");
+    		floatFS = parseFloat(strFS) *0.95;
+    		textSpanV.style.fontSize =floatFS+"em";
+    		textDivV.style.fontSize =floatFS+"em";
+   	//	alert(textSpanV.style.fontSize);/
+     	//	textDivV.style.maxHeight = parseInt(textDivV.style.maxHeight) - 1;
+    	}
+
+    	//	alert("FS final: "+textSpan.style.fontSize);
+   	while(textSpanV.clientWidth > window.innerWidth*0.4)
+    	{
+    		strFS=textSpanV.style.fontSize.replace("em","");
+    		floatFS = parseFloat(strFS) *0.95;
+    		textSpanV.style.fontSize =floatFS+"em";
+    		   		textDivV.style.fontSize =floatFS+"em";
+ 
+  // 		alert(textSpanV.style.fontSize);
+    	//	textDivV.style.maxWidth = parseInt(textDivV.style.maxWidth) - 1;
+    	}
+   //		alert("FS final: "+textSpan.style.fontSize);
+
+
+
+/*$(function() {
+    while( $('#divScoreDom div').height() > $('#divScoreDom').height() ) {
+        $('#divScoreDom div').css('font-size', (parseInt($('#divScoreDom div').css('font-size')) - 1) + "px" );
+    }
+});
+*/
+/*
+
+*/
+    }
+
+		</script>
+
+	</HEAD>
+	<body id="mbody">
+
+		<div id="divCouleurDom"></div>
+		<div id="divScoreDom"><div id="domSpan" style="display:inline-block;">0</div></div>
+		<div id="divScoreVis"><div id="visSpan" style="display:inline-block;">0</div></div>
+		<div id="divCouleurVis"></div>
+		<div id="divPeriode"></div>
+		<div id="divChrono"></div>
+		<div id="divPunDom"></div>
+		<div id="divPunVis"></div>
+
+		<script type="text/javascript" charset="utf-8">
+			//						alert(JSON.stringify(document.getElementById("divCentrale").all));
+	//		alert(document.getElementsByTagName("A")[0].href);
+
+
+//			developper(27);
+			
+			dureePeriode=20;
+			countUp=true;
+			dureeMineur=3;
+
+
+
+
+			conditions=0;
+			matchId = getValue('match');
+			getInfoMatch(matchId);
+//rapetisse();
+//window.onmouseup=function()
+//{
+	window.onresize = function() {
+	
+rapetisse();
+}
+//}
+
+
+		</script>
+	</body>
+</html>

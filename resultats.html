@@ -1,0 +1,182 @@
+<HTML>
+	<HEAD>
+		<title>Résultats des matchs</title>
+		<link rel="stylesheet" href="style/general.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<style>
+		</style>
+	</HEAD>
+	<body id="mbody">
+		<script type="text/javascript" charset="utf-8">
+				if(getValue('m')!='1')
+			{
+			genereEntete();
+			genereMenu(2);
+							afficheLigueId();
+			}
+		</script>
+		<script type="text/javascript">
+			function afficheSelection(choix) {
+				videNoeud('mbody');
+				genereEntete();
+				genereMenu(2);
+				genereSousMenu(choix);
+				afficheLigueId();
+
+				switch(choix) {
+					case 1:
+						break;
+					case 2:
+					window.location.href='statistiques.html?m2=2';
+					//	afficheResultats(window.rJSON);
+						break;
+					case 3:
+//						afficheMeneurs(window.statsJSON, window.gJSON);
+					window.location.href='statistiques.html?m2=3';
+						break;
+					case 4:
+//						afficheClassement(window.cJSON);
+					window.location.href='statistiques.html?m2=4';
+
+						break;
+											case 5:
+					//setCookie('ligueId',null,7);
+//					deleteCookie("ligueId","/","");
+					if ( getCookie( "ligueId" ) ) document.cookie = "ligueId" + "=" +
+					( ( "/" ) ? ";path=" + "/" : "") +
+					( ( "" ) ? ";domain=" + "" : "" ) +
+					";expires=Thu, 01-Jan-1970 00:00:01 GMT";
+					window.location.href='statistiques.html';
+						break;
+
+					default:
+			}
+			}
+
+			function afficheSelectionNiv3(N3) {
+				return function(){
+				videNoeud('mbody');
+				if(window.m!='1')
+			{
+			
+				genereEntete();
+				genereMenu(2);
+				genereSousMenu(2);
+			}
+				genereMenuNiveau3(N3);
+				if(window.m!='1')
+			{afficheLigueId();}
+
+				switch(N3) {
+					case 2:
+						afficheSommaireButs(window.rJSON);
+						break;
+					case 3:
+						afficheSommairePunitions(window.rJSON);
+						break;
+					case 4:
+						afficheStatsDom(window.statsJSONHome);
+						break;
+					case 5:
+						afficheStatsDom(window.statsJSONVis);
+						break;
+					case 1:
+						afficheResumeMatch(window.infoMatch);
+						break;
+					default:
+				}}
+			}
+
+
+
+		</script>
+		<script type="text/javascript" charset="utf-8">
+			/*			if(!getValue('M'))
+			 {
+			 genereEntete();
+			 genereMenu(2);}
+			 else {M=0;}*/
+			//genereSousMenu(2);
+			//genereMenuNivea	u3();
+
+		</script>
+		<DIV ID="divCentrale">
+			<div>
+				<DIV ID="nomLigue"></DIV>
+			</div>
+			<div>
+				<DIV ID="scoreDom"></DIV>
+				<DIV>
+					-
+				</DIV>
+				<DIV ID="scoreVis"></DIV>
+			</div>
+			<DIV ID="ligneCentrale1">
+				<DIV ID="logoDom" class="ligne"><img id="logoEquipeDom" class="grosLogo">
+				</DIV>
+				<DIV ID="scoreDom" class="ligne">
+					<p id="tScoreDom" class="grosTexte">
+				</DIV>
+				<DIV class="ligne">
+					<p class="grosTexte">
+						-
+				</DIV>
+				<DIV ID="scoreVis" class="ligne">
+					<p id="tScoreVis" class="grosTexte">
+				</DIV>
+				<DIV ID="logoVis" class="ligne"><img id="logoEquipeVis" class="grosLogo"></br>
+				</DIV>
+			</DIV>
+		</DIV>
+		<script type="text/javascript">
+			var matchID = getValue('match');
+			var strInfoMatch = getInfoMatch(matchID);
+			var infoMatch = eval('(' + strInfoMatch + ')');
+			ligueId=infoMatch.ligueId;
+			alert(strInfoMatch);
+			logoEquipe = document.getElementById('logoEquipeDom');
+			logoEquipe.src="admin/afficheImage.php?ficId=" + infoMatch.equipeFicIdDom;
+			logoEquipe2 = document.getElementById('logoEquipeVis');
+			logoEquipe2.src="admin/afficheImage.php?ficId=" + infoMatch.equipeFicIdVis;
+
+			document.getElementById('tScoreDom').innerHTML = infoMatch.equipeScoreDom;
+			document.getElementById('tScoreVis').innerHTML = infoMatch.equipeScoreVis;
+
+			var uneString = getJSONdeMatchID(matchID);
+		alert(uneString);
+			var rJSON = eval('(' + uneString + ')');
+			//document.getElementById('date').innerHTML = rJSON.date;
+			//document.getElementById('date').innerHTML = 'test1';
+			//alert(rJSON.date);
+
+			var matchSplit = parseMatchID(matchID);
+			//var stringStatsHome = getStatsJSON(matchSplit[1],matchID);
+			var stringStatsHome = getStatsJSON('H', matchID);
+			//alert(matchSplit[1]);
+			if(verifiePermission()<9)
+				alert(stringStatsHome);
+			//var stringStatsVis = getStatsJSON(matchSplit[2],matchID);
+			var stringStatsVis = getStatsJSON('V', matchID);
+			//alert(matchSplit[2]);
+
+			//alert(stringStatsVis);
+
+			var statsJSONHome = eval('(' + stringStatsHome + ')');
+			var statsJSONVis = eval('(' + stringStatsVis + ')');
+			 m = getValue('m');
+			 m3 = getValue('m3');
+			
+			if(m3=="")
+			{window.onload=afficheSelectionNiv3(1);}
+			else
+			window.onload=afficheSelectionNiv3(parseInt(getValue('m3')));
+
+
+
+		</script>
+	</body>
+</html>

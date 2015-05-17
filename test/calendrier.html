@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<title>Résultats des matchs</title>
+		<link rel="stylesheet" href="/style/general_v4.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+				<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+
+
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		<style>
+		div #divCal
+		{
+						width:80%;
+		display:table;
+		}
+		
+		div.ligne
+		{
+			width:100%;
+			height:60px;
+		display:table-row;
+		clear:both;
+		float:none;
+			
+		}
+
+		div.cell
+		{
+			float:left;
+			border-width:1px;
+			border-color:black;
+			width:14%;
+			height:60px;
+		display:table-cell;
+			
+		}
+
+		div.elemCell
+		{
+		display:table-cell;
+		float:left;
+			
+		}
+
+
+div.cell:hover
+{
+	position:relative;
+	left:-10%;
+width : 20%;
+height : 150%;
+	border: 1px dotted black;
+z-index:5;
+        background: #ddd;
+   }
+		
+		</style>
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+	</HEAD>
+	<body id="mbody">
+		
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+								<div id="divMenuHaut"></div>
+
+		<div id="divCentrale">
+		</div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+		
+		
+		
+		function afficheResultats(ligueId) {
+	try {
+		var uneString = getMatchsdeLigueID(ligueId);
+		//alert(uneString);
+		var rJSON = eval('(' + uneString + ')');
+	
+	for ( J = 0; J <= rJSON.matchs.length; J = J + 1) {
+			
+			var d1 = new Date(rJSON.matchs[J].date);
+			//alert(d1.getYear()+"_"+d1.getMonth());
+			if(d1.getYear()==112&&d1.getMonth()==9)
+			{monJour = document.getElementById("jour_"+d1.getDate());
+			monJour.style.clear="both";
+			monJour.style.float="none";
+			
+			cellEqDom = document.createElement('DIV')
+			cellEqDom.className="elemCell";
+			cellEqDom.style.textAlign="right";
+			tmpImg = document.createElement('IMG');
+				tmpImg.src="/admin/afficheImage.php?ficId=" + rJSON.matchs[J].ficIdDom ;
+				tmpImg.alt=rJSON.matchs[J].eqDom;
+				tmpImg.style.width="24px";
+				tmpImg.style.height="24px";
+			cellEqDom.appendChild(tmpImg);
+			monJour.appendChild(cellEqDom);
+			
+			celluleScoreDom = document.createElement('DIV');
+			celluleScoreDom.className="elemCell";
+			celluleScoreDom.style.textAlign="center";
+			texteScoreDom = document.createTextNode(rJSON.matchs[J].equipeScoreDom+"-");
+			celluleScoreDom.style.fontSize="14px";
+			celluleScoreDom.appendChild(texteScoreDom);
+			
+			monJour.appendChild(celluleScoreDom);
+			
+			
+						celluleScoreVis = document.createElement('DIV');
+			celluleScoreVis.style.textAlign="center";
+			celluleScoreVis.className="elemCell";
+			texteScoreVis = document.createTextNode(rJSON.matchs[J].equipeScoreVis);
+			celluleScoreVis.style.fontSize="14px";
+			celluleScoreVis.appendChild(texteScoreVis);
+			monJour.appendChild(celluleScoreVis);
+			
+			
+			cellEqVis = document.createElement('DIV')
+			cellEqVis.style.textAlign="left";
+			tmpImg = document.createElement('IMG');
+				tmpImg.src="/admin/afficheImage.php?ficId=" + rJSON.matchs[J].ficIdVis ;
+				tmpImg.alt=rJSON.matchs[J].eqVis;
+				tmpImg.style.width="24px";
+				tmpImg.style.height="24px";
+			cellEqVis.appendChild(tmpImg);
+			monJour.appendChild(cellEqVis);
+
+			
+			}
+		
+			
+			
+			
+/*
+			
+					celluleEq = document.createElement('TD');
+			lien = document.createElement('A');
+
+			lien.innerHTML = window.tl_resultats_Sommaire;
+			lien.setAttribute('href', 'match.html?match=' + rJSON.matchs[J].matchID + '&m=' + window.m);
+			if (J % 2 == 0)
+				celluleEq.setAttribute('class', 'lignePaire');
+			else
+				celluleEq.setAttribute('class', 'ligneImpaire');
+
+			celluleEq.appendChild(lien);
+			rangee.appendChild(celluleEq);*/
+		}
+
+		//	document.body.rangee.cellule.innerHTML ='yo';
+	} catch(err) {
+	}
+
+}
+
+		
+				 		window.onload = function () { 
+			peupleDivHaut();
+			genereLiensContext(6);
+			genereBoites();
+
+			
+			
+			ligueId = null;
+			if(getCookie('ligueId')!=null)
+			{ligueId=getCookie('ligueId');}
+			else 
+			{if(getValue('ligueId')=="")
+			{
+				moncode  = (getValue("code")=="" )? 10: getValue("code");
+				 window.location.href = "/listeligues.html"+"?code="+moncode;} //Code 10: origine de statistique // Code 11: origine de zone admin
+				 else 
+				 {ligueId=getValue('ligueId');}
+			}
+						var m = getValue('m');
+
+
+			var strLigue = getJSONdeLigueID(ligueId);
+
+			var lJSON = eval('(' + strLigue + ')');
+
+
+			var Perm = getPermissions(ligueId, getValue('userId'))
+
+
+						divCalJS = document.createElement('DIV');
+			document.getElementById("divCentrale").appendChild(divCalJS);
+			divCalJS.id="divCal";
+
+				divLigJS = document.createElement('DIV');
+				divLigJS.className ="ligne";
+				 		divLigJS.id="ligneTitre";		
+				divCalJS.appendChild(divLigJS);
+
+
+			for(a=0;a<7;a++)
+			{
+				divLigJS = document.createElement('DIV');
+				divLigJS.className ="ligne"; 				
+				divCalJS.appendChild(divLigJS);
+				
+				for(b=0;b<7;b++)
+				{
+					divCellJS = document.createElement('DIV');
+				divCellJS.className ="cell"; 	
+				divCellJS.id="divCell_"+a+"_"+b;
+	//					divCellJS.innerHTML=divCellJS.id;	
+					divLigJS.appendChild(divCellJS);
+					
+				}
+				
+			}
+
+
+ var date = new Date();
+        var jour = date.getDate();
+        var moi = date.getMonth();
+        var annee = date.getYear();
+        if(annee<=200)
+        {
+                annee += 1900;
+        }
+        mois = new Array('Janvier', 'F&eacute;vrier', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Ao&ucirc;t', 'Septembre', 'Octobre', 'Novembre', 'D&eacute;cembre');
+        jours_dans_moi = new Array(31,28,31,30,31,30,31,31,30,31,30,31);
+        if(annee%4 == 0 && annee!=1900)
+        {
+                jours_dans_moi[1]=29;
+        }
+        total = jours_dans_moi[moi];
+        var date_aujourdui = jour+' '+mois[moi]+' '+annee;
+        dep_j = date;
+        dep_j.setDate(1);
+        if(dep_j.getDate()==2)
+        {
+                dep_j=setDate(0);
+        }
+        dep_j = dep_j.getDay();
+        
+		dateUtil = new Date(2012,9, 1, 0, 0, 0, 0);
+		moisPM=dateUtil.getDay(); 
+
+			sem=0;
+		jS=moisPM;
+		for(md=0;md<jours_dans_moi[dateUtil.getMonth()];md++)
+		{
+			mDiv=document.getElementById("divCell_"+sem+"_"+jS);
+			var mJ=md+1;
+			mDiv.innerHTML=mJ;
+			mDiv.id="jour_"+md;
+			jS++;
+			if(jS==7)
+			{jS=0;sem++;}
+		}
+
+			afficheResultats(window.ligueId);
+			
+				}
+		</script>
+	</body>
+</html>

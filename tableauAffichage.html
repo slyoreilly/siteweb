@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<title>Tableau Affichage</title>
+		<link rel="stylesheet" href="/style/general_v4.css" type="text/css">
+				<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<script src="/scripts/jquery.js" type="text/javascript"></script>
+
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		<style>
+		</style>
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+		
+		<script type="text/javascript" charset="utf-8">
+		function cacheOpt(){
+			dIA =document.getElementById("divIFAffiche");
+			dIA.className="cacheOpt";
+
+			cIF =document.getElementById("consoleIframe");
+			cIF.className="cacheOpt";
+
+			
+		}
+/*		function demarreAffiche(){
+			$('#demarreAffiche').click (function (e) {
+   e.preventDefault(); //will stop the link href to call the blog page
+
+   setTimeout(function () {
+       document.getElementById('IFA').contentWindow.location= window.listePage[0]; //will redirect to your blog page (an ex: blog.html)
+       demarreAffiche()
+    }, 2000); //will call the function after 2 secs.
+
+});
+		
+		
+		}
+	*/
+			function demarreAffiche(noPage){
+			tmpPage=noPage;
+   setTimeout(function () {
+		for(var a=0;a<window.listePage.length;a++)
+		{
+		document.getElementById("iframe_"+a).className="disparait";			
+		document.getElementById("h1_"+a).className="disparait";			
+		}
+	//alert(window.tmpPage);
+		document.getElementById("iframe_"+window.tmpPage).className="apparait";			
+		document.getElementById("h1_"+window.tmpPage).className="apparait";			
+   	
+ //      document.getElementById('IFA').contentWindow.location= window.listePage[window.tmpPage% window.listePage.length]; //will redirect to your blog page (an ex: blog.html)
+     tmpPage = (parseInt(window.tmpPage)+1)% window.listePage.length;
+       demarreAffiche(tmpPage);
+    }, 8000); 
+		
+		}
+		</script>
+		
+	</HEAD>
+	<body id="mbody">
+		<!--div id="consoleIframe" class="afficheOpt">
+			<input type="button" value="Plein écran" style="visibility:hidden;">
+			<input type="button" id="demarreAffiche" value="Plein écran" style="visibility:hidden;" onclick="demarreAffiche(0);">
+		</div-->
+		<div id="divIFAffiche"><!--class="afficheOpt"-->
+		</div>
+		<script type="text/javascript" charset="utf-8">
+		listePage = Array();
+		listePage[0]= "/zstats/statistiques.html?m=1&ligueId=30";
+		listePage[1]= "/zstats/meneurs.html?m=1&ligueId=30";
+		listePage[2]= "/zstats/resultats.html?m=1&ligueId=30";
+		listePage[3]= "/zstats/statistiques.html?m=1&ligueId=31";
+		listePage[4]= "/zstats/meneurs.html?m=1&ligueId=31";
+		listePage[5]= "/zstats/resultats.html?m=1&ligueId=31";
+		
+				titreFrame = Array();
+		titreFrame[0]= "Classement FADOQ 50+";
+		titreFrame[1]= "Meneurs FADOQ 50+";
+		titreFrame[2]= "Résultats FADOQ 50+";
+		titreFrame[3]= "Classement FADOQ 60+";
+		titreFrame[4]= "Meneurs FADOQ 60+";
+		titreFrame[5]= "Résultats FADOQ 60+";
+
+		
+		listeFrame = Array();
+		for(var a=0;a<listePage.length;a++)
+		{
+		monFrame=document.createElement('IFRAME');
+		monFrame.id="iframe_"+a;	
+		
+		monFrame.src=listePage[a];	
+		monFrame.className="disparait";		
+
+		monH1=document.createElement('H1');
+		monH1.id="h1_"+a;	
+		
+		monH1.innerHTML=titreFrame[a];	
+		monH1.className="disparait";		
+
+				
+			
+	   tmpFrame = document.getElementById('divIFAffiche')
+	   tmpFrame.appendChild(monH1);
+	   tmpFrame.appendChild(monFrame);
+	 //  alert(monFrame.id);
+		}
+		demarreAffiche(0);
+
+				
+		</script>
+	</body>
+</html>

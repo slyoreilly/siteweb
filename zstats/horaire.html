@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<title>Horaire des matchs</title>
+		<link rel="stylesheet" href="/style/general_v4.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+		<link rel="shortcut icon" href="/favicon.ico" />
+
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script type="text/javascript" charset="utf-8">
+			gereLangue();
+		</script>
+
+		<style>
+		</style>
+		<script type="text/javascript" charset="utf-8">
+			function nouveauMatch() {
+				var dt = new Date();
+
+				var month = dt.getMonth() + 1;
+				var day = dt.getDate();
+				var year = dt.getFullYear();
+
+				var m = window.vecMAV.length;
+				window.vecMAV[m] = Array();
+				window.vecMAV[m].mavId = -1;
+				window.vecMAV[m].ligueId = window.ligueId;
+				window.vecMAV[m].date = "AAAA-MM-JJ HH:MM";
+				window.vecMAV[m].dateFin = "2030-01-01 00:00";
+				window.vecMAV[m].eqDom = 0;
+				window.vecMAV[m].eqVis = 0;
+				window.vecMAV[m].alignementDom = "[]";
+				window.vecMAV[m].alignementVis = "[]";
+				window.vecMAV[m].gardienDom = 0;
+				window.vecMAV[m].gardienVis = 0;
+				window.vecMAV[m].dernierMAJ = year + "-" + month + "-" + day;
+				window.vecMAV[m].arenaId = 0;
+
+				var k = 0;
+				enf = document.getElementById('rangeeTitre');
+				//alert(k+" "+no);
+
+				while (enf.parentNode.lastChild != enf) {
+					enf = enf.nextSibling;
+					if (enf.nodeName == 'TR')
+						k++;
+				}
+
+				rNM = document.createElement('TR');
+				rNM.id="tr_1000000";
+
+				for ( K = 0; K < 7; K++) {
+					cellule = document.createElement('TD');
+					ptexte = document.createElement('P');
+					ptexte.innerHTML = "-";
+					//					texte = document.createTextNode(lesCols[K]);
+					cellule.appendChild(ptexte);
+					//K % 2 == 0 ? cellule.className = 'lignePaire' : cellule.className = 'ligneImpaire';
+					rNM.appendChild(cellule);
+				}
+				enf.parentNode.insertBefore(rNM, enf.parentNode.lastChild);
+				detruitNoeud("rangeeVide");
+				editMatch(1000000);
+
+			}
+
+			function sauvegardeMAV(no) {
+
+
+				enf = document.getElementById('rangeeTitre');
+				var k = 0;
+				var trouve=false;
+				var vecInd=-1;
+				lesTR = document.getElementsByTagName("TR");
+				
+			//	alert(k+" "+no);
+				while(k<lesTR.length)
+				{if(lesTR[k].id=="tr_"+no)
+				{enf=lesTR[k];
+					trouve=true;}
+					k++;}
+				var j =0;
+				
+				while(j<window.vecMAV.length)
+				{
+					if(window.vecMAV[j].mavId==no)
+					vecInd=j;
+					j++;
+				}	
+				
+				tdEnf = enf.firstChild;
+				mDate = tdEnf.firstChild.value;
+				tdEnf = tdEnf.nextSibling.nextSibling;
+				mHeure = tdEnf.firstChild.value;
+				tdEnf = tdEnf.nextSibling;
+				mArena = (tdEnf.firstChild.value == "") ? 0 : tdEnf.firstChild.value;
+				tdEnf = tdEnf.nextSibling;
+				mEqDom = tdEnf.firstChild.value;
+				tdEnf = tdEnf.nextSibling;
+				mEqVis = tdEnf.firstChild.value;
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/setMatchAVenir.php";
+				//		alert(url);
+				var strJDom = (vecInd==-1) ? "" : "jDom=" + JSON.stringify(window.vecMAV[vecInd].alignementDom);
+				var strJVis = (vecInd==-1) ? "" : "jVis=" + JSON.stringify(window.vecMAV[vecInd].alignementVis);
+				var strGDom = (vecInd==-1) ? "gDom=undefined" : "gDom=" + window.vecMAV[vecInd].gardienDom;
+				var strGVis = (vecInd==-1) ? "gVis=undefined" : "gVis=" + window.vecMAV[vecInd].gardienVis;
+				var strEqDom = "eqDom=" + mEqDom;
+				var strEqVis = "eqVis=" + mEqVis;
+				var strDateDeb = "dateDeb=" + mDate + " " + mHeure;
+				var strDateFin = (vecInd==-1) ? "dateFin=2020-01-01" : "dateFin=" + window.vecMAV[vecInd].dateFin;
+				var strLigueId = "ligueId=" + window.ligueId;
+				var strMAVId = (vecInd==-1) ? "" : "mavId=" + window.vecMAV[vecInd].mavId;
+				var strArbId = (vecInd==-1) ? "arbitreId=undefined" : "arbitreId=" + window.vecMAV[vecInd].arbitreId;
+				var strArena = "arenaId=" + mArena;
+				var params = strJDom + "&" + strJVis + "&" + strGDom + "&" + strGVis + "&" + strEqDom + "&" + strEqVis + "&" + strDateDeb + "&" + strDateFin + "&" + strLigueId + "&" + strMAVId + "&" + strArena + "&" + strArbId;
+				//alert(params);
+				requete_ajax.open('POST', url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						//alert(requete_ajax.responseText);
+						//if (window.perm < 9)
+						//alert(requete_ajax.responseText);
+						window.location.reload(true);
+					}
+				}
+				requete_ajax.send(params);
+			}
+
+			function getMatchAVenir() {
+				//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/getMatchAVenir.php";
+
+				var strMAVId = "mavId=" + window.mavId;
+				var strLigueId = "ligueId=" + window.ligueId;
+				params = strMAVId + '&' + strLigueId;
+				//		alert(url+'?'+param);
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						//alert(requete_ajax.responseText);
+						vecMAV = eval('(' + requete_ajax.responseText + ')');
+						var k = 0;
+						listeMatch = new Array();
+						while (k < vecMAV.length) {
+							listeMatch[k] = vecMAV[k].mavId;
+							k++;
+						}
+						loadConditions++;
+
+						if (loadConditions == 3)
+							remplirTableau();
+
+						//							window.location.reload(true);
+					}
+				}
+				//alert(requete_ajax.responseText);
+				//				alert(JSON.stringify(listeMatch));
+				//	return vecMAV;
+				//}
+			}
+
+			function extirpeArena(id) {
+				//			alert(window.vecArena.length);
+				var k = 0;
+				while (k < window.vecArena.length) {
+					//				alert(window.vecArena[k].arenaId);
+					if (id == window.vecArena[k].arenaId) {
+						return k;
+					}
+					k++;
+				}
+				return -1;
+			}
+
+			function extirpeEquipe(id) {
+				//			alert(window.vecEquipe.equipes.length);
+				var k = 0;
+				while (k < window.vecEquipe.equipes.length) {
+					//					alert(window.vecEquipe.equipes.equipeId);
+					if (id == window.vecEquipe.equipes[k].equipeId) {
+						return k;
+					}
+					k++;
+				}
+				return -1;
+			}
+
+			function getInfoLigue(ligueId) {
+				//	return function(){
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/infoLigue2JSON.php";
+				//	alert(url);
+				var params = "ligueId=" + ligueId;
+				//alert(params);
+				requete_ajax.open('POST', url, true);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+				requete_ajax.send(params);
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						vecEquipe = eval('(' + requete_ajax.responseText + ')');
+							//alert(vecEquipe.Ligue.saisons.length);
+
+						var k = 0;
+						listeEquipe = new Array();
+						while (k < vecEquipe.equipes.length) {
+							//					alert(vecEquipe.equipes[k].equipeId);
+							listeEquipe[k] = vecEquipe.equipes[k].equipeId;
+							k++;
+						}
+
+						try {
+											vecEquipe.Ligue.saisons.sort(function(a, b) {
+						d1Cal = a.pm.split(" ")[0];
+						d1Hor = a.pm.split(" ")[1];
+
+						var d1 = new Date(d1Cal.split("-")[0], d1Cal.split("-")[1], d1Cal.split("-")[2], d1Hor.split(":")[0], d1Hor.split(":")[1], d1Hor.split(":")[2]);
+						d2Cal = b.pm.split(" ")[0];
+						d2Hor = b.pm.split(" ")[1];
+
+						var d2 = new Date(d2Cal.split("-")[0], d2Cal.split("-")[1], d2Cal.split("-")[2], d2Hor.split(":")[0], d2Hor.split(":")[1], d2Hor.split(":")[2]);
+							return (d1 - d2)
+							});
+
+
+							//statsJSONHome.joueurs.triPar("nbButs",1,1);
+
+							selSaisonJS = document.getElementById('selSaison');
+							selSaisonJS.onchange = function(){remplirTableau()};
+
+							for ( K = 0; K < vecEquipe.Ligue.saisons.length; K = K + 1) {
+								opt = document.createElement('OPTION');
+								if(vecEquipe.Ligue.saisons[K].nom!=undefined)
+								{opt.innerHTML = vecEquipe.Ligue.saisons[K].nom + " - " + vecEquipe.Ligue.saisons[K].pm.split(" ")[0] + " au " + vecEquipe.Ligue.saisons[K].dm.split(" ")[0];}
+								else
+								{opt.innerHTML =  vecEquipe.Ligue.saisons[K].pm.split(" ")[0] + " au " + vecEquipe.Ligue.saisons[K].dm.split(" ")[0];}
+								opt.value = vecEquipe.Ligue.saisons[K].saisonId;
+								if (K == vecEquipe.Ligue.saisons.length - 1)
+									opt.selected = "selected";
+								selSaisonJS.appendChild(opt);
+								/*vecEquipe.Saisons[K].joueurs.sort(function(a, b) {
+									return (parseInt(b.nbButs) + parseInt(b.nbPasses)) - (parseInt(a.nbButs) + parseInt(a.nbPasses))
+								});*/
+
+							}
+							//afficheStatsDom(vecEquipe.Saisons[0], 3);
+
+							//	document.body.rangee.cellule.innerHTML ='yo';
+						} catch(err) {
+						}
+
+						loadConditions++;
+						if (loadConditions == 3)
+							remplirTableau();
+
+					}
+				}
+				//	}
+			}
+
+			function getArena() {
+				//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/getArena.php";
+
+				var strLigueId = "ligueId=" + window.ligueId;
+				params = strLigueId;
+				requete_ajax.open('POST', url, true);
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						//alert(requete_ajax.responseText);
+						vecArena = eval('(' + requete_ajax.responseText + ')');
+						//	alert(requete_ajax.responseText);
+
+						var k = 0;
+						listeArena = new Array();
+						while (k < vecArena.length) {
+							listeArena[k] = vecArena[k].arenaId;
+							k++;
+						}
+						loadConditions++;
+						if (loadConditions == 3)
+							remplirTableau();
+
+					}
+				}
+				//				alert(JSON.stringify(listeMatch));
+				//	return vecMAV;
+				//}
+			}
+
+			function editMatch(no) {
+				//						amettre = document.getElementById('rangeeTitre');
+				enf = document.getElementById('rangeeTitre');
+				
+				var k = 0;
+				var trouve=false;
+				var trInd=0;
+				lesTR = document.getElementsByTagName("TR");
+				
+		
+				while(k<lesTR.length)
+				{
+				//	alert(lesTR[k].id);
+					if(lesTR[k].id=="tr_"+no)
+				{enf=lesTR[k];
+					trouve=true;
+					trInd=k;
+					}
+					k++;}
+				
+				//	alert(k+" "+no+" "+trInd);	
+				tdEnf = enf.firstChild;
+				nTd = document.createElement('INPUT');
+				nTd.type = "TEXT";
+				nTd.value = tdEnf.firstChild.innerHTML;
+				tdEnf.replaceChild(nTd, tdEnf.firstChild);
+				////////////////
+				tdEnf = tdEnf.nextSibling.nextSibling;
+				nTd = document.createElement('INPUT');
+				nTd.type = "TEXT";
+				nTd.value = tdEnf.firstChild.innerHTML;
+				tdEnf.replaceChild(nTd, tdEnf.firstChild);
+				///////////////
+				tdEnf = tdEnf.nextSibling;
+				nTd = document.createElement('SELECT');
+				strIn = "";
+				for ( a = 0; a < window.vecArena.length; a++) {
+					opt = document.createElement('OPTION');
+					opt.innerHTML = window.vecArena[a].nomArena;
+					opt.value = window.vecArena[a].arenaId;
+					if (tdEnf.firstChild.innerHTML.split(",")[0] == window.vecArena[a].nomArena)
+						opt.selected = "selected";
+					nTd.appendChild(opt);
+					//strIn += "indice: " + a + ", valeur: " + opt.value + "\n ";
+				}
+				tdEnf.replaceChild(nTd, tdEnf.firstChild);
+				///////////////
+				tdEnf = tdEnf.nextSibling;
+				nTd = document.createElement('SELECT');
+				strIn = "";
+				for ( a = 0; a < window.vecEquipe.equipes.length; a++) {
+					opt = document.createElement('OPTION');
+					opt.innerHTML = window.vecEquipe.equipes[a].nom;
+					opt.value = window.vecEquipe.equipes[a].equipeId;
+					if (tdEnf.firstChild.innerHTML == window.vecEquipe.equipes[a].nom)
+						opt.selected = "selected";
+					nTd.appendChild(opt);
+					//strIn += "indice: " + a + ", valeur: " + opt.value + "\n ";
+				}
+				tdEnf.replaceChild(nTd, tdEnf.firstChild);
+				///////////////
+				tdEnf = tdEnf.nextSibling;
+				nTd = document.createElement('SELECT');
+				strIn = "";
+				for ( a = 0; a < window.vecEquipe.equipes.length; a++) {
+					opt = document.createElement('OPTION');
+					opt.innerHTML = window.vecEquipe.equipes[a].nom;
+					opt.value = window.vecEquipe.equipes[a].equipeId;
+					if (tdEnf.firstChild.innerHTML == window.vecEquipe.equipes[a].nom)
+						opt.selected = "selected";
+					nTd.appendChild(opt);
+					//strIn += "indice: " + a + ", valeur: " + opt.value + "\n ";
+				}
+				tdEnf.replaceChild(nTd, tdEnf.firstChild);
+
+				//////////////////////
+				tdEnf = tdEnf.nextSibling;
+				tdEnf.firstChild.cssFloat = "right";
+
+				nTd = document.createElement('DIV');
+				nTd.id = "div_edit_" + no;
+				nTd.style.cssFloat = "left";
+
+				imgSave = document.createElement('IMG');
+				imgSave.src = "\/images\/icones\/save.png";
+				imgSave.id = "img_save_" + no;
+				imgSave.width = "32";
+				imgSave.height = "32";
+				imgSave.onclick = function() {
+					sauvegardeMAV(no)
+				};
+				imgSave.style.cssFloat = "left";
+				imgFermer = document.createElement('IMG');
+				imgFermer.src = "\/images\/icones\/fermer.png";
+				imgFermer.id = "img_fermer_" + no;
+				imgFermer.width = "32";
+				imgFermer.height = "32";
+				imgFermer.onclick = function() {
+					detruitNoeud("div_edit_" + no);
+
+				
+					enf = document.getElementById('rangeeTitre');
+					var k = 0;
+				var trouve=false;
+				lesTR = document.getElementsByTagName("TR");
+				
+			//	alert(k+" "+no);
+				while(k<lesTR.length)
+				{if(lesTR[k].id=="tr_"+no)
+				{enf=lesTR[k];
+					trouve=true;}
+					k++;}
+					tdEnf = enf.firstChild;
+					ptexte = document.createElement('P');
+					ptexte.innerHTML = tdEnf.firstChild.value;
+					tdEnf.replaceChild(ptexte, tdEnf.firstChild);
+					////////////////
+					tdEnf = tdEnf.nextSibling.nextSibling;
+					ptexte = document.createElement('P');
+					ptexte.innerHTML = tdEnf.firstChild.value;
+					tdEnf.replaceChild(ptexte, tdEnf.firstChild);
+					///////////////
+					tdEnf = tdEnf.nextSibling;
+					ptexte = document.createElement('P');
+					try {
+						ptexte.innerHTML = tdEnf.firstChild.options[tdEnf.firstChild.selectedIndex].innerHTML;
+					} catch(err) {
+						ptexte.innerHTML = window.tl_horaire_nonDef;
+					}
+					tdEnf.replaceChild(ptexte, tdEnf.firstChild);
+					///////////////
+					tdEnf = tdEnf.nextSibling;
+					ptexte = document.createElement('P');
+					try {
+						ptexte.innerHTML = tdEnf.firstChild.options[tdEnf.firstChild.selectedIndex].innerHTML;
+					} catch(err) {
+						ptexte.innerHTML = window.tl_horaire_nonDef;
+					}
+					tdEnf.replaceChild(ptexte, tdEnf.firstChild);
+					///////////////
+					tdEnf = tdEnf.nextSibling;
+					ptexte = document.createElement('P');
+					try {
+						ptexte.innerHTML = tdEnf.firstChild.options[tdEnf.firstChild.selectedIndex].innerHTML;
+					} catch(err) {
+						ptexte.innerHTML = window.tl_horaire_nonDef;
+					}
+					tdEnf.replaceChild(ptexte, tdEnf.firstChild);
+
+					//////////////////////
+
+				};
+				imgFermer.style.cssFloat = "left";
+				nTd.appendChild(imgSave);
+				nTd.appendChild(imgFermer);
+				tdEnf.appendChild(nTd);
+
+			}
+
+			function effaceMatch(no) {
+				//						amettre = document.getElementById('rangeeTitre');
+
+				enf = document.getElementById('rangeeTitre');
+				var k = 0;
+				var trouve=false;
+				lesTR = document.getElementsByTagName("TR");
+				
+			//	alert(k+" "+no);
+				while(k<lesTR.length)
+				{if(lesTR[k].id=="tr_"+no)
+				{enf=lesTR[k];
+					trouve=true;}
+					k++;}
+				
+				tdEnf = enf.firstChild;
+				tdEnf = tdEnf.nextSibling.nextSibling;
+				tdEnf = tdEnf.nextSibling;
+				tdEnf = tdEnf.nextSibling;
+				tdEnf = tdEnf.nextSibling;
+				tdEnf = tdEnf.nextSibling;
+				tdEnf.firstChild.cssFloat = "right";
+				nTd = document.createElement('DIV');
+				nTd.id = "div_edit_" + no;
+				nTd.style.cssFloat = "left";
+				nTd.innerHTML = window.tl_horaire_efface;
+
+				oui = document.createElement('INPUT');
+				oui.type = 'BUTTON';
+				oui.value = window.tl_bouton_Oui;
+				oui.onclick = function() {
+
+					var requete_ajax = new XMLHttpRequest();
+
+					var url = "/scriptsphp/effaceMatchAVenir.php";
+					var strMAVId = "mavId=" + window.vecMAV[no].mavId;
+					var params = strMAVId;
+					//alert("Params a setMatchAVenir" + params);
+					requete_ajax.open('POST', url, true);
+
+					//Send the proper header information along with the request
+					requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+					requete_ajax.setRequestHeader("Content-length", params.length);
+					requete_ajax.setRequestHeader("Connection", "close");
+
+					requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+						if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+							window.location.reload(true);
+						}
+					}
+					requete_ajax.send(params);
+
+				};
+				oui.style.cssFloat = "left";
+				non = document.createElement('INPUT');
+				non.value = window.tl_bouton_Non;
+				non.type = 'BUTTON';
+				non.onclick = function() {
+					detruitNoeud(nTd.id);
+				};
+				non.style.cssFloat = "left";
+				nTd.appendChild(oui);
+				nTd.appendChild(non);
+				tdEnf.appendChild(nTd);
+
+			}
+
+			function remplirTableau() {
+
+				detruitNoeud("tableauHoraire");
+				genTableau(window.mJS);
+
+				matchsDsSaison = new Array();
+
+				try {
+					 maSaison = vecEquipe.Ligue.saisons[document.getElementById("selSaison").selectedIndex];
+					 var dPMHor =maSaison.pm.split(" ")[1];
+					 var dPMCal =maSaison.pm.split(" ")[0];
+					 var dDMHor =maSaison.dm.split(" ")[1];
+					 var dDMCal =maSaison.dm.split(" ")[0];
+					 var dPM = new Date(dPMCal.split("-")[0],dPMCal.split("-")[1],dPMCal.split("-")[2],dPMHor.split(":")[0],dPMHor.split(":")[1],dPMHor.split(":")[2]);
+					 var dDM = new Date(dDMCal.split("-")[0],dDMCal.split("-")[1],dDMCal.split("-")[2],dDMHor.split(":")[0],dDMHor.split(":")[1],dDMHor.split(":")[2]);
+					 var cpt=0;
+					 for(var a=0;a<window.vecMAV.length;a++)
+					 {
+					 	d1Cal=window.vecMAV[a].date.split(" ")[0];
+					 	d1Hor=window.vecMAV[a].date.split(" ")[1];
+					 	
+					 	var d1 = new Date(d1Cal.split("-")[0],d1Cal.split("-")[1],d1Cal.split("-")[2],d1Hor.split(":")[0],d1Hor.split(":")[1],d1Hor.split(":")[2]);
+					 	
+					 	if(dPM<d1&&dDM>d1)
+					 	{matchsDsSaison[cpt]=window.vecMAV[a];
+					 		cpt++;}
+					 	
+					 	
+					 }
+										matchsDsSaison.sort(function(a, b) {
+							var d1 = new Date(a.date.split(" ")[0]);
+							var d2 = new Date(b.date.split(" ")[0]);
+							return (d2 - d1)
+							});
+
+					//rJSON.periodes.shift();
+					if (window.matchsDsSaison.length == 0) {
+						rangee = document.createElement('TR');
+						rangee.id = "rangeeVide";
+						amettre = document.getElementById("rangeeTitre");
+						amettre.parentNode.appendChild(rangee);
+						td1 = document.createElement('TD');
+						td1.className = "titreTableau";
+						td1.colSpan = "8";
+						td1.innerHTML = window.tl_general_noData;
+						rangee.appendChild(td1);
+					}
+					for ( J = 0; J < matchsDsSaison.length; J = J + 1) {
+
+						//	if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
+						rangee = document.createElement('TR');
+						rangee.id="tr_"+matchsDsSaison[J].mavId;
+						amettre = document.getElementById('rangeeTitre');
+						amettre.parentNode.appendChild(rangee);
+						mArInd = extirpeArena(matchsDsSaison[J].arenaId);
+						mEqDomInd = extirpeEquipe(matchsDsSaison[J].eqDom);
+						mEqVisInd = extirpeEquipe(matchsDsSaison[J].eqVis);
+						strImg = "<img src=\"\/images\/icones\/edit.png\" onclick=editMatch(" + matchsDsSaison[J].mavId + "); width=\"32\" height=\"32\" alt=\"Edit\"\>";
+						strImg2 = "<img src=\"\/images\/icones\/view.png\" onclick=window.location.href='" + menus[12].lien + "?ligueId=" + window.ligueId + "&mavId=" + matchsDsSaison[J].mavId + "'; width=\"32\" height=\"32\" alt=\"Edit\"\>";
+						strImg3 = "<img src=\"\/images\/icones\/poubelle.png\" onclick=effaceMatch(" + matchsDsSaison[J].mavId+ "); width=\"32\" height=\"32\" alt=\"Edit\"\>";
+
+						var lesCols = new Array();
+						lesCols[0] = matchsDsSaison[J].date.split(" ")[0];
+						lesCols[1] = null;
+						lesCols[2] = matchsDsSaison[J].date.split(" ")[1];
+						lesCols[3] = (mArInd != -1) ? window.vecArena[mArInd].nomArena + ", " + window.tl_horaire_glace + " :" + window.vecArena[mArInd].nomGlace : window.tl_horaire_nonDef;
+						lesCols[4] = (mEqDomInd != -1) ? window.vecEquipe.equipes[mEqDomInd].nom : window.tl_horaire_nonDef;
+						lesCols[5] = (mEqVisInd != -1) ? window.vecEquipe.equipes[mEqVisInd].nom : window.tl_horaire_nonDef;
+						lesCols[6] = (window.perm < 19) ? strImg + strImg2 + strImg3 : strImg2;
+
+						var lesLiens = new Array();
+						lesLiens[0] = null;
+						lesLiens[1] = null;
+						lesLiens[2] = null;
+						lesLiens[3] = null;
+						lesLiens[4] = null;
+						lesLiens[5] = null;
+						lesLiens[6] = null;
+
+						for ( K = 0; K < lesCols.length; K++) {
+							cellule = document.createElement('TD');
+							if (lesCols[K] != undefined) {
+								if (lesLiens[K] != null) {
+									lien = document.createElement('A');
+									lien.innerHTML = lesCols[K];
+									lien.href = lesLiens[K];
+									cellule.appendChild(lien);
+								} else {
+									ptexte = document.createElement('P');
+									ptexte.innerHTML = lesCols[K];
+									//					texte = document.createTextNode(lesCols[K]);
+									cellule.appendChild(ptexte);
+								}
+							}
+							J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
+							rangee.appendChild(cellule);
+						}
+
+					}//Fin des rangées;
+					rangeePlus2 = document.createElement('TR');
+					cellPlus2 = document.createElement('TD');
+					cellPlus2.colSpan = 6;
+
+					element2 = document.createElement('input');
+					element2.type = "button";
+					element2.value = "+ " + window.tl_general_nouvMatch;
+
+					element2.onclick = function() {
+						nouveauMatch()
+					};
+					cellPlus2.appendChild(element2);
+					rangeePlus2.appendChild(cellPlus2);
+					amettre = document.getElementById('rangeeTitre');
+					if (window.perm < 19)
+						amettre.parentNode.appendChild(rangeePlus2);
+						
+
+					//	document.body.rangee.cellule.innerHTML ='yo';
+				} catch(err) {
+				}
+
+					enveloppeTable('tableauHoraire',0,8);
+
+			}
+
+		</script>
+
+	</HEAD>
+	<body id="mbody">
+
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+		<div id="divMenuHaut"></div>
+
+		<div id="divCentrale">
+			<DIV id="divSelSaison"></div>
+		</div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+			developper(5);
+							
+			dSS = document.getElementById('divSelSaison');
+			dSS.innerHTML=window.tl_statseq_Saison+": ";
+			SS =document.createElement('SELECT');
+			SS.id="selSaison";
+			dSS.appendChild(SS);
+
+				
+				mJS = {};
+				mJS.id = "tableauHoraire";
+				mJS.parentId = "divCentrale";
+				mJS.titre = window.tl_horaire_horMatch;
+				mJS.rangeeTitre = new Array();
+				mJS.rangeeTitre[0] = window.tl_resultats_Date;
+				mJS.rangeeTitre[1] = window.tl_horaire_Jour;
+				mJS.rangeeTitre[2] = window.tl_horaire_Heure;
+				mJS.rangeeTitre[3] = window.tl_horaire_Emplacement;
+				mJS.rangeeTitre[4] = window.tl_resultats_Domicile;
+				mJS.rangeeTitre[5] = window.tl_resultats_Visiteur;
+				mJS.rangeeTitre[6] = window.tl_horaire_Operations;
+
+				genTableau(mJS);
+
+				perm = verifiePermission();
+				ligueId = null;
+				if (getCookie('ligueId') != null) {
+					ligueId = getCookie('ligueId');
+				} else {
+					if (getValue('ligueId') == "") {
+						window.location.href = "/listeligues.html" + "?code=10";
+					}//Code 10: origine de statistique
+					else {
+						ligueId = getValue('ligueId');
+					}
+				}
+				//				afficheLigueId();
+
+				mavId = 1;
+				loadConditions = 0;
+				getArena();
+				getInfoLigue(ligueId);
+				getMatchAVenir();
+		
+			//			alert(strInfoMatch);
+
+		</script>
+	</body>
+</html>

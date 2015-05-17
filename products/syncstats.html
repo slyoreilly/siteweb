@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<?xml version="1.0" encoding="utf-8"?>
+<html>
+<head>
+<title>SyncStats to your league</title>
+	<meta name="description" content="SyncStats helps your league by making your game more fun: An app for stats, a scoreboard to be connected during the game and more...">
+	<meta name="keyword" content="hockey,statistics,android,mobile app, scoreboard, website">
+	<meta name="author" content="Sylvain O'Reilly">
+
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+				 		
+				 		
+				 		function structurePage(){
+					 			//////////////////////////////////////
+				 			//
+				 			///	Section sousPli
+				 			
+
+				 			mLi=document.getElementById('liSS1');
+				 			mLi.innerHTML=window.tl_produitDescSS1;
+				 			mA=document.getElementById('aGooglePlay');
+				 			mA.innerHTML=window.tl_produitDescSS2;
+				 			mLi=document.getElementById('liSS3');
+				 			mLi.innerHTML=window.tl_produitDescSS3;
+				 			mLi=document.getElementById('liSS4');
+				 			mLi.innerHTML=window.tl_produitDescSS4;
+				 			mLi=document.getElementById('liSS5');
+				 			mLi.innerHTML=window.tl_produitDescSS5;
+				 			mA=document.getElementById('aDoodle');
+				 			mA.innerHTML=window.tl_produitDescSS6;
+				 			mA=document.getElementById('aInfo');
+				 			mA.innerHTML=window.tl_produitDescSS8;
+				 			
+
+				 			
+				 		}
+		</script>
+</head>
+<body id="mbody">
+
+				<div id="divHaut">
+		</div>
+		<div id="divGauche">
+		</div>
+		<div id="divCentrale">
+			<div id="divBreadcrums">
+				<a href="/">Home</a><span> > </span><a href="/produits.html">Products</a><span> > </span><a href="#">SyncStats</a> 
+			</div>
+			<div id="divProduitSousPli">
+				<div id="divDescSS">
+					<div id="divTitreSS">
+						<div id="logo" class="logoSS">
+							<img class="imgLogoSS" src="/images/logoSeul.png" alt="SyncStats Logo"></img>
+							<h2>SYNCSTATS</h2>
+						</div>
+					</div>
+											<h2>What's SyncStats</h2>
+						<ul>
+							<li id="liSS1">It is an Android app that allows to keep track of stats on your smartphone</li>
+						</ul>
+						
+					<h2>Features</h2>
+						<ul>
+							<li id="liSS21">All rosters being loaded on the phone, in 5 clicks you get a goal entered and synced on the web site</li>
+							<li id="liSS22">Entering your rosters is super easy from the web site</li>
+							<li id="liSS23">Any Android phone from OS 2.1+ are good. So dig-up your old phone, it will surely be good enough!</li>
+							<li id="liSS24">It can log goal scorers and assists, time of goals, penalties, plus/minus, etc. Then the web site derives much more cool stats</li>
+						</ul>
+					
+					<h2>Cost</h2>
+						<ul>
+						<li id="liSS31">App is free. If you don't want to pay a dime ever, you can use the app and then enter score on your website</li>
+						<li id="liSS32">Your first few games will be free. Take your time to try it, test it, check with players if they like it.</li>
+						<li id="liSS33">If you combine this with other services (like videos cameras), we'll forget to charge you!</li>
+						<li id="liSS34">If you only take stats and you finished your trial games, it will be 4$ per game on a 15+ games subscription.</li>
+						</ul>
+					<h2>Where to start</h2>
+						<ul>
+							<li id="liSS41"><a href="https://play.google.com/store/apps/details?id=hockey.ref" id="aGooglePlay">Download app for free on GooglePlay</a></li>
+							<li id="liSS42"><a href="http://www.doodle.com/kq58ask849bgki3w" id="aDoodle">Fill in this form and we will come to see you on your next game</a></li>
+							<li id="liSS43"><a href="mailto:info@syncstats.com" id="aInfo">Or contact us!<a></li>
+							
+						</ul>
+
+				</div>
+				<div id="divSSSS">
+					<img src="/images/SSSS.png" alt="Screenshot of the in-game main page of the app"></img>
+				</div>
+				
+			</div>
+
+				 			
+
+
+
+		</div>
+		<div id="divDroite">
+		</div>
+		<div id="divBas">
+		</div>
+		
+		
+		 	<script type="text/javascript" charset="utf-8">
+		 		
+		
+		 	developper(28);
+			detruitDivGaucheDroite(); 	
+/*			document.getElementById('divBas').position="absolute";
+			document.getElementById('divBas').bottom="0";
+	*/		
+			bN=document.getElementById('barreTitreContexte');
+			for(var a=0;a<bN.childNodes.length;a++)
+			{
+				bN.childNodes[a].style.display="none";
+		
+			}	
+		document.getElementById('barreNav').style.display="none";
+		
+		structurePage();
+		 		
+		 	</script>
+
+
+
+</body>
+</html>

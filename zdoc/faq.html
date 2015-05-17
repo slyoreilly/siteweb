@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>FAQ</title>
+		<link rel="stylesheet" href="/style/general_v4.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+				<link rel="shortcut icon" href="/favicon.ico" />
+
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+				<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+
+
+<style>
+p, li {
+/*font-family:verdana,arial, fantasy;*/
+font-size:small;
+	padding-left:20px;
+	color:#555;
+}
+
+
+h2 {
+	font-weight:italic;
+}
+
+div.blocReponse
+{padding-left:20px;}
+
+h3 {
+font-size:95%;
+	
+	
+}
+
+</style>
+
+</head>
+<body id="mbody">
+ 
+ 		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+				<div id="divMenuHaut"></div>
+
+
+ <DIV ID="divCentrale" >
+
+<DIV ID="titre">
+
+	<h1 id="h1Titre"></h1></br>
+	</DIV>
+<DIV style="padding:10px;">
+<div>
+
+	<h2 id="h2_1"></h2>
+
+</div>
+
+<div>
+<h2 id="h2_2"></h2>
+</div>
+<div>
+<h2 id="h2_3"></h2></div>
+<div><h2 id="h2_4"></h2></div>
+
+<h2 id="h2_5"></h2>
+<div class="blocReponse">
+<h3 id="h2_5_h3_1"></h3>
+<ul id="h2_5_ul_1">
+</ul>
+<h3 id="h2_5_h3_2"></h3>
+<ul id="h2_5_ul_2">
+</ul>
+<h3 id="h2_5_h3_3"></h3>
+<ul id="h2_5_ul_3"> 
+</ul>
+</div>
+
+
+<h2 id="h2_6"></h2>
+<div class="blocReponse">
+	<h3 id="h2_6_h3_1"></h3>
+<ul id="h2_6_ul_1">
+
+</ul>
+	
+<h3 id="h2_6_h3_2"></h3>
+<ul id="h2_6_ul_2">
+
+</ul>
+		
+<h3 id="h2_6_h3_3"></h3>
+<ul id="h2_6_ul_3">
+
+</ul>
+	
+<h3 id="h2_6_h3_4"></h3>
+<ul id="h2_6_ul_4">
+</ul>
+</div>
+	
+
+</div>
+
+</div>
+
+				<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+			
+			developper(15);
+			
+					detruitNoeud('divGauche');
+			document.getElementById('divCentrale').style.width="76%";
+			document.getElementById('divCentrale').style.marginLeft="2%";
+			document.getElementById('divCentrale').style.marginRight="2%";
+					document.getElementById('divCentrale').style.left="0";
+
+						
+				document.getElementById("h1Titre").innerHTML=window.tl_faq_titre;
+				
+			h2_1JS = document.getElementById("h2_1");
+			h2_1JS.innerHTML=window.tl_faq_h2_1;
+			mP= document.createElement('p');
+			mP.innerHTML=window.tl_faq_h2_1_p;
+			h2_1JS.parentNode.appendChild(mP);
+			
+			h2_2JS = document.getElementById("h2_2");
+			h2_2JS.innerHTML=window.tl_faq_h2_2;
+			mP= document.createElement('p');
+			mP.innerHTML=window.tl_faq_h2_2_p;
+			h2_2JS.parentNode.appendChild(mP);
+
+			h2_3JS = document.getElementById("h2_3");
+			h2_3JS.innerHTML=window.tl_faq_h2_3;
+			mP= document.createElement('p');
+			mP.innerHTML=window.tl_faq_h2_3_p;
+			h2_3JS.parentNode.appendChild(mP);
+
+			h2_4JS = document.getElementById("h2_4");
+			h2_4JS.innerHTML=window.tl_faq_h2_4;
+			
+						mP= document.createElement('p');
+			mP.innerHTML=window.tl_faq_h2_4_p;
+			h2_4JS.parentNode.appendChild(mP);
+			
+			
+			
+			h2_5JS = document.getElementById("h2_5");
+			h2_5JS.innerHTML=window.tl_faq_h2_5;
+			
+			document.getElementById("h2_5_h3_1").innerHTML=window.tl_faq_h2_5_h3_1;
+			document.getElementById("h2_5_h3_2").innerHTML=window.tl_faq_h2_5_h3_2;
+			document.getElementById("h2_5_h3_3").innerHTML=window.tl_faq_h2_5_h3_3;
+			
+			h2_6JS = document.getElementById("h2_6");
+			h2_6JS.innerHTML=window.tl_faq_h2_6;
+			
+			document.getElementById("h2_6_h3_1").innerHTML=window.tl_faq_h2_6_h3_1;
+			document.getElementById("h2_6_h3_2").innerHTML=window.tl_faq_h2_6_h3_2;
+			document.getElementById("h2_6_h3_3").innerHTML=window.tl_faq_h2_6_h3_3;
+			document.getElementById("h2_6_h3_4").innerHTML=window.tl_faq_h2_6_h3_4;
+
+			mUl =document.getElementById("h2_5_ul_1")
+			li1=document.createElement('LI');
+			li1.innerHTML=window.tl_faq_h2_5_ul1_li1;
+			li2=document.createElement('LI');
+			li2.innerHTML=window.tl_faq_h2_5_ul1_li2;	
+			li3=document.createElement('LI');
+			li3.innerHTML=window.tl_faq_h2_5_ul1_li3;
+			mUl.appendChild(li1);
+			mUl.appendChild(li2);
+			mUl.appendChild(li3);
+			
+						mUl =document.getElementById("h2_5_ul_2")
+			li1=document.createElement('LI');
+			li1.innerHTML=window.tl_faq_h2_5_ul2_li1;
+			li2=document.createElement('LI');
+			li2.innerHTML=window.tl_faq_h2_5_ul2_li2;	
+			li3=document.createElement('LI');
+			li3.innerHTML=window.tl_faq_h2_5_ul2_li3;
+			li4=document.createElement('LI');
+			li4.innerHTML=window.tl_faq_h2_5_ul2_li4;
+			li5=document.createElement('LI');
+			li5.innerHTML=window.tl_faq_h2_5_ul2_li5;
+			mUl.appendChild(li1);
+			mUl.appendChild(li2);
+			mUl.appendChild(li3);
+			mUl.appendChild(li4);
+			mUl.appendChild(li5);
+			
+			mUl =document.getElementById("h2_5_ul_3")
+			li1=document.createElement('LI');
+			li1.innerHTML=window.tl_faq_h2_5_ul3_li1;
+			li2=document.createElement('LI');
+			li2.innerHTML=window.tl_faq_h2_5_ul3_li2;	
+			li3=document.createElement('LI');
+			li3.innerHTML=window.tl_faq_h2_5_ul3_li3;
+			li4=document.createElement('LI');
+			li4.innerHTML=window.tl_faq_h2_5_ul3_li4;
+			mUl.appendChild(li1);
+			mUl.appendChild(li2);
+			mUl.appendChild(li3);
+			mUl.appendChild(li4);
+			
+			mUl =document.getElementById("h2_6_ul_1")
+			li1=document.createElement('LI');
+			li1.innerHTML=window.tl_faq_h2_6_ul1_li1;
+			li2=document.createElement('LI');
+			li2.innerHTML=window.tl_faq_h2_6_ul1_li2;	
+			li3=document.createElement('LI');
+			li3.innerHTML=window.tl_faq_h2_6_ul1_li3;
+			li4=document.createElement('LI');
+			li4.innerHTML=window.tl_faq_h2_6_ul1_li4;
+			mUl.appendChild(li1);
+			mUl.appendChild(li2);
+			mUl.appendChild(li3);
+			mUl.appendChild(li4);
+			
+						mUl =document.getElementById("h2_6_ul_2")
+			li1=document.createElement('LI');
+			li1.innerHTML=window.tl_faq_h2_6_ul2_li1;
+			li2=document.createElement('LI');
+			li2.innerHTML=window.tl_faq_h2_6_ul2_li2;	
+			li3=document.createElement('LI');
+			li3.innerHTML=window.tl_faq_h2_6_ul2_li3;
+			li4=document.createElement('LI');
+			li4.innerHTML=window.tl_faq_h2_6_ul2_li4;
+			mUl.appendChild(li1);
+			mUl.appendChild(li2);
+			mUl.appendChild(li3);
+			mUl.appendChild(li4);
+						
+			mUl =document.getElementById("h2_6_ul_3")
+			li1=document.createElement('LI');
+			li1.innerHTML=window.tl_faq_h2_6_ul3_li1;
+			li2=document.createElement('LI');
+			li2.innerHTML=window.tl_faq_h2_6_ul3_li2;	
+			li3=document.createElement('LI');
+			li3.innerHTML=window.tl_faq_h2_6_ul3_li3;
+			mUl.appendChild(li1);
+			mUl.appendChild(li2);
+			mUl.appendChild(li3);
+			
+			mUl =document.getElementById("h2_6_ul_4")
+			li1=document.createElement('LI');
+			li1.innerHTML=window.tl_faq_h2_6_ul4_li1;
+			li2=document.createElement('LI');
+			li2.innerHTML=window.tl_faq_h2_6_ul4_li2;	
+			mUl.appendChild(li1);
+			mUl.appendChild(li2);
+			
+		</script>
+</body>
+</html>

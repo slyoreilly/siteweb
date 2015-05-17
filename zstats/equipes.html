@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<title>Équipes</title>
+		<link rel="stylesheet" href="/style/general_v4.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+				<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/equipes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+
+		<script type="text/javascript" charset="utf-8">
+
+
+
+		</script>
+
+		<style>
+		</style>
+	</HEAD>
+
+	<body id="mbody">
+							<div id="divHaut"></div>
+		<div id="divGauche"></div>
+						<div id="divMenuHaut"></div>
+		<div id="divCentrale">
+		</div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+			ligueId = null;
+			if (getCookie('ligueId') != null) {
+				ligueId = getCookie('ligueId');
+			} else {
+				if (getValue('ligueId') == "") {
+					window.location.href = "/listeligues.html" + "?code=10";
+				}//Code 10: origine de statistique
+				else {
+					ligueId = getValue('ligueId');
+				}
+			}
+			perm = verifiePermission();
+			getInfoEquipesLigue(ligueId);
+
+		 		window.onload = function () { 
+
+			peupleDivHaut();
+			genereLiensContext(9);
+			genereBoites();
+			}
+		</script>
+
+	</body>
+</html>

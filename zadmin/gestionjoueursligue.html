@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<title>Gestion des joueurs de la ligue</title>
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+		<link rel="shortcut icon" href="/favicon.ico" />
+				<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script type="text/javascript" charset="utf-8">
+			gereLangue();
+		</script>
+		<script id ="conteneurLangue" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" charset="utf-8">
+			function clicCB(nbCol, joueurs, K,L,eId) {
+				return function() {
+					
+					jId=joueurs[K].joueurId;
+					
+					//		alert('heyhey')
+					var x = new Array();
+					x = document.getElementsByTagName("input");
+					y = document.getElementsByTagName("IMG");
+					// NE PAS OUBLIER LES DEUX BOUTONS AVANT LE TABLEAU!!!
+					//		alert(x.shift());
+					var r = new Array();
+					r = document.getElementsByTagName("tr");
+					for(var a=0;a<r.length;a++)
+					{
+						if(r[a].id=="ligneJoueur_"+K)
+						{
+							for(var b=0;b<r[a].childNodes.length;b++)
+							{
+								
+								if(r[a].childNodes[b].name=="tdEq")
+								{
+								r[a].childNodes[b].firstChild.childNodes[1].checked=false
+								r[a].childNodes[b].firstChild.childNodes[0].className = "grayscale";
+								//alert(r[a].childNodes[b].firstChild.childNodes[1].id);
+								if(r[a].childNodes[b].firstChild.childNodes[1].id=="cb_"+K+"_"+L)
+								{
+								r[a].childNodes[b].firstChild.childNodes[1].checked = true;
+								r[a].childNodes[b].firstChild.childNodes[0].className = "grayscale.disable";
+								}
+								}
+							}
+						}
+						
+					}
+					/*
+					ligne = Math.floor((noSeq ) / nbCol);
+					col = noSeq % nbCol;
+					
+					
+					//		alert(nbCol+" "+ noSeq+" "+ligne+" "+col);
+					for ( m = 0; m < (nbCol); m = m + 1) {
+						B = (nbCol) * ligne + m;
+						Bi = (nbCol + 2) * ligne + m + 2;
+						// Le 2: les boutons avant le tableau
+						x[B].checked = false;
+						y[Bi].className = "grayscale";
+						if (noSeq == B) {
+							noSeqI = Bi;
+						}
+						//		alert(B+": "+x[B].checked+" ");
+					}
+					x[noSeq].checked = true;
+					y[noSeqI].className = "grayscale.disable";
+					//pourMAJ.push();
+					*/
+					//alert('{"joueurId":"' + jId + '","equipeId":"' + eId + '"}');
+					setJoueursDansEquipes('{"joueurId":"' + jId + '","equipeId":"' + eId + '"}');
+					//	r[ligne].style.backgroundColor="red";
+					//			alert(pourMAJ);
+					//		alert(A+": "+x[A].checked+" ");
+				}
+			}
+		</script>
+
+		<script type="text/javascript" charset="utf-8">
+			function setJoueursDansEquipes(strJou) {
+				//	return function() {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/attribueJoueursDansEquipe.php";
+				//	alert(url);
+				var params = "joueursmaj=[" + strJou + "]&ligueId=" + window.ligueId;
+				var pourMAJ = new Array();
+				//		alert(params);
+				requete_ajax.open('POST', url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				//		alert('yo');
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						//alert(requete_ajax.responseText);
+						//window.location.reload();
+					}
+				}
+				requete_ajax.send(params);
+				//		alert(requete_ajax.responseText);
+
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				//	}
+			}
+
+			function termineAbon(jId) {
+
+				//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/abonjoueurligue.php";
+
+				var strJoueurAId = "joueurId=" + jId;
+				var strCode = "code=" + 60;
+				var strLigueId = "ligueId=" + getCookie('ligueId');
+
+				params = strJoueurAId + '&' + strLigueId + '&' + strCode;
+				url ;//= url+"?"+params;
+				//alert(params);
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						//		alert(requete_ajax.responseText);
+						window.location.reload(true);
+						// requete_ajax.responseText;
+
+					}
+				}
+				requete_ajax.send(params);
+				//				alert(JSON.stringify(listeMatch));
+				//	return vecMAV;
+				//}
+
+			}
+
+			function contenuTableau(joueurs) {
+
+				vecImg = new Array();
+
+				for ( J = 0; J < jJSON2.equipe.length; J = J + 1) {
+					try {
+
+						uneEquipe = document.createElement('TD');
+						uneEquipe.id="equipe_"+J;
+						uneEquipe.className="colEquipe";
+						uneEquipe.style.cursor="pointer";
+						uneEquipe.onclick=classeParEquipes(joueurs,jJSON2.equipe[J].equipeId);
+						
+						amettre = document.getElementById('tabAttribueJoueurs_tbody');
+						tEq = document.createTextNode(jJSON2.equipe[J].nomEquipe);
+						vecImg = document.createElement('IMG');
+						vecImg.src = "/admin/afficheImage.php?ficId=" + jJSON2.equipe[J].ficId;
+						vecImg.style.width = "16px";
+						vecImg.style.height = "16px";
+						vecImg.id = "img_" + J;
+						uneEquipe.appendChild(tEq);
+						amettre.firstChild.nextSibling.nextSibling.appendChild(uneEquipe);
+					} catch(err) {
+					}
+					document.getElementById('tabAttribueJoueurs_tdTitre').colSpan=jJSON2.equipe.length+4;
+					document.getElementById('tabAttribueJoueurs_tdOpt').colSpan=jJSON2.equipe.length+4;
+				}
+
+				seq = 0;
+
+				for ( K = 0; K < joueurs.length; K = K + 1) {
+					rangee = document.createElement('TR');
+					rangee.className = "ligneJoueur";
+					rangee.id= "ligneJoueur_"+K;
+					amettre = document.getElementById('tabAttribueJoueurs_tbody');
+					amettre.appendChild(rangee);
+
+					celluleNo = document.createElement('TD');
+					texteNo = document.createTextNode(joueurs[K].noJoueur);
+					celluleNo.appendChild(texteNo);
+					(K % 2 == 0) ? celluleNo.setAttribute('class', 'lignePaire') : celluleNo.setAttribute('class', 'ligneImpaire');
+					rangee.appendChild(celluleNo);
+
+					cellulePos = document.createElement('TD');
+					textePos = document.createTextNode(joueurs[K].position);
+					cellulePos.appendChild(textePos);
+					(K % 2 == 0) ? cellulePos.setAttribute('class', 'lignePaire') : cellulePos.setAttribute('class', 'ligneImpaire');
+					rangee.appendChild(cellulePos);
+
+					celluleOpt = document.createElement('TD');
+					imgEdit = document.createElement('IMG');
+					imgEdit.src = "/images/icones/edit.png";
+					imgEdit.className = "icone";
+					jId = joueurs[K].joueurId;
+					imgEdit.onclick = (function(jId) {
+						return function() {
+							//alert("Sti");
+							window.location.href = '/admin/entreprofil.html?joueurId=' + jId + '&ligueId=' + getCookie('ligueId') + '&code=41';
+						};
+					})(jId);
+					imgDel = document.createElement('IMG');
+					imgDel.src = "/images/icones/delete.png";
+					imgDel.style.width = "24px";
+					imgDel.style.height = "24px";
+					imgDel.style.cursor = "pointer";
+					imgDel.onclick = (function(jId) {
+						return function() {
+							termineAbon(jId);
+						};
+					})(jId);
+
+					celluleOpt.appendChild(imgEdit);
+					celluleOpt.appendChild(imgDel);
+					celluleOpt.className = (K % 2 == 0) ? 'lignePaire' : 'ligneImpaire';
+					rangee.appendChild(celluleOpt);
+
+					celluleNom = document.createElement('TD');
+					lien = document.createElement('A');
+					lien.innerHTML = joueurs[K].nomJoueur;
+					lien.setAttribute('href', '/admin/entreprofil.html?joueurId=' + joueurs[K].joueurId + '&ligueId=' + getValue('ligueId') + '&code=41');
+					//Code 41: modif par admin
+
+					celluleNom.appendChild(lien);
+
+					(K % 2 == 0) ? celluleNom.setAttribute('class', 'lignePaire') : celluleNom.setAttribute('class', 'ligneImpaire');
+
+					rangee.appendChild(celluleNom);
+
+					for ( L = 0; L < jJSON2.equipe.length; L = L + 1) {
+						celluleCB = document.createElement('DIV');
+						tdCB = document.createElement('TD');
+						tdCB.width = "32px";
+						tdCB.name="tdEq";
+						tdCB.appendChild(celluleCB);
+						var checkbox = document.createElement('input');
+						checkbox.type = "checkbox";
+						checkbox.name = "name";
+						checkbox.value = "value";
+						checkbox.id = "cb_"+K+"_"+L;
+
+						(jJSON2.equipe[L].equipeId == joueurs[K].equipeId) ? checkbox.checked = true : checkbox.checked = false;
+						//var seq = (jJSON2.equipe.length)*K+L;
+						checkbox.onclick = clicCB(jJSON2.equipe.length, joueurs,K,L,jJSON2.equipe[L].equipeId);
+						seq = seq + 1;
+						rangee.appendChild(tdCB);
+
+						tmpImg = document.createElement('IMG');
+						tmpImg.src = "/admin/afficheImage.php?ficId=" + jJSON2.equipe[L].ficId;
+						tmpImg.style.width = "32px";
+						tmpImg.style.height = "32px";
+						(jJSON2.equipe[L].equipeId == joueurs[K].equipeId) ? tmpImg.className = "grayscale.disable" : tmpImg.className = "grayscale";
+						(jJSON2.equipe[L].equipeId == joueurs[K].equipeId) ? checkbox.checked = true : checkbox.checked = false;
+						try {
+							//								alert(document.getElementById("img_"+L).src);
+							//celluleCB.style.backgroundImage="url('/admin/afficheImage.php?ficId=" + jJSON2.equipe[L].ficId+"')";
+							celluleCB.style.width = "24px";
+							celluleCB.style.height = "24px";
+							celluleCB.style.margin = "0";
+							celluleCB.style.padding = "0";
+							celluleCB.appendChild(tmpImg);
+						} catch(err) {
+						}
+						celluleCB.appendChild(checkbox);
+						checkbox.style.position = "absolute";
+						checkbox.style.bottom = "0";
+						checkbox.style.margin = "0";
+						checkbox.style.padding = "0";
+						checkbox.style.left = "0";
+						checkbox.style.zIndex = "2";
+
+						//celluleCB.appendChild(tmpImg);
+
+						//clicCB(jJSON.joueurs.length,cJSON.equipes.length,cJSON.equipes.length*J+K);
+
+						(K % 2 == 0) ? tdCB.setAttribute('class', 'lignePaire') : tdCB.setAttribute('class', 'ligneImpaire');
+
+					}
+
+				}
+
+			}
+			
+			function videPartiel()
+			{
+				lesTR = document.getElementsByTagName('TR');
+					for(var d=lesTR.length-1;d>=0;d--)
+					{
+						if(lesTR[d].className=="ligneJoueur")
+						{detruitNoeud(lesTR[d].id);}
+						
+					}
+					lesCol = document.getElementsByTagName('TD');
+					for(var d=lesCol.length-1;d>=0;d--)
+					{
+						if(lesCol[d].className=="colEquipe")
+						{detruitNoeud(lesCol[d].id);}
+						
+					}
+				
+			}
+
+			function classeNom(joueurs) {
+				return function() {
+					joueurs.sort(function(a, b) {
+						return ((a.nomJoueur == b.nomJoueur) ? 0 : ((a.nomJoueur.toLowerCase() > b.nomJoueur.toLowerCase()) ? window.togouleNom : -window.togouleNom ));
+					});
+					window.togouleNom = -1 * window.togouleNom;
+					//alert(JSON.stringify(joueurs));
+					videPartiel();
+
+					contenuTableau(joueurs);
+				}
+			};
+			function classePosition(joueurs) {
+				return function() {
+					joueurs.sort(function(a, b) {
+						return ((a.position == b.position) ? 0 : ((a.position.toLowerCase() > b.position.toLowerCase()) ? window.togoulePos : -window.togoulePos ));
+					});
+					window.togoulePos = -1 * window.togoulePos;
+					//alert(JSON.stringify(joueurs));
+					videPartiel();
+
+					contenuTableau(joueurs);
+				}
+			};
+
+			function classeNo(joueurs) {
+				return function() {
+					joueurs.sort(function(a, b) {
+						return (window.togouleNo * (parseInt(b.noJoueur) - parseInt(a.noJoueur)));
+					});
+					window.togouleNo = -1 * window.togouleNo;
+					//alert(JSON.stringify(joueurs));
+					videPartiel();
+					contenuTableau(joueurs);
+				}
+			};
+			
+			function classeParEquipes(joueurs,equipeId)
+			{
+				return function() {
+					joueurs.sort(function(a, b) {
+						return ((parseInt(a.equipeId)-equipeId)*(parseInt(a.equipeId)-equipeId)-(parseInt(b.equipeId)-equipeId)*(parseInt(b.equipeId)-equipeId));
+					});
+					videPartiel();
+					contenuTableau(joueurs);
+				}
+				
+			};
+
+			function dessineTableau(jJSON2, cJSON) {
+
+				pourMAJ = new Array();
+				vecImg = new Array();
+
+				joueurs = new Array();
+				for (var I = 0; I < jJSON2.equipe.length; I = I + 1) {
+					for ( K = 0; K < jJSON2.equipe[I].joueur.length; K = K + 1) {
+
+						joueurs.push(jJSON2.equipe[I].joueur[K]);
+						dernInd = joueurs.length - 1;
+						joueurs[dernInd].equipeId = jJSON2.equipe[I].equipeId;
+					}
+				}
+
+
+				togouleNom = 1;
+				togouleNo = 1;
+				togoulePos = 1;
+
+				
+///				if(jJSON2.equipe.length>1)
+//				{
+					joueurs.sort(function(a, b) {
+						return ((a.nomJoueur == b.nomJoueur) ? 0 : ((a.nomJoueur.toLowerCase() > b.nomJoueur.toLowerCase()) ? window.togouleNom : -window.togouleNom ));
+					});
+					
+//				}
+
+				
+
+				contenuTableau(joueurs);
+
+				titreNom = document.getElementById('cellTitre_3');
+				titreNom.style.cursor = "pointer";
+				titreNom.onclick =	classeNom(joueurs);
+				
+				titreNo = document.getElementById('cellTitre_0');
+				titreNo.style.cursor = "pointer";
+				titreNo.onclick = classeNo(joueurs);
+
+				titrePos = document.getElementById('cellTitre_1');
+				titrePos.style.cursor = "pointer";
+				titrePos.onclick = classePosition(joueurs);
+				
+
+				/*		joueurs.sort(function(a, b) {
+				 return (a.nomJoueur - b.nomJoueur)});*/
+
+				/*uneEquipe = document.createElement('TD');
+				 amettre = document.getElementById('tabAttribueJoueurs_tbody');
+				 tEq = document.createTextNode(window.tl_gjl_agentLibre);
+				 uneEquipe.appendChild(tEq);
+				 amettre.firstChild.nextSibling.appendChild(uneEquipe);*/
+
+				/*
+				 seq = 0;
+				 for ( J = 0; J < jJSON2.equipe.length; J = J + 1) {
+				 jJSON2.equipe[J].joueur.sort(function(a, b) {
+				 return (a.noJoueur - b.noJoueur)
+				 });
+				 for ( K = 0; K < jJSON2.equipe[J].joueur.length; K = K + 1) {
+				 rangee = document.createElement('TR');
+				 amettre = document.getElementById('tabAttribueJoueurs_tbody');
+				 amettre.appendChild(rangee);
+
+				 celluleNo = document.createElement('TD');
+				 texteNo = document.createTextNode(jJSON2.equipe[J].joueur[K].noJoueur);
+				 celluleNo.appendChild(texteNo);
+				 (K % 2 == 0) ? celluleNo.setAttribute('class', 'lignePaire') : celluleNo.setAttribute('class', 'ligneImpaire');
+				 rangee.appendChild(celluleNo);
+
+				 cellulePos = document.createElement('TD');
+				 textePos = document.createTextNode(jJSON2.equipe[J].joueur[K].position);
+				 cellulePos.appendChild(textePos);
+				 (K % 2 == 0) ? cellulePos.setAttribute('class', 'lignePaire') : cellulePos.setAttribute('class', 'ligneImpaire');
+				 rangee.appendChild(cellulePos);
+
+				 celluleOpt = document.createElement('TD');
+				 imgEdit = document.createElement('IMG');
+				 imgEdit.src="/images/icones/edit.png";
+				 imgEdit.className="icone";
+				 jId=jJSON2.equipe[J].joueur[K].joueurId;
+				 imgEdit.onclick=(function(jId){
+				 return function() {
+				 alert("Sti");
+				 window.location.href='/admin/entreprofil.html?joueurId=' + jId + '&ligueId=' + getCookie('ligueId') + '&code=41';}
+				 ;})(jId);
+				 imgDel = document.createElement('IMG');
+				 imgDel.src="/images/icones/delete.png";
+				 imgDel.style.width="24px";
+				 imgDel.style.height="24px";
+				 imgDel.style.cursor="pointer";
+				 imgDel.onclick=(function(jId){
+				 return function() {
+				 termineAbon(jId);}
+				 ;})(jId);
+
+				 celluleOpt.appendChild(imgEdit);
+				 celluleOpt.appendChild(imgDel);
+				 celluleOpt.className = (K % 2 == 0) ? 'lignePaire':'ligneImpaire';
+				 rangee.appendChild(celluleOpt);
+
+				 celluleNom = document.createElement('TD');
+				 lien = document.createElement('A');
+				 lien.innerHTML = jJSON2.equipe[J].joueur[K].nomJoueur;
+				 lien.setAttribute('href', '/admin/entreprofil.html?joueurId=' + jJSON2.equipe[J].joueur[K].joueurId + '&ligueId=' + getValue('ligueId') + '&code=41');
+				 //Code 41: modif par admin
+
+				 celluleNom.appendChild(lien);
+
+				 (K % 2 == 0) ? celluleNom.setAttribute('class', 'lignePaire') : celluleNom.setAttribute('class', 'ligneImpaire');
+
+				 rangee.appendChild(celluleNom);
+
+				 for ( L = 0; L < jJSON2.equipe.length; L = L + 1) {
+				 celluleCB = document.createElement('DIV');
+				 tdCB = document.createElement('TD');
+				 tdCB.width="32px";
+				 tdCB.appendChild(celluleCB);
+				 var checkbox = document.createElement('input');
+				 checkbox.type = "checkbox";
+				 checkbox.name = "name";
+				 checkbox.value = "value";
+				 checkbox.id = "id";
+
+				 (L == J) ? checkbox.checked = true : checkbox.checked = false;
+				 //var seq = (jJSON2.equipe.length)*K+L;
+				 checkbox.onclick = clicCB(jJSON2.equipe.length, seq, jJSON2.equipe[J].joueur[K].joueurId, jJSON2.equipe[L].equipeId);
+				 seq = seq + 1;
+				 rangee.appendChild(tdCB);
+
+				 tmpImg = document.createElement('IMG');
+				 tmpImg.src="/admin/afficheImage.php?ficId=" + jJSON2.equipe[L].ficId;
+				 tmpImg.style.width="32px";
+				 tmpImg.style.height="32px";
+				 (L == J) ? tmpImg.className = "grayscale.disable" : tmpImg.className = "grayscale" ;
+				 (L == J) ? checkbox.checked = true : checkbox.checked = false;
+				 try{
+				 //								alert(document.getElementById("img_"+L).src);
+				 //celluleCB.style.backgroundImage="url('/admin/afficheImage.php?ficId=" + jJSON2.equipe[L].ficId+"')";
+				 celluleCB.style.width="24px";
+				 celluleCB.style.height="24px";
+				 celluleCB.style.margin="0";
+				 celluleCB.style.padding="0";
+				 celluleCB.appendChild(tmpImg);
+				 }
+				 catch(err){}
+				 celluleCB.appendChild(checkbox);
+				 checkbox.style.position="absolute";
+				 checkbox.style.bottom="0";
+				 checkbox.style.margin="0";
+				 checkbox.style.padding="0";
+				 checkbox.style.left="0";
+				 checkbox.style.zIndex="2";
+
+				 //celluleCB.appendChild(tmpImg);
+
+				 //clicCB(jJSON.joueurs.length,cJSON.equipes.length,cJSON.equipes.length*J+K);
+
+				 (K % 2 == 0) ? tdCB.setAttribute('class', 'lignePaire') :tdCB.setAttribute('class', 'ligneImpaire');
+
+				 }
+
+				 }
+
+				 }*/
+
+			}
+
+		</script>
+
+		<style>
+		</style>
+	</HEAD>
+
+	<body id="mbody">
+
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+		<div id="divMenuHaut"></div>
+
+		<div id="divCentrale">
+			<DIV ID="optionsTop"></DIV>
+		</div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+			if (getCookie('userId') == null)
+				window.location.href = "/zuser/login.html";
+
+			developper(11);
+
+			mJS = {};
+			mJS.id = "tabAttribueJoueurs";
+			mJS.parentId = "divCentrale";
+			mJS.titre = window.tl_gjl_jouAttribue;
+			mJS.rangeeTitre = new Array();
+			mJS.rangeeTitre[0] = "#";
+			mJS.rangeeTitre[1] = "Position";
+			mJS.rangeeTitre[2] = "Options";
+			mJS.rangeeTitre[3] = window.tl_match_Joueur;
+			genTableau(mJS);
+
+			perm = verifiePermission();
+			ligueId = getValue("ligueId");
+
+			ligueId = null;
+			if (getCookie('ligueId') != null) {
+				ligueId = getCookie('ligueId');
+			} else {
+				if (getValue('ligueId') == "") {
+					moncode = (getValue("code") == "" ) ? 10 : getValue("code");
+					window.location.href = "/listeligues.html" + "?code=" + moncode;
+				}//Code 10: origine de statistique // Code 11: origine de zone admin
+				else {
+					ligueId = getValue('ligueId');
+				}
+			}
+			var m = getValue('m');
+
+			var string2 = getClassementJSON(ligueId, null);
+			//alert(string2);
+			var cJSON = eval('(' + string2 + ')');
+
+			//var stringJ = getStatsLigueJSON(getValue('ligueId'),null);
+			var stringJ2 = getJSONJoueursEquipes(null, ligueId);
+			//alert(stringJ2);
+			//var jJSON = eval('(' +stringJ+')');
+			var jJSON2 = eval('(' + stringJ2 + ')');
+
+			dessineTableau(jJSON2, cJSON);
+
+			var btnNJ = document.createElement('DIV');
+			btnNJ.style.margin = "10px";
+			btnNJ.className = "lien";
+			btnNJ.innerHTML = window.tl_bouton_creerJou;
+			btnNJ.onclick = function() {
+				window.location.href = "/admin/entreprofil.html?code=40&ligueId=" + ligueId;
+			};
+
+			var btnIJ = document.createElement('DIV');
+			btnIJ.style.margin = "10px";
+			btnIJ.className = "lien";
+			btnIJ.innerHTML = window.tl_bouton_importJou;
+			btnIJ.onclick = function() {
+				window.location.href = "/zadmin/importerjoueur.html";
+			};
+
+			document.getElementById("optionsTop").appendChild(btnNJ);
+			document.getElementById("optionsTop").appendChild(btnIJ);
+
+			if (window.perm > 19) {
+				afficheNonPermis('divCentrale');
+			}
+
+		</script>
+
+	</body>
+</html>

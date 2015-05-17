@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<title>Galerie</title>
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+				<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/equipes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+
+		<script type="text/javascript" charset="utf-8">
+
+			function chargeListeImage(ligueId) {
+				//return function() {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/getListeImage.php";
+
+				//	alert(url);
+				var params = "proprio=" +ligueId + "&typeProprio=ligue";
+				//		alert(params);
+				requete_ajax.open('POST', url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				//		alert('yo');
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+					//		alert(requete_ajax.responseText);
+					listeImage= eval('(' + requete_ajax.responseText + ')');
+						for(J=0;J<listeImage.length;J++)
+						{
+												maDiv = document.createElement('DIV');
+					maDiv.className = "divEquipe";
+					maDiv.id = "divEquipe" + "_" + J;
+					maDiv.style.padding = "5px";
+					maDiv.style.margin = "10px";
+					logoEquipe = document.createElement('IMG');
+					logoEquipe.className = 'grosLogo';
+					logoEquipe.id = "logoEquipe" + "_" + J;
+					logoEquipe.src = '/admin/afficheImage.php?ficId=' + listeImage[J].ficId;
+					logoEquipe.onclick=(function(J){return function(){afficheImage(J)};})(J);
+
+
+					maDiv.appendChild(logoEquipe);
+
+					document.getElementById("divCentrale").appendChild(maDiv);
+
+							
+						}
+						
+					}
+				}
+				requete_ajax.send(params);
+			}
+
+
+function afficheImage(selIm)
+{
+					frameModifJS = document.getElementById("frameModif")
+				frameModifJS.className = "affichePlein";
+				//	frameModif.onload = function()
+				//{
+
+
+				var doc = frameModifJS.contentDocument || frameModifJS.contentWindow.document;
+
+var cell = doc.body;
+
+if ( cell.hasChildNodes() )
+{
+    while ( cell.childNodes.length >= 1 )
+    {
+        cell.removeChild( cell.firstChild );       
+    } 
+}
+
+var topDivJS=doc.createElement("DIV");
+topDivJS.style.width="100%";
+topDivJS.style.height="50px";
+
+
+var tBarreJS=doc.createElement("DIV");
+tBarreJS.innerHTML="   |   ";
+tBarreJS.style.cssFloat="left";
+tBarreJS.style.color="#FFF";
+tBarreJS.style.marginLeft="10px";
+tBarreJS.style.marginRight="10px";
+
+var tBarre2JS=doc.createElement("DIV");
+tBarre2JS.innerHTML="   |   ";
+tBarre2JS.style.cssFloat="left";
+tBarre2JS.style.color="#FFF";
+tBarre2JS.style.marginLeft="10px";
+tBarre2JS.style.marginRight="10px";
+
+var tPrecJS=doc.createElement("DIV");
+tPrecJS.innerHTML="Précédent";
+tPrecJS.style.color="#FFF";
+tPrecJS.style.cursor="pointer";
+tPrecJS.onclick=(function(J){return function(){afficheImage(J)};})((100*window.listeImage.length+(selIm-1))%window.listeImage.length);
+tPrecJS.style.cssFloat="left";
+
+var tSuivJS=doc.createElement("DIV");
+tSuivJS.innerHTML="Suivant";
+tSuivJS.style.color="#FFF";
+tSuivJS.style.cursor="pointer";
+tSuivJS.onclick=(function(J){return function(){afficheImage(J)};})((100*window.listeImage.length+(selIm+1))%window.listeImage.length);
+tSuivJS.style.cssFloat="left";
+
+var tFermeJS=doc.createElement("DIV");
+tFermeJS.innerHTML="Fermer";
+tFermeJS.style.color="#FFF";
+tFermeJS.style.cursor="pointer";
+tFermeJS.onclick=function(){frameModifJS.className = "cachePlein";};
+tFermeJS.style.cssFloat="left";
+
+doc.body.appendChild(topDivJS);
+topDivJS.appendChild(tPrecJS);
+topDivJS.appendChild(tBarreJS);
+topDivJS.appendChild(tSuivJS);
+topDivJS.appendChild(tBarre2JS);
+topDivJS.appendChild(tFermeJS);
+
+
+
+				var mIm = doc.createElement("IMG");
+				doc.body.appendChild(mIm);
+				mIm.className = 'pleineImage';
+				mIm.src = '/admin/afficheImage.php?ficId=' + window.listeImage[selIm].ficId;
+}
+
+		</script>
+
+		<style>
+		</style>
+	</HEAD>
+
+	<body id="mbody">
+							<div id="divHaut"></div>
+		<div id="divGauche"></div>
+						<div id="divMenuHaut"></div>
+		<div id="divCentrale">
+		</div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+			developper(21);
+			chargeListeImage(ligueId);
+
+			frameModifJS = document.createElement('IFRAME');
+			frameModifJS.className = "cachePlein";
+			frameModifJS.id = "frameModif";
+
+			document.getElementById("divCentrale").appendChild(frameModifJS);
+
+		</script>
+
+	</body>
+</html>

@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<title>Profil d'arbitre</title>
+		<link rel="stylesheet" href="/style/dhtmlgoodies_calendar.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		<style>
+		</style>
+				<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+
+	</HEAD>
+	<script type="text/javascript">
+
+
+		function surSelection(ligueId) {
+			return function() {
+				setCookie('ligueId', ligueId, 120);
+			}
+			//						setCookie('ligueId',ligueId,120);
+			//window.location.href='statistiques.html?ligueId='+ligueId;
+		}
+
+		
+		function setDispo(dispo)
+		{
+			
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/setArbitres.php";
+				//	alert(url);
+				var strUser = "arbitreId=" + window.arbitreId;
+				strD1=JSON.stringify(dispo);
+				var strDispo = "dispo=" + JSON.stringify(dispo);//strD1.substring(1,strD1.length-2);  // Enlever les guillemets. Finalement ça enleve les [].
+				var params = strUser+'&'+strDispo;
+				//alert(params);
+				requete_ajax.open('POST', url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						window.location.reload(true);
+
+					//alert(requete_ajax.responseText);
+
+					}
+				}
+				requete_ajax.send(params);
+				
+		}
+
+		function setRegion(region)
+		{
+			
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/setArbitres.php";
+				//	alert(url);
+				var strUser = "arbitreId=" + window.arbitreId;
+				var strRegion = "region=" + JSON.stringify(region);//strD1.substring(1,strD1.length-2);  // Enlever les guillemets. Finalement ça enleve les [].
+				var params = strUser+'&'+strRegion;
+				//alert(params);
+				requete_ajax.open('POST', url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+					//alert(requete_ajax.responseText);
+					window.location.reload(true);
+					}
+				}
+				requete_ajax.send(params);
+
+		}
+	
+		function getNomLigue(){
+			
+			var requete_ajax = new XMLHttpRequest();
+
+	var url = "/stats2/Ligues2JSON.php";
+	//	alert(url);
+	params = "";
+	//alert(params);
+	requete_ajax.open('POST', url, true);
+
+	requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	requete_ajax.setRequestHeader("Content-length", params.length);
+	requete_ajax.setRequestHeader("Connection", "close");
+
+	requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+		if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+//					alert(requete_ajax.responseText);
+			//			window.location.reload();
+			try {
+				var locJSON = eval('(' + requete_ajax.responseText + ')');
+			} catch(err) {
+				alert('Le serveur éprouve quelques problêmes. Merci de réessayer plus tard.');
+			}
+
+			maLigue = null;
+			for (var J = 0; J < locJSON.Ligues.length; J = J + 1) {
+				if (parseInt(locJSON.Ligues[J].ligueId) == window.ligueId) {
+					maLigue = locJSON.Ligues[J].nomLigue;
+				}
+			}
+
+			//document.getElementById('ligueBTC').innerHTML = maLigue==null?"Ligue / Tournoi de Hockey":maLigue;
+			
+
+		}
+		//		else{alert("Petit problème de développement");}
+	}
+	requete_ajax.send(null);
+			
+		}
+
+
+		function getProfilArbitre(id) {
+			var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/getArbitres.php";
+				//	alert(url);
+				var strUser = "arbitreId=" + id;
+				var strLigue = "ligueId=" + window.ligueId;
+				var params = strUser+'&'+strLigue;
+				//alert(params);
+				requete_ajax.open('POST', url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+//					alert(requete_ajax.responseText);
+					profArb = eval('('+requete_ajax.responseText+')');
+//					alert(profArb[0].userId);
+							userArbitre =profArb.profil[0].username;
+								getProfilMembre( profArb.profil[0].userId);
+								ecritProfilArb(profArb.profil[0]);
+								try {
+									portrait = document.getElementById('photoPortrait');
+									//logoLigue.setAttribute('src','images/ligues/logo/'+getValue('ligueId')+'.jpg');
+									portrait.setAttribute('src', '/admin/afficheImage.php?ficId=' + profArb.profil[0].ficIdPortrait);
+									} catch(err) {
+									}
+					}
+				}
+				requete_ajax.send(params);
+
+			}
+			
+			function ecritProfilArb(profil)
+			{
+					amettre = document.getElementById('divProfilArbitre');
+
+
+			liste = document.createElement('p');
+
+			//texteFiche = document.createTextNode(window.tl_profil_nom+': ' + window.profilJoueur.nom);
+
+			//amettre.appendChild(texteFiche);
+			
+			ecritDispo(profil.dispo);
+			ecritRegion(profil.region);
+			ecritAutresInfos(profil);
+											faireBoiteMessage();
+											faireDivInvite();
+											
+
+/*
+			try {
+				photoPortraitJS = document.getElementById('photoPortrait');
+				//logoLigue.setAttribute('src','images/ligues/logo/'+getValue('ligueId')+'.jpg');
+				photoPortraitJS.src = "/admin/afficheImage.php?ficId=" + window.profilJoueur.ficIdPortrait;
+			} catch(err) {
+			}*/
+
+				
+			}
+
+function ecritDispo(dispo)
+{
+	amettre = document.getElementById('divProfilArbitre');
+	divDispoJS = document.createElement('DIV');
+			divDispoJS.id="divDispo";
+			divDispoJS.style.position="static";
+			amettre.appendChild(divDispoJS);
+			dispoG = dispo;
+			jours = new Array(tl_general_Lundi,tl_general_Mardi,tl_general_Mercredi,tl_general_Jeudi,tl_general_Vendredi,tl_general_Samedi,tl_general_Dimanche);
+
+			mJS = {};
+			mJS.id = "tabDispo";
+			mJS.parentId = "divDispo";
+			mJS.titre = "Disponibilité";
+			mJS.rangeeTitre = new Array();
+			mJS.rangeeTitre[0] = "Jour";
+			mJS.rangeeTitre[1] = "De";
+			mJS.rangeeTitre[2] = "À";
+			mJS.rangeeTitre[3] = "Disponible?";
+			mJS.rangeeTitre[4] = "Options";
+			genTableau(mJS);
+			tBody=document.getElementById('tabDispo_tbody');
+			
+			isLui = window.userId==window.userArbitre;
+
+			if(dispoG==null)
+			{dispoG=new Array();}
+			//alert(JSON.stringify(dispoG));
+			for(var a=0;a<dispoG.length;a++)
+				{
+				rang=document.createElement('TR');
+				rang.id="trDispo_"+a;
+				rang.className= (a%2==0)?'lignePaire':'ligneImpaire';
+				cell1=document.createElement('TD');
+				if(!isNaN(parseInt(dispoG[a].jour)))
+					{cell1.innerHTML=jours[parseInt(dispoG[a].jour)];}
+				else
+					cell1.innerHTML=dispoG[a].jour;
+				cell1.id="tdJour_"+a;
+				rang.appendChild(cell1);
+				cell2=document.createElement('TD');
+				cell2.innerHTML=dispoG[a].debut;
+				cell2.id="tdDebut_"+a;
+				rang.appendChild(cell2);
+				cell3=document.createElement('TD');
+				cell3.innerHTML=dispoG[a].fin;
+				cell3.id="tdFin_"+a;
+				rang.appendChild(cell3);
+				cell4=document.createElement('TD');
+				cell4.innerHTML=dispoG[a].estDispo;
+				cell4.id="tdDispo_"+a;
+				rang.appendChild(cell4);
+				if(isLui)
+				{
+					cell5=document.createElement('TD');
+					lien=document.createElement('A');
+					lien.innerHTML=tl_bouton_modifier;
+					lien.onclick=(function(a){
+						return function(){
+						faireModLigne(a);};
+					})(a);
+					
+					t1=document.createTextNode(' | ');
+					
+					lien2=document.createElement('A');
+					lien2.innerHTML=tl_bouton_Effacer;
+					lien2.onclick=(function(a){
+						return function(){
+						effaceLigne(a);};
+					})(a);
+					
+					cell5.id="tdOpt_"+a;
+					cell5.appendChild(lien);
+					cell5.appendChild(t1);
+					cell5.appendChild(lien2);
+					rang.appendChild(cell5);
+				}
+				
+				tBody.appendChild(rang);
+				
+				}
+			
+			rangPlus=document.createElement('TR');
+			if(isLui)
+				{tBody.appendChild(rangPlus);}
+			
+			cellPlus=document.createElement('TD');
+			rangPlus.appendChild(cellPlus);
+			cellPlus.colSpan=mJS.rangeeTitre.length;
+			
+			lien = document.createElement('A');
+			lien.innerHTML = "Ajoutez une disponibilité";
+			lien.style.textIndent = "15px";
+			lien.className="lien";
+			//lien.href = menus[18].lien+"?userId="+window.usager.id+"&code=1";
+			lien.onclick = function() {
+				
+				jours = new Array(tl_general_Lundi,tl_general_Mardi,tl_general_Mercredi,tl_general_Jeudi,tl_general_Vendredi,tl_general_Samedi,tl_general_Dimanche);
+				estDispo = new Array("Dispo","Non-dispo","indéfini");
+				
+				var tBody=document.getElementById('tabDispo_tbody');
+				ligneAjout=document.createElement('TR');
+				cell1=document.createElement('TD');
+				sel1=document.createElement('SELECT');
+				for(var b=0;b<jours.length;b++)
+				{
+					opt = document.createElement('OPTION');
+					opt.innerHTML=jours[b];
+					opt.value=b;
+					sel1.appendChild(opt);
+				}
+				cell1.appendChild(sel1);
+				
+				cell2=document.createElement('TD');
+				iHeure = document.createElement('INPUT');
+				iHeure.type="TEXT";
+				div2p=document.createElement('DIV');
+				div2p.innerHTML=":";
+				iMin = document.createElement('INPUT');
+				iMin.type="TEXT";
+				iMedian = document.createElement('SELECT');
+
+					optAM = document.createElement('OPTION');
+					optAM.innerHTML="AM";
+					optAM.value="AM";
+					iMedian.appendChild(optAM);
+
+					optPM = document.createElement('OPTION');
+					optPM.innerHTML="PM";
+					optPM.value="PM";
+					iMedian.appendChild(optPM);
+					
+					cell2.appendChild(iHeure);
+					cell2.appendChild(div2p);
+					cell2.appendChild(iMin);
+					cell2.appendChild(iMedian);
+									
+				cell3=document.createElement('TD');
+				iHeure2 = document.createElement('INPUT');
+				iHeure2.type="TEXT";
+
+				iMin2 = document.createElement('INPUT');
+				iMin2.type="TEXT";
+				iMedian2 = document.createElement('SELECT');
+
+					optAM2 = document.createElement('OPTION');
+					optAM2.innerHTML="AM";
+					optAM2.value="AM";
+					iMedian2.appendChild(optAM2);
+
+					optPM2 = document.createElement('OPTION');
+					optPM2.innerHTML="PM";
+					optPM2.value="PM";
+					iMedian2.appendChild(optPM2);
+					
+					cell3.appendChild(iHeure2);
+					cell3.appendChild(div2p);
+					cell3.appendChild(iMin2);
+					cell3.appendChild(iMedian2);				
+				
+				cell4=document.createElement('TD');
+				sel4=document.createElement('SELECT');
+				for(var b=0;b<estDispo.length;b++)
+				{
+					opt = document.createElement('OPTION');
+					opt.innerHTML=estDispo[b];
+					opt.value=estDispo[b];
+					sel4.appendChild(opt);
+				}
+				cell4.appendChild(sel4);	
+				
+				cell5=document.createElement('TD');		
+					
+				lienOK = document.createElement('A');
+				lienOK.innerHTML = "OK";
+				lienOK.style.textIndent = "15px";
+				lienOK.className="lien";
+				//lien.href = menus[18].lien+"?userId="+window.usager.id+"&code=1";
+				lienOK.onclick =function(){
+											
+											baseDispo = window.dispoG;
+											var jour=window.sel1.options[window.sel1.selectedIndex].value;
+											h24 = parseInt(window.iHeure.value)+12;
+											h24_2= parseInt(window.iHeure2.value)+12;
+											var debut=(window.iMedian.selectedIndex==0) ? (window.iHeure.value+":"+window.iMin.value): (h24+":"+window.iMin.value);
+											var fin=(iMedian2.selectedIndex==0) ? (window.iHeure2.value+":"+window.iMin.value): (h24_2+":"+window.iMin2.value);
+											var estDispo=window.sel4.options[window.sel4.selectedIndex].value;
+											baseDispo[baseDispo.length]={"jour" : jour, "debut":debut,"fin":fin,"estDispo":estDispo};
+											setDispo(baseDispo);}
+				cell5.appendChild(lienOK); 
+				
+				
+				ligneAjout.appendChild(cell1);
+				ligneAjout.appendChild(cell2);
+				ligneAjout.appendChild(cell3);
+				ligneAjout.appendChild(cell4);
+				ligneAjout.appendChild(cell5);
+				
+				
+				tBody.insertBefore(ligneAjout,tBody.lastChild);
+			};
+			cellPlus.appendChild(lien);
+	
+}
+
+function faireModLigne(ligneId){
+	
+
+	
+				jours = new Array(tl_general_Lundi,tl_general_Mardi,tl_general_Mercredi,tl_general_Jeudi,tl_general_Vendredi,tl_general_Samedi,tl_general_Dimanche);
+				estDispo = new Array("Dispo","Non-dispo","indéfini");
+				
+				var tBody=document.getElementById('tabDispo_tbody');
+
+				cell1=document.createElement('TD');
+				sel1=document.createElement('SELECT');
+				for(var b=0;b<jours.length;b++)
+				{
+					opt = document.createElement('OPTION');
+					opt.innerHTML=jours[b];
+					opt.value=jours[b];
+					if(opt.value==ligneId)
+					{opt.selected=true;}
+					sel1.appendChild(opt);
+				}
+				cell1.appendChild(sel1);
+				
+				cell2=document.createElement('TD');
+				iHeure = document.createElement('INPUT');
+				iHeure.type="TEXT";
+				var strDeb=document.getElementById("tdDebut_"+ligneId).innerHTML;
+				iHeure.value=strDeb.split(":")[0];
+				div2p=document.createElement('DIV');
+				div2p.innerHTML=":";
+				iMin = document.createElement('INPUT');
+				iMin.type="TEXT";
+				iMin.value=strDeb.split(":")[1];
+				iMedian = document.createElement('SELECT');
+
+					optAM = document.createElement('OPTION');
+					optAM.innerHTML="AM";
+					optAM.value="AM";
+					iMedian.appendChild(optAM);
+
+					optPM = document.createElement('OPTION');
+					optPM.innerHTML="PM";
+					optPM.value="PM";
+					optPM.selected=true;
+					iMedian.appendChild(optPM);
+					
+					cell2.appendChild(iHeure);
+					cell2.appendChild(div2p);
+					cell2.appendChild(iMin);
+					cell2.appendChild(iMedian);
+									
+				cell3=document.createElement('TD');
+				iHeure2 = document.createElement('INPUT');
+				iHeure2.type="TEXT";
+				var strFin=document.getElementById("tdFin_"+ligneId).innerHTML;
+				iHeure2.value=strFin.split(":")[0];
+
+				iMin2 = document.createElement('INPUT');
+				iMin2.type="TEXT";
+				iMin2.value=strFin.split(":")[1];
+				iMedian2 = document.createElement('SELECT');
+
+					optAM2 = document.createElement('OPTION');
+					optAM2.innerHTML="AM";
+					optAM2.value="AM";
+					iMedian2.appendChild(optAM2);
+
+					optPM2 = document.createElement('OPTION');
+					optPM2.innerHTML="PM";
+					optPM2.value="PM";
+					optPM2.selected=true;
+					iMedian2.appendChild(optPM2);
+					
+					cell3.appendChild(iHeure2);
+					cell3.appendChild(div2p);
+					cell3.appendChild(iMin2);
+					cell3.appendChild(iMedian2);				
+				
+				cell4=document.createElement('TD');
+				sel4=document.createElement('SELECT');
+				for(var b=0;b<estDispo.length;b++)
+				{
+					opt = document.createElement('OPTION');
+					opt.innerHTML=estDispo[b];
+					opt.value=estDispo[b];
+					sel4.appendChild(opt);
+				}
+				cell4.appendChild(sel4);	
+				
+				cell5=document.createElement('TD');		
+					
+				lienOK = document.createElement('A');
+				lienOK.innerHTML = "OK";
+				lienOK.style.textIndent = "15px";
+				lienOK.className="lien";
+				//lien.href = menus[18].lien+"?userId="+window.usager.id+"&code=1";
+				lienOK.onclick =(function(ligneId){
+					return function(){
+											
+											baseDispo = window.dispoG;
+											var jour=window.sel1.options[window.sel1.selectedIndex].value;
+											h24 = parseInt(window.iHeure.value)+12;
+											h24_2= parseInt(window.iHeure2.value)+12;
+											var debut=(window.iMedian.selectedIndex==0) ? (window.iHeure.value+":"+window.iMin.value): (h24+":"+window.iMin.value);
+											var fin=(iMedian2.selectedIndex==0) ? (window.iHeure2.value+":"+window.iMin.value): (h24_2+":"+window.iMin2.value);
+											var estDispo=window.sel4.options[window.sel4.selectedIndex].value;
+											baseDispo[ligneId]={"jour" : jour, "debut":debut,"fin":fin,"estDispo":estDispo};
+											setModDispo(baseDispo);};})(ligneId);
+				cell5.appendChild(lienOK); 
+				
+				if(ligneId!=null)
+					{
+					ligneMod = document.getElementById("trDispo_"+ligneId);
+						videNoeud("trDispo_"+ligneId);
+					}
+				
+				ligneMod.appendChild(cell1);
+				ligneMod.appendChild(cell2);
+				ligneMod.appendChild(cell3);
+				ligneMod.appendChild(cell4);
+				ligneMod.appendChild(cell5);
+				
+				
+		//		tBody.insertBefore(ligneAjout,tBody.lastChild);
+			}
+
+function effaceLigne(ligneId){
+			baseDispo = window.dispoG;
+			baseDispo.splice(ligneId,1);
+			setModDispo(baseDispo);
+
+}
+
+function modRegion(ligneId){
+	
+	cell2=document.createElement('TD');
+	
+				nouvRegion = document.createElement('INPUT');
+				nouvRegion.type="TEXT";
+				nouvRegion.value=document.getElementById("tdRegion_"+ligneId).innerHTML;
+		
+					cell2.appendChild(nouvRegion);
+		
+				cell5=document.createElement('TD');		
+					
+				lienOK = document.createElement('A');
+				lienOK.innerHTML = "OK";
+				lienOK.style.textIndent = "15px";
+				lienOK.className="lien";
+				//lien.href = menus[18].lien+"?userId="+window.usager.id+"&code=1";
+				lienOK.onclick =(function(ligneId){
+											return function(){
+											baseRegion = window.regionG;
+										
+										
+											baseRegion[ligneId]=window.nouvRegion.value;
+											setModRegion(baseRegion);};})(ligneId);
+				cell5.appendChild(lienOK); 
+				
+				if(ligneId!=null)
+					{
+					ligneMod = document.getElementById("trRegion_"+ligneId);
+						videNoeud("trRegion_"+ligneId);
+					}
+				
+
+				ligneMod.appendChild(cell2);
+				ligneMod.appendChild(cell5);
+	
+	
+}
+
+function effaceRegion(ligneId){
+			baseRegion = window.regionG;
+			baseRegion.splice(ligneId,1);
+			setModRegion(baseRegion);
+
+}
+
+
+function ecritRegion(region)
+{
+	amettre = document.getElementById('divProfilArbitre');
+	divRegionJS = document.createElement('DIV');
+			divRegionJS.id="divRegion";
+			amettre.appendChild(divRegionJS);
+			regionG = region;
+
+			mJS = {};
+			mJS.id = "tabRegion";
+			mJS.parentId = "divRegion";
+			mJS.titre = "Regions desservies";
+			mJS.rangeeTitre = new Array();
+			mJS.rangeeTitre[0] = "Région";
+			mJS.rangeeTitre[1] = "Options";
+			genTableau(mJS);
+			tBody=document.getElementById('tabRegion_tbody');
+			
+			isLui=(window.userId==window.userArbitre);
+			
+			if(regionG==null)
+			{regionG=new Array();}
+			//alert(JSON.stringify(dispoG));
+			for(var a=0;a<regionG.length;a++)
+				{
+				rang=document.createElement('TR');
+				cell1=document.createElement('TD');
+				cell1.innerHTML=regionG[a];
+				cell1.id="tdRegion_"+a;
+				rang.appendChild(cell1);
+				rang.id="trRegion_"+a;
+				rang.className= (a%2==0)?'lignePaire':'ligneImpaire';
+				tBody.appendChild(rang);
+				if(isLui)
+				{
+					cell5=document.createElement('TD');
+					cell5.id="tdRegOpt_"+a;
+					lien=document.createElement('A');
+					lien.innerHTML=tl_bouton_modifier;
+					lien.onclick=(function(a){
+						return function(){
+						modRegion(a);};
+					})(a);
+					
+					t1=document.createTextNode(' | ');
+					
+					lien2=document.createElement('A');
+					lien2.innerHTML=tl_bouton_Effacer;
+					lien2.onclick=(function(a){
+						return function(){
+						effaceRegion(a);};
+					})(a);
+					
+
+					cell5.appendChild(lien);
+					cell5.appendChild(t1);
+					cell5.appendChild(lien2);
+					rang.appendChild(cell5);
+				}
+				}
+			
+			rangPlus=document.createElement('TR');
+			if(isLui)
+				{tBody.appendChild(rangPlus);}
+			
+			cellPlus=document.createElement('TD');
+			rangPlus.appendChild(cellPlus);
+			cellPlus.colSpan=mJS.rangeeTitre.length;
+			
+			lien = document.createElement('A');
+			lien.innerHTML = "Ajoutez une région";
+			lien.style.textIndent = "15px";
+			lien.className="lien";
+			//lien.href = menus[18].lien+"?userId="+window.usager.id+"&code=1";
+			lien.onclick = function() {
+				
+				var tBody=document.getElementById('tabRegion_tbody');
+				ligneAjout=document.createElement('TR');
+
+				
+				cell2=document.createElement('TD');
+				nouvRegion = document.createElement('INPUT');
+				nouvRegion.type="TEXT";
+		
+					cell2.appendChild(nouvRegion);
+		
+				cell5=document.createElement('TD');		
+					
+				lienOK = document.createElement('A');
+				lienOK.innerHTML = "OK";
+				lienOK.style.textIndent = "15px";
+				lienOK.className="lien";
+				//lien.href = menus[18].lien+"?userId="+window.usager.id+"&code=1";
+				lienOK.onclick =function(){
+											
+											baseRegion = window.regionG;
+										
+											baseRegion[baseRegion.length]=window.nouvRegion.value;
+											setRegion(baseRegion);}
+				cell5.appendChild(lienOK); 
+				
+				
+
+				ligneAjout.appendChild(cell2);
+
+				ligneAjout.appendChild(cell5);
+				
+				
+				tBody.insertBefore(ligneAjout,tBody.lastChild);
+			};
+			cellPlus.appendChild(lien);
+	
+}
+
+
+function ecritAutresInfos(profil)
+{
+	amettre = document.getElementById('divProfilArbitre');
+	divInfoJS = document.createElement('DIV');
+			divInfoJS.id="divInfo";
+			amettre.appendChild(divInfoJS);
+	
+
+			mJS = {};
+			mJS.id = "tabInfo";
+			mJS.parentId = "divInfo";
+			mJS.titre = "Autres informations";
+			mJS.rangeeTitre = new Array();
+			mJS.rangeeTitre[0] = "Info";
+			mJS.rangeeTitre[1] = "Valeur";
+			mJS.rangeeTitre[2] = "Options";
+			genTableau(mJS);
+			tBody=document.getElementById('tabInfo_tbody');
+
+
+			//alert(JSON.stringify(dispoG));
+
+				rang=document.createElement('TR');
+				cell1=document.createElement('TD');
+				cell1.innerHTML="Tarif";
+				cell2=document.createElement('TD');
+				cell2.innerHTML=profil.tarif;
+				rang.appendChild(cell1);
+				rang.appendChild(cell2);
+				tBody.appendChild(rang);
+				
+				rang=document.createElement('TR');
+				cell1=document.createElement('TD');
+				cell1.innerHTML="Nombre de matchs arbitrés (approx)";
+				cell2=document.createElement('TD');
+				cell2.innerHTML=profil.nombreMatchs;
+				rang.appendChild(cell1);
+				rang.appendChild(cell2);
+				tBody.appendChild(rang);
+
+				rang=document.createElement('TR');
+				cell1=document.createElement('TD');
+				cell1.innerHTML="Score SyncStats";
+				cell2=document.createElement('TD');
+				cell2.innerHTML=profil.scoreSyncStats;
+				rang.appendChild(cell1);
+				rang.appendChild(cell2);
+				tBody.appendChild(rang);
+			
+			
+			
+	
+}
+
+
+		function getProfilMembre(id) {
+			var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/perso2JSON.php";
+				//	alert(url);
+				var strUser = "id=" + id;
+				var params = strUser;
+				//alert(params);
+				requete_ajax.open('POST', url, false);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+//					alert(requete_ajax.responseText);
+					profilMembre = eval('(' + requete_ajax.responseText+ ')');
+						var joueurId;
+						for ( M = 0; M < profilMembre.joueurs.length; M = M + 1) {
+							joueurId = profilMembre.joueurs[M];
+						}
+
+						
+						
+						amettre = document.getElementById('divProfilMembre');
+						amettre.style.clear="both";
+						amettre.style.cssFloat="none";
+						amettre.style.width="100%";
+						amettre.style.position="static";
+						mDivDesc=document.createElement('DIV');
+						mDivDesc.id='descriptionFiche';
+						mDivDesc.style.width="30%";
+						mDivDesc.style.marginLeft="2%";
+						mDivDesc.style.marginRight="1%";
+						mDivDesc.style.position="static";
+						mDivDesc.style.maxWidth="30%";
+						dPhotoFiche=document.getElementById('photoFiche');
+						dPhotoFiche.style.position="static";
+						dPhotoFiche.style.maxWidth="30%";
+						dPhotoFiche.style.marginLeft="2%";
+						dPhotoFiche.style.marginRight="1%";
+						dPhotoFiche.style.height="auto";
+						document.getElementById('divProfilArbitre').style.clear="both";
+						amettre.appendChild(mDivDesc);
+						
+						
+						texteFiche = document.createElement('DIV');
+						
+						texteFiche.style.display="inline-block";
+						texteFiche.style.cssFloat="left";
+						texteFiche.style.verticalAlign="middle";
+						//texteFiche.style.maxWidth="30%";
+						texteFiche.style.width="90%";
+						texteFiche.style.height="100%";
+						texteFiche.style.paddingLeft="2%";
+						texteFiche.style.paddingRight="2%";
+						texteFiche.style.borderRight="1px dotted black";
+						texteFiche.style.borderLeft="1px dotted black";
+						mDivDesc.style.height="100%";//PhotoFiche.style.height;
+						t1=document.createElement('DIV');
+						t1.style.display="block";
+						t1.style.position="static";
+						t1.style.width="100%";
+						t1.innerHTML=window.tl_profil_nom+': ' + profilMembre.nom;
+						texteFiche.appendChild(t1);
+//						mDivDesc.appendChild(texteFiche);
+						//mDivDesc.appendChild(document.createElement('BR'));
+						t2=document.createElement('DIV');
+						t2.style.display="block";
+						t2.style.width="100%";
+						t2.style.position="static";
+						t2.innerHTML=window.tl_profil_prenom+': ' + profilMembre.prenom
+						texteFiche.appendChild(t2);
+						mDivDesc.appendChild(texteFiche);
+						//mDivDesc.appendChild(document.createElement('BR'));
+						
+					}
+				}
+				requete_ajax.send(params);
+
+			}
+			
+				function setModDispo(dispo)
+{				var requete_ajax = new XMLHttpRequest();
+
+			var url = "/scriptsphp/setGenerique.php";
+			
+			
+			var strUser = "arbitreId=" + window.arbitreId;
+
+			
+			var valeur ={
+			dispo:JSON.stringify(dispo)};
+						
+			var strTable = "table=TableArbitre";
+			var strValeur = "valeur=" + JSON.stringify(valeur);
+			var strMode = "mode=modif";
+			var strCrit = "critere='arbitreId="+window.arbitreId+"'";
+			params = strTable + '&' + strValeur+ '&' + strMode+ '&' + strCrit ;
+		//	alert(params);
+			//requete_ajax.send(null);
+			//	return requete_ajax.responseText;
+
+			requete_ajax.open('POST', url, true);
+			//				requete_ajax.send(null);
+
+			requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			requete_ajax.setRequestHeader("Content-length", params.length);
+			requete_ajax.setRequestHeader("Connection", "close");
+
+			requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+					alert(requete_ajax.responseText);
+					window.location.reload();
+					// requete_ajax.responseText;
+
+				}
+			}
+			requete_ajax.send(params);
+
+	
+
+}
+
+			function setModRegion(region)
+{				var requete_ajax = new XMLHttpRequest();
+
+			var url = "/scriptsphp/setGenerique.php";
+			
+			
+			var strUser = "arbitreId=" + window.arbitreId;
+
+			
+			var valeur ={
+			region:JSON.stringify(region)};
+						
+			var strTable = "table=TableArbitre";
+			var strValeur = "valeur=" + JSON.stringify(valeur);
+			var strMode = "mode=modif";
+			var strCrit = "critere='arbitreId="+window.arbitreId+"'";
+			params = strTable + '&' + strValeur+ '&' + strMode+ '&' + strCrit ;
+		//	alert(params);
+			//requete_ajax.send(null);
+			//	return requete_ajax.responseText;
+
+			requete_ajax.open('POST', url, true);
+			//				requete_ajax.send(null);
+
+			requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			requete_ajax.setRequestHeader("Content-length", params.length);
+			requete_ajax.setRequestHeader("Connection", "close");
+
+			requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+					alert(requete_ajax.responseText);
+					window.location.reload();
+					// requete_ajax.responseText;
+
+				}
+			}
+			requete_ajax.send(params);
+
+	
+
+}
+function faireDivInvite(){
+	amettre = document.getElementById('divProfilMembre');
+	
+	var trouve=false;
+	
+	for(var a=0;a<window.profArb.abonnements.length&&!trouve;a++)
+	{
+		if(window.profArb.abonnements[a].ligueId==window.ligueId)
+		{trouve=true;}
+	}
+	
+	mParent = document.createElement('DIV');
+	mParent.style.width="auto";
+	mParent.style.clear="both";
+	
+	amettre.appendChild(mParent);
+	divText = document.createElement('P');
+	div2 = document.createElement('INPUT');
+	div2.type="BUTTON";
+	divText.style.cssFloat="left";
+	div2.style.cssFloat="left";
+	div2.style.position="relative";
+	div2.style.top="10px";
+	div2.style.left="30px";
+	
+	div2.id="OkInvite";
+	if(!trouve)
+		{divText.innerHTML = "Inviter "+window.profilMembre.prenom+" "+window.profilMembre.nom+" à joindre "+window.maLigue +" en tant qu'arbitre"; // window.maLigue vient de affichage.afficheLigue
+		div2.value=window.tl_bouton_Inviter;
+		div2.onclick=function(){abonneArbitre();};
+			}
+	else
+		{divText.innerHTML = "Exclure "+window.profilMembre.prenom+" "+window.profilMembre.nom+" de la ligue "+window.maLigue +" à titre d'arbitre"; // window.maLigue vient de affichage.afficheLigue
+			div2.value=window.tl_bouton_Exclure;
+			div2.onclick=function(){desabonneArbitre();};
+	}
+	
+	if(window.userId!=null&&window.ligueId!=null)
+	{
+	mParent.appendChild(divText);
+	mParent.appendChild(div2);
+	}	
+	
+	
+}			
+			
+function faireBoiteMessage() {
+	amettre = document.getElementById('divProfilMembre');
+	
+	mParent = document.createElement('DIV');
+	mParent.style.maxWidth="30%";
+	mParent.style.cssFloat="left";
+	amettre.appendChild(mParent);
+	divText = document.createElement('P');
+	mParent.style.textAlign="right";
+	divText.style.textAlign="left";
+	if(window.userId!=null&&window.userId!=undefined)
+	{
+	
+	divText.innerHTML = "Envoyer un message à l'arbitre";
+	div1 = document.createElement('TEXTAREA');
+	div1.id="boiteTexte";
+	div1.style.height="100px";
+	div2 = document.createElement('INPUT');
+	div2.type="BUTTON";
+	div2.id="OkBoiteTexte";
+	div2.value=window.tl_bouton_OK;
+	div2.onclick=function(){envoieMessage();};
+	mParent.appendChild(divText);
+	mParent.appendChild(div1);
+	mParent.appendChild(div2);
+	}
+	else{
+	divText.innerHTML = "Connectez-vous pour pouvoir envoyer un message à l'arbitre";
+	mParent.appendChild(divText);
+		
+		
+		
+	}
+	function envoieMessage()
+	{
+		
+		var requete_ajax = new XMLHttpRequest();
+		
+		var url = "/scriptsphp/sendMessage.php";
+		var exp = getCookie("userId")==null?"Constantin":getCookie("userId");
+		var params = "expediteur="+exp+"&recepteur="+window.userArbitre+"&titre="+""+"&corps="+document.getElementById("boiteTexte").value;
+		requete_ajax.open("POST", url, true);
+
+		//Send the proper header information along with the request
+		requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		requete_ajax.setRequestHeader("Content-length", params.length);
+		requete_ajax.setRequestHeader("Connection", "close");
+
+	
+		requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+			if(requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+				
+					alert(requete_ajax.responseText);
+					document.getElementById("boiteTexte").value="Merci!";
+					document.getElementById("boiteTexte").readonly=true;
+					document.getElementById("OkBoiteTexte").onclick=function(){};
+				
+				}
+		}
+			requete_ajax.send(params);
+
+
+	}
+
+	
+}
+
+function desabonneArbitre(){
+					var requete_ajax = new XMLHttpRequest();
+
+			var url = "/scriptsphp/setGenerique.php";
+			
+			d = new Date();
+			var strUser = "arbitreId=" + window.arbitreId;
+			var mois = d.getMonth()+1;
+			var maDate = d.getFullYear()+"-"+mois+"-"+d.getDate();
+			//alert(maDate);
+			var valeur ={
+			finAbon: maDate};
+						
+			var strTable = "table=abonArbitreLigue";
+			var strValeur = "valeur=" + JSON.stringify(valeur);
+			var strMode = "mode=modif";
+			var strCrit = "critere='arbitreId="+window.arbitreId+" AND ligueId="+window.ligueId+" ORDER BY finAbon DESC LIMIT 1"+"'";
+			params = strTable + '&' + strValeur+ '&' + strMode+ '&' + strCrit ;
+		//	alert(params);
+			//requete_ajax.send(null);
+			//	return requete_ajax.responseText;
+
+			requete_ajax.open('POST', url, true);
+			//				requete_ajax.send(null);
+
+			requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			requete_ajax.setRequestHeader("Content-length", params.length);
+			requete_ajax.setRequestHeader("Connection", "close");
+
+			requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+					//alert(requete_ajax.responseText);
+					window.location.reload();
+					// requete_ajax.responseText;
+
+				}
+			}
+			requete_ajax.send(params);
+
+	
+}
+
+function abonneArbitre(){
+	
+				var requete_ajax = new XMLHttpRequest();
+
+			var url = "/scriptsphp/setGenerique.php";
+			
+			
+			d = new Date();
+			
+			var mois = d.getMonth()+1;
+			var maDate = d.getFullYear()+"-"+mois+"-"+d.getDate();
+			
+			var valeur ={
+			arbitreId:window.arbitreId,
+			ligueId:window.ligueId,
+			permission:"30",
+			debutAbon:maDate,
+			finAbon:'2020-01-01'};
+			
+
+			
+			
+			
+			var strTable = "table=abonArbitreLigue";
+			var strValeur = "valeur=" + JSON.stringify(valeur);
+			var strMode = "mode=creer";
+			
+			params = strTable + '&' + strValeur+ '&' + strMode ;
+			//alert(params);
+			//requete_ajax.send(null);
+			//	return requete_ajax.responseText;
+
+			requete_ajax.open('POST', url, true);
+			//				requete_ajax.send(null);
+
+			requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			requete_ajax.setRequestHeader("Content-length", params.length);
+			requete_ajax.setRequestHeader("Connection", "close");
+
+			requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+					//alert(requete_ajax.responseText);
+					window.location.reload();
+					// requete_ajax.responseText;
+
+				}
+			}
+			requete_ajax.send(params);
+
+	
+
+
+	
+} 
+
+
+	</script>
+
+	<body id="body" >
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+		<div id="divMenuHaut"></div>
+
+		<div id="divCentrale">
+
+
+					<div id="divProfilMembre" style="display:block;">
+						<h2 class="titreSection" id="h2ProfMembre">Profil du membre</h2>
+					<div style="background-color:#8DDB42;height:1px;width:100%;"></div>
+					<DIV ID="photoFiche"><img id="photoPortrait" class="grosLogo">
+					</DIV>
+					</div>
+					
+					<div id="divProfilArbitre" style="display:block; position:static;">
+						<h2 class="titreSection" id="h2ProfJou">Profil de l'arbitre</h2>
+					<div style="background-color:#8DDB42;height:1px;width:100%;"></div>
+
+					</div>
+
+					<DIV ID="descriptionFiche">
+						<DIV ID="fiche"></DIV>
+						<DIV ID="commentaireFiche"></DIV>
+					</DIV>
+					
+						
+						
+
+		</div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+	
+			developper(24);
+
+			document.getElementById("h2ProfJou").innerHTML=window.tl_profil_profArb;
+			document.getElementById("h2ProfMembre").innerHTML=window.tl_profil_profMembre;
+			
+
+		</script>
+
+		<script type="text/javascript">
+			//alert("uneString");
+
+			userId = getCookie("userId");
+			/*if (userId == null)
+				window.location.href = "/zuser/login.html";*/
+			/*var uneString = getJSONdePerso(poste);
+			//alert(uneString);
+			var rJSON = eval('(' + uneString + ')');
+
+			//			document.getElementById('date').innerHTML = rJSON.prenom + ' ' + rJSON.nom + "</br>" + rJSON.taille + " cm" + "</br>" + rJSON.poid + " kg";
+
+			var joueurId;
+			for ( M = 0; M < rJSON.joueurs.length; M = M + 1) {
+				joueurId = rJSON.joueurs[M];
+			}*/
+			
+			
+			
+			
+			//getLiguesDePerso(poste);
+			arbitreId=getValue('arbitreId');
+			ligueId=getValue('ligueId');
+			getProfilArbitre(arbitreId);
+			getNomLigue();
+
+			//		if(verifiePermission()<3)
+			//		alert(strLigues);
+
+			//		SECTION DE STATS PERSONNELLES     -->
+
+			//try{
+
+			//var joueurId = getValue('joueurId');
+			//alert(stringStatsHome);
+			//alert("strProfilJoueur");
+		</script>
+
+	</body>
+</html>
