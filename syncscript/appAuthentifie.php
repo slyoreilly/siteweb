@@ -39,7 +39,10 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 
 /*
 	
- */header("HTTP/1.1 200 OK");
+ */
+ header("HTTP/1.1 200 OK");
+ header("Content-Type: application/json;charset=utf-8");
+ header("Accept: application/json");
 //echo " ".count($AbonSelect);
 	
 		echo json_encode($userSelect);

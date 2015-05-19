@@ -91,6 +91,7 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 												JOIN {$tableEq} 
 													ON(TableEquipe.equipe_id=abonEquipeLigue.equipeId)
 													WHERE ligueId={$rangeeLigue['ID_Ligue']}
+														AND permission<31
 														AND debutAbon <= NOW() 
 														AND finAbon >= NOW()")
 				or die(mysql_error());  

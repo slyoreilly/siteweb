@@ -7,11 +7,12 @@ $vdhr= str_replace('/','-',$vdhr);
 	
 //$jDom = json_decode($jDomJSON, true);
 //$jVis = json_decode($jVisJSON, true);
+// Retiré de la requête suivante: AND dernierMAJ>'{$vdhr}'
 $qString="SELECT abonEquipeLigue.*, MatchAVenir.*	FROM MatchAVenir 
 						JOIN abonEquipeLigue 
 							ON (abonEquipeLigue.ligueId=MatchAVenir.ligueId)
 						WHERE MatchAVenir.ligueId='{$ligueId}' 
-							AND dernierMAJ>'{$vdhr}'
+							
 							AND abonEquipeLigue.finAbon>NOW()
 							AND MatchAVenir.date>(NOW()-INTERVAL 1 DAY)
 							AND MatchAVenir.date<(NOW()+INTERVAL 2 WEEK)
