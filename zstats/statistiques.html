@@ -482,7 +482,16 @@ function rempliFiche(a){
 				
 			document.getElementById('valeurStats_0').innerHTML= window.cJSON.saisons[document.getElementById("selSaison").selectedIndex].equipe[a].vicDom+window.cJSON.saisons[document.getElementById("selSaison").selectedIndex].equipe[a].vicVis;
 			document.getElementById('valeurStats_1').innerHTML= window.cJSON.saisons[document.getElementById("selSaison").selectedIndex].equipe[a].defDom+window.cJSON.saisons[document.getElementById("selSaison").selectedIndex].equipe[a].defVis;
+	    
+			
+			
 			document.getElementById('valeurStats_2').innerHTML= 2*window.cJSON.saisons[document.getElementById("selSaison").selectedIndex].equipe[a].vicDom+2*window.cJSON.saisons[document.getElementById("selSaison").selectedIndex].equipe[a].vicVis+window.cJSON.saisons[document.getElementById("selSaison").selectedIndex].equipe[a].nulDom+window.cJSON.saisons[document.getElementById("selSaison").selectedIndex].equipe[a].nulVis;;
+ //           alert(window.ligueId);
+//             if(parseInt(window.ligueId)==49 || parseInt(window.ligueId)==50 || parseInt(window.ligueId)==51){
+ //               document.getElementById('valeurStats_2').innerHTML =window.cJSON.saisons[document.getElementById("selSaison").selectedIndex].equipes[a].points;   
+  //              }
+
+
 window.rang++;
 
 	

@@ -197,7 +197,7 @@ tl_meneurs_Meneurs = "Leaders";
 			tl_meneurs_Gardiens= "Goaltender";
 			tl_meneurs_BA = "Allowed Goals";
 			tl_meneurs_MBA = "Goal Against AVG";
-			tl_meneurs_Patineurs = "Skaters";
+			tl_meneurs_Patineurs = "Players";
 			tl_meneurs_ANLong= "Power Play";
 			tl_meneurs_DNLong= "Penalty Killing";
 			

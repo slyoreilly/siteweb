@@ -132,6 +132,26 @@ $I2 = 0;
 $resultMatch = mysql_query("SELECT * 
 							FROM TableMatch 
 								WHERE ligueRef={$getLigue}") or die(mysql_error() . "query Matchs");
+								
+	//$strBigMatch = "SELECT TableMatch.*, abonEquipeLigue.*
+	//			FROM TableMatch 
+	//				
+	//				LEFT JOIN abonEquipeLigue 
+	//					 ON (TableMatch.ligueRef=abonEquipeLigue.ligueId)
+	//					 						 
+	//				WHERE  ligueRef={$getLigue}//
+//
+//						AND abonEquipeLigue.debutAbon<='{$dateAbon}'
+//						AND abonEquipeLigue.finAbon>'{$dateAbon}'
+//						AND abonEquipeLigue.ligueId = 	{$getLigue}		
+//						AND code<10
+//						GROUP BY match_id";
+//						
+//						mysql_query("SET SQL_BIG_SELECTS=1");
+//	$resultMatch = mysql_query($strBigMatch) or die(mysql_error() . "query gros stock de match");
+								
+								
+								
 
 while ($rangeeMatch = mysql_fetch_array($resultMatch)) {
 	if ($rangeeMatch['date'] >= $premierMatch && $rangeeMatch['date'] <= $dernierMatch) {
@@ -164,31 +184,32 @@ if ($dernierMatch > date("Y-m-d")) {$dateAbon = date("Y-m-d");
 	$dateAbon = $dernierMatch;
 }
 
-while ($Im < count($lesMatchs)) {
+//while ($Im < count($lesMatchs)) {
 	// Retrieve all the data from la table
 	unset($resultEvent);
 	unset($rangeeEv);
 	unset($joueurs);
 	$joueurs = Array();
+//	 match_event_id = '{$lesMatchs[$Im]}' AND 
 	$strQuery = "SELECT TableEvenement0.*, abonJoueurEquipe.*, TableEquipe.nom_equipe,TableEquipe.ficId, 
 								TableEquipe.ligue_equipe_ref, TableJoueur.NomJoueur, TableJoueur.NumeroJoueur ,TableJoueur.ficIdPortrait 
 				FROM TableEvenement0 
 					LEFT JOIN TableJoueur 
 						 ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id)
-					LEFT JOIN abonJoueurEquipe 
+					INNER JOIN abonJoueurEquipe 
 						 ON (TableEvenement0.joueur_event_ref=abonJoueurEquipe.joueurId)
-					LEFT JOIN abonEquipeLigue 
+					INNER JOIN abonEquipeLigue 
 						 ON (abonJoueurEquipe.equipeId=abonEquipeLigue.equipeId)
 						  
-					LEFT JOIN TableEquipe
+					INNER JOIN TableEquipe
 						 ON (abonJoueurEquipe.equipeId=TableEquipe.equipe_id) 
 						 						 
-					WHERE  match_event_id = '{$lesMatchs[$Im]}'
-						AND abonJoueurEquipe.debutAbon<='{$dateAbon}'
+					WHERE abonJoueurEquipe.debutAbon<='{$dateAbon}'
 						AND abonJoueurEquipe.finAbon>'{$dateAbon}'
 						AND abonEquipeLigue.debutAbon<='{$dateAbon}'
 						AND abonEquipeLigue.finAbon>'{$dateAbon}'
 						AND abonEquipeLigue.ligueId = 	{$getLigue}		
+						AND abonEquipeLigue.permission<31		
 						AND code<10
 						GROUP BY event_id";
 						
@@ -213,12 +234,17 @@ while ($Im < count($lesMatchs)) {
 	unset($resultEvent);
 	unset($rangeeEv);
 
+	//// Section remplaçants: non abonné dans une équipe.
+	
 	$resultEvent = mysql_query("SELECT TableEvenement0.*, TableJoueur.NomJoueur,TableJoueur.joueur_id,TableJoueur.ficIdPortrait, TableJoueur.NumeroJoueur  
 				FROM TableEvenement0 
 					LEFT JOIN TableJoueur 
 						 ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id)
-						 						 
+					INNER JOIN abonJoueurLigue 
+						 ON (TableEvenement0.joueur_event_ref=abonJoueurLigue.joueurId)
+						 		 						 
 					WHERE  match_event_id = '{$lesMatchs[$Im]}'
+						AND abonJoueurLigue.ligueId = 	{$getLigue}		
 					 AND code<10
 						") or die(mysql_error() . "query stats pers");
 
@@ -236,8 +262,8 @@ while ($Im < count($lesMatchs)) {
 						$I0++;
 		}
 	}
-	$Im++;
-}
+//	$Im++;
+//}
 
 ///////////////////////////////////////////////////////////
 //

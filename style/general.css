@@ -2210,6 +2210,18 @@ color:#034E58;
 	margin 5px 0;
 	color:#034E58;
 }
+#divSelEquipe{
+    position:relative;
+    text-align:right;
+    display:inline;
+    right:0;    
+    float:none;
+    clear:both;
+    margin 5px 0;
+    color:#034E58;
+    font-variant: small-caps;
+}
+
 
 #divLangue{
 	display:inline;

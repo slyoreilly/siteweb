@@ -20,6 +20,7 @@ $transL = $_POST['transL'];
 $transPJ = $_POST['transPJ'];
 $matchsTS = $_POST['matchs'];
 $heure = $_POST['heure'];
+$heureServeur = time()*1000;
 //echo $_POST['matchs'];
 //$t1 = $_POST['transJ'];
 $t1 = stripslashes(stripslashes(stripslashes($_POST['transJ'])));
@@ -269,14 +270,16 @@ $extra = array();
 $extra['info0']="pouite";
 
 include 'dechargeMatchs.php';
+include('../scriptsphp/actualiseMatchs.php');			
+
 include 'majJoueur2.php';
 
 //$extra['info']=json_encode($leMatch);
-$extra['info2']=stripslashes($matchsTS);
-$extra['info3']=stripslashes($_POST['matchs']);
-$extra['info4']=stripslashes($m1);
-$extra['info5']=$infoMav;
-
+//$extra['info2']=stripslashes($matchsTS);
+//$extra['info3']=stripslashes($_POST['matchs']);
+//$extra['info4']=stripslashes($m1);
+//$extra['info5']=$infoMav;
+$extra['info6']=$heureServeur - time()*1000;
 
 $rep['syncOK']=$syncOK;
 $rep['extra']=$extra;

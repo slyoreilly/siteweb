@@ -58,7 +58,7 @@ while ($IJ < count($leMatch)) {
 		$retBut=$leMatch[$IJ]['but']['chrono']; // retourner le but, sans correction de chrono.
 		
 		if(isset($heure))
-			{$leMatch[$IJ]['but']['chrono']=$leMatch[$IJ]['but']['chrono']+time()*1000-$heure;}
+			{$leMatch[$IJ]['but']['chrono']=$leMatch[$IJ]['but']['chrono']+$heureServeur-$heure;}
 			
 
 		switch(f_es($leMatch[$IJ]['but']['es'])) {
@@ -138,7 +138,7 @@ while ($IJ < count($leMatch)) {
 		if(isset($heure))
 			{
 				$retClip=$leMatch[$IJ]['clip']['chrono']; // retourner le but, sans correction de chrono.
-				$leMatch[$IJ]['clip']['chrono']=$leMatch[$IJ]['clip']['chrono']+time()*1000-$heure;}
+				$leMatch[$IJ]['clip']['chrono']=$leMatch[$IJ]['clip']['chrono']+$heureServeur-$heure;}
 
 		switch(f_es($leMatch[$IJ]['clip']['es'])) {
 
@@ -184,7 +184,7 @@ while ($IJ < count($leMatch)) {
 		$retPer=$leMatch[$IJ]['periode']['chrono']; // retourner le but, sans correction de chrono.
 		
 		if(isset($heure))
-			{$leMatch[$IJ]['periode']['chrono']=$leMatch[$IJ]['periode']['chrono']+time()*1000-$heure;}
+			{$leMatch[$IJ]['periode']['chrono']=$leMatch[$IJ]['periode']['chrono']+$heureServeur-$heure;}
 		
 
 		switch(f_es($leMatch[$IJ]['periode']['es'])) {
@@ -281,7 +281,6 @@ while ($IJ < count($leMatch)) {
 						if(mysql_num_rows($testmatch)==0)
 						{
 				//echo "3";
-							include('../scriptsphp/actualiseMatchs.php');			
 				//			include($_SERVER['DOCUMENT_ROOT'] . '/scriptsphp/actualiseMatch.php');			
 							$qMatch = "SELECT cleValeur FROM TableMatch WHERE matchIdRef = '{$leMatch[$IJ]['finMatch']['match_id']}'";
 							$testmatch = mysql_query($qMatch) or die(mysql_error() . " Select " . $leMatch[$IJ]['finMatch']['db_id']);
@@ -318,7 +317,7 @@ while ($IJ < count($leMatch)) {
 //echo json_encode($syncOK);
 }
 //echo json_encode($syncOK);
-
+/*
 $qFin="SELECT * FROM TableEvenement0 WHERE event_id>{$vRef[0]} ORDER BY event_id DESC";
 $rFin = mysql_query($qFin) or die(mysql_error() . $qFin);
 //echo $qFin;
@@ -346,7 +345,7 @@ while($vFin = mysql_fetch_array($rFin))
 //				echo $qDel2.'\n';
 		}
 	}
-}	
+}	*/
 /*
 echo "json_encode(lematch)".json_encode($leMatch)."\n";
 echo "matchTS".$matchsTS."\n";

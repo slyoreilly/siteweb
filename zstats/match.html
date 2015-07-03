@@ -27,7 +27,7 @@
 
 				var url = "/scriptsphp/infoMatch2JSON.php";
 
-				var strMatchId = "matchId=" + matchId;
+				var strMatchId = "matchId=" +matchId;
 
 				params = strMatchId;
 				url = url + "?" + params;
@@ -36,10 +36,10 @@
 				//requete_ajax.send(null);
 				//	return requete_ajax.responseText;
 
-				requete_ajax.open('POST', url, true);
+				requete_ajax.open('POST',url, true);
 				//				requete_ajax.send(null);
 
-				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 				//				requete_ajax.setRequestHeader("Content-length", params.length);
 				//				requete_ajax.setRequestHeader("Connection", "close");
 
@@ -85,7 +85,7 @@
 				requete_ajax.open('POST', url, true);
 				//				requete_ajax.send(null);
 
-				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 				//				requete_ajax.setRequestHeader("Content-length", params.length);
 				//				requete_ajax.setRequestHeader("Connection", "close");
 
@@ -124,7 +124,7 @@
 				requete_ajax.open('POST', url, true);
 				//				requete_ajax.send(null);
 
-				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 				//				requete_ajax.setRequestHeader("Content-length", params.length);
 				//				requete_ajax.setRequestHeader("Connection", "close");
 
@@ -378,6 +378,28 @@
 				}
 
 			}
+			function ajoutePeriode(noeudParent, noPer){
+			    //perStop = false;
+			                        
+                                    rangeePer = document.createElement('TR');
+                                    noeudParent.appendChild(rangeePer);
+                                    cPer = document.createElement('TD');
+                                    cPer.setAttribute("colSpan", "5")
+                                    cPer.setAttribute("class", "rangeeTitre")
+                                    tPer = document.createTextNode(window.tl_match_periode + " " + noPer.numero);
+                                    cPer.appendChild(tPer);
+                                    rangeePer.appendChild(cPer);
+                                   /* Iper++;
+                                    if (Iper < rSMB.periodes.length) {
+                                        if (parseInt(rSMB.periodes[Iper].chrono) > parseInt(rSMB.buts[J].chrono)) {
+                                            perStop = true;
+                                        }
+                                    } else {
+                                        perStop = true;
+                                    }*/
+			    
+			    //return perStop;
+			}
 
 			function afficheSommaireButs(rSMB) {
 				var lesTitres = new Array();
@@ -518,25 +540,8 @@
 								//			alert(parseInt(rSMB.periodes[Iper].chrono)-parseInt(rSMB.buts[J].chrono)+" , Iper: "+Iper+", J: "+J);
 
 								if (parseInt(rSMB.periodes[Iper].chrono) < parseInt(rSMB.buts[J].chrono)) {
-									maPer = rSMB.periodes[Iper];
-									rangeePer = document.createElement('TR');
-									amettrePer = document.getElementById('rangeeTitreSommaireButs');
-									amettrePer.parentNode.appendChild(rangeePer);
-									cPer = document.createElement('TD');
-									cPer.setAttribute("colSpan", "5")
-									cPer.setAttribute("class", "rangeeTitre")
-									tPer = document.createTextNode(window.tl_match_periode + " " + maPer.numero);
-									cPer.appendChild(tPer);
-									rangeePer.appendChild(cPer);
-									Iper++;
-									if (Iper < rSMB.periodes.length) {
-										if (parseInt(rSMB.periodes[Iper].chrono) > parseInt(rSMB.buts[J].chrono)) {
-											perStop = true;
-										}
-									} else {
-										perStop = true;
-									}
-
+									perStop = ajoutePeriode(document.getElementById('rangeeTitreSommaireButs').parentNode,rSMB.periodes[Iper]);
+                                    Iper++;
 								} else {
 									perStop = true;
 								}
@@ -718,6 +723,18 @@
 						}
 
 					}
+					  while (Iper <= rSMB.periodes.length) {
+                                //                  maPer = rSMB.periodes.shift();
+
+                                //          alert(parseInt(rSMB.periodes[Iper].chrono)-parseInt(rSMB.buts[J].chrono)+" , Iper: "+Iper+", J: "+J);
+
+
+                                    perStop = ajoutePeriode(document.getElementById('rangeeTitreSommaireButs').parentNode,rSMB.periodes[Iper]);
+                                    Iper++;
+
+                            }
+
+					
 
 					//	document.body.rangee.cellule.innerHTML ='yo';
 				} catch(err) {

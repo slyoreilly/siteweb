@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+<title>Video/Audio</title>
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+        <script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+        <script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+        <script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+
+	<!-- All style sheets -->
+	<link rel='stylesheet' type='text/css' href='/style/visionneuse.css' />
+    <link rel='stylesheet' type='text/css' href='/style/jquery.raty.css' />
+    <link rel="stylesheet" href="/style/jquery.mCustomScrollbar.css">
+
+    <!-- All js file -->    
+    <script src="/scripts/jquery.mCustomScrollbar.js"></script>
+    <script src='/scripts/visionneuse.js'></script>
+    <script src='/scripts/jquery.raty.js'></script>
+            <script type="text/javascript" charset="utf-8">
+            gereLangue();
+        </script>
+
+    <!-- creating video Player -->    
+	<script type='text/javascript'>
+    
+		$(document).ready(function() {
+			$('#media-video').videoPlayer({
+				'playerWidth' : 1,
+				'videoClass' : 'video'	
+			});
+		});
+		
+    </script>
+
+</head>
+<body style="background-color:#A2A2A2;">
+	<div class="container">
+    
+    <h1 align="center">video-player</h1>
+	<!-- video wrap box -->
+    <div class="media-box">
+    
+    	<span class="close-btn"></span>        
+        <!-- Video listing -->
+        <div id='media-play-list' class="content mCustomScrollbar">
+        	<ul id='play-list'>
+            	<li onclick='loadVideo(mVid);'>
+            		<video src=mVid class='play-item'></video>
+					<div class="thumbnail-wrap">
+						<span class="thumbnail-title">Video Title</span><br>
+						<span class="thumbnail-content">Lorem Ipsum is a simply dummy text of the printing and typesetting industry.</span>
+					</div>
+				</li>
+				<li onclick='loadVideo("videos/sample2.mp4");'>
+					<video src="videos/sample2.mp4" class='play-item'></video>
+					<div class="thumbnail-wrap">
+						<span class="thumbnail-title">Video Title</span><br>
+						<span class="thumbnail-content">Lorem Ipsum is a simply dummy text of the printing and typesetting industry.</span>
+					</div>
+				</li>
+				<li onclick='loadVideo("videos/sample3.mp4");'>
+					<video src="videos/sample3.mp4" class='play-item'></video>
+					<div class="thumbnail-wrap">
+						<span class="thumbnail-title">Video Title</span><br>
+						<span class="thumbnail-content">Lorem Ipsum is a simply dummy text of the printing and typesetting industry.</span>
+					</div>
+				</li>
+				<li onclick='loadVideo("videos/sample4.mp4");'>
+                    <video src="videos/sample4.mp4" class='play-item'></video>
+                    <div class="thumbnail-wrap">
+						<span class="thumbnail-title">Video Title</span><br>
+						<span class="thumbnail-content">Lorem Ipsum is a simply dummy text of the printing and typesetting industry.</span>
+					</div>
+				</li>
+				<li onclick='loadVideo("videos/sample1.mp4");'>
+					<video src="videos/sample1.mp4" class='play-item'></video>
+					<div class="thumbnail-wrap">
+						<span class="thumbnail-title">Video Title</span><br>
+						<span class="thumbnail-content">Lorem Ipsum is a simply dummy text of the printing and typesetting industry.</span>
+					</div>
+				</li>
+				<li onclick='loadVideo("videos/sample2.mp4");'>
+					<video src="videos/sample2.mp4" class='play-item'></video>
+					<div class="thumbnail-wrap">
+                        <span class="thumbnail-title">Video Title</span><br>
+                        <span class="thumbnail-content">Lorem Ipsum is a simply dummy text of the printing and typesetting industry.</span>
+                    </div>
+                </li>
+                <li onclick='loadVideo("videos/sample3.mp4");'>
+					<video src="videos/sample3.mp4" class='play-item'></video>
+					<div class="thumbnail-wrap">
+						<span class="thumbnail-title">Video Title</span><br>
+						<span class="thumbnail-content">Lorem Ipsum is a simply dummy text of the printing and typesetting industry.</span>
+					</div>
+				</li>
+				<li onclick='loadVideo("videos/sample4.mp4");'>
+					<video src="videos/sample4.mp4" class='play-item'></video>
+					<div class="thumbnail-wrap">
+						<span class="thumbnail-title">Video Title</span><br>
+						<span class="thumbnail-content">Lorem Ipsum is a simply dummy text of the printing and typesetting industry.</span>
+					</div>
+				</li>
+			</ul>
+		</div>
+        <!-- ends Video listing -->
+        
+        <!-- Main video -->
+        <video id="media-video" width="480" height="320">
+            <source src="videos/sample2.mp4" type="video/mp4">
+        </video>
+        <!-- end Main video -->
+        
+        
+        <!-- video info -->
+        <div class="video-info">
+        	<div style="float:left; padding:0 0 5px 0; border-bottom:1px solid #CCC; width:100%;">
+                    	<img style="float:left; margin-right:10px;" src="images/info-img.png"><span class="title">Video Info</span>
+                    </div>
+                    <p class="video-content">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. Making it look like readable English.</p>
+                    <div class="share">
+                    	<img src="images/fb.png" style="margin-bottom:10px;">
+                        <img src="images/tweet.png" style="float:right; margin-bottom:10px;">
+                        <img src="images/google.png" style="margin-bottom:15px;">
+                        <img src="images/youtube.png" style="float:right; margin-bottom:15px;">
+            </div>
+            <span style="width:100%; float:left; margin-bottom:10px; font-size: 15px;">RATING : 3.5 / 5 </span>
+            <button type="button" class="btn-style"><span class="comment"></span>Write a Comment</button>
+        </div>
+        <!-- end video info -->
+        
+        <span class="play-btn"><img src="images/main-play.png"></span>
+                         
+    </div>
+    <!-- end video wrap box -->
+</div>
+
+	    <!-- custom scrolling list -->
+	<script>
+		(function($){
+			$(window).load(function(){
+				
+				$("a[rel='load-content']").click(function(e){
+					e.preventDefault();
+					var url=$(this).attr("href");
+					$.get(url,function(data){
+						$(".content .mCSB_container").append(data); //load new content inside .mCSB_container
+						//scroll-to appended content 
+						$(".content").mCustomScrollbar("scrollTo","h2:last");
+					});
+				});
+				
+				$(".content").delegate("a[href='top']","click",function(e){
+					e.preventDefault();
+					$(".content").mCustomScrollbar("scrollTo",$(this).attr("href"));
+				});
+				
+			});
+		})(jQuery);
+	</script>
+
+    <!-- list hover effect -->
+    <script>
+
+		$(document).ready(function() {
+				$('#play-list li').hover(function(){	
+					$(this).find('.thumbnail-wrap').show();											
+				},function(){
+					$(this).find('.thumbnail-wrap').hide();				
+				});				
+		});
+		
+            developper(0);
+            rang = 0;
+            structurePage();
+		mVid = "../lookatthis/"+getValue('videofile');
+		
+		
+	</script>
+    
+</body>
+</html>

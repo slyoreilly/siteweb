@@ -191,7 +191,7 @@ tl_meneurs_Meneurs = "Meneurs";
 			tl_meneurs_BA = "Buts alloués";
 			tl_meneurs_MBA = "Moy. buts alloués";
 			
-			tl_meneurs_Patineurs = "Patineurs";
+			tl_meneurs_Patineurs = "Joueurs";
 			tl_meneurs_ANLong= "Avantage Numérique";
 			tl_meneurs_DNLong= "Désavantage Numérique";
 			

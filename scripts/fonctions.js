@@ -380,7 +380,8 @@ function getValue(varname)
       break;
     }
   }
-  value = unescape(value);
+  value = decodeURIComponent(value);
+  //value = unescape(value);
   value.replace(/\+/g," ");
 
   return value;

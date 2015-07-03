@@ -52,7 +52,7 @@ $retour = mysql_query("SELECT abonJouLig
 							ON (abonJoueurEquipe.equipeId=abonEquipeLigue.equipeId)
 						WHERE joueurId={$joueurId}
 						AND ligueId = {$lesParams['ligueId']}
-						AND equipeId <> {$lesParams['equipeId']}
+						AND abonJoueurEquipe.equipeId <> {$lesParams['equipeId']}
 						AND abonJoueurEquipe.finAbon>NOW()")or die(mysql_error()."select bug EQ");  	
 
 		if(mysql_num_rows($retour)>0)

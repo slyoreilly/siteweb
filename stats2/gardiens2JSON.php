@@ -173,7 +173,13 @@ $Im=0;
 
 $stringOut .="GrosBug";
 
-$rMatchs = mysql_query("SELECT TableMatch.*, TableEvenement0.joueur_event_ref, TableEvenement0.equipe_event_id FROM {$tableMatch} JOIN TableEvenement0 ON (TableMatch.matchIdRef=TableEvenement0.match_event_id) where TableMatch.ligueRef ='{$ligueId}' and TableMatch.date>='{$premierMatch}'  and TableMatch.date<='{$dernierMatch}' and TableEvenement0.code='3' and TableEvenement0.souscode=5")
+$rMatchs = mysql_query("SELECT TableMatch.*, TableEvenement0.joueur_event_ref, TableEvenement0.equipe_event_id 
+				FROM {$tableMatch} 
+				JOIN TableEvenement0 
+					ON (TableMatch.matchIdRef=TableEvenement0.match_event_id) 
+					where TableMatch.ligueRef ='{$ligueId}' and TableMatch.date>='{$premierMatch}'  
+					and TableMatch.date<='{$dernierMatch}' and TableEvenement0.code='3' 
+					and TableEvenement0.souscode=5")
 or die(mysql_error()); 
 while($lMatchs=mysql_fetch_array($rMatchs))  /// On regarde tous les matchs de la saison.
 	{
