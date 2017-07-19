@@ -16,6 +16,8 @@ $joueurAId = $_POST['joueurAId'];
 $joueurBId = $_POST['joueurBId'];
 $ligueBId = $_POST['ligueBId'];
 $nomUser = $_POST['userId'];
+//fusionne B dans A.
+
 
 if (!mysql_connect($db_host, $db_user, $db_pwd))
     die("Can't connect to database");
@@ -129,7 +131,7 @@ if($erreur==0)
 	mysql_query($query_update);	
 	
 	mysql_query("DELETE FROM `TableJoueur` WHERE joueur_id={$joueurBId}");
-	
+		
 	mysql_query("UPDATE abonJoueurLigue SET joueurId={$joueurAId} WHERE joueurId={$joueurBId}");	
 	mysql_query("UPDATE abonJoueurEquipe SET joueurId={$joueurAId} WHERE joueurId={$joueurBId}");	
 	mysql_query("UPDATE TableEvenement0 SET joueur_event_ref='{$joueurAId}' WHERE joueur_event_ref='{$joueurBId}'");	

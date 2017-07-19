@@ -35,6 +35,12 @@ function getCookie(c_name) {
  //	bidon =document.getElementsByTagName('HEAD')[0].innerHTML;
  //alert("sandwich");
  }
+ function gereLangue_mob(){
+ langue = (getCookie("langue")==undefined)?"fr":getCookie("langue");
+ document.write('<script type="text/javascript" charset="utf-8" src="/scripts/texte_'+langue+'.js"></script>');
+ document.write('<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>');
+
+ }
 
  function peupleDivHaut() {
 
@@ -68,31 +74,49 @@ function getCookie(c_name) {
 //		alert(".");
 
 	}
-
-	divLangueJS = document.createElement('DIV');
-	divLangueJS.id = 'divLangue';
-	divLangueJS.onclick = function() {
+	/*
+	divLangueJS = $('<div/>').attr("id","divLangue").click(function(){
 		if (window.langue == "fr") {
-			divLangueJS.innerHTML = "En";
+			$(this).innerHTML = "En";
 			setCookie("langue", "en", 3000);
 			window.location.reload(true);
 		}
 		if (window.langue == "en") {
-			divLangueJS.innerHTML = "Fr";
+			$(this).innerHTML = "Fr";
 			setCookie("langue", "fr", 3000);
 			window.location.reload(true);
 		}
-	}
+		
+	});*/
+	
+
+	divLangueSel = $('<select/>').attr("id","divLangue").append($('<option/>').text("EN").attr('value','en'),$('<option/>').text("FR").attr('value','fr'))
+				.change(
+					function() {
+    if ($(this).val() == 'en' && window.langue=="fr") {
+			setCookie("langue", "en", 3000);
+			window.location.reload(true);
+        // Do something for option "b"
+    } else if($(this).val() == 'fr' && window.langue=="en"){
+			setCookie("langue", "fr", 3000);
+			window.location.reload(true);
+    }
+}
+				);
+
+
+/*
 	if (window.langue == "en") {
 		divLangueJS.innerHTML = "FR </br> EN";
 	} else {
 		divLangueJS.innerHTML = "EN </br> FR";
-	}
+	}*/
 
 	divContact = document.createElement('DIV');
 	divContact.innerHTML = "Contact: <a href=\"mailto:info@syncstats.com\" class=\"lien\">info@syncstats.com</a>";
 
 	if (usager1 === undefined || usager1 === null) {
+
 		toLog = document.createElement('H2');
 		// toLog.style.width='20%';
 		toLog.id = 'toLog';
@@ -135,10 +159,12 @@ function getCookie(c_name) {
 		affUserJS.className = "optionHautDroit";
 		affUserJS.appendChild(toLog);
 		toLog.style.padding = "0 2px";
-		divLangueJS.style.marginLeft = "10px";
-		divLangueJS.style.paddingLeft = "10px";
-		divLangueJS.style.borderLeft = "solid 1px #bbb";
-		toLog.appendChild(divLangueJS);
+		//divLangueJS.style.marginLeft = "10px";
+		//divLangueJS.style.paddingLeft = "10px";
+		//divLangueJS.style.borderLeft = "solid 1px #bbb";
+
+		$(toLog).append($(divLangueSel));
+
 		divTitre.appendChild(affUserJS);
 
 		$(toLog).prepend($('<div id="divSearch"></div>').append($('<img></img>').attr("src", "/images/icones/delete.png").attr("id", "iconeDelete").css({
@@ -209,6 +235,7 @@ function getCookie(c_name) {
 		//		divTitre.appendChild(mIF3);
 
 	} else {
+
 		divBoiteIDJS = document.createElement('DIV');
 		divBoiteIDJS.id = 'divBoiteID';
 		menuBoiteIDJS = document.createElement('UL');
@@ -340,12 +367,10 @@ function getCookie(c_name) {
 
 		});
 
+
 		//				mLi=document.createElement('LI');
 		//				menuBoiteIDJS.appendChild(mLi);
-
-		mLi = document.createElement('LI');
-		mLi.appendChild(divLangueJS);
-		menuBoiteIDJS.appendChild(mLi);
+	$(menuBoiteIDJS).append($('<li/>').append($(divLangueSel)));
 
 	}// fin du else
 
@@ -847,6 +872,9 @@ function genereBoites() {
 	//for(a=0;a<4;a++)
 	genBoiteContexte(1);
 	genBoiteContexte(2);
+	genBoiteContexte(3);
+	genBoiteContexte(4);
+	genBoiteContexte(5);
 //	genBoiteContexte(3);
 //	genBoiteContexte(4);
 	//genBoiteContexte(5);
@@ -854,7 +882,8 @@ function genereBoites() {
 
 	//faireBoite(1, 3);
 //	faireBoite(2, 2);
-	faireBoite(1, 8);
+	faireBoite(1, 9);
+	faireBoite(2, 7);
 /*	if(getCookie('ligueId')!=null)
 		faireBoite(5,6);
 	else
@@ -864,8 +893,10 @@ function genereBoites() {
 	else
 		faireBoite(1,3);	
 	faireBoite(4, 5);*/
-	faireBoite(2,1);
-	
+	faireBoite(3,5);
+	faireBoite(4,1);
+	faireBoite(5,6);
+	//faireBoiteTest(1);
 	$('<script async></script>').attr("src","//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js").appendTo('#divDroite');
 	$('<ins></ins>').attr("class","adsbygoogle").attr("style","display:inline-block;width:300px;height:250px").attr("data-ad-client","ca-pub-2263794877114969").attr("data-ad-slot","9575808332").appendTo('#divDroite');
 				( adsbygoogle = window.adsbygoogle || []).push({});
@@ -1150,47 +1181,24 @@ mParent.appendChild(a1);*/
 /*
  function faireBoiteTest(a){
  mParent = document.getElementById('dBC_' + a);
- divText = document.createElement('h2')
- divText.style.paddingLeft="10px";
- divText.className="lien";
- divText.innerHTML = "Inscrivez-vous!";
- ul1 = document.createElement('UL')
- li1 = document.createElement('LI')
- li1.innerHTML = "C'est gratuit";
- li2 = document.createElement('LI')
- li2.innerHTML =  "Affichage personnalisé";
- li3 = document.createElement('LI')
- li3.innerHTML = "Accès à plus d'options"
+$(mParent).append($('<img/>').addClass('logoSS').css('height','50%').css('float','left').attr('src','/images/cellEtPucks.png'));
+	div1 = document.createElement('H2');
+	div1.innerHTML = window.tl_bc_votrePub;
+	div1.style.textAlign = "center";
+	div1.style.cssFloat = "none";
+	div2 = document.createElement('H1');
+	div2.innerHTML = window.tl_bc_ici;
+	div2.style.textAlign = "center";
+	div2.style.cssFloat = "none";
+	mParent.appendChild(div1);
+	mParent.appendChild(div2);
+	a1 = document.createElement('A');
+	a1.href = "mailto:info@syncstats.com?subject=Pub SyncStats";
+	a1.style.color = "#8DBB22";
+	a1.innerHTML = window.tl_general_contact;
+	mParent.appendChild(a1);
+	a1.style.textAlign = "center";
 
- a1 = document.createElement('A');
-
- a1.appendChild(divText);
- a1.href="/zuser/inscription.html";
- a1.style.textAlign = "center";
- a1.className="lien";
-
- mParent.appendChild(a1);
-
- //mParent.appendChild(divText);
- mParent.appendChild(ul1);
- ul1.appendChild(li1);
- ul1.appendChild(li2);
- ul1.appendChild(li3);
-
-
- divCon = document.createElement('P')
- divCon.innerHTML = "Déjà inscrits?, ";
- divCon.style.display="inline";
-
-
- 
-  a2 = document.createElement('A');
-a2.className="lien";
- a2.innerHTML = "Connectez-vous";
-a2.href="/zuser/login.html";
-  mParent.appendChild(divCon);
-   mParent.appendChild(a2);
- 
 
  }*/
 /*
@@ -1564,6 +1572,7 @@ function enveloppeTable(tableId, noPage, nbParPage) {
 
 function enveloppeTableMois(tableId, annee,mois, indCol) {
 //	alert(tableId);
+	mois = parseInt(mois);
 	var moisDAnnee = new Array("Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre");
 	maTable = document.getElementById(tableId);
 	maTable.className="tableEnveloppeMois";
@@ -1572,6 +1581,7 @@ function enveloppeTableMois(tableId, annee,mois, indCol) {
 	for (var a = 0; a < lesLignes.length; a++) {
 		if (lesLignes[a].nodeName == 'TR' && (lesLignes[a].className == 'lignePaire' || lesLignes[a].className == 'ligneImpaire' || lesLignes[a].className == 'ligneCache')) {
 			try{
+				//alert(lesLignes[a].childNodes[indCol].firstChild.innerHTML);
 			if (lesLignes[a].childNodes[indCol].firstChild.innerHTML.split('-')[0]==annee &&lesLignes[a].childNodes[indCol].firstChild.innerHTML.split('-')[1]==mois+1 ) {
 				cpt % 2 == 0 ? lesLignes[a].className = 'lignePaire' : lesLignes[a].className = 'ligneImpaire';
 			} else {

@@ -4,19 +4,30 @@
 	<head>
 		<title>SyncStats</title>
 		<link rel="shortcut icon" href="/favicon.ico" />
+				<link rel='stylesheet' type='text/css' href='/style/visionneuse.css' />
+		<link rel='stylesheet' type='text/css' href='/style/jquery.raty.css' />
+		<link rel="stylesheet" type='text/css' href="/style/jquery.mCustomScrollbar.css">
+
 		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
 		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
 		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
 		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
-		<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+		
+		<!--script src="/scripts/jquery.js"></script-->
 
+		<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+		
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<script type="text/javascript" charset="utf-8">
 			gereLangue();
 		</script>
 		<script src="/scripts/jquery.timeago.js" type="text/javascript" charset="utf-8"></script>
+				<script src="/scripts/jquery.mCustomScrollbar.js"></script>
+		<script src="/scripts/visionneuse.js"></script>
+		<script src="/scripts/jquery.raty.js"></script>
+
 		<script type="text/javascript" charset="utf-8">
 			jQuery(document).ready(function() {
 				jQuery("abbr.timeago").timeago();
@@ -414,6 +425,43 @@
 				}//);
 			}
 
+			function getVideosParBut() {
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/getVideosParBut.php";
+
+				var ligueId = "ligueId=" + getCookie("ligueId");
+				params = ligueId;
+				requete_ajax.open('POST', url, true);
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = /*(*/
+				function() {
+					//					return function() {
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						//	alert(requete_ajax.responseText);
+						try {
+							videos = eval('(' + requete_ajax.responseText + ')');
+							//alert(JSON.stringify(videos));
+							window.loadVidsCond++;
+							if(loadVidsCond>=nbVidsCond){
+							afficheVideos(0, 0);
+							//alert('premier afficheVideo');
+							}
+						} catch(err) {
+						}
+
+					}//fin if request_state...
+					//					};  // fin return function
+				}//);
+			}
+
+
 			function afficheVideos(type, mPage) {
 				page=mPage;
 				limit = 15;
@@ -430,8 +478,27 @@
 							$('#corpsTabVidsTop').append($('<div></div').attr("class", "cliquable rangee").append($('<div></div').text(mDate.getFullYear()+"-"+mois+"-"+jour),$('<div></div').text(joueur),  $('<div></div').text(window.videos.topVideos[i].eval)).on("click", {
 								i : i
 							}, function(event) {
-								getSommaireMatchPourVideo(window.videos.topVideos[event.data.i].nomMatch, window.videos.topVideos[event.data.i]);
-								$(this).css("cursor", "progress");
+							//	getSommaireMatchPourVideo(window.videos.topVideos[event.data.i].nomMatch, window.videos.topVideos[event.data.i]);
+							//	$(this).css("cursor", "progress");
+							vidIndex = 0;
+
+									strV = window.videos.topVideos[event.data.i].video[0];
+									monOverlay = document.createElement('DIV');
+									monOverlay.id = "ecranSombre";
+									document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
+									$('.media-box').show();
+									//document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + strV.nomFichier;
+									$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
+										"opacity" : "1",
+										"position" : "fixed",
+										"left" : "100px",
+										"top" : "100px",
+										"z-index" : "2000"
+									}));
+									
+
+									getInfoVid(strV.fic, window.videos.topVideos[event.data.i]);
+
 							}));
 
 						}
@@ -453,8 +520,27 @@
 								$('#corpsTabVidsPop').append($('<div></div').attr("class", "cliquable rangee").append($('<div></div').text(mDate.getFullYear()+"-"+mois+"-"+jour),$('<div></div').text(joueur), $('<div></div').text(window.videos.popVideos[jVidsOk].nbVues)).on("click", {
 									i : jVidsOk
 								}, function(event) {
-									getSommaireMatchPourVideo(window.videos.popVideos[event.data.i].nomMatch, window.videos.popVideos[event.data.i]);
-									$(this).css("cursor", "progress");
+									
+									
+									vidIndex = 0;
+
+									strV = window.videos.popVideos[event.data.i].video[0];
+									monOverlay = document.createElement('DIV');
+									monOverlay.id = "ecranSombre";
+									document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
+									$('.media-box').show();
+									//document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + strV.nomFichier;
+									$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
+										"opacity" : "1",
+										"position" : "fixed",
+										"left" : "100px",
+										"top" : "100px",
+										"z-index" : "2000"
+									}));
+									
+
+									getInfoVid(strV.fic, window.videos.popVideos[event.data.i]);
+
 								}));
 								jVidsOk++;
 							}
@@ -473,8 +559,31 @@
 							$('#corpsTabVidsNew').append($('<div></div').attr("class", "cliquable rangee").append($('<div></div').text(mDate.getFullYear()+"-"+mois+"-"+jour),$('<div></div').text(joueur),  $('<div></div').text(jQuery.timeago(mDate))).on("click", {
 								i : i
 							}, function(event) {
-								getSommaireMatchPourVideo(window.videos.recentsVideos[event.data.i].nomMatch, window.videos.recentsVideos[event.data.i]);
-								$(this).css("cursor", "progress");
+								vidIndex = 0;
+
+									strV = window.videos.recentsVideos[event.data.i].video[0];
+									monOverlay = document.createElement('DIV');
+									monOverlay.id = "ecranSombre";
+									document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
+									$('.media-box').show();
+									//document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + strV.nomFichier;
+									$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
+										"opacity" : "1",
+										"position" : "fixed",
+										"left" : "100px",
+										"top" : "100px",
+										"z-index" : "2000"
+									}));
+									
+
+									getInfoVid(strV.fic, window.videos.recentsVideos[event.data.i]);
+								
+								
+								
+								
+								
+								//getSommaireMatchPourVideo(window.videos.recentsVideos[event.data.i].nomMatch, window.videos.recentsVideos[event.data.i]);
+								//$(this).css("cursor", "progress");
 							}));
 						}
 
@@ -650,20 +759,19 @@
 								divBloc = document.createElement('DIV');
 								divBloc.className = "blocScore";
 
-								pDernMatch = document.createElement('P');
-								pDateMatch = document.createElement('P');
-								pDateMatch.innerHTML = str2humain(infoMatch.date.split(' ')[0]);
-								pDernMatch.innerHTML = infoMatch.ligueNom;
-
+								texte = str2humain(infoMatch.date.split(' ')[0]);
+								//pDateMatch= $('<p></p>').text("123").addClass('date');
+								pDateMatch= $('<p></p>').text(texte).addClass('date');
+								//pDateMatch.innerHTML = ;
+								//$(pDateMatch)
+								
 								divLogoDom = document.createElement('DIV');
-								//divLogoDom.id = "logoDom";
-								//divLogoDom.className = "petitLogo";
+								
 
 								divLogoVis = document.createElement('DIV');
 								divLogoDom.className = "tiersGauche";
 								divLogoVis.className = "tiersDroite";
-								//divLogoVis.id = "logoVis";
-								//divLogoVis.className = "petitLogo";
+								
 								divLogoDom.style.display = "inline";
 								divLogoVis.style.display = "inline";
 
@@ -692,8 +800,8 @@
 								pDash = document.createElement('P');
 								pDash.innerHTML = "-";
 
-								//divBoiteMatch.appendChild(pDernMatch);
-								divBoiteMatch.appendChild(pDateMatch);
+								$(divBoiteMatch).append($(pDateMatch));
+								//divBoiteMatch.appendChild(pDateMatch);
 								divBoiteMatch.appendChild(divBloc);
 								divBloc.appendChild(divLigne);
 								divLigne.appendChild(divLogoDom);
@@ -833,7 +941,7 @@
 				$("#corpsTabVidsPop").append($('<div></div>').attr("class", "rangeeTitre").append($('<div></div>').text("Date"),$('<div></div>').text("Player"), $('<div></div>').text("# Views"))).css("margin-top", "15px");
 				$("#corpsTabVidsNew").append($('<div></div>').attr("class", "rangeeTitre").append($('<div></div>').text("Date"),$('<div></div>').text("Player"), $('<div></div>').text("Since"))).css("margin-top", "15px");
 
-				getVideos();
+				getVideosParBut();
 
 			}
 
@@ -1214,6 +1322,164 @@
 			}
 			
 			
+			function getInfoVid(videofile, mBut) {
+				//alert("getInfoVid "+videofile);
+				$('#parent-erreur').remove();	
+				$('#contVids').show();
+				$('#media-video').videoPlayer({
+					'playerWidth' : 1,
+					'videoClass' : 'video'
+				});
+				mediaPlayer = document.getElementById('media-video');
+				if(mediaPlayer!=null){
+				$('.close-btn').click(function(){
+					$('#ecranSombre').remove();
+					
+						
+					    mediaPlayer.pause();
+					    try{
+    					mediaPlayer.currentTime = 0;}
+    					catch(err){}
+						$('.media-box').hide();
+						$( ".play-btn" ).show();
+						$('.play-pause').addClass('play').removeClass('pause');
+						
+				});
+				}
+
+				var requete_ajax = new XMLHttpRequest();
+				var url = "/scriptsphp/getVideoUnique.php";
+				var pVF = String(videofile);
+
+				var sVF = pVF.split(".");
+				var strVid = "videofile=" + sVF[0];
+				params = strVid;
+				url = url + "?" + params;
+				requete_ajax.open('POST', url, true);
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+				requete_ajax.send(params);
+				if(mBut!=undefined&&mBut!=""){
+				chargeListeCote(videofile, mBut);}
+				requete_ajax.onreadystatechange = function() {
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						infoVid = eval('(' + requete_ajax.responseText + ')');
+						$('#rateSpan').text("RATING: " + infoVid.eval + " / 5");
+						$('#nbVuesSpan').text("Vue " + infoVid.nbVues + " fois");
+						$('.video-info p').text("Marqueur: " + infoVid.NomJoueur);
+						evalBut = getCookie('videoId_eval_' + infoVid.videoId);
+						if (evalBut != null) {
+							$('#rating-star').raty({
+								score : evalBut
+							});
+						} else {
+							$('#rating-star').raty({
+								click : function(score, evt) {
+									$.post('/scriptsphp/evalueVid.php', {
+										videoId : infoVid.videoId,
+										evalBut : score
+									});
+									setCookie('videoId_eval_' + infoVid.videoId, score, 1000);
+								}
+							});
+							
+
+						}
+						vidSuite(videofile, mBut);
+							$.post('/scriptsphp/incrementeVidNbVues.php', {
+								videoId : infoVid.videoId
+							});
+							$('#drapeauVert').click(function() {
+								$.post('/scriptsphp/changeAngleOk.php', {
+									changeAngle : 1,
+									videoId : infoVid.videoId
+								});
+							});
+							$('#drapeauRouge').click(function() {
+								$.post('/scriptsphp/changeAngleOk.php', {
+									changeAngle : -1,
+									videoId : infoVid.videoId
+								});
+							});
+
+
+					}
+				}
+			}
+
+			function chargeListeCote(videofile, mBut) {
+
+				vidsAlt = mBut;
+				//alert("mBut.video.length :"+mBut.video.length);
+				if (mBut.video.length > 0) {
+					//$(laliste)=$('#media-play-list');
+					videNoeud('media-play-list');
+
+					$('#media-play-list').append($('<ul id="play-list"></ul>'));
+					for (var a = 0; a < mBut.video.length; a++) {
+						//alert(vidsAlt.video[a].fic);
+						$('#media-play-list').append($('<li></li>').append(
+
+						// $('<video></video>').addClass('play-item').attr('src',vidsAlt.video[a].fic),
+						$('<div></div>').addClass('thumbnail-wrap').append(/*$('<span></span>').addClass('thumbnail-title').text(vidsAlt.video[a].cam),*/
+						$('<br />'), $('<span></span>').addClass('thumbnail-content').text("Cam " + vidsAlt.video[a].cam), $('<img></img>').addClass('thumbnail-content').attr("src", "/images/icones/movie.png").attr("alt", "Video"))).click({
+							vids : vidsAlt.video[a].fic,
+							but : mBut
+						}, function(event) {
+							getInfoVid(event.data.vids, event.data.but);
+						})
+						//.click(loadVideo(vidsAlt.video[a].fic))
+						);
+					}
+					$('#media-play-list').show();
+
+				}
+
+			}
+
+			function vidSuite(videofile, mBut) {
+
+				vidSVC = document.getElementById('media-video');
+				vidSVC.style.display = "block";
+				vidSVC.load();
+
+				rang = 0;
+
+		$('video').attr('preload', 'auto');
+		
+
+				$('.media-box > img, .erreur').remove();
+				$('.erreur').parent().css('background','#000');
+				mVid = "/lookatthis/" + videofile;
+					$('#vidPrincId').attr("src", mVid);
+					$('#parent-erreur').remove();
+
+				
+				document.getElementById('vidPrincId').addEventListener('error', function(event) { 
+					if($('.erreur').length<2){
+					$( this ).parent().before($('<div id="parent-erreur"></div>').append($('<p class="erreur"></p>').text("There is an error with this video, please go to the next one (and sorry, btw...)"))
+					.append($('<img ></img>').attr("src", "/images/icones/warning.png" ).css("width","50px").css("width","50px")));
+					//$( this ).unbind("error");
+					$('.play-pause').addClass('play').removeClass('pause');
+					}
+					//alert("There's an error with this video, please go to the next one (and sorry, btw...)")
+					}, true);
+
+		//////////////////////
+		// FB Override
+
+		logoOverride=true;
+		logoOverrideLoc=document.location.href+"&videofile="+encodeURIComponent(videofile);//+"&but="+encodeURIComponent(mBut);
+		logoOverrideT="Vidéo";
+
+
+
+
+
+			};
+			
+			
+			
 		</script>
 	</head>
 	<body id="mbody">
@@ -1222,6 +1488,50 @@
 		<div id="divGauche"></div>
 		<div id="divMenuHaut"></div>
 		<div id="divCentrale">
+			<div class="container" id="contVids" style="display:none">
+
+				<!--h1 align="center">video-player</h1-->
+				<!-- video wrap box -->
+				<div class="media-box">
+
+					<span class="close-btn"></span>
+					<!-- Video listing -->
+					<div id='media-play-list' class="content mCustomScrollbar"></div>
+					<!-- ends Video listing -->
+
+					<!-- Main video -->
+					<video id="media-video" width="480" height="320" preload="metadata">
+						<source id="vidPrincId" type="video/mp4">
+					</video>
+					<!-- end Main video -->
+
+					<!-- video info -->
+					<div class="video-info">
+						<div style="float:left; padding:0 0 5px 0; border-bottom:1px solid #CCC; width:100%;">
+							<img style="float:left; margin-right:10px;" src="/images/info-img.png"><span class="title">Video Info</span>
+						</div>
+						<p class="video-content">
+							Aimez-vous cette nouvelle interface?
+						</p>
+						<div class="share">
+							<img src="/images/fb.png" style="margin-bottom:10px;">
+							<img src="/images/tweet.png" style="float:right; margin-bottom:10px;">
+							<img src="/images/google.png" style="margin-bottom:15px;">
+							<img src="/images/youtube.png" style="float:right; margin-bottom:15px;">
+						</div>
+						<span id="rateSpan" style="width:100%; float:left; margin-bottom:10px; font-size: 15px;">RATING : 3.5 / 5 </span>
+						<span id="nbVuesSpan" style="width:100%; float:left; margin-bottom:10px; font-size: 15px;">Vue 0 fois</span>
+						<button type="button" class="btn-style">
+							<span class="comment"></span>Write a Comment
+						</button>
+					</div>
+					<!-- end video info -->
+
+					<span class="play-btn"><img src="/images/main-play.png"></span>
+
+				</div>
+				<!-- end video wrap box -->
+			</div>
 
 		</div>
 		<div id="divDroite"></div>
@@ -1230,6 +1540,8 @@
 		<script type="text/javascript" charset="utf-8">
 			developper(0);
 			rang = 0;
+			
+			jQuery(document).ready(function() {
 			structurePage();
 			nbMatchs = 6;
 			loadVidsCond=0;
@@ -1240,9 +1552,10 @@
 			}
 			babillard();
 			galerie();
-			videos();
+			//videos();
 			getInfoLigue(window.ligueId);
 			getInfoJoueurs(window.ligueId);
+			});
 		</script>
 
 	</body>

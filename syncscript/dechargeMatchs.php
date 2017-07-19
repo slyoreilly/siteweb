@@ -1,51 +1,46 @@
 <?php
 
-include_once(DIRECTORY_SEPARATOR."syncstatsconfig.php");
- 
-function parseMatchID($ID){
-	 
-//$monMatch['date'] = str_replace('/', '-', substr($ID,0,stripos($ID,'_')));
-$i1=stripos($ID,'_');
-$i2=stripos($ID,'_',$i1+1);
-$i3=stripos($ID,'_',$i2+1);
-$i4=stripos($ID,'_',$i3+1);
-$monMatch['date'] = substr($ID,0,$i1);
-$i1=stripos($ID,'_');
+include_once ($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR . "syncstatsconfig.php");
 
-$longueur = strlen($monMatch['date']);
-$monMatch['dom'] = substr($ID,$i1+1,$i2-$i1-1);
-if($i3!=false)
-	{$monMatch['vis'] = substr($ID,$i2+1,$i3-$i2-1);
-	$monMatch['ligueId']=substr($ID,$i3+1);
+function parseMatchID($ID) {
+
+	//$monMatch['date'] = str_replace('/', '-', substr($ID,0,stripos($ID,'_')));
+	$i1 = stripos($ID, '_');
+	$i2 = stripos($ID, '_', $i1 + 1);
+	$i3 = stripos($ID, '_', $i2 + 1);
+	$i4 = stripos($ID, '_', $i3 + 1);
+	$monMatch['date'] = substr($ID, 0, $i1);
+	$i1 = stripos($ID, '_');
+
+	$longueur = strlen($monMatch['date']);
+	$monMatch['dom'] = substr($ID, $i1 + 1, $i2 - $i1 - 1);
+	if ($i3 != false) {$monMatch['vis'] = substr($ID, $i2 + 1, $i3 - $i2 - 1);
+		$monMatch['ligueId'] = substr($ID, $i3 + 1);
+	} else {$monMatch['vis'] = substr($ID, $i2 + 1);
 	}
-else{$monMatch['vis']= substr($ID,$i2+1);}
 	return $monMatch;
 
-} 
-
-
-
+}
 
 $IJ = 0;
 //global $syncOK;
 
-
 //		echo json_encode($leMatch)."//////";
 
-$qRef="SELECT event_id FROM TableEvenement0 WHERE 1 ORDER BY event_id DESC LIMIT 0,1";
+$qRef = "SELECT event_id FROM TableEvenement0 WHERE 1 ORDER BY event_id DESC LIMIT 0,1";
 $rRef = mysql_query($qRef) or die(mysql_error() . $qRef);
 $vRef = mysql_fetch_row($rRef);
 
-if(strcmp(TYPE_TERMINAL, 'syncboard')==0)
-{
-	function f_es($source_es){
-		return floor($source_es/100);
-	} 
-}
-else{
-	function f_es($source_es){
-	return $source_es%100;	
+if (strcmp(TYPE_TERMINAL, 'syncboard') == 0) {
+	function f_es($source_es) {
+		return floor($source_es / 100);
 	}
+
+} else {
+	function f_es($source_es) {
+		return $source_es % 100;
+	}
+
 }
 
 while ($IJ < count($leMatch)) {
@@ -53,13 +48,17 @@ while ($IJ < count($leMatch)) {
 	//	echo json_encode($leMatch[$IJ]).",";
 	if (isset($leMatch[$IJ]['but'])) {
 		$matchAEnr = parseMatchID($leMatch[$IJ]['but']['match_id']);
-		if(isset($matchAEnr['ligueId']))
-			{$ligueId=$matchAEnr['ligueId'];}
-		$retBut=$leMatch[$IJ]['but']['chrono']; // retourner le but, sans correction de chrono.
-		
-		if(isset($heure))
-			{$leMatch[$IJ]['but']['chrono']=$leMatch[$IJ]['but']['chrono']+$heureServeur-$heure;}
-			
+		$trouveBut = 0;
+		if (isset($matchAEnr['ligueId'])) {$ligueId = $matchAEnr['ligueId'];
+		}
+		if (isset($leMatch[$IJ]['but']['noseq'])) {$noseq = $leMatch[$IJ]['but']['noseq'];
+		}else{$noseq=0;}
+
+		$retBut = $leMatch[$IJ]['but']['chrono'];
+		// retourner le but, sans correction de chrono.
+
+		if (isset($heure)) {$leMatch[$IJ]['but']['chrono'] = $leMatch[$IJ]['but']['chrono'] + $heureServeur - $heure;
+		}
 
 		switch(f_es($leMatch[$IJ]['but']['es'])) {
 
@@ -67,31 +66,36 @@ while ($IJ < count($leMatch)) {
 				$qDel = "DELETE FROM TableEvenement0 WHERE chrono='{$leMatch[$IJ]['but']['chrono']}' AND match_event_id='{$leMatch[$IJ]['but']['match_id']}'";
 				mysql_query($qDel) or die(mysql_error() . $qDel);
 			//	break;		 NO BREAK!!!!!!!
-			case 12 :
-				
-				$qInsM = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$leMatch[$IJ]['but']['match_id']}','{$leMatch[$IJ]['but']['eqId']}','{$leMatch[$IJ]['but']['m']}','{$leMatch[$IJ]['but']['chrono']}','{$leMatch[$IJ]['but']['sc']}',0)";
-				$qInsP1 = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$leMatch[$IJ]['but']['match_id']}','{$leMatch[$IJ]['but']['eqId']}','{$leMatch[$IJ]['but']['p1']}','{$leMatch[$IJ]['but']['chrono']}','{$leMatch[$IJ]['but']['sc']}',1)";
-				$qInsP2 = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$leMatch[$IJ]['but']['match_id']}','{$leMatch[$IJ]['but']['eqId']}','{$leMatch[$IJ]['but']['p2']}','{$leMatch[$IJ]['but']['chrono']}','{$leMatch[$IJ]['but']['sc']}',1)";
+			case 15 :
+			
+				$qSelButs = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$leMatch[$IJ]['but']['match_id']}' AND code=0 AND noSequence={$leMatch[$IJ]['but']['noseq']}";
+				$resButs = mysql_query($qSelButs) or die(mysql_error() . $qSelButs);
+				$trouveBut = mysql_num_rows($resButs);
 
-				mysql_query($qInsM) or die(mysql_error() . $qInsM);
+			//	break;		 NO BREAK!!!!!!!
+			case 12 :
+				if ($trouveBut == 0) {
+					$qInsM = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code,noSequence) VALUES ('{$leMatch[$IJ]['but']['match_id']}','{$leMatch[$IJ]['but']['eqId']}','{$leMatch[$IJ]['but']['m']}','{$leMatch[$IJ]['but']['chrono']}','{$leMatch[$IJ]['but']['sc']}',0,'{$noseq}')";
+					$qInsP1 = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code,noSequence) VALUES ('{$leMatch[$IJ]['but']['match_id']}','{$leMatch[$IJ]['but']['eqId']}','{$leMatch[$IJ]['but']['p1']}','{$leMatch[$IJ]['but']['chrono']}','{$leMatch[$IJ]['but']['sc']}',1,'{$noseq}')";
+					$qInsP2 = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code,noSequence) VALUES ('{$leMatch[$IJ]['but']['match_id']}','{$leMatch[$IJ]['but']['eqId']}','{$leMatch[$IJ]['but']['p2']}','{$leMatch[$IJ]['but']['chrono']}','{$leMatch[$IJ]['but']['sc']}',1,'{$noseq}')";
+					mysql_query($qInsM) or die(mysql_error() . $qInsM);
+
+					if ($leMatch[$IJ]['but']['p1'] != 0) {mysql_query($qInsP1) or die(mysql_error() . $qInsP1);
+					}
+					if ($leMatch[$IJ]['but']['p2'] != 0) {mysql_query($qInsP2) or die(mysql_error() . $qInsP2);
+					}
+					$moins = $leMatch[$IJ]['but']['moins'];
+					for ($a = 0; $a < count($leMatch[$IJ]['but']['plus']); $a++) {
+						$qInsPlus = "INSERT INTO PlusMoins (matchId,joueurId, equipeId, ligueId, plusMoins, chrono) VALUES ('{$leMatch[$IJ]['but']['match_id']}','{$leMatch[$IJ]['but']['plus'][$a]}','{$leMatch[$IJ]['but']['eqId']}','{$ligueId}',1,'{$leMatch[$IJ]['but']['chrono']}')";
+						mysql_query($qInsPlus) or die(mysql_error() . $qInsPlus);
+					}
+					for ($a = 0; $a < count($leMatch[$IJ]['but']['moins']); $a++) {
+						$qInsMoins = "INSERT INTO PlusMoins (matchId ,joueurId, equipeId, ligueId, plusMoins, chrono) VALUES ('{$leMatch[$IJ]['but']['match_id']}','{$leMatch[$IJ]['but']['moins'][$a]}','{$leMatch[$IJ]['but']['advId']}','{$ligueId}',-1,'{$leMatch[$IJ]['but']['chrono']}')";
+						mysql_query($qInsMoins) or die(mysql_error() . $qInsMoins);
+					}
+				}
 				array_push($syncOK, $retBut);
 
-				if ($leMatch[$IJ]['but']['p1'] != 0) {mysql_query($qInsP1) or die(mysql_error() . $qInsP1);
-				}
-				if ($leMatch[$IJ]['but']['p2'] != 0) {mysql_query($qInsP2) or die(mysql_error() . $qInsP2);
-				}
-				$moins = json_decode($leMatch[$IJ]['but']['moins']);
-				for($a=0;$a<count($leMatch[$IJ]['but']['plus']);$a++)
-				{
-						$qInsPlus="INSERT INTO PlusMoins (matchId,joueurId, equipeId, ligueId, plusMoins, chrono) VALUES ('{$leMatch[$IJ]['but']['match_id']}','{$leMatch[$IJ]['but']['plus'][$a]}','{$leMatch[$IJ]['but']['eqId']}','{$ligueId}',1,'{$leMatch[$IJ]['but']['chrono']}')";
-						mysql_query($qInsPlus) or die(mysql_error() . $qInsPlus);							
-				}
-				for($a=0;$a<count($leMatch[$IJ]['but']['moins']);$a++)
-				{
-						$qInsMoins="INSERT INTO PlusMoins (matchId ,joueurId, equipeId, ligueId, plusMoins, chrono) VALUES ('{$leMatch[$IJ]['but']['match_id']}','{$leMatch[$IJ]['but']['moins'][$a]}','{$leMatch[$IJ]['but']['advId']}','{$ligueId}',-1,'{$leMatch[$IJ]['but']['chrono']}')";
-						mysql_query($qInsMoins) or die(mysql_error() . $qInsMoins);							
-				}
-								
 				break;
 		}
 		$qSelButs = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$leMatch[$IJ]['but']['match_id']}' AND code=0 AND equipe_event_id='{$leMatch[$IJ]['but']['eqId']}'";
@@ -112,9 +116,12 @@ while ($IJ < count($leMatch)) {
 	}
 	if (isset($leMatch[$IJ]['punition'])) {
 		$matchAEnr = parseMatchID($leMatch[$IJ]['punition']['match_id']);
-		if(isset($matchAEnr['ligueId']))
-			{$ligueId=$matchAEnr['ligueId'];}
+		if (isset($matchAEnr['ligueId'])) {$ligueId = $matchAEnr['ligueId'];
+		}
+		if (isset($leMatch[$IJ]['punition']['noseq'])) {$noseq = $leMatch[$IJ]['punition']['noseq'];
+		}else{$noseq=0;}
 		
+		$trouvePun=0;
 
 		switch(f_es($leMatch[$IJ]['punition']['es'])) {
 
@@ -122,52 +129,76 @@ while ($IJ < count($leMatch)) {
 				$qDel = "DELETE FROM TableEvenement0 WHERE chrono='{$leMatch[$IJ]['punition']['chrono']}' AND match_event_id='{$leMatch[$IJ]['punition']['match_id']}'";
 				mysql_query($qDel) or die(mysql_error() . $qDel);
 			//	break;		 NO BREAK!!!!!!!
+			case 15 :
+			
+				$qSelPun = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$leMatch[$IJ]['punition']['match_id']}' AND code=4 AND noSequence={$leMatch[$IJ]['punition']['noseq']}";
+				$resPun = mysql_query($qSelPun) or die(mysql_error() . $qSelPun);
+				$trouvePun = mysql_num_rows($resPun);
+
+			//	break;		 NO BREAK!!!!!!!
 			case 12 :
-				$qInsM = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$leMatch[$IJ]['punition']['match_id']}','{$leMatch[$IJ]['punition']['eqId']}','{$leMatch[$IJ]['punition']['joueur']}','{$leMatch[$IJ]['punition']['chrono']}','{$leMatch[$IJ]['punition']['sc']}',4)";
+				if ($trouvePun == 0) {
+				$qInsM = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code,noSequence) VALUES ('{$leMatch[$IJ]['punition']['match_id']}','{$leMatch[$IJ]['punition']['eqId']}','{$leMatch[$IJ]['punition']['joueur']}','{$leMatch[$IJ]['punition']['chrono']}','{$leMatch[$IJ]['punition']['sc']}',4,'{$noseq}')";
 
 				mysql_query($qInsM) or die(mysql_error() . $qInsM);
+				}
+				
 				array_push($syncOK, $leMatch[$IJ]['punition']['chrono']);
 				break;
 		}
 
 	}
-		if (isset($leMatch[$IJ]['clip'])) {
+	if (isset($leMatch[$IJ]['clip'])) {
 		$matchAEnr = parseMatchID($leMatch[$IJ]['clip']['match_id']);
-		if(isset($matchAEnr['ligueId']))
-			{$ligueId=$matchAEnr['ligueId'];}
-		if(isset($heure))
-			{
-				$retClip=$leMatch[$IJ]['clip']['chrono']; // retourner le but, sans correction de chrono.
-				$leMatch[$IJ]['clip']['chrono']=$leMatch[$IJ]['clip']['chrono']+$heureServeur-$heure;}
-
+		if (isset($matchAEnr['ligueId'])) {$ligueId = $matchAEnr['ligueId'];
+		}
+		if (isset($heure)) {
+			$retClip = $leMatch[$IJ]['clip']['chrono'];
+			// retourner le but, sans correction de chrono.
+			$leMatch[$IJ]['clip']['chrono'] = $leMatch[$IJ]['clip']['chrono'] + $heureServeur - $heure;
+		}
+		if (isset($leMatch[$IJ]['clip']['noseq'])) {$noseq = $leMatch[$IJ]['clip']['noseq'];
+		}else{$noseq=0;}
+		
+		$trouveClip=0;
 		switch(f_es($leMatch[$IJ]['clip']['es'])) {
 
 			case 10 :
 				$qDel = "DELETE FROM Clips WHERE chrono='{$leMatch[$IJ]['clip']['chrono']}' AND matchId='{$leMatch[$IJ]['clip']['match_id']}'";
 				mysql_query($qDel) or die(mysql_error() . $qDel);
 			//	break;		 NO BREAK!!!!!!!
+			//case 15 :
+			//	$qSelClip = "SELECT * FROM Clips WHERE matchId='{$leMatch[$IJ]['clip']['match_id']}' noSequence={$leMatch[$IJ]['clip']['noseq']}";
+			//	$resClip = mysql_query($qSelClip) or die(mysql_error() . $qSelClip);
+			//	$trouveClip = mysql_num_rows($resClip);
+
+			//	break;		 NO BREAK!!!!!!!
 			case 12 :
+				if ($trouveClip == 0) {
 				$qInsM = "INSERT INTO Clips (matchId, chrono) VALUES ('{$leMatch[$IJ]['clip']['match_id']}','{$leMatch[$IJ]['clip']['chrono']}')";
 
 				mysql_query($qInsM) or die(mysql_error() . $qInsM);
+				}
 				array_push($syncOK, $retClip);
 				break;
 		}
 
 	}
-	
+
 	if (isset($leMatch[$IJ]['fusillade'])) {
 		$matchAEnr = parseMatchID($leMatch[$IJ]['fusillade']['match_id']);
-		if(isset($matchAEnr['ligueId']))
-			{$ligueId=$matchAEnr['ligueId'];}
-		
+		if (isset($matchAEnr['ligueId'])) {$ligueId = $matchAEnr['ligueId'];
+		}
+
 		switch(f_es($leMatch[$IJ]['fusillade']['es'])) {
 
 			case 10 :
+			case 12 :
 				$qDel = "DELETE FROM TableEvenement0 WHERE chrono='{$leMatch[$IJ]['fusillade']['chrono']}' AND match_event_id='{$leMatch[$IJ]['fusillade']['match_id']}'";
 				mysql_query($qDel) or die(mysql_error() . $qDel);
 			//	break;		 NO BREAK!!!!!!!
-			case 12 :
+			
+			
 				$qInsM = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$leMatch[$IJ]['fusillade']['match_id']}','{$leMatch[$IJ]['fusillade']['eqId']}','{$leMatch[$IJ]['fusillade']['joueur']}','{$leMatch[$IJ]['fusillade']['chrono']}','{$leMatch[$IJ]['fusillade']['sc']}',2)";
 
 				mysql_query($qInsM) or die(mysql_error() . $qInsM);
@@ -179,24 +210,34 @@ while ($IJ < count($leMatch)) {
 
 	if (isset($leMatch[$IJ]['periode'])) {
 		$matchAEnr = parseMatchID($leMatch[$IJ]['periode']['match_id']);
-		if(isset($matchAEnr['ligueId']))
-			{$ligueId=$matchAEnr['ligueId'];}
-		$retPer=$leMatch[$IJ]['periode']['chrono']; // retourner le but, sans correction de chrono.
-		
-		if(isset($heure))
-			{$leMatch[$IJ]['periode']['chrono']=$leMatch[$IJ]['periode']['chrono']+$heureServeur-$heure;}
-		
+		if (isset($matchAEnr['ligueId'])) {$ligueId = $matchAEnr['ligueId'];
+		}
+		$retPer = $leMatch[$IJ]['periode']['chrono'];
+		// retourner le but, sans correction de chrono.
 
+		if (isset($heure)) {$leMatch[$IJ]['periode']['chrono'] = $leMatch[$IJ]['periode']['chrono'] + $heureServeur - $heure;
+		}
+	$trouvePer=0;
 		switch(f_es($leMatch[$IJ]['periode']['es'])) {
 
 			case 10 :
 				$qDel = "DELETE FROM TableEvenement0 WHERE chrono='{$leMatch[$IJ]['periode']['chrono']}' AND match_event_id='{$leMatch[$IJ]['periode']['match_id']}'";
 				mysql_query($qDel) or die(mysql_error() . $qDel);
 			//	break;		 NO BREAK!!!!!!!
+			case 15 :
+			
+				$qSelPer = "SELECT * FROM TableEvenement0 WHERE chrono='{$leMatch[$IJ]['periode']['chrono']}' AND match_event_id='{$leMatch[$IJ]['periode']['match_id']}'";
+				$resPer = mysql_query($qSelPer) or die(mysql_error() . $qSelPer);
+				$trouvePer = mysql_num_rows($resPer);
+
+			//	break;		 NO BREAK!!!!!!!
 			case 12 :
+				if ($trouvePer == 0) {
+
 				$qInsM = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$leMatch[$IJ]['periode']['match_id']}',0,0,'{$leMatch[$IJ]['periode']['chrono']}','{$leMatch[$IJ]['periode']['sc']}',11)";
 
 				mysql_query($qInsM) or die(mysql_error() . $qInsM);
+				}
 				array_push($syncOK, $retPer);
 				break;
 		}
@@ -205,16 +246,24 @@ while ($IJ < count($leMatch)) {
 
 	if (isset($leMatch[$IJ]['debutMatch'])) {
 		$matchAEnr = parseMatchID($leMatch[$IJ]['debutMatch']['match_id']);
-		if(isset($matchAEnr['ligueId']))
-			{$ligueId=$matchAEnr['ligueId'];}
-		
+		if (isset($matchAEnr['ligueId'])) {$ligueId = $matchAEnr['ligueId'];
+		}
+	$trouveDM=0;
 		switch(f_es($leMatch[$IJ]['debutMatch']['es'])) {
 
 			case 10 :
 			//	$qDel = "DELETE FROM TableEvenement0 WHERE chrono=$leMatch[$IJ]['debutMatch']['chrono'] AND match_event_id='{$leMatch[$IJ]['debutMatch']['match_id']}'";
 			//	mysql_query($qDel) or die(mysql_error() . $qDel);
 			//	break;		 NO BREAK!!!!!!!
+			case 15 :
+			
+				$qSelDM= "SELECT * FROM TableEvenement0 WHERE code =10 AND souscode=0 AND match_event_id='{$leMatch[$IJ]['periode']['match_id']}'";
+				$resDM = mysql_query($qSelDM) or die(mysql_error() . $qSelDM);
+				$trouveDM = mysql_num_rows($resDM);
+			
 			case 12 :
+			
+				if($trouveDM==0){
 				$code1010 = 10000 * $leMatch[$IJ]['debutMatch']['eqDom'] + $leMatch[$IJ]['debutMatch']['eqVis'];
 
 				$qInsGDom = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$leMatch[$IJ]['debutMatch']['match_id']}','{$leMatch[$IJ]['debutMatch']['eqDom']}','{$leMatch[$IJ]['debutMatch']['gDom']}','{$leMatch[$IJ]['debutMatch']['chrono']}',5,3)";
@@ -246,9 +295,8 @@ while ($IJ < count($leMatch)) {
 				}
 				if ($leMatch[$IJ]['debutMatch']['gVis'] != 0) {mysql_query($qInsGVis) or die(mysql_error() . $qInsGVis);
 				}
-//											include('../scriptsphp/actualiseMatchs.php');			
-				
-
+				//											include('../scriptsphp/actualiseMatchs.php');
+				}
 				array_push($syncOK, $leMatch[$IJ]['debutMatch']['chrono']);
 
 				break;
@@ -258,105 +306,111 @@ while ($IJ < count($leMatch)) {
 
 	if (isset($leMatch[$IJ]['finMatch'])) {
 		$matchAEnr = parseMatchID($leMatch[$IJ]['finMatch']['match_id']);
-		if(isset($matchAEnr['ligueId']))
-			{$ligueId=$matchAEnr['ligueId'];}
-		
-		switch(f_es($leMatch[$IJ]['finMatch']['es'])) {
+		if (isset($matchAEnr['ligueId'])) {$ligueId = $matchAEnr['ligueId'];
+		}
+		$trouveFM=0;
 
-			case 12 :
+		switch(f_es($leMatch[$IJ]['finMatch']['es'])) {
+			case 15 :
+		
+				$qSelFM= "SELECT * FROM TableEvenement0 WHERE code =10 AND souscode=10 AND match_event_id='{$leMatch[$IJ]['periode']['match_id']}'";
+				$resFM = mysql_query($qSelFM) or die(mysql_error() . $qSelFM);
+				$trouveFM = mysql_num_rows($resFM);
+			
+				case 12 :
+				if($trouveFM==0){
 				$qInsFM = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$leMatch[$IJ]['finMatch']['match_id']}',
 				0,0,'{$leMatch[$IJ]['finMatch']['chrono']}',10,10)";
-								mysql_query($qInsFM) or die(mysql_error() . $qInsFM);
+				mysql_query($qInsFM) or die(mysql_error() . $qInsFM);
+				}
 			////////////  NO BREAK!!!  //////////////////////
 			case 10 :
-			default:
+			default :
 				//echo "1";
-						$deSyncMatch = 1;
-							/*?><?php*/ 
-							//include('/public_html/scriptsphp/calculeMatch.php');
-							/*?><?php*/
-						$qMatch = "SELECT cleValeur FROM TableMatch WHERE matchIdRef = '{$leMatch[$IJ]['finMatch']['match_id']}'";
-										$testmatch = mysql_query($qMatch) or die(mysql_error() . " Select " . $leMatch[$IJ]['finMatch']['db_id']);
+				$deSyncMatch = 1;
+				/*?><?php*/
+				//include('/public_html/scriptsphp/calculeMatch.php');
+				/*?><?php*/
+				$qMatch = "SELECT cleValeur FROM TableMatch WHERE matchIdRef = '{$leMatch[$IJ]['finMatch']['match_id']}'";
+				$testmatch = mysql_query($qMatch) or die(mysql_error() . " Select " . $leMatch[$IJ]['finMatch']['db_id']);
 				//echo "2";
-						if(mysql_num_rows($testmatch)==0)
-						{
-				//echo "3";
-				//			include($_SERVER['DOCUMENT_ROOT'] . '/scriptsphp/actualiseMatch.php');			
-							$qMatch = "SELECT cleValeur FROM TableMatch WHERE matchIdRef = '{$leMatch[$IJ]['finMatch']['match_id']}'";
-							$testmatch = mysql_query($qMatch) or die(mysql_error() . " Select " . $leMatch[$IJ]['finMatch']['db_id']);
-				//echo "4";
-													}
-						$rMatch = mysql_fetch_row($testmatch);
-						if (($rMatch[0] != NULL) && (strlen($rMatch[0]) > 2)) {
-							$condMatch = $rMatch[0];
- 							$jMerge = json_encode(array_merge((array) json_decode($condMatch), (array) json_decode($leMatch[$IJ]['finMatch']['cv'])));
-							} else {
-//							$jMerge = $leMatch['cleValeur'];
-								$jMerge = json_encode($leMatch[$IJ]['finMatch']['cv']);
-						}
-										//echo "5";
-												mysql_query("UPDATE TableMatch SET cleValeur='{$jMerge}' WHERE matchIdRef = '{$leMatch[$IJ]['finMatch']['match_id']}'") or die(mysql_error() );
-												$monCV = json_decode($leMatch[$IJ]['finMatch']['cv']);
-	//											echo $monCV['scoreFinal']." ".isset($monCV['scoreFinal'])." ".$leMatch[$IJ]['finMatch']['cv'];
-										//echo "6";
-												if(isset($leMatch[$IJ]['finMatch']['cv']['scoreFinal']))
-												{
-													
-													$i1=stripos($leMatch[$IJ]['finMatch']['cv']['scoreFinal'],'-');
-													$i2=stripos($leMatch[$IJ]['finMatch']['cv']['scoreFinal'],'-',$i1+1);
-													
-													$sD = substr($leMatch[$IJ]['finMatch']['cv']['scoreFinal'],0,$i1);
-													$sV = substr($leMatch[$IJ]['finMatch']['cv']['scoreFinal'],$i1+1);
-												mysql_query("UPDATE TableMatch SET score_dom='{$sD}',score_vis='{$sV}' WHERE matchIdRef = '{$leMatch[$IJ]['finMatch']['match_id']}'") or die(mysql_error() );
-												}
-						array_push($syncOK, $leMatch[$IJ]['finMatch']['chrono']);
+				if (mysql_num_rows($testmatch) == 0) {
+					//echo "3";
+					//			include($_SERVER['DOCUMENT_ROOT'] . '/scriptsphp/actualiseMatch.php');
+					$qMatch = "SELECT cleValeur FROM TableMatch WHERE matchIdRef = '{$leMatch[$IJ]['finMatch']['match_id']}'";
+					$testmatch = mysql_query($qMatch) or die(mysql_error() . " Select " . $leMatch[$IJ]['finMatch']['db_id']);
+					//echo "4";
 				}
-			}
+				$rMatch = mysql_fetch_row($testmatch);
+				if (($rMatch[0] != NULL) && (strlen($rMatch[0]) > 2)) {
+					$condMatch = $rMatch[0];
+					$jMerge = json_encode(array_merge((array) json_decode($condMatch), (array) json_decode($leMatch[$IJ]['finMatch']['cv'])));
+				} else {
+					//							$jMerge = $leMatch['cleValeur'];
+					$jMerge = json_encode($leMatch[$IJ]['finMatch']['cv']);
+				}
+				//echo "5";
+				mysql_query("UPDATE TableMatch SET cleValeur='{$jMerge}' WHERE matchIdRef = '{$leMatch[$IJ]['finMatch']['match_id']}'") or die(mysql_error());
+				//$monCV = json_decode($leMatch[$IJ]['finMatch']['cv']);
+				//											echo $monCV['scoreFinal']." ".isset($monCV['scoreFinal'])." ".$leMatch[$IJ]['finMatch']['cv'];
+				//echo "6";
+				if (isset($leMatch[$IJ]['finMatch']['cv']['scoreFinal'])) {
+
+					$i1 = stripos($leMatch[$IJ]['finMatch']['cv']['scoreFinal'], '-');
+					$i2 = stripos($leMatch[$IJ]['finMatch']['cv']['scoreFinal'], '-', $i1 + 1);
+
+					$sD = substr($leMatch[$IJ]['finMatch']['cv']['scoreFinal'], 0, $i1);
+					$sV = substr($leMatch[$IJ]['finMatch']['cv']['scoreFinal'], $i1 + 1);
+					mysql_query("UPDATE TableMatch SET score_dom='{$sD}',score_vis='{$sV}' WHERE matchIdRef = '{$leMatch[$IJ]['finMatch']['match_id']}'") or die(mysql_error());
+				}
+				array_push($syncOK, $leMatch[$IJ]['finMatch']['chrono']);
+		}
+	}
 
 	$IJ++;
-//echo json_encode($syncOK);
+	//echo json_encode($syncOK);
 }
 //echo json_encode($syncOK);
 /*
-$qFin="SELECT * FROM TableEvenement0 WHERE event_id>{$vRef[0]} ORDER BY event_id DESC";
-$rFin = mysql_query($qFin) or die(mysql_error() . $qFin);
-//echo $qFin;
-while($vFin = mysql_fetch_array($rFin))
-{
-	$qCheck="SELECT * FROM TableEvenement0 WHERE event_id<>{$vFin['event_id']}
-											AND match_event_id='{$vFin['match_event_id']}'
-											AND equipe_event_id='{$vFin['equipe_event_id']}'
-											AND joueur_event_ref='{$vFin['joueur_event_ref']}'
-											AND code={$vFin['code']}
-											AND souscode={$vFin['souscode']}
-											AND chrono='{$vFin['chrono']}'
-											";
+ $qFin="SELECT * FROM TableEvenement0 WHERE event_id>{$vRef[0]} ORDER BY event_id DESC";
+ $rFin = mysql_query($qFin) or die(mysql_error() . $qFin);
+ //echo $qFin;
+ while($vFin = mysql_fetch_array($rFin))
+ {
+ $qCheck="SELECT * FROM TableEvenement0 WHERE event_id<>{$vFin['event_id']}
+ AND match_event_id='{$vFin['match_event_id']}'
+ AND equipe_event_id='{$vFin['equipe_event_id']}'
+ AND joueur_event_ref='{$vFin['joueur_event_ref']}'
+ AND code={$vFin['code']}
+ AND souscode={$vFin['souscode']}
+ AND chrono='{$vFin['chrono']}'
+ ";
 
-		$rCheck =mysql_query($qCheck) or die(mysql_error() . $qCheck);			
-		
-		$nCheck=mysql_num_rows($rCheck); 	
-//		echo $nCheck.'/n';						
-	if($nCheck>0)
-	{
-		while($vCheck = mysql_fetch_array($rCheck))
-		{
-		$qDel2 = "DELETE FROM TableEvenement0 WHERE event_id={$vCheck['event_id']} ";
-				mysql_query($qDel2) or die(mysql_error() . $qDel2);
-//				echo $qDel2.'\n';
-		}
-	}
-}	*/
+ $rCheck =mysql_query($qCheck) or die(mysql_error() . $qCheck);
+
+ $nCheck=mysql_num_rows($rCheck);
+ //		echo $nCheck.'/n';
+ if($nCheck>0)
+ {
+ while($vCheck = mysql_fetch_array($rCheck))
+ {
+ $qDel2 = "DELETE FROM TableEvenement0 WHERE event_id={$vCheck['event_id']} ";
+ mysql_query($qDel2) or die(mysql_error() . $qDel2);
+ //				echo $qDel2.'\n';
+ }
+ }
+ }	*/
 /*
-echo "json_encode(lematch)".json_encode($leMatch)."\n";
-echo "matchTS".$matchsTS."\n";
-echo "post: ".$_POST['matchs']."\n";
-echo "m1:".$m1."\n";
-*/
+ echo "json_encode(lematch)".json_encode($leMatch)."\n";
+ echo "matchTS".$matchsTS."\n";
+ echo "post: ".$_POST['matchs']."\n";
+ echo "m1:".$m1."\n";
+ */
 
 //echo json_encode($syncOK);
 //.$matchjson.json_encode($leMatch);
 $deSyncMatch = 1;
-//							include(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'scriptsphp'.DIRECTORY_SEPARATOR.'actualiseMatchs.php');	// technique de dir inutile mais bonne pratique		
+//							include(__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'scriptsphp'.DIRECTORY_SEPARATOR.'actualiseMatchs.php');	// technique de dir inutile mais bonne pratique
 
 // $globalSyncOK=$syncOK;
 //							include('../scriptsphp/calculeMatch.php');

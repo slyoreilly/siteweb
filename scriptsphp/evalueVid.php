@@ -13,7 +13,7 @@ $tableAbon = 'AbonnementLigue';
 $tableUser = 'TableUser';
 
 $videoId= $_POST['videoId'];
-$eval= $_POST['eval'];
+$eval= $_POST['evalBut'];
 
 if (!mysql_connect($db_host, $db_user, $db_pwd))
     die("Can't connect to database");

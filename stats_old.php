@@ -16,7 +16,7 @@
 ?>
  
 <html> 
-<title>liste déroulante dynamique</title> 
+<title>liste dï¿½roulante dynamique</title> 
 <head> 
 <script language="Javascript" type="text/javascript" > 
 function choix(formulaire) 
@@ -57,7 +57,7 @@ $db_user="syncsta1_u01";
 $db_pwd="test";
 
 $database = 'syncsta1_900';
-$table = 'Ligue';
+//$table = 'Ligue';
 
 if (!mysql_connect($db_host, $db_user, $db_pwd))
     die("Can't connect to database");
@@ -90,7 +90,7 @@ echo "<option Value=\"".$ligne_liste['Nom_Ligue']."\">".$ligne_liste['Nom_Ligue'
 </select> 
 
 <select name="boite2"> 
-<option selected>...........Choisissez une équipe...........</option> 
+<option selected>...........Choisissez une ï¿½quipe...........</option> 
 <option></option>  
 <option></option> 
 <option></option> 

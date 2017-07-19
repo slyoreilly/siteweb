@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<title>Match de hockey</title>
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+				<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+
+
+		
+		
+		</HEAD>
+
+		<script type="text/javascript" charset="utf-8">
+		
+		courriel = getValue('courriel');
+		match = getValue('match');
+		
+		
+		
+ 
+
+                  
+		
+		
+		</script>
+
+
+			<body name="mCbody" id="mbody">
+			<p>Voulez-vous participer au match:</p>
+			
+			  <h2>Position</h2>
+			  
+  <fieldset>
+    <legend>Votre courriel </legend>
+    <label for="check-1">Courriel</label>
+    <input type="text" name="Courriel" id="Courriel">
+    
+
+  </fieldset>
+
+  <fieldset id="FS2">
+    <legend>Qui êtes-vous? </legend>
+    <label for="fs2-1">Prénom</label>
+    <input type="text" name="fs2-1" id="fs2-1">
+    <br/>
+    <label for="fs2-2">Nom</label>
+    <input type="text" name="fs2-2" id="fs2-2">
+  </fieldset>
+
+  <fieldset id="FS1">
+    <legend>Où voulez-vous jouer?: </legend>
+    <input type="radio" name="Attaquant" id="Attaquant">
+    <label for="Attaquant">Attaquant</label>
+    <br/>
+        <input type="radio" name="Defenseur" id="Defenseur">
+    <label for="Defenseur">Défenseur</label>
+        <br/>
+    <input type="radio" name="Gardien" id="Gardien"> 
+    <label for="Gardien">Gardien</label>
+           <br/>
+    <input type="radio" name="Arbitre" id="Arbitre"> 
+    <label for="Arbitre">Arbitre (50$)</label>
+   
+  </fieldset>
+  
+
+  <button>Confirmer</button>
+ 
+
+    <script type="text/javascript" charset="utf-8">
+        $('h2').text(match);
+       // $( "label[for='check-1']" ).text(courriel);
+        
+        
+          $( function() {
+    $( "input[type=submit]").button();
+    $( "button" ).click( function( event ) {
+        position = $("#FS1 :radio:checked").attr("name");
+        prenom=$("#fs2-1").val();
+        nom=$("#fs2-2").val();
+      $.ajax({
+                     url: "gameBooking.php",
+                     datatype:'json',
+                        type: 'POST',
+                      data: jQuery.param({ courriel : courriel, match :match, position :position, prenom:prenom, nom:nom}) ,
+                       contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                       success: function (response) {
+                           afficheTableau(response);
+                           
+                                            },
+                        error:  function(xhr, status, error) {
+                             var err = eval("(" + xhr.responseText + ")");
+                              alert(err.Message+"  --  ereur lc2Max");
+                                }
+                  }); 
+                  
+                  function afficheTableau(response){
+                      $('body').empty().append($('<h2></h2>').text("Merci!"));
+                            
+                            
+                            
+                        }
+    } );
+  } );
+    </script>
+	</body>
+</html>
+		

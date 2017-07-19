@@ -3,13 +3,13 @@
 	<HEAD>
 		<title>Importer un joueur</title>
 		<link rel="stylesheet" href="/style/dhtmlgoodies_calendar.css" type="text/css">
-		<link rel="stylesheet" href="/style/general_v4.css" type="text/css">
 		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/jquery.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+				<script src="/scripts/jQuery.js"></script>
 		<style>
 		</style>
 				<script type="text/javascript" charset="utf-8">
@@ -71,12 +71,12 @@
 
 						}
 						faitBoite(mEq);
-					}
+					};
 					
 					faitBoite(mesJ);
 
 				}
-			}
+			};
 			requete_ajax.send(params);
 			//				alert(JSON.stringify(listeMatch));
 			//	return vecMAV;
@@ -247,7 +247,7 @@
 
 				}
 
-			}
+			};
 
 			requete_ajax.send(params);
 			//alert(requete_ajax.responseText);
@@ -264,7 +264,7 @@
 		<div id="divMenuHaut"></div>
 
 		<div id="divCentrale">
-			<div id="fusionneTop" style="width:100%;margin:20px;">
+			<div id="fusionneTop" style="width:100%;margin:100px 20px 20px 20px;">
 				Importer un joueur
 			</div>
 

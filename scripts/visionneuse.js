@@ -19,19 +19,21 @@ function loadVideo() {
         var file = arguments[i].split('.');
         var ext = file[file.length - 1];
         // Check if this media can be played
-        if (canPlayVideo(ext)) {
+        if (canPlayVideo(videofile)) {
             // Reset the player, change the source file and load it
 			$('.player').remove();
-            mediaPlayer.src = arguments[i];
+            mediaPlayer.src = videofile;
             mediaPlayer.load();
             break;
         }
     }
 	$('.media-box').find('.play-pause').addClass('play').removeClass('pause');
+
+
 }
 
 function canPlayVideo(ext) {
-    var ableToPlay = mediaPlayer.canPlayType('video/' + ext);
+    var ableToPlay = mediaPlayer.canPlayType('/lookatthis/' + ext);
     if (ableToPlay == '')
         return false;
     else
@@ -48,13 +50,29 @@ var flag=0;
 		var settings = {  
 			playerWidth : '1', // Default is 95%
 			videoClass : 'video'  // Video Class
-		}
+		};
 		
 		// Extend the options so they work with the plugin
 		if(options) {
 			$.extend(settings, options);
 		}
 		
+		//closing entire video
+				    mediaPlayer = document.getElementById('media-video');
+				$('.close-btn').click(function(){
+					$('#ecranSombre').remove();
+					//$videNoeud('#contVids');
+					
+						
+					    mediaPlayer.pause();
+					    try{
+    					mediaPlayer.currentTime = 0;}
+    					catch(err){};
+						$('.media-box').hide();
+						$( ".play-btn" ).show();
+						$('.play-pause').addClass('play').removeClass('pause');
+						
+				});
 		
 		
 		
@@ -65,15 +83,17 @@ var flag=0;
 				// Basic Variables 
 				var $this = $(this);
 				var $settings = settings;
-				
-			
+				$( "#btn-play-centre" ).hide();
+				$(".play-pause").addClass('pause').removeClass('play');
+			var $that = $this.parent('.'+$settings.videoClass);
+			if($('.video').length<1){
 				// Wrap the video in a div with the class of your choosing
 				$this.wrap('<div class="'+$settings.videoClass+'"></div>');
-				
+			}
 				// Select the div we just wrapped our video in for easy selection.
-				var $that = $this.parent('.'+$settings.videoClass);
+				
 				// The Structure of our video player
-				{
+				if($('.player').length<1){
 				
 				$( '<div class="player">'
 				
@@ -108,8 +128,8 @@ var flag=0;
 					 + '<div class="flag-modal">'
 					 		+ '<span class="top-triangle"></span>'
 							+ '<span class="modal-bg">'
-								+ '<img src="images/green-flag.png" style="margin: 0 10px 0 0;">'
-								+ '<img src="images/red-flag.png">'
+								+ '<img id="drapeauVert" src="/images/green-flag.png" style="margin: 0 10px 0 0;">'
+								+ '<img id="drapeauRouge" src="/images/red-flag.png">'
 							+ '</span>'
 					 + '</div>'					 
 					 				 
@@ -123,11 +143,11 @@ var flag=0;
 					 + '<div class="share-modal">'
 					 		+ '<span class="top-triangle" style="margin: -5px 0 0 59px;"></span>'
 							+ '<span class="modal-bg">'
-								+ '<img src="images/fb-icon.png" style="margin: 0 20px 5px 0;">'
-								+ '<img src="images/twitter-icon.png" style="margin: 0 0 5px 0;"> <br>'
-								+ '<img src="images/gmail-icon.png">'
-								+ '<img src="images/youtube-icon.png" style="margin: 0 10px;">'
-								+ '<img src="images/download-icon.png">'
+								+ '<img id="fbLogo" src="/images/fb-icon.png" style="margin: 0 20px 5px 0;">'
+								+ '<img id="twitterLogo" src="/images/twitter-icon.png" style="margin: 0 0 5px 0;"> <br>'
+								+ '<img id="googleLogo" src="/images/gmail-icon.png">'
+								+ '<img src="/images/youtube-icon.png" style="margin: 0 10px;">'
+								+ '<a id="downloadLink" href='+'/lookatthis/'+getValue('videofile')+'.mp4'+' download><img id="downloadLogo" src="/images/download-icon.png"></a>'
 							+ '</span>'
 					 + '</div>'	
 					 					 
@@ -152,19 +172,24 @@ var flag=0;
 				     + '</div>'
 					 
 					 + '<button id="setting" class="setting" title="setting">setting</button>'
-					 
-				   + '</div>').appendTo($that);
+					 +'<!--div id="progress"></div-->'
+				   + '</div>').appendTo($('.video'));
 				
 				}
 				$('#rating-star').raty();
 				// Width of the video
 				$videoWidth = $this.width();
 				$that.width($videoWidth+'px');
-				
 				// Set width of the player based on previously noted settings
-				$that.find('.player').css({'width' : ($settings.playerWidth*100)+'%', 'left' : ((100-$settings.playerWidth*100)/2)+'%'});
+				$that.find('.player').css({'width' : ($settings.playerWidth*100)+'%', 'left' : ((100-$settings.playerWidth*100)/2)+'%'}).show();
+
+			
+
 				
 				
+				
+				
+			
 				// Video information
 				var $spc = $(this)[0], // Specific video
 					$duration =$spc.duration, // Video Duration
@@ -225,7 +250,7 @@ var flag=0;
 							
 						}
 					}
-				} 
+				} ;
 				
 				// Run the buffer function
 				bufferLength();
@@ -264,7 +289,7 @@ var flag=0;
 					} 
 					
 					// Updated progress width
-					updProgWidth = (curTime / $duration) * progWidth
+					updProgWidth = (curTime / $duration) * progWidth;
 					
 					// Set a zero before the number if its less than 10.
 					if(seconds < 10) { seconds = '0'+seconds; }
@@ -277,7 +302,7 @@ var flag=0;
 					}
 					
 					// Update times
-					$that.find('.ctime').html(minutes+':'+seconds) 
+					$that.find('.ctime').html(minutes+':'+seconds) ;
 					$that.find('.ttime').html(tminutes+':'+tseconds);
 				
 					// If playing update buffer value
@@ -285,36 +310,47 @@ var flag=0;
 						bufferLength();
 					}
 					
-				}
+				};
 				
 				// Run the timing function twice, once on init and again when the time updates.
 				timeUpdate();
 				$spc.addEventListener('timeupdate', timeUpdate);
 								
 				// When the user clicks play, bind a click event	
-				$('.play-pause , .play-btn').bind('click', function() {
-					
-					// Set up a playing variable
-					if($spc.currentTime > 0 && $spc.paused == false && $spc.ended == false) {
+				$('.play-pause , #media-video, .play-btn , .thumbnail-content').off('click').on('click', function(){arreteDemarre(),false});
+				//$('#media-video').off('click').on('click', function(){arreteDemarre();});
+				
+				function arreteDemarre(){
+					$( "#btn-play-centre" ).hide();
+					if($spc.currentTime > 0 && $spc.paused == false && $spc.ended == false && !$(this).hasClass('thumbnail-content')) {
 						$playing = false;
 					} else { $playing = true;}
-					
+					//alert("playing devient? "+$playing);
 					// If playing, etc, change classes to show pause or play button
 					if($playing == false) {
 						$spc.pause();
-						$(this).addClass('play').removeClass('pause');
+						
+						$(".play-pause").addClass('play').removeClass('pause');
 						bufferLength();
-						$( ".play-btn" ).show();
+						//$( ".play-btn" ).show();
+						$( "#btn-play-centre" ).show();
 						$( "#media-play-list" ).show();						
 					} else {
+							
 						$begin = true;
 						$spc.play();
-						$(this).addClass('pause').removeClass('play');
-						$( ".play-btn" ).hide();
-						$( "#media-play-list" ).hide();
-					} 				
+						
+						$(".play-pause").addClass('pause').removeClass('play');
+						
+						$( "#btn-play-centre" ).hide();
+						//$( "#media-play-list" ).hide();
+					}
+						if ((navigator.userAgent.indexOf('iPhone') != -1) || (navigator.userAgent.indexOf('iPod') != -1) || (navigator.userAgent.indexOf('iPad') != -1)) {
+					//alert($('source').attr('src'));
+						document.location = $('source').attr('src');//"http://www.syncstats.com/lookatthis/" + getValue('videofile');
+						} 
 					
-				});
+					}
 				
 				
 				
@@ -400,7 +436,7 @@ var flag=0;
 						}		
 						
 					}
-				}
+				};
 				// Run the volanim function
 				volanim();
 				
@@ -418,15 +454,7 @@ var flag=0;
 					$('.timer-wrap').css({'visibility' : 'hidden'});				
 				});	
 				
-				//closing entire video
-				    mediaPlayer = document.getElementById('media-video');
-				$('.close-btn').click(function(){
-						$('.media-box').hide();
-					    mediaPlayer.pause();
-    					mediaPlayer.currentTime = 0;
-						$( ".play-btn" ).show();
-						$that.find('.play-pause').addClass('play').removeClass('pause');
-				});
+				
 				
 				// For usability purposes then bind a function to the body assuming that the user has clicked mouse
 				// down on the progress bar or volume bar
@@ -569,7 +597,7 @@ var flag=0;
 					}
 					
 						
-				})	
+				})	;
 				
 				// When the video ends the play button becomes a pause button
 				$spc.addEventListener('ended', function() {
@@ -656,11 +684,106 @@ var flag=0;
 				
 				});
 				
+					
+				$('#fbLogo').on("click",function(e) {
+  					 e.preventDefault();  //stop the browser from following
+  				 	e.stopPropagation();
+					
+				if(window.logoOverride==false||window.logoOverride==undefined){
+					var loc = location.href;
+					var t = document.title;}
+					else{
+					var loc = window.logoOverrideLoc;
+					var t = window.logoOverrideT;
+					}
+					window.open('http://www.facebook.com/sharer.php?u='+encodeURIComponent(loc)+'&t='+encodeURIComponent(t),'sharer','status=0,width=626,height=436, top='+($(window).height()/2 - 225) +', left='+($(window).width()/2 - 313 ) +', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
+					});
+				$('#googleLogo').click(function(e) {
+  					 e.preventDefault();  //stop the browser from following
+  				 	e.stopPropagation();
+				if(logoOverride==undefined){
+					var loc = location.href;
+					var t = document.title;}
+					else{
+					var loc = window.logoOverrideLoc;
+					var t = window.logoOverrideT;
+					}
+					window.open('https://plus.google.com/share?url='+encodeURIComponent(loc),'Google Share','status=0,width=626,height=436, top='+($(window).height()/2 - 225) +', left='+($(window).width()/2 - 313 ) +', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');	
+					});
+				$('#twitterLogo').click(function(e) {
+  					 e.preventDefault();  //stop the browser from following
+  				 	e.stopPropagation();
+				if(logoOverride==undefined){
+					var loc = location.href;
+					var t = document.title;}
+					else{
+					var loc = window.logoOverrideLoc;
+					var t = window.logoOverrideT;
+					}
+					window.open('http://twitter.com/share?url=' + loc + '&text=' + t + ' - ' + loc + ' - via @twitter', 'twitterwindow', 'height=255, width=550, top='+($(window).height()/2 - 225) +', left='+($(window).width()/2 - 275 ) +', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
+					});
+				
+				
 			});
 			
 		});
 	
-	}
+	};
 	
 	
 })(jQuery);
+
+		//define a progress abstraction
+		function onprogress(vidSource)
+		{
+			
+			var media = document.getElementsByTagName('video')[0];
+//			$('.player').append($('<div></div>').attr("id", "progress"));
+
+			var progress = document.getElementById('progress');
+			//get the buffered ranges data
+			var ranges = [];
+			for(var i = 0; i < media.buffered.length; i ++)
+			{
+				ranges.push([
+					media.buffered.start(i),
+					media.buffered.end(i)
+					]);
+			}
+			
+			//get the current collection of spans inside the container
+			var spans = progress.getElementsByTagName('span');
+			
+			//then add or remove spans so we have the same number as time ranges
+			while(spans.length < media.buffered.length)
+			{
+				progress.appendChild(document.createElement('span'));
+			}
+			while(spans.length > media.buffered.length)
+			{
+				progress.removeChild(progress.lastChild);
+			}
+				
+			//now iterate through the ranges and convert each set of timings
+			//to a percentage position and width for the corresponding span
+			for(var i = 0; i < media.buffered.length; i ++)
+			{
+				spans[i].style.left = Math.round
+				(
+					(100 / media.duration) //the width of 1s
+					* 
+					ranges[i][0]
+				) 
+				+ '%';
+				
+				spans[i].style.width = Math.round
+				(
+					(100 / media.duration) //the width of 1s
+					* 
+					(ranges[i][1] - ranges[i][0])
+				) 
+				+ '%';
+			}
+		}
+		
+

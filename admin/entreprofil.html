@@ -2,7 +2,6 @@
 <html>
 	<HEAD>
 		<title>Entrez votre profil</title>
-		<link rel="stylesheet" href="/style/general_v4.css" type="text/css">
 				<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
 		<link rel="shortcut icon" href="/favicon.ico" />
 
@@ -65,7 +64,7 @@
 						}
 
 					}
-				}
+				};
 				requete_ajax.send(params);
 				//requete_ajax.send(null);
 				//	return requete_ajax.responseText;
@@ -101,7 +100,7 @@
 					//	return requete_ajax.responseText;
 					}
 					//		else{alert("Petit problème de développement");}
-				}
+				};
 				requete_ajax.send(formData);
 				//	}
 			}
@@ -118,7 +117,8 @@
 					strNumero.style.color = "red";
 				} else
 					appelScriptProfil();
-			}}
+			};
+			}
 
 			function appelScriptProfil() {
 					var requete_ajax = new XMLHttpRequest();
@@ -160,7 +160,7 @@
 					window.location.href = document.referrer;
 						
 						}
-					}
+					};
 					requete_ajax.send(params);
 					var pourMAV = new Array();
 					//requete_ajax.send(null);
@@ -271,7 +271,7 @@
 					Photo portrait :
 				</div>
 				<div class="formDroite">
-					<form name="nomFormeFic" id="idFormeFic" action="/admin/enregistreFichier.php" enctype="multipart/form-data" methof="POST">
+					<form name="nomFormeFic" id="idFormeFic" action="/admin/enregistreFichier.php" enctype="multipart/form-data" method="post">
 					<input name="userfile" type="file" id="ficIdPortrait" onchange="televerseFic()"/>
 					<input name="MAX_FILE_SIZE" type="hidden" id="maxFileSize" value="2000000" />
 					<input name="ficId" type="hidden" id="ficId" value="95"/>

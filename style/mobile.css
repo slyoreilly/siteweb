@@ -1,0 +1,77 @@
+@charset "utf-8";
+/* CSS Document */
+
+p.marqueur {
+	font-weight: bold !important
+}
+
+
+a.passeur:first-child::before {
+	content: "(";
+}
+a.passeur:nth-child(2n+0)::before {
+	content: ", ";
+}
+a.passeur:last-child::after {
+	content:")";
+}
+
+img.logoEquipe {
+		height:6em;
+	max-width:6em;
+
+}
+
+#contResume {
+    /*  */
+    overflow:hidden;
+  
+}
+	
+
+#contResume > div{
+	display:inline-block;
+	float:left;
+	margin:2em;
+}
+	
+#listeArrets img.logoEquipe,#listeButs img.logoEquipe {
+	float:left;
+	clear:left;
+	height:3em;
+	max-width:3em;
+	
+}
+
+#listeArrets img.logoFilm,#listeButs img.logoFilm {
+	float:right;
+	padding: 0 0 0 0em;	
+	width:2em;
+	height:2em;
+}
+
+#listeArrets  span.logoFilm,#listeButs span.logoFilm {
+	float:right;
+	color:darkred;
+	text-shadow: 2px 0 0 #fff, -2px 0 0 #fff, 0 2px 0 #fff, 0 -2px 0 #fff, 1px 1px #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
+	position:relative;
+	left:2em;
+	top:1em;	
+}
+	
+#listeArrets.divButs,#listeButs .divButs {
+margin-left:48px;
+float:left;
+}
+
+#listeArrets li, #listeButs  li {
+	padding: 5px 10px 5px 10px;
+	min-height:4em;
+width:100%;
+	
+}
+
+  #listeButs  li select{
+float:right;
+}
+

@@ -94,5 +94,11 @@ else
 $IR++;
 }
 
+if(count($arrRecept)==0){
+	echo "Erreur, count(arrRecpet)=0), arrRecept = ".$arrRecept;
+	
+}
+
+
 ?>
 <?php  ?>

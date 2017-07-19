@@ -40,10 +40,18 @@ mysql_query("SET NAMES 'utf8'");
 mysql_query("SET CHARACTER SET 'utf8'");
 
 $camId=$_POST["camId"];
-$matchId=$_POST["matchId"];
+$matchIdRef=$_POST["matchId"];
+
+$qSelId ="SELECT match_id FROM TableMatch
+			WHERE matchIdRef='{$matchIdRef}' ";
+$resCamId=mysql_query($qSelId) or die(mysql_error());
+
+$rCI = mysql_fetch_row($resCamId);
+
+$matchId=$rCI[0];
 $qSel ="SELECT nomFichier FROM Video
-			WHERE nomMatch='{$matchId}'
-			AND camId='{$camId}'";
+			WHERE (nomMatch='{$matchIdRef}' OR nomMatch='{$matchId}')
+			AND camId='{$camId}' LIMIT 30";
 $resCam=mysql_query($qSel) or die(mysql_error());
 
 
@@ -56,8 +64,8 @@ else{echo __DIR__.'/../lookatthis/'.$rangCam[0];
 		
 }
 $qDel="DELETE FROM Video
-		 WHERE nomMatch='{$matchId}'
-			AND camId='{$camId}'";
+		 WHERE (nomMatch='{$matchIdRef}' OR nomMatch='{$matchId}')
+			AND camId='{$camId}' LIMIT 30";
 $resCam=mysql_query($qDel) or die(mysql_error().' damn');
 
 echo "Number of files deleted: ".$numDelFiles;

@@ -215,6 +215,11 @@ $dernierMatch=mysql_result($drSaison, 0);
 
 */
 
+							$message = "Exécution stats2/listeMatchs2JSON.";
+							$log  = $message.' - '.date("F j, Y, g:i:s a").PHP_EOL.
+	        				"-------------------------".PHP_EOL;
+							file_put_contents('../test/logTest.txt', $log, FILE_APPEND);	
+
 
 	$nomEq = array();
 $resultEquipe = mysql_query("SELECT * FROM TableEquipe WHERE ligue_equipe_ref = '{$ligueId}'")
@@ -427,6 +432,11 @@ while($Iae<count($aEnr)) // Tous les matchs a être recalculés pour enregistrem
 									(eq_dom, score_dom, eq_vis, score_vis, matchIdRef, ligueRef, date,statut) 
 								VALUES 
 									('{$eDom}', '{$cDom}', '{$eVis}', '{$cVis}','{$aEnr[$Iae]}','{$ligueId}','{$aDate}','F')")or die(mysql_error()."INSERT 	INTO TableMatch");	
+				
+							$message = "Création match dans stats2/listeMatchs2JSON, 1er appel.";
+							$log  = $message.' - '.date("F j, Y, g:i:s a").PHP_EOL.
+	        				"-------------------------".PHP_EOL;
+							file_put_contents('../test/logTest.txt', $log, FILE_APPEND);	
 				}
 			else
 				{$retour = mysql_query("UPDATE TableMatch
@@ -442,7 +452,12 @@ while($Iae<count($aEnr)) // Tous les matchs a être recalculés pour enregistrem
 									(eq_dom, score_dom, eq_vis, score_vis, matchIdRef, ligueRef, date,statut) 
 								VALUES 
 									('{$eDom}', '{$cDom}', '{$eVis}', '{$cVis}','{$aEnr[$Iae]}','{$ligueId}','{$aDate}','{$statut}')")or die(mysql_error()."INSERT 	INTO TableMatch");	
-				}
+				
+							$message = "Création match dans stats2/listeMatchs2JSON, 2e appel.";
+							$log  = $message.' - '.date("F j, Y, g:i:s a").PHP_EOL.
+	        				"-------------------------".PHP_EOL;
+							file_put_contents('../test/logTest.txt', $log, FILE_APPEND);	
+			}
 			else
 				{$retour = mysql_query("UPDATE TableMatch
 											SET score_dom='{$cDom}', score_vis='{$cVis}' ,statut='{$statut}'

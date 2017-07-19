@@ -29,7 +29,7 @@ function afficheSommairePunitions(rJSON) {
 	td1.innerHTML = window.tl_match_titreTabPun;
 	tr2 = document.createElement('TR');
 	tr2.id = "rangeeTitreSommairePunitions";
-
+				tr2.className="rangeeTitreSommaire";
 	for (var i = 0; i < lesTitres.length; i++) {
 		tdi = document.createElement('TD');
 		tdi.className = "rangeeTitre";
@@ -69,7 +69,9 @@ function afficheSommairePunitions(rJSON) {
 						//					maPer = rJSON.periodes.shift();
 						maPer = rJSON.periodes[Iper];
 						Iper++;
+//						rangeePer = $('#rangeeTitreSommairePunitions').parent().append($('<TR></TR>').attr('id', 'tr_' + J));
 						rangeePer = document.createElement('TR');
+						rangeePer.setAttribute('id','tr_' + J);
 						amettrePer = document.getElementById('rangeeTitreSommairePunitions');
 						amettrePer.parentNode.appendChild(rangeePer);
 						cPer = document.createElement('TD');
@@ -81,10 +83,13 @@ function afficheSommairePunitions(rJSON) {
 					}
 				}
 			} catch(err) {
+				alert(err);
 			}
 
 			//	if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
-			rangee = document.createElement('TR');
+//rangee = $('#rangeeTitreSommairePunitions').parent().append($('<TR></TR>').attr('id', 'tr_' + J));
+									rangee = document.createElement('TR');
+						rangee.setAttribute('id','tr_' + J);
 			amettre = document.getElementById('rangeeTitreSommairePunitions');
 			amettre.parentNode.appendChild(rangee);
 			minutes = Math.floor((parseInt(rJSON.punitions[J].chrono) - parseInt(maPer.chrono)) / 60000);
@@ -94,7 +99,7 @@ function afficheSommairePunitions(rJSON) {
 			//	alert("secondes"+secondes+" ");
 			strChrono = minutes + ":" + dizSecondes + secondes;
 
-			mSrc = (rJSON.eqDom == rJSON.punitions[J].equipe) ? window.divImgDom.src : window.divImgVis.src;
+						mSrc = (rJSON.eqDom == rJSON.buts[J].equipe) ? '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdDom : '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdVis;
 
 			var lesCols = new Array();
 			try {
@@ -128,7 +133,15 @@ function afficheSommairePunitions(rJSON) {
 						cellule.appendChild(ptexte);
 					}
 				}
-				J % 2 == 0 ? cellule.className = 'lignePaire' : cellule.className = 'ligneImpaire';
+											if (J % 2 == 0) {
+								rangee.className += ' lignePaire';
+							} else {
+								rangee.className += ' ligneImpaire';
+							}
+							//J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
+							//$('#tr_' + J).append($(cellule));
+
+//				J % 2 == 0 ? cellule.className = 'lignePaire' : cellule.className = 'ligneImpaire';
 				rangee.appendChild(cellule);
 			}
 
@@ -146,7 +159,7 @@ function afficheSommairePunitions(rJSON) {
 		}
 
 	} catch(err) {
-
+alert(err);
 	}
 	//////////////////////////////////////////////////////////
 
@@ -583,12 +596,15 @@ function afficheStatsDom(statsJoueurs, code) {
 	switch(code) {
 		case 1:
 			strParent = "tabStatsDom";
+			strTitre = window.tl_resultats_Domicile;
 			break;
 		case 2:
-			strParent = "tabStatsVis";
+			strParent = "tabStatsDom";
+			strTitre = window.tl_resultats_Visiteur;
 			break;
 		case 3:
 			strParent = "divStats";
+			strTitre =window.tl_stats_Statistiques;
 			break;
 		default:
 			break;
@@ -607,13 +623,15 @@ function afficheStatsDom(statsJoueurs, code) {
 	tb = document.createElement('TBODY');
 	tb.id = "bodyTable_" + code;
 	tr1 = document.createElement('TR');
-	tr1.id = "date2_" + code;
+	tr1.id = "nomEquipe_" + code;
+	tr1.style.marginTop="20px";
 	td1 = document.createElement('TD');
 	td1.className = "titreTableau";
 	td1.colSpan = "8";
-	td1.innerHTML = window.tl_stats_Statistiques;
+	td1.innerHTML = strTitre;
 	tr2 = document.createElement('TR');
 	tr2.id = "rangeeTitreHome_" + code;
+	tr2.className="rangeeTitreSommaire";
 	var lesTitres = new Array();
 	lesTitres[0] = window.tl_match_Joueur;
 	lesTitres[1] = window.tl_stats_Buts;
@@ -1493,7 +1511,10 @@ function afficheStatsCarriere(statsJSONHome, code) {
 			div1 = document.getElementById('onglet_0');
 
 			break;
+		case 4:
+			div1 = document.getElementById('contStats');
 
+			break;
 		default:
 			/*			div1 = document.createElement('DIV');
 			 div1.id = "divStatsMatch";
@@ -1525,6 +1546,7 @@ function afficheStatsCarriere(statsJSONHome, code) {
 			td1.colSpan = lesTitres.length;
 			td1.innerHTML = window.tl_stats_carriere + " - " + statsJSONHome.Ligues[I].nom;
 			tr2 = document.createElement('TR');
+							tr2.className="rangeeTitreSommaire";
 			//	tr2.className = "rangeeTitreSC";
 
 			for ( n = 0; n < lesTitres.length; n++) {

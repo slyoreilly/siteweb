@@ -4,6 +4,7 @@
 	<title>Créer une équipe</title>		<link rel="stylesheet" href="/style/dhtmlgoodies_calendar.css" type="text/css">
 		<link rel="stylesheet" href="/style/general.css" type="text/css">
 		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
 	<link rel="shortcut icon" href="/favicon.ico" />
 				<script src="/scripts/jquery.js" type="text/javascript" charset="utf-8"></script>
 			<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
@@ -24,7 +25,7 @@
 				var url = "/admin/modifierequipe.php";
 
 				//	alert(url);
-				var params = "code=" + window.code + "&ligueId=" +window.ligueId +"&nom=" + window.inNom.value + "&logo="+window.inCouleur.options[inCouleur.selectedIndex].value+ "&ficId="+window.nouveauFicId;
+				var params = "code=" + window.code + "&ligueId=" +window.ligueId +"&nom=" + window.inNom.value + "&logo="+window.inCouleur.options[inCouleur.selectedIndex].value+ "&couleur="+window.presetCouleur[inCouleur.selectedIndex]+ "&ficId="+window.nouveauFicId;
 						//alert(params);
 				requete_ajax.open('POST', url, true);
 
@@ -37,11 +38,13 @@
 				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 					//		alert(requete_ajax.responseText);
-						window.location.href = document.referrer;
+					
+					televerseJoueurs(requete_ajax.responseText);
+						//window.location.href = document.referrer;
 					}
 					//else
 					//alert("Problème de communcation, "+requete_ajax.readyState+", "+requete_ajax.status == 200);
-				}
+				};
 				requete_ajax.send(params);
 				//		alert(requete_ajax.responseText);
 				//requete_ajax.send(null);
@@ -75,34 +78,47 @@ function televerseFic() {
 						return requete_ajax.responseText;
 					}
 					//		else{alert("Petit problème de développement");}
-				}
+				};
 				requete_ajax.send(formData);
+				//	}
+			}
+			
+			
+			function televerseJoueurs(eqId) {
+				//	return function(){
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/admin/enregistreMasseJoueurs.php";
+				//	alert(url);
+				var formJoueurs = new FormData(document.getElementById('formJoueurs'));
+				formJoueurs.append("equipeId",eqId);
+				/*				var params = {contexte: equipe,
+				 form : window.maForme}
+				 alert(params);*/
+				requete_ajax.open('POST', url, true);
+
+				//				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				//				requete_ajax.setRequestHeader("Content-length", params.length);
+				//				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+					//							alert(requete_ajax.responseText);
+						//window.mesImg[window.varKLE].src = '/admin/afficheImage.php?ficId=' + requete_ajax.responseText;
+						
+						window.location.href = document.referrer;
+				
+						//			window.location.reload();
+						//alert(requete_ajax.responseText);
+					}
+					//		else{alert("Petit problème de développement");}
+				};
+				requete_ajax.send(formJoueurs);
 				//	}
 			}
 
 </script>
 
-<style>
-</style> 
-</HEAD>
-
-<body id="mbody">
-
-		<div id="divHaut"></div>
-		<div id="divGauche"></div>
-		<div id="divMenuHaut"></div>
-		<div id="divCentrale">
-
-<br style="clear:both;">
-<form name="myForm" id="maForme" action="/admin/enregistreFichier.php" enctype="multipart/form-data" method="post">
-<h2 id="titreH2">Créer une équipe</h2>
-
-<input type="hidden" id="equipeId" name="equipeId" value=""/>
-<input type="hidden" name="MAX_FILE_SIZE" value="2000000">
-Fichier d'image: 
-
-<input name="userfile" type="file" id="userfile">
-<input type="button" onclick="televerseFic()" value="Importer">
 
 
 <script type="text/javascript">
@@ -124,6 +140,30 @@ if(getValue("code")=="")
 //alert(window.code);
 
 </script>
+
+
+</HEAD>
+
+<body id="mbody">
+
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+		<div id="divMenuHaut"></div>
+		<div id="divCentrale">
+
+<br style="clear:both;">
+<form name="myForm" id="maForme" action="/admin/enregistreFichier.php" enctype="multipart/form-data" method="post">
+<h2 id="titreH2">Créer une équipe</h2>
+
+<input type="hidden" id="equipeId" name="equipeId" value=""/>
+<input type="hidden" name="MAX_FILE_SIZE" value="2000000">
+Fichier d'image: 
+
+<input name="userfile" type="file" id="userfile">
+<input type="button" onclick="televerseFic()" value="Importer">
+
+
+
 
 </form>		<div style="clear:float;float:none";><img id="logoEquipe"/></div>
 	
@@ -186,7 +226,16 @@ inCouleur=document.createElement('SELECT');
 inCouleur.id="inCouleur";
 inCouleur.name="selCouleur";
 
+
+
+$("#divCentrale").append(
+	$('<div></div>').append(
+	$('<form></form>').attr("id","formJoueurs").append(
+		$('<div></div>').append($('<div></div>').addClass('formGauche').text('Liste des joueurs à créer: ')))),
+		$('<textarea></textarea>').attr('form','formJoueurs').attr("rows","20").attr("cols","50").attr("name","taJoueurs").css("min-width","480 px"));
+
 var mCouleurs=["blanc","vert","bleu","rouge","orange","mauve"];
+var presetCouleur=["FFFFFF","007700","000077","770000","b53000","2A0730"];
 a=0;
 while(a<mCouleurs.length)
 {
@@ -218,9 +267,10 @@ inOk.id="inOk";
 inOk.type="BUTTON";
 inOk.name="nInOk";
 inOk.value="Enregistrer";
-inOk.onclick=function(){btnOkCreeEquipe();}
-maForme.appendChild(brNom);
-maForme.appendChild(inOk);
+inOk.onclick=function(){btnOkCreeEquipe();};
+$('#formJoueurs').after($(brNom)).after($(inOk).addClass("formGauche"));
+//maForme.appendChild(brNom);
+//maForme.appendChild(inOk);
 
 </script>
 </body> 

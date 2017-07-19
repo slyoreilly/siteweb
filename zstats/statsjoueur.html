@@ -2,17 +2,25 @@
 <HTML>
 	<HEAD>
 		<title>Statistiques du joueur</title>
-		<link rel="stylesheet" href="/style/general_v4.css" type="text/css">
+		<link rel='stylesheet' type='text/css' href='/style/visionneuse.css' />
+		<link rel='stylesheet' type='text/css' href='/style/jquery.raty.css' />
+		<link rel="stylesheet" type='text/css' href="/style/jquery.mCustomScrollbar.css">
 		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		
 		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
-
+		<!--script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script-->
+		<script src="/scripts/jquery.js"></script>
 		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
 		<script type="text/javascript" charset="utf-8">
 			gereLangue();
+			
 		</script>
+		<script src="/scripts/jquery.mCustomScrollbar.js"></script>
+		<script src="/scripts/visionneuse.js"></script>
+		<script src="/scripts/jquery.raty.js"></script>
 
 		<script type="text/javascript" charset="utf-8">
 			function getCritere() {
@@ -40,7 +48,7 @@
 
 						//window.location.reload(true);
 					}
-				}
+				};
 				requete_ajax.send(params);
 
 			}
@@ -72,7 +80,7 @@
 
 					}//fin if request_state...
 					//					};  // fin return function
-				}//);
+				};//);
 			}
 
 			function getEvaluation() {
@@ -100,7 +108,7 @@
 
 						//window.location.reload(true);
 					}
-				}
+				};
 				requete_ajax.send(params);
 
 			}
@@ -142,7 +150,7 @@
 						// requete_ajax.responseText;
 
 					}
-				}
+				};
 				requete_ajax.send(params);
 
 			}
@@ -152,27 +160,73 @@
 				compteur = 0;
 				window.loadConditions=0;
 				detruitNoeud('divChiffre');
+				detruitNoeud('conteneurEvaluation');
 				divChiffre = document.createElement('P');
 				$(divChiffre).attr("id","divChiffre");
+				var evalParCritere=new Array();
+				var nbEvalParCritere=new Array();
+				 langue = (getCookie("langue")==undefined)?"fr":getCookie("langue");
 
 				for (var a = 0; a < window.lesEvals.length; a++) {
+					var bonCrit=-1;
 
 					for (var b = 0; b < window.lesCriteres.length; b++) {
 						if (window.lesCriteres[b].critereId == window.lesEvals[a].critereId) {
 							echelleHaut = window.lesCriteres[b].echelleHaut;
 							echelleBas = window.lesCriteres[b].echelleBas;
+							bonCrit=b;
 						}
 
 					}
 					somme += window.lesEvals[a].valeur / (echelleHaut - echelleBas);
 					compteur++;
+					if(bonCrit>-1){
+						if(!$.isNumeric(nbEvalParCritere[bonCrit])){
+							nbEvalParCritere[bonCrit]=0;
+						}
+						nbEvalParCritere[bonCrit]++;
+
+						if(!$.isNumeric(evalParCritere[bonCrit])){
+							evalParCritere[bonCrit] =0;
+						}
+					
+						evalParCritere[bonCrit]  = (evalParCritere[bonCrit] + window.lesEvals[a].valeur / (echelleHaut - echelleBas))/nbEvalParCritere[bonCrit];
+					}
+
 				}
 				if (compteur > 0) {
 					divChiffre.innerHTML = Math.round(somme / compteur * 100);
 				} else {
 					divChiffre.innerHTML = "Pas d'évaluation";
 				}
-				document.getElementById('commentaireFiche').appendChild(divChiffre);
+
+						$('#commentaireFiche').append($('<div></div>').attr("id","conteneurEvaluation"));
+						$('#conteneurEvaluation').append($('<h3></h3>').text('Évaluation du joueur (%)'));
+	
+				document.getElementById('conteneurEvaluation').appendChild(divChiffre);
+				
+				for (var b = 0; b < window.lesCriteres.length; b++) {
+						if(nbEvalParCritere[b]>0){
+                            if (langue == "fr") {
+                                $('#conteneurEvaluation').append($('<div></div>').addClass("titreCritere").text(window.lesCriteres[b].nom_fr));
+                              }
+                             if (langue == "en") {
+                                $('#conteneurEvaluation').append($('<div></div>').addClass("titreCritere").text(window.lesCriteres[b].nom_en));
+                            }
+						
+						$('#conteneurEvaluation')
+							.append($('<div></div>').addClass("conteneurBarre")
+								.append($('<div></div>').addClass("mesureBarre").css("width",Math.round(evalParCritere[b]*100)+"%").css("height","10px").hide())
+							);
+//						$('conteneurBarre:last-child div').show();
+						}
+
+					}
+					$(":animated").promise().done(function() {
+							$('.mesureBarre').show({duration:2000,queue:true});
+   					});
+				
+				
 			}
 
 			function sauvegardeEval() {
@@ -250,16 +304,16 @@
 			}
 
 			function videos() {
-				$('<div></div>').attr("id", "corpsTabVidsTop").appendTo('#contVideo').show().append($('<div></div>').attr("id", "gaucheTabVidsTop").attr("class", "spinneur").text("<").click(function() {
+				$('<div></div>').attr("id", "corpsTabVidsTop").appendTo('#contVideo').show().append($('<div class="rangeeTitre"></div>').append($('<div></div>').attr("id", "gaucheTabVidsTop").attr("class", "spinneur").text("<").click(function() {
 					var nouvPage = window.page > 0 ? window.page - 1 : 0;
 					var affPage = nouvPage + 1;
 					$("#pageVidTop").text("Page " + affPage);
 					afficheVideos(nouvPage);
-				})).append($('<div id="pageVidTop"></div>').css("display", "inline").text("Page 1")).append($('<div></div>').attr("id", "droiteTabVidsTop").attr("class", "spinneur").text(">").click(function() {
+				})).append($('<div id="pageVidTop"></div>').css("display", "inline").append($('<h3></h3>').css("display","inline").html("Page&nbsp;1"))).append($('<div></div>').attr("id", "droiteTabVidsTop").attr("class", "spinneur").text(">").click(function() {
 					var nouvPage = window.page + 1 + 1;
-					$("#pageVidTop").text("Page " + nouvPage);
+					$("#pageVidTop").html("Page&nbsp;" + nouvPage);
 					afficheVideos(window.page + 1);
-				}));
+				})));
 				getVideos();
 			}
 
@@ -271,11 +325,18 @@
 					mDate = new Date(parseInt(window.videos.topVideos[i].chrono));
 					mois = parseInt(mDate.getMonth() + 1) < 10 ? "0" + parseInt(mDate.getMonth() + 1) : parseInt(mDate.getMonth() + 1);
 					jour = parseInt(mDate.getDate()) < 10 ? "0" + parseInt(mDate.getDate()) : parseInt(mDate.getDate());
-
-					$('#corpsTabVidsTop').append($('<div></div').attr("class", "cliquable rangee").append($('<div></div').text(mDate.getFullYear() + "-" + mois + "-" + jour), $('<div></div').text(window.videos.topVideos[i].eval)).on("click", {
+					if(i%2==0){
+						parite="lignePaire";
+					}
+					else{
+						parite="ligneImpaire";
+					}
+					
+					$('#corpsTabVidsTop').append($('<div></div').attr("class", "cliquable rangee "+parite).append($('<div></div').text(mDate.getFullYear() + "-" + mois + "-" + jour), $('<div></div').text(window.videos.topVideos[i].eval)).on("click", {
 						i : i
 					}, function(event) {
 						getSommaireMatchPourVideo(window.videos.topVideos[event.data.i].nomMatch, window.videos.topVideos[event.data.i]);
+						
 						$(this).css("cursor", "progress");
 					}));
 
@@ -305,162 +366,204 @@
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 
 						rJSON = eval('(' + requete_ajax.responseText + ')');
-						//alert(requete_ajax.responseText);
-
-						function surVideoChoisi() {
-							//							alert(strV);
-							videNoeud('ficheVid');
-							document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + strV.nomFichier
-							vidSVC = document.getElementById('vid1');
-							vidSVC.load();
-							$('<p></p>').appendTo('#ficheVid').text("Ce vidéo a été vu " + strV.nbVues + " fois").css({
-								'text-align' : 'center'
-							});
-							$('<p></p>').appendTo('#ficheVid').text("Comment était ce but?").css({
-								'text-align' : 'center'
-							});
-							$('<div id="contEtoile"></div>').appendTo('#ficheVid');
-							$("#contEtoile").css({
-								'font-size' : 'large',
-								'text-align' : 'justify'
-							});
-							$('<p class="etoile1"></p>').appendTo('#contEtoile');
-							$('<p class="etoile2"></p>').appendTo('#contEtoile');
-							$('<p class="etoile3"></p>').appendTo('#contEtoile');
-							$('<p class="etoile4"></p>').appendTo('#contEtoile');
-							$('<p class="etoile5"></p>').appendTo('#contEtoile');
-							$("[class*='etoile']").css({
-								'display' : 'inline',
-								'cursor' : 'pointer',
-								'font-size' : 'large'
-							}).html("&#10029");
-
-							var eval = getCookie('videoId_eval_' + strV.videoId);
-
-							function colori(event) {
-								for (var a = parseInt(event.data.classe); a > 0; a--) {
-									$(".etoile" + a).css('color', '#0000FF')
-								}
-							};
-							function decolori(event) {
-								for (var a = parseInt(event.data.classe); a > 0; a--) {
-									$(".etoile" + a).css('color', '#000000')
-								}
-							};
-
-							if (eval == null) {
-								for (var b = 1; b <= 5; b++) {
-									$('.etoile' + b).on("mouseover", {
-										classe : b
-									}, colori).on("mouseout", {
-										classe : b
-									}, decolori);
-									$('.etoile' + b).on("click", {
-										classe : b
-									}, function(event) {
-										$.post('/scriptsphp/evalueVid.php', {
-											videoId : strV.videoId,
-											eval : event.data.classe
-										});
-										setCookie('videoId_eval_' + strV.videoId, event.data.classe, 1000);
-										$("[class*='etoile']").off('mouseover');
-										$("[class*='etoile']").off('mouseout');
-										$("[class*='etoile']").off('click');
-									});
-								}
-
-							} else {
-								switch(parseInt(eval)) {
-									case 1:
-										$(".etoile1").css('color', '#0000FF');
-										break;
-									case 2:
-										$('.etoile1,.etoile2').css('color', '#0000FF');
-
-										break;
-									case 3:
-										$('.etoile1,.etoile2,.etoile3').css('color', '#0000FF');
-										break;
-									case 4:
-										$(".etoile1,.etoile2,.etoile3,.etoile4").css('color', '#0000FF');
-										break;
-									case 5:
-										$('[class*=etoile]').css('color', '#0000FF');
-										break;
-
-								}
+						vidIndex=0;
+						for(a=0;a<rJSON.buts.length;a++){
+							for(b=0;b<rJSON.buts[a].video.length;b++){
+								if(rJSON.buts[a].video[b].videoId==strV.videoId)
+							{
+								mBut=rJSON.buts[a];
+								vidIndex=b;
 							}
+						}	
+						}
+						
+						//alert(JSON.stringify(mBut))
+						getInfoVid(vidIndex, mBut);
+						
+					}
+				};
+			}
+			
+		
+function getInfoVid(vidIndex, mBut) {
+	
+					var place = mBut.video[vidIndex].emplacement;
+					if(place==null || !strcmp(place,"")){
+						place = "www.syncstats.com";
+					}
+						if ((navigator.userAgent.indexOf('iPhone') != -1) || (navigator.userAgent.indexOf('iPod') != -1) || (navigator.userAgent.indexOf('iPad') != -1)) {
+					//alert($('source').attr('src'));
 
-							$('<div id="scoreBut"></div>').appendTo('#ficheVid').text(parseInt(strV.eval).toFixed(1) + " / 5").css({
-								"font-size" : 'larger',
-								'text-align' : 'center'
+						document.location = "http://" +place+"/lookatthis/" + mBut.video[vidIndex].fic;
+						} 
+	
+				//alert("getInfoVid "+videofile);
+				$('#parent-erreur').remove();	
+				$('.media-box').show();
+				$('#media-video').videoPlayer({
+					'playerWidth' : 1,
+					'videoClass' : 'video'
+				});
+				/*mediaPlayer = document.getElementById('media-video');
+				if(mediaPlayer!=null){
+				$('.close-btn').click(function(){
+					$('#ecranSombre').remove();
+					
+						
+					    mediaPlayer.pause();
+					    try{
+    					mediaPlayer.currentTime = 0;}
+    					catch(err){}
+						$('.media-box').hide();
+						$( ".play-btn" ).show();
+						$('.play-pause').addClass('play').removeClass('pause');
+						
+				});
+				}*/
+				var requete_ajax = new XMLHttpRequest();
+				var url = "/scriptsphp/getVideoUnique.php";
+				var pVF = String(mBut.video[vidIndex].fic);
+
+				var sVF = pVF.split(".");
+				var strVid = "videofile=" + sVF[0];
+				params = strVid;
+				url = url + "?" + params;
+				requete_ajax.open('POST', url, true);
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+				requete_ajax.send(params);
+				if(mBut!=undefined&&mBut!=""){
+				chargeListeCote(vidIndex, mBut);}
+				requete_ajax.onreadystatechange = function() {
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						infoVid = eval('(' + requete_ajax.responseText + ')');
+						$('#rateSpan').text("RATING: " + infoVid.eval + " / 5");
+						$('#nbVuesSpan').text("Vue " + infoVid.nbVues + " fois");
+						$('.video-info p').text("Marqueur: " + infoVid.NomJoueur);
+						evalBut = getCookie('videoId_eval_' + infoVid.videoId);
+						if (evalBut != null) {
+							$('#rating-star').raty({
+								score : evalBut
 							});
-							$('<div id="divAngleOk"></div>').appendTo('#ficheVid').append($('<div></div>').attr("class", "selectAngleOk").append($('<img src="/images/icones/check.png" width="16" height="16"></img>'), $('<div></div>').text("That angle shows the goal")).click(function() {
+						} else {
+							$('#rating-star').raty({
+								click : function(score, evt) {
+									$.post('/scriptsphp/evalueVid.php', {
+										videoId : infoVid.videoId,
+										evalBut : score
+									});
+									setCookie('videoId_eval_' + infoVid.videoId, score, 1000);
+								}
+							});
+							
+
+						}
+						vidSuite(vidIndex, mBut);
+							$.post('/scriptsphp/incrementeVidNbVues.php', {
+								videoId : infoVid.videoId
+							});
+							$('#drapeauVert').click(function() {
 								$.post('/scriptsphp/changeAngleOk.php', {
 									changeAngle : 1,
-									videoId : strV.videoId
+									videoId : infoVid.videoId
 								});
-							}), $('<div></div>').attr("class", "selectAngleOk").append($('<img src="/images/icones/delete.png" width="16" height="16"></img>'), $('<div></div>').text("That angle doesn't show the goal")).click(function() {
+							});
+							$('#drapeauRouge').click(function() {
 								$.post('/scriptsphp/changeAngleOk.php', {
 									changeAngle : -1,
-									videoId : strV.videoId
+									videoId : infoVid.videoId
 								});
-							}));
-
-							$.post('/scriptsphp/incrementeVidNbVues.php', {
-								videoId : strV.videoId
 							});
 
-						}
-
-						construitDialogue();
-
-						dial = document.getElementById('divDialogue');
-						div12 = document.createElement('DIV');
-						$(div12).css('float', 'left');
-
-						dial.appendChild(div12);
-						$('<div id="ficheVid"></div>').insertAfter(div12);
-
-						$(dial).prepend('<div id="divEnteteVid"></div>');
-
-						mVid = document.createElement('VIDEO');
-						//						alert(mVid);
-						mVid.videoWidth = 320;
-						mVid.videoHeight = 240;
-						mVid.controls = "controls";
-						mVid.load();
-						mVid.id = "vid1";
-						mSource = document.createElement('SOURCE');
-						mSource.type = "video/mp4";
-						// 'h263, amr'";
-
-						//alert(mSource.src);
-						mVid.appendChild(mSource);
-						div12.appendChild(mVid);
-
-						surVideoChoisi();
-
-						if (mVid.error) {
-							switch (mVid.error.code) {
-								case MEDIA_ERR_ABORTED:
-									alert("You stopped the video.");
-									break;
-								case MEDIA_ERR_NETWORK:
-									alert("Network error - please try again later.");
-									break;
-								case MEDIA_ERR_DECODE:
-									alert("Video is broken..");
-									break;
-								case MEDIA_ERR_SRC_NOT_SUPPORTED:
-									alert("Sorry, your browser can't play this video.");
-									break;
-							}
-						}
 
 					}
-				}
+				};
 			}
+
+			function chargeListeCote(videofile, mBut) {
+
+				vidsAlt = mBut;
+				//alert("mBut.video.length :"+mBut.video.length);
+				if (mBut.video.length > 0) {
+					//$(laliste)=$('#media-play-list');
+					videNoeud('media-play-list');
+
+					$('#media-play-list').append($('<ul id="play-list"></ul>'));
+					for (var a = 0; a < mBut.video.length; a++) {
+						//alert(vidsAlt.video[a].fic);
+						$('#media-play-list').append($('<li></li>').append(
+
+						// $('<video></video>').addClass('play-item').attr('src',vidsAlt.video[a].fic),
+						$('<div></div>').addClass('thumbnail-wrap').append(/*$('<span></span>').addClass('thumbnail-title').text(vidsAlt.video[a].cam),*/
+						$('<br />'), $('<span></span>').addClass('thumbnail-content').text("Cam " + vidsAlt.video[a].cam), $('<img></img>').addClass('thumbnail-content').attr("src", "/images/icones/movie.png").attr("alt", "Video"))).click({
+							vids : vidsAlt.video[a].fic,
+							but : mBut
+						}, function(event) {
+							getInfoVid(event.data.vids, event.data.but);
+						})
+						//.click(loadVideo(vidsAlt.video[a].fic))
+						);
+					}
+					$('#media-play-list').show();
+
+				}
+
+			}
+
+			function vidSuite(vidIndex, mBut) {
+
+				vidSVC = document.getElementById('media-video');
+				vidSVC.style.display = "block";
+				vidSVC.load();
+				
+				rang = 0;
+				//    alert(document.getElementById('divCentrale'));
+				//           document.getElementById('divCentrale').appendChild(document.getElementById('contVids'));
+				//alert("Simone");
+		//				var media = document.getElementsByTagName('video')[0];
+		$('video').attr('preload', 'auto');
+						//alert('Load 2');
+
+
+				$('.media-box > img, .erreur').remove();
+				$('.erreur').parent().css('background','#000');
+				
+				place = mBut.video[vidIndex].emplacement;
+				if(place ==null || !strcmp(place,"")){
+					place = "www.syncstats.com";
+				}
+				mVid ="http://"+place+"/lookatthis/" + mBut.video[vidIndex].fic;
+				
+					$('#vidPrincId').attr("src", mVid);
+					$('#parent-erreur').remove();
+				//$('#vidPrincId')  .error(function() {
+  			  //$( this ).before($('<img></img>').attr("src", "/images/icones/warning.png" ));
+ 			//	 })
+ 			//	 .attr( "src", mVid );
+				
+				document.getElementById('vidPrincId').addEventListener('error', function(event) { 
+					if($('.erreur').length<2){
+					$( this ).parent().before($('<div id="parent-erreur"></div>').append($('<p class="erreur"></p>').text("There is an error with this video, please go to the next one (and sorry, btw...)"))
+					.append($('<img ></img>').attr("src", "/images/icones/warning.png" ).css("width","50px").css("width","50px")));
+					//$( this ).unbind("error");
+					$('.play-pause').addClass('play').removeClass('pause');
+					}
+					//alert("There's an error with this video, please go to the next one (and sorry, btw...)")
+					}, true);
+			
+		
+		//////////////////////
+		// FB Override
+
+		logoOverride=true;
+		logoOverrideLoc=document.location.href+"&videofile="+encodeURIComponent(videofile);//+"&but="+encodeURIComponent(mBut);
+		logoOverrideT="Vidéo";
+
+
+
+
+
+			};
 
 			</script>
 
@@ -471,16 +574,77 @@
 			<div id="divGauche"></div>
 			<div id="divMenuHaut"></div>
 			<div id="divCentrale">
-			<DIV ID="photoFiche"><img id="logoEquipe" class="grosLogo"></DIV>
+				<DIV ID="contPhotoEtFiche" style="float:left">
+					<DIV ID="photoEtFiche" class="conteneur_1">
+						<DIV ID="descriptionFiche"></DIV>
+						<DIV ID="photoFiche"><img id="logoEquipe" class="grosLogo"></DIV>
+						<DIV ID="enteteFiche"></DIV>
+						
+						
 
-			<DIV ID="descriptionFiche" style="float:left; display:inline; "></DIV>
-			<DIV ID="commentaireFiche" class="fiche" style="float:left; clear:right; display:inline; margin:20px; padding:3px;">
-			<h2>Évaluation du joueur (%)</h2>
-			</DIV>
-			<DIV ID="contVideo" class="fiche" style="  margin:20px; padding:3px; width:300px;">
-			<h2>Vidéos</h2>
-			</DIV>
+						
+						<DIV ID="commentaireFiche" class="fiche" class="conteneur_1"  style="clear:both; display:inline; margin:20px; padding:3px;">
+						<DIV ID="conteneurEvaluation" class="fiche" class="conteneur_1">
+						</DIV>
+						</DIV>
 
+					</DIV>
+			
+				</DIV>
+			
+			
+			<DIV class="conteneur_1">
+				<DIV ID="contVideo" class="fiche" style="  margin:20px; padding:3px; ">
+					<div class="media-box">
+
+						<span class="close-btn"></span>
+					<!-- Video listing -->
+						<div id='media-play-list' class="content mCustomScrollbar"></div>
+					<!-- ends Video listing -->
+
+					<!-- Main video -->
+						<video id="media-video" width="480" height="320" preload="auto" >
+							<source id="vidPrincId" type="video/mp4">
+						</video>
+					<!-- end Main video -->
+
+					<!-- video info -->
+						<div class="video-info">
+							<div style="float:left; padding:0 0 5px 0; border-bottom:1px solid #CCC; width:100%;">
+								<img style="float:left; margin-right:10px;" src="/images/info-img.png"><span class="title">Video Info</span>
+							</div>
+							<p class="video-content">
+								Aimez-vous cette nouvelle interface?
+							</p>
+							<div class="share">
+								<img src="/images/fb.png" style="margin-bottom:10px;">
+								<img src="/images/tweet.png" style="float:right; margin-bottom:10px;">
+								<img src="/images/google.png" style="margin-bottom:15px;">
+								<img src="/images/youtube.png" style="float:right; margin-bottom:15px;">
+							</div>
+							<span id="rateSpan" style="width:100%; float:left; margin-bottom:10px; font-size: 15px;">RATING : 3.5 / 5 </span>
+							<span id="nbVuesSpan" style="width:100%; float:left; margin-bottom:10px; font-size: 15px;">Vue 0 fois</span>
+							<button type="button" class="btn-style">
+								<span class="comment"></span>Write a Comment
+							</button>
+						</div>
+					<!-- end video info -->
+
+						<span class="play-btn" id="btn-play-centre"><img src="/images/main-play.png"></span>
+
+					</div>
+
+			
+				<h2 id="titreVideo">Vidéos</h2>
+				</DIV>
+			
+				</DIV>
+			<DIV class="conteneur_1">
+			<DIV ID="contStats" class="fiche" style="  margin:20px; padding:3px;">
+			<h2 id="titreStats">Stats</h2>
+			</DIV>
+			
+			</DIV>
 			</div>
 			<div id="divDroite"></div>
 			</body>
@@ -493,8 +657,14 @@
 		<script type="text/javascript">
 			//try{
 
+
+
 			joueurId = getValue('joueurId');
 			loadCondition = 0;
+
+			$('.media-box').hide();
+
+
 			var stringStatsHome = getStatsJoueurJSON(joueurId);
 			//alert(stringStatsHome);
 			var statsJSONHome = eval('(' + stringStatsHome + ')');
@@ -527,17 +697,17 @@
 				logoEquipe.setAttribute('src', '/admin/afficheImage.php?ficId=' + profilJoueur.ficIdPortrait);
 			} catch(err) {
 			}
-
+$('#photoEtFiche').prepend($('<div></div>').attr('id','titreFiche').append($('<h1></h1>').text(profilJoueur.nomJoueur)));
 			if (window.userId != undefined)// L'utilisateur du site est loggé.
 			{
 				if (usager.id == profilJoueur.proprio)// L'utilisateur du site est le joueur.
 				{
-					declaration = document.createElement('H2');
-					amettre = document.getElementById('descriptionFiche');
+		
+					declaration = document.createElement('p');
+					amettre = document.getElementById('enteteFiche');
 					texteFiche = document.createTextNode(window.userId + ", " + tl_profil_cestVous);
 					declaration.appendChild(texteFiche);
 					amettre.appendChild(declaration);
-					amettre.appendChild(document.createElement('BR'));
 
 					forme = document.createElement('form');
 					forme.setAttribute('method', 'get');
@@ -545,37 +715,40 @@
 					bouton = document.createElement('input');
 					bouton.setAttribute('type', 'submit');
 					bouton.setAttribute('value', window.tl_bouton_modifier);
+					
 					entree = document.createElement('input');
 					entree.setAttribute('type', 'hidden');
 					entree.setAttribute('value', joueurId);
 					entree.setAttribute('name', "joueurId");
-					amettre = document.getElementById('descriptionFiche');
+					amettre = document.getElementById('enteteFiche');
 					amettre.appendChild(forme);
 					forme.appendChild(bouton);
 					forme.appendChild(entree);
 
 				}
 
-				if (profilJoueur.joueurId != usager.joueurs[0] && usager.joueurs[0] != undefined/*&&parseInt(profilJoueur.proprio)!=0*/)// Le joueur n'est pas l'utilisateur du site et l'utilisateur a déjé son joueur.
-				{
-					declaration = document.createElement('H2');
-					amettre = document.getElementById('descriptionFiche');
-					texteFiche = document.createTextNode(profilJoueur.nomJoueur);
-					declaration.appendChild(texteFiche);
-					amettre.appendChild(declaration);
+				//if (profilJoueur.joueurId != usager.joueurs[0] && usager.joueurs[0] != undefined/*&&parseInt(profilJoueur.proprio)!=0*/)// Le joueur n'est pas l'utilisateur du site et l'utilisateur a déjé son joueur.
+				//{
+			
+				//declaration = document.createElement('H3');
+				//	amettre = document.getElementById('descriptionFiche');
+					//texteFiche = document.createTextNode(profilJoueur.nomJoueur);
+				//	declaration.appendChild(texteFiche);
+				//	amettre.appendChild(declaration);
 					divEvalueJS = document.createElement('div');
 					divEvalueJS.innerHTML = "Evaluer";
 					divEvalueJS.onclick = function() {
 						evaluer();
 					}
 					divEvalueJS.className = "lien";
-					document.getElementById('commentaireFiche').appendChild(divEvalueJS);
+					$(divEvalueJS).css('clear','both').insertBefore($('#conteneurEvaluation'));
 
-				}
+				//}
 				if (parseInt(profilJoueur.proprio) == 0 && usager.joueurs[0] == undefined)//Le joueur n'est pas utilisé et l'utilisateur n'a pas déjé son joueur.
 				{
-					declaration = document.createElement('H2');
-					amettre = document.getElementById('descriptionFiche');
+			
+					declaration = document.createElement('H3');
+					amettre = document.getElementById('enteteFiche');
 					texteFiche = document.createTextNode(window.tl_profil_vousEtes + profilJoueur.nomJoueur + "? ");
 					declaration.appendChild(texteFiche);
 
@@ -588,16 +761,17 @@
 					divEvalueJS.innerHTML = "Evaluer";
 					divEvalueJS.onclick = function() {
 						evaluer();
-					}
+					};
 					divEvalueJS.className = "lien";
-					document.getElementById('commentaireFiche').appendChild(divEvalueJS);
+					document.getElementById('conteneurEvaluation').appendChild(divEvalueJS);
 					//	amettre.appendChild(document.createElement('BR'));
 				}
 
 				if (parseInt(profilJoueur.proprio) == 0 && window.Perm < 20)//Le joueur n'est pas utilisé et l'utilisateur est un administrateur.
 				{
-					declaration = document.createElement('H2');
-					amettre = document.getElementById('descriptionFiche');
+			
+						declaration = document.createElement('H3');
+					amettre = document.getElementById('enteteFiche');
 					texteFiche = document.createTextNode(profilJoueur.nomJoueur + " " + "est dans votre ligue.");
 					declaration.appendChild(texteFiche);
 					amettre.appendChild(declaration);
@@ -613,7 +787,7 @@
 					entree.setAttribute('type', 'hidden');
 					entree.setAttribute('value', joueurId);
 					entree.setAttribute('name', "joueurId");
-					amettre = document.getElementById('descriptionFiche');
+					amettre = document.getElementById('enteteFiche');
 					amettre.appendChild(forme);
 					forme.appendChild(bouton);
 					forme.appendChild(entree);
@@ -622,9 +796,8 @@
 
 			} else// Personne n'est loggé.
 			{
-
-				declaration = document.createElement('H2');
-				amettre = document.getElementById('descriptionFiche');
+				declaration = document.createElement('H3');
+				amettre = document.getElementById('enteteFiche');
 				texteFiche = document.createTextNode(window.tl_profil_vousEtes + profilJoueur.nomJoueur + "? ");
 				declaration.appendChild(texteFiche);
 				declaration.appendChild(document.createElement('BR'));
@@ -632,7 +805,7 @@
 				lienAttribue.innerHTML = tl_profil_connectezVous;
 				lienAttribue.onclick = function() {
 					connexion();
-				}
+				};
 				declaration.appendChild(lienAttribue);
 				texteFiche2 = document.createTextNode(tl_profil_puisReclame);
 				declaration.appendChild(texteFiche2);
@@ -648,41 +821,67 @@
 
 		<script type="text/javascript">
 			try {
+				
+				vecTitre = [
+				tl_profil_nom,
+				tl_profil_prenom,
+				tl_profil_taille,
+				tl_profil_poids,
+				tl_profil_ville,
+				tl_profil_annee
+				];
+				
+				vecStuff=[
+				profilJoueur.nom,
+				profilJoueur.prenom,
+				profilJoueur.taille + ' cm',
+				profilJoueur.poids + ' kg',
+				profilJoueur.villeOrigine,
+				profilJoueur.anneeNaissance
+				];
 
-				liste = document.createElement('p');
-				amettre = document.getElementById('descriptionFiche');
+				for(var a = 0; a<vecTitre.length;a++){
+				$('#descriptionFiche')
+					.append($('<div></div>').addClass('divCouleur')
+					.append($('<div></div>').addClass('divCouleurSansPente'))
+					.append($('<div></div>').text(vecTitre[a]))
+					.append($('<div></div>').text(vecStuff[a])).hide()
+					);
+				}
+				function showDiv() {
+					if($('.divCouleur:hidden').length) {
+        			// Fade the first of them in
+        			$('.divCouleur:hidden:first').show();
+        			// And wait one second before fading in the next one
+        			setTimeout(showDiv, 250);
+			    	}
+//			    	else{
+	//		    		$('.divCouleur').preprend($('<div></div>').addClass('divCouleurSansPente'));
+			    		
+		//	    	}
+			   	}
+			   	showDiv();
+//				$('.divCouleur').show({duration:1000,queue:true});	
 
-				texteFiche = document.createTextNode(tl_profil_nom + ': ' + profilJoueur.nom);
 
-				amettre.appendChild(texteFiche);
-				amettre.appendChild(document.createElement('BR'));
-				texteFiche = document.createTextNode(tl_profil_prenom + ': ' + profilJoueur.prenom);
-				amettre.appendChild(texteFiche);
-				amettre.appendChild(document.createElement('BR'));
-				texteFiche = document.createTextNode(tl_profil_taille + ': ' + profilJoueur.taille + ' cm');
-				amettre.appendChild(texteFiche);
-				amettre.appendChild(document.createElement('BR'));
-				texteFiche = document.createTextNode(tl_profil_poids + ': ' + profilJoueur.poids + ' kg');
-				amettre.appendChild(texteFiche);
-				amettre.appendChild(document.createElement('BR'));
-				texteFiche = document.createTextNode(tl_profil_ville + ': ' + profilJoueur.villeOrigine);
-				amettre.appendChild(texteFiche);
-				amettre.appendChild(document.createElement('BR'));
-				texteFiche = document.createTextNode(tl_profil_annee + ': ' + profilJoueur.anneeNaissance);
-				amettre.appendChild(texteFiche);
-				amettre.appendChild(document.createElement('BR'));
-
-				//	amettre.appendChild(liste);
-
-				//document.getElementById('descriptionFiche').innerHTML='Nom: '+profilJoueur.nom+"</br>"+"Prenom: "+profilJoueur.prenom+"</br>"+"Ville d'origine: "+profilJoueur.villeOrigine;
 			} catch(err) {
 			}
 
-			afficheStatsCarriere(statsJSONHome);
+			afficheStatsCarriere(statsJSONHome,4);
 			loadVidsCond = 0;
 			nbVidsCond = 1;
+				
+				
+
 
 			videos();
+			
+							$('#corpsTabVidsTop').show();
+				$('#titreVideo').click(function(){$('#corpsTabVidsTop').toggle()})
+				$('#contStats table').show();
+				$('#titreStats').click(function(){$('#contStats table').toggle()})
+			
+			
 		</script>
 
 </html>

@@ -3,7 +3,7 @@
 	<HEAD>
 		<title>Fusionner des joueurs</title>
 		<link rel="stylesheet" href="/style/dhtmlgoodies_calendar.css" type="text/css">
-		<link rel="stylesheet" href="/style/general_v4.css" type="text/css">
+		<link rel="stylesheet" href="/style/general.css" type="text/css">
 		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/jquery.js" type="text/javascript" charset="utf-8"></script>
@@ -101,7 +101,7 @@
 						getProfilDeJoueurId(mJ, 2);
 					};
 				})(mEq[j].joueurId);
-				mP.innerHTML = mEq[j].nomJoueur;
+				mP.innerHTML = mEq[j].nomJoueur+" ("+ mEq[j].joueurId+") ";
 				divBte.appendChild(mP);
 			}
 
@@ -154,7 +154,7 @@
 			if (document.getElementById('boiteProfil').childNodes.length > 0) {
 				videNoeud('fusionneTop')
 				fT = document.getElementById('fusionneTop');
-				fT.appendChild(document.createTextNode('Cliquez ici pour intégrer les statistiques de ' + window.pF[1].nomJoueur + ' au profil de ' + window.pF[0].nomJoueur));
+				fT.appendChild(document.createTextNode('Cliquez ici pour intégrer les statistiques de ' + window.pF[1].nomJoueur +' ('+window.pF[1].joueurId+')'+ ' au profil de ' + window.pF[0].nomJoueur+' ('+window.pF[0].joueurId+')'));
 				pAtt = document.createElement('P');
 				pAtt.innerHTML = "Attention! Cette opération n'est pas réversible.";
 				pAtt.style.color = 'red';
@@ -273,6 +273,10 @@
 
 			amettre.appendChild(texteFiche);
 			amettre.appendChild(document.createElement('BR'));
+			texteFiche = document.createTextNode('joueurId: ' + window.profilJoueur.joueurId);
+
+            amettre.appendChild(texteFiche);
+            amettre.appendChild(document.createElement('BR'));
 			texteFiche = document.createTextNode('Prenom: ' + window.profilJoueur.prenom);
 			amettre.appendChild(texteFiche);
 			amettre.appendChild(document.createElement('BR'));

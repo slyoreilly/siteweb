@@ -13,6 +13,7 @@ $db_pwd="test";
 $database = 'syncsta1_900';
 
 $search = $_POST['searchString'];
+$type = $_POST['typeRecherche'];
 
 ////////////////////////////////////////////////////////////
 //
@@ -55,6 +56,38 @@ $IJ=0;
 		$joueur[$IJ]['nom']=$rangLigue['NomJoueur'];
 		$IJ++;
 	}
+	
+	
+	if(!strcmp($type, $match))
+$match = array();
+	$datedeb = $search." 00:00:00.000";
+	$datefin = $search." 23:59:59.999";
+		$rMatch = mysql_query("SELECT  TableMatch.*, Ligue.Nom_Ligue, TEdom.nom_equipe As eqDom, TEvis.nom_equipe As eqVis
+								FROM TableMatch
+								JOIN Ligue
+									ON (TableMatch.ligueRef=Ligue.ID_Ligue)
+								JOIN TableEquipe TEdom
+									ON (TEdom.equipe_id=TableMatch.eq_dom)
+								JOIN TableEquipe TEvis
+									ON (TEvis.equipe_id=TableMatch.eq_vis)
+								WHERE date >='{$datedeb}'
+								AND date <='{$datefin}'")
+						
+
+								
+or die(mysql_error()); 
+$IM=0;
+	while($rangMatch=mysql_fetch_assoc($rMatch)){
+		$match[$IM]['date']=$rangMatch['date'];
+		$match[$IM]['nom']=$rangMatch['Nom_Ligue'];
+		$match[$IM]['matchId']=$rangMatch['matchIdRef'];
+		$match[$IM]['eqDom']=$rangMatch['eqDom'];
+		$match[$IM]['eqVis']=$rangMatch['eqVis'];
+				$IM++;
+	}
+	
+	
+	
 	/*
 $match = array();
 	$rMatch = mysql_query("SELECT  TableMatch.*
@@ -76,6 +109,7 @@ $IM=0;
 $resultat =array();
 $resultat['ligue']=$ligue;
 $resultat['joueur']=$joueur;
+$resultat['match']=$match;
 //$resultat['match']=$match;
 	
 echo json_encode($resultat);

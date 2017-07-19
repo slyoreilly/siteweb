@@ -1,7 +1,6 @@
 		
 <?php
 
-
 /////////////////////////////////////////////////////////////
 //
 //  D�finitions des variables
@@ -24,7 +23,6 @@ $tableUser = 'TableUser';
 // 	Connections � la base de donn�es
 //
 ////////////////////////////////////////////////////////////
-
 if (!mysql_connect($db_host, $db_user, $db_pwd))
     die("Can't connect to database");
 
@@ -36,19 +34,20 @@ if (!mysql_select_db($database))
 }
 
 
-function trouveIDParNomUser($ligue)
+function trouveIDParNomUser($user)
 {
+	 $noUser = -1;
 $fResultUser = mysql_query("SELECT * FROM TableUser")
 or die(mysql_error());  
 while($fRangeeUser=mysql_fetch_array($fResultUser))
 {
-		if(!strcmp($fRangeeUser['username'],$ligue))
-	{$equipeID =$fRangeeUser['noCompte'];// Ce sont de INT
+		if(!strcmp($fRangeeUser['username'],$user))
+	{$noUser =$fRangeeUser['noCompte'];// Ce sont de INT
 	}
 }
 if (mysql_num_rows($fResultUser)>0)
 {
-return $equipeID;
+return $noUser;
 }
 else{return -1;}
 
@@ -67,9 +66,9 @@ or die(mysql_error());
 
 if (mysql_num_rows($result)>0)
 {
-echo mysql_result($result,0);	
+echo mysql_result($result,0,0);	
 }
-else{echo 1000000;}
+else{echo "1000000";}
 
 ?> 
 

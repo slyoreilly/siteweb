@@ -43,22 +43,26 @@ mysql_query("SET CHARACTER SET 'utf8'");
 
 if(is_numeric($match)&&is_numeric($ligueId))
 {
-		$rEquipeDom = mysql_query("SELECT TableEquipe.*, Ligue.*, TableMatch.*,TableEquipe.ficId AS eqFic
+		$rEquipeDom = mysql_query("SELECT TableEquipe.*, Ligue.*, TableMatch.*, TableArena.nomArena,TableArena.nomGlace ,TableEquipe.ficId AS eqFic
 								FROM TableMatch 
 								JOIN Ligue
 									ON TableMatch.ligueRef=Ligue.ID_Ligue
 								LEFT JOIN TableEquipe
 									ON TableMatch.eq_dom=TableEquipe.equipe_id
+								LEFT JOIN TableArena ON
+									TableMatch.arenaId=TableArena.arenaId	
 								WHERE TableMatch.ligueRef='$ligueId'
 								ORDER BY date DESC
 								LIMIT $match,1")or die(mysql_error()); 
 
-	$rEquipeVis = mysql_query("SELECT TableEquipe.*, Ligue.*, TableMatch.*, TableEquipe.ficId AS eqFic 
+	$rEquipeVis = mysql_query("SELECT TableEquipe.*, Ligue.*, TableMatch.*, TableArena.nomArena,TableArena.nomGlace, TableEquipe.ficId AS eqFic 
 								FROM TableMatch 
 								JOIN Ligue
 									ON TableMatch.ligueRef=Ligue.ID_Ligue
 								LEFT JOIN TableEquipe
 									ON TableMatch.eq_vis=TableEquipe.equipe_id
+								LEFT JOIN TableArena ON
+									TableMatch.arenaId=TableArena.arenaId	
 								WHERE TableMatch.ligueRef='$ligueId'
 								ORDER BY date DESC
 								LIMIT $match,1")or die(mysql_error()); 
@@ -67,12 +71,14 @@ if(is_numeric($match)&&is_numeric($ligueId))
 
 else if(!is_numeric($matchId)){
 
-	$rEquipeDom = mysql_query("SELECT TableEquipe.*, Ligue.*, TableMatch.*,TableEquipe.ficId AS eqFic
+	$rEquipeDom = mysql_query("SELECT TableEquipe.*, Ligue.*, TableMatch.*, TableArena.nomArena,TableArena.nomGlace, TableEquipe.ficId AS eqFic
 								FROM TableMatch 
 								JOIN Ligue
 									ON TableMatch.ligueRef=Ligue.ID_Ligue
 								LEFT JOIN TableEquipe
 									ON TableMatch.eq_dom=TableEquipe.equipe_id
+								LEFT JOIN TableArena ON
+									TableMatch.arenaId=TableArena.arenaId	
 								WHERE TableMatch.matchIdRef='$matchId'")
 or die(mysql_error()); 
 
@@ -144,7 +150,12 @@ else {
 	$JSONstring .= "\"equipeScoreVis\": \"". $equipeDom['score_vis']."\",";
 	$JSONstring .= "\"equipeFicIdVis\": \"". $equipeVis['eqFic']."\",";
 	$JSONstring .= "\"equipeCouleurVis\": \"". $equipeVis['logo']."\",";
+	$JSONstring .= "\"nomArena\": \"". $equipeDom['nomArena']."\",";
+	$JSONstring .= "\"nomGlace\": \"". $equipeDom['nomGlace']."\",";
+	$JSONstring .= "\"arenaId\": \"". $equipeDom['arenaId']."\",";
+	$JSONstring .= "\"statut\": \"". $equipeDom['statut']."\",";
 	$JSONstring .= "\"matchId\": \"". $equipeVis['matchIdRef']."\",";
+	$JSONstring .= "\"noMatchId\": \"". $equipeVis['match_id']."\",";
 	$JSONstring .= "\"cleValeur\": ".$cV.",";
 	$JSONstring .= "\"date\": \"". $equipeDom['date']."\"}";
 

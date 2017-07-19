@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Include meta tag to ensure proper rendering and touch zooming -->
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<!-- Include the jQuery library -->
+		<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script src="/scripts/jquery.js"></script>
+
+		<!-- Include the jQuery Mobile library -->
+		<!--script src="/scripts/jquery.mobile-1.4.5.js"></script>
+		<script src="/scripts/jquery.mobile-1.4.5.min.js"></script-->
+		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.js"></script>
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+
+		<!-- Include jQuery Mobile stylesheets -->
+		<link rel="stylesheet" href="themes/theme_mobile_1.min.css" />
+		<link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" />
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+		<link rel="stylesheet" href="/style/mobile.css">
+		<link rel="canonical" href="http://www.syncstats.com/zstats/match.html">
+
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script type="text/javascript" charset="utf-8">
+			//gereLangue_mob();
+
+		</script>
+		<script type="text/javascript" charset="utf-8">
+
+  
+  
+			function getInfoMatch(matchId) {
+
+				var strUrl = "/scriptsphp/infoMatch2JSON.php?matchId="+matchId;
+
+				$.post(strUrl, function(result) {
+						ligueId = result.ligueId;
+						//					alert(getCookie('ligueId')==null||getCookie('ligueId')=="");
+						if (getCookie('ligueId') == null || getCookie('ligueId') == "") {
+							setCookie('ligueId', ligueId, 120);
+							//							alert(getCookie('ligueId'));
+						}
+						//				alert(document.getElementById("tabResume").href);
+						//alert(result.matchId);
+						afficheResumeMatch(result);
+						getJSONdeMatchID(result);
+				},'json').fail(function(){
+						alert("Erreur dans la récupération d'information du match");
+					}
+				);
+
+				
+
+			}
+			
+			function getJSONdeMatchID(objetInfoMatch) {
+				
+				//strMI =  encodeURIComponent(objetInfoMatch.matchId);
+				strMI =  objetInfoMatch.matchId;
+
+				var strUrl = "/stats2/sommaire2JSON.php";
+
+				$.post(strUrl,{'matchId': strMI},function(result) {
+
+						//				alert(document.getElementById("tabResume").href);
+//					alert("Clisme");
+						afficheSommaireButs(result,objetInfoMatch);
+						afficheArrets(result,objetInfoMatch);
+					},'json').fail( function() {
+						alert("Erreur dans la récupération du sommaire");
+					});
+
+				
+
+			}
+			
+			function afficheResumeMatch(infoMatch) {
+
+				//alert(div1.id);
+				divLigne = document.createElement('DIV');
+				divLigne.id = "contResumeMatch";
+				divLigne.className = "ui-collapsible-content ui-body-inherit";
+
+				divLogoDom =$('<div/>').attr({
+					id:"logoDom"
+				});
+				divLogoVis =$('<div/>').attr({
+					id:"logoVis"
+				});
+
+				var nomEqDom = $('<p id="nomEqDom">' + infoMatch.equipeNomDom + "<br/>" + '</p>');
+				var villeEqDom = $('<p id="villeEqDom">' + infoMatch.equipeVilleDom + "<br/>" + '</p>');
+				var lienImgDom = $('<a id="lienImgDom" href=' + "/zstats/statsequipe.html?equipeId=" + encodeURIComponent(infoMatch.equipeIdDom + "&ligueId=" + infoMatch.ligueId) + '></a>');
+				var logoEquipeDom = $('<img/>').attr({
+					id:"logoEquipeDom",
+					'class':'logoEquipe'
+				});
+
+				lienImgVisJS = document.createElement('A');
+				lienImgVisJS.id = "lienImgVis";
+				lienImgVisJS.href = "/zstats/statsequipe.html?"+encodeURIComponent("equipeId=" + infoMatch.equipeIdVis + "&ligueId=" + infoMatch.ligueId);
+				divImgVis = document.createElement('IMG');
+				divImgVis.id = "logoEquipeVis";
+				divImgVis.className = "logoEquipe";
+				pNomEqVis = document.createElement('P');
+				pNomEqVis.id = "nomEqVis";
+				pNomEqVis.innerHTML = infoMatch.equipeNomVis + "<br/>";
+
+				pNomEqVis.className = "moyenTexte";
+				pVilleEqVis = document.createElement('P');
+				pVilleEqVis.id = "villeEqVis";
+				pVilleEqVis.innerHTML = infoMatch.equipeVilleVis + "<br/>";
+				pVilleEqVis.className = "moyenTexte";
+				divPDom = document.createElement('P');
+				divPDom.id = "tScoreDom";
+				divPDom.className = "grosTexte";
+				divPVis = document.createElement('P');
+				divPVis.id = "tScoreVis";
+				divPVis.className = "grosTexte";
+				divScoreDom = document.createElement('DIV');
+				divScoreDom.id = "scoreDom";
+				divScoreDom.className = "grosTexte";
+				divScoreVis = document.createElement('DIV');
+				divScoreVis.id = "scoreVis";
+				divScoreVis.className = "grosTexte";
+				//	divScoreDom.style.margin="5%";
+				//	divScoreVis.style.margin="5%";
+				pDash = document.createElement('P');
+				pDash.className = "grosTexte";
+				pDash.innerHTML = "-";
+				divDash = document.createElement('DIV');
+				divDash.className = "grosTexte";
+
+				divCont = $('<div/>').attr('id','contResume');
+				if(infoMatch.equipeVilleDom!=undefined){
+								infoMatch.equipeVilleDom.length > 0 ? divLogoDom.appendChild(villeEqDom) : "";}
+								
+				$(divLogoDom).append($(nomEqDom));
+				$(divLogoDom).append($(lienImgDom));
+				$(lienImgDom).append($(logoEquipeDom));
+//				divCont.appendChild(divLogoDom);
+				divScoreDom.appendChild(divPDom);
+				divDash.appendChild(pDash);
+				divScoreVis.appendChild(divPVis);
+				if(infoMatch.equipeVilleVis!=undefined){
+				infoMatch.equipeVilleVis.length > 0 ? divLogoVis.appendChild(pVilleEqVis) : "";}
+				//divLogoVis.appendChild(pVilleEqVis);
+				$(divLogoVis).append($(pNomEqVis));
+				$(divLogoVis).append($(lienImgVisJS));
+				lienImgVisJS.appendChild(divImgVis);
+
+				$(divCont).append(divLogoDom).append($(divScoreDom)).append($(divDash)).append($(divScoreVis)).append(divLogoVis);
+
+
+	//			divCont.appendChild(divLogoVis);
+				//	lecorps = document.getElementById('mbody');
+				$(logoEquipeDom).attr('src', '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdDom);
+				divImgVis.src = '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdVis;
+
+				divPDom.innerHTML = infoMatch.equipeScoreDom;
+				divPVis.innerHTML = infoMatch.equipeScoreVis;
+				//	lecorps.appendChild(divLigne);
+
+				$(divLigne).append($(divCont));
+				//videNoeud('col_sommaire');
+//				$("#col_sommaire > div").remove();
+
+				div2 = $("<div id=tmp_col></div>");
+				$(div2).append($(divCont));
+
+				$("#col_sommaire > div").append($(div2));
+
+				$("#temps_col").page();
+				$("#temps_col").collapsibleset('refresh');
+
+			}
+
+			function afficheSommaireButs(rSMB,objetInfoMatch) {
+				$("#col_buts > div").append(
+					$('<div/>').attr('id','contButs').append(
+						$('<ul/>').attr({
+										id:'listeButs',
+										'data-role':'listview'
+						})
+						)
+					);
+				$("#col_buts").trigger('create');
+				$("#col_buts").collapsible();
+				
+				maPer=0;
+				premierBut=rSMB.buts[0].chrono;
+				$.each(rSMB.buts,function(i,valeur){
+//					alert(JSON.stringify(valeur));
+//					var obj = jQuery.parseJSON(valeur);
+//					alert('bine');
+					mSrc = (rSMB.eqDom == rSMB.buts[i].equipe) ? '/admin/afficheImage.php?ficId=' + objetInfoMatch.equipeFicIdDom :  '/admin/afficheImage.php?ficId=' + objetInfoMatch.equipeFicIdVis; 
+                                       if(rSMB.periodes.length>0){
+									var chronoRel = getChronoRel(rSMB.periodes,valeur.chrono);}
+									else{var chronoRel = parseInt(valeur.chrono)-parseInt(premierBut);}
+									minutes = Math.floor(parseInt(chronoRel.chrono) / 60000);
+									dizSecondes = Math.floor((parseInt(chronoRel.chrono) - minutes * 60000) / 10000);
+									secondes = Math.floor((parseInt(chronoRel.chrono) - minutes * 60000 - dizSecondes * 10000) / 1000);
+									strChrono = minutes + ":" + dizSecondes + secondes;				
+					//alert( chronoRel.periode.numero+'  ' + maPer);		
+					                   if(rSMB.periodes.length>0){
+                    noPer = parseInt(chronoRel.periode.numero);
+                    } else{
+                        noPer=0;
+                    }
+                    			
+					if(noPer>maPer){
+						$('#listeButs').append($('<li/>').attr('data-role','list-divier').text('Periode '+chronoRel.periode.numero));
+						maPer = parseInt(chronoRel.periode.numero);
+					}
+					
+
+
+
+					$('#listeButs').append(
+						$('<li/>').append(
+									$('<img />', {
+    								src: mSrc,
+    								'class':'logoEquipe'
+								})
+									
+								).append(
+							$('<div/>').addClass('divButs').append(
+								$('<a/>').attr('href', '/zstats/statsjoueur.html?joueurId=' + rSMB.buts[i].marqueurId).append(
+									$('<p/>').text(valeur.marqueur).addClass("marqueur")),
+								
+								$('<p/>').addClass("passeur").append(
+									$('<a/>').attr('href', '/zstats/statsjoueur.html?joueurId=' + rSMB.buts[i].passeur1Id).addClass("passeur").append(
+										$('<span/>').text(valeur.passeur1).addClass("passeur1")),
+									$('<a/>').attr('href', '/zstats/statsjoueur.html?joueurId=' + rSMB.buts[i].passeur2Id).addClass("passeur").append(
+										$('<span/>').text(valeur.passeur2).addClass("passeur2")))
+								)
+							).append($('<select/>').on('change', function() {
+							    window.location= $(this).find(":selected").val();
+                                }).append(function(){
+								elementListe = $(this);
+                                    elementListe.append($('<option value="0">Pick Cam</option>'));
+								
+								//alert($(this).children($('<select>').length));
+                                
+								$.each(rSMB.buts[i].video,function(i2,valeur2){
+									place =valeur2.emplacement; 
+									if(place==null|| !strcmp(place,"")){
+										place = "www.syncstats.com";
+									}	
+                                    elementListe.append(
+                                        $('<option value="'+"http://"+place+"/lookatthis/" + valeur2.fic+'">'+'Cam '+valeur2.cam+'</option>').click(function(){
+                                            setCookie('tab_m_match', 2, 1);
+                                            document.location= "http://"+place+"/lookatthis/" + valeur2.fic;
+                                            
+                                        })
+                                        /*.append(
+										$('<a/>').attr('href',"http://"+place+"/lookatthis/" + valeur2.fic).click(function(){
+											setCookie('tab_m_match', 2, 1);
+											document.location.href = $(this).attr("href");
+										}).append(
+											$('<img />', {
+    										src: "/images/icones/movie.png",
+    										'class':'logoFilm'
+    										}),$('<span/>').text(valeur2.cam).addClass('logoFilm')
+											)
+										)
+										*/);
+										//alert( $('#selButs_'+i).attr("id")+valeur2.cam);
+								});
+							})));
+						
+						$("span:empty").remove();
+						$("a:empty").remove();
+    							//	src: "/images/icones/movie.png",
+						
+				});
+				
+				/*
+				
+				$(window).resize(function() {
+
+ 				 if ($(this).width() < 801) {
+
+    				$('img.logoFilm').hide();
+
+  					} else {
+
+   					 $('.divIWantedToHide').show();
+
+    				}
+
+});*/
+				
+				
+			}
+
+			
+			
+				function afficheArrets(rSMB,objetInfoMatch) {
+				$("#col_arrets > div").append(
+					$('<div/>').attr('id','contArrets').append(
+						$('<ul/>').attr({
+										id:'listeArrets',
+										'data-role':'listview'
+						})
+						)
+					);
+				$("#col_arrets").trigger('create');
+				$("#col_arrets").collapsible();
+				maPer=0;
+				
+				$.each(rSMB.clips,function(i,valeur){
+
+									var chronoRel = getChronoRel(rSMB.periodes,valeur.chrono);
+									minutes = Math.floor(parseInt(chronoRel.chrono) / 60000);
+									dizSecondes = Math.floor((parseInt(chronoRel.chrono) - minutes * 60000) / 10000);
+									secondes = Math.floor((parseInt(chronoRel.chrono) - minutes * 60000 - dizSecondes * 10000) / 1000);
+									strChrono = minutes + ":" + dizSecondes + secondes;				
+					//alert( chronoRel.periode.numero+'  ' + maPer);					
+					if(parseInt(chronoRel.periode.numero)>maPer){
+						$('#listeArrets').append($('<li/>').attr('data-role','list-divier').text('Periode '+chronoRel.periode.numero));
+						maPer = parseInt(chronoRel.periode.numero);
+					}
+					
+
+					$('#listeArrets').append(
+						/*$('<li/>').append(function(){
+								elementListe = $(this);
+								//alert(JSON.stringify(valeur)+" /// "+i);
+
+								$(this).append(
+										$('<span/>').text(strChrono));
+								$(this).append($('<select></select>').attr("id","sel_"+i));
+								$.each(rSMB.clips[i].video,function(i2,valeur2){
+									place =valeur2.emplacement; 
+									if(place==null|| !strcmp(place,"")){
+										place = "www.syncstats.com";
+									}	
+									
+
+                                
+
+
+									$('#sel_'+i).append(
+										$('<option></option>').click(function(){
+										    window.location="http://"+place+"/lookatthis/" + valeur2.fic;
+										    
+										}).append(
+										$('<a/>').attr('href',"http://"+place+"/lookatthis/" + valeur2.fic).click(function(){
+											setCookie('tab_m_match', 3, 1);
+											document.location.href ="http://"+place+"/lookatthis/" + valeur2.fic;
+										}).append(
+											$('<img />', {
+    										src: "/images/icones/movie.png",
+    										'class':'logoFilm'
+    										}),$('<span/>').text(valeur2.cam).addClass('logoFilm')
+											)
+										)
+										);
+								});
+							})*/
+							$('<li/>').append(
+                                    $('<img />', {
+                                    src: mSrc,
+                                    'class':'logoEquipe'
+                                })
+                                    
+                                ).append(
+                            $('<span/>').text(strChrono)
+                            ).append($('<select/>').on('change', function() {
+                                window.location= $(this).find(":selected").val();
+                                }).append(function(){
+                                elementListe = $(this);
+                                    elementListe.append($('<option value="0">Pick Cam</option>'));
+                                
+                                //alert($(this).children($('<select>').length));
+                                
+                                $.each(rSMB.clips[i].video,function(i2,valeur2){
+                                    place =valeur2.emplacement; 
+                                    if(place==null|| !strcmp(place,"")){
+                                        place = "www.syncstats.com";
+                                    }   
+                                    elementListe.append(
+                                        $('<option value="'+"http://"+place+"/lookatthis/" + valeur2.fic+'">'+'Cam '+valeur2.cam+'</option>').click(function(){
+                                            setCookie('tab_m_match', 2, 1);
+                                            document.location= "http://"+place+"/lookatthis/" + valeur2.fic;
+                                            
+                                        })
+                                        /*.append(
+                                        $('<a/>').attr('href',"http://"+place+"/lookatthis/" + valeur2.fic).click(function(){
+                                            setCookie('tab_m_match', 2, 1);
+                                            document.location.href = $(this).attr("href");
+                                        }).append(
+                                            $('<img />', {
+                                            src: "/images/icones/movie.png",
+                                            'class':'logoFilm'
+                                            }),$('<span/>').text(valeur2.cam).addClass('logoFilm')
+                                            )
+                                        )
+                                        */);
+                                        //alert( $('#selButs_'+i).attr("id")+valeur2.cam);
+                                });
+                            }))
+							
+							
+							
+							);
+						
+
+						
+				});
+				
+				
+				try
+				{
+					var scoreDom = 0;
+					var scoreVis = 0;
+					maPer = new Array();
+					//rSMB.periodes.shift();
+
+					if (rSMB.periodes.length > 0)
+						maPer = rSMB.periodes[0];
+					else {
+
+						maPer.chrono = rSMB.buts[0].chrono;
+					}
+					var Iper = 0;
+					for (var J = 0; J < rSMB.clips.length; J = J + 1) {
+
+						//						try {
+						var perStop = false;
+						if (rSMB.periodes.length > 0) {
+							//if (parseInt(rSMB.periodes[Iper].chrono) < parseInt(rSMB.buts[J].chrono)) {
+							while (Iper < rSMB.periodes.length && !perStop) {
+								//					maPer = rSMB.periodes.shift();
+
+								//			alert(parseInt(rSMB.periodes[Iper].chrono)-parseInt(rSMB.buts[J].chrono)+" , Iper: "+Iper+", J: "+J);
+
+								if (parseInt(rSMB.periodes[Iper].chrono) < parseInt(rSMB.clips[J].chrono)) {
+									perStop = ajoutePeriode(document.getElementById('rangeeTitreSommaireButs').parentNode, rSMB.periodes[Iper]);
+									Iper++;
+								} else {
+									perStop = true;
+								}
+
+							}
+
+							//								}
+						}
+
+						rangee = document.createElement('TR');
+						amettre = document.getElementById('rangeeTitreSommaireButs');
+						amettre.parentNode.appendChild(rangee);
+						minutes = Math.floor((parseInt(rSMB.buts[J].chrono) - parseInt(maPer.chrono)) / 60000);
+						//	alert("minutes"+minutes+" ");
+						dizSecondes = Math.floor(((parseInt(rSMB.buts[J].chrono) - parseInt(maPer.chrono)) - minutes * 60000) / 10000);
+						secondes = Math.floor(((parseInt(rSMB.buts[J].chrono) - parseInt(maPer.chrono)) - minutes * 60000 - dizSecondes * 10000) / 1000);
+						//	alert("secondes"+secondes+" ");
+						strChrono = minutes + ":" + dizSecondes + secondes;
+
+						if (rSMB.buts[J].qualif != null) {
+							strChrono = strChrono + " - ";
+							nbQ = 0;
+							while (nbQ < rSMB.buts[J].qualif.length) {
+								strChrono = strChrono + "(" + rSMB.buts[J].qualif[nbQ] + ")";
+								nbQ++;
+							}
+						}
+						mSrc = (rSMB.eqDom == rSMB.buts[J].equipe) ? window.divImgDom.src : window.divImgVis.src;
+						strImg = '<img src=\"\/images\/icones\/edit.png\" onclick=corrigeBut(' + J + ') class=\"tresPetitLogo\"  alt=\"Edit\"\\/\>';
+
+						var lesCols = new Array();
+						//
+						//alert('mSrc');
+						//alert(mSrc);
+						try {
+							lesCols[0] = '<img src=\"' + mSrc + '\" alt=\"' + rSMB.buts[J].equipe + '\" class=\"tresPetitLogo\" \\/\>';
+						} catch(err) {
+							lesCols[0] = rSMB.buts[J].equipe;
+						}
+						
+				
+
+					}
+					while (Iper <= rSMB.periodes.length) {
+						//                  maPer = rSMB.periodes.shift();
+
+						//          alert(parseInt(rSMB.periodes[Iper].chrono)-parseInt(rSMB.buts[J].chrono)+" , Iper: "+Iper+", J: "+J);
+
+						perStop = ajoutePeriode(document.getElementById('rangeeTitreSommaireButs').parentNode, rSMB.periodes[Iper]);
+						Iper++;
+
+					}
+
+					//	document.body.rangee.cellule.innerHTML ='yo';
+				} catch(err) {
+					//					alert(err.message);
+				}
+				
+				
+			}
+			function getChronoRel(periodes, chronoBut){
+				chronoRel = new Array();
+			for(var i=0;i<periodes.length;i++){
+				if(chronoBut<periodes[i].chrono){
+					//alert(chronoBut+'   ---   '+periodes[i].chrono);
+					if(i==0){
+						chronoRel.periode = periodes[0];
+						chronoRel.chrono = parseInt(chronoBut)-parseInt(periodes[0].chrono);
+						return chronoRel;
+						}
+					else{
+						chronoRel.periode = periodes[i-1];
+						chronoRel.chrono = parseInt(chronoBut)-parseInt(periodes[i-1].chrono);
+						return chronoRel;
+					}
+				
+				}
+			}
+				chronoRel.periode = periodes[periodes.length-1];
+				chronoRel.chrono = parseInt(chronoBut)-parseInt(periodes[periodes.length-1].chrono);
+				return chronoRel;
+			
+			}
+
+		</script>
+
+	</head>
+	<body>
+
+		<div data-role="page" id="sommaire">
+			<div data-role="header">
+				<h1>SyncStats Mobile!</h1>
+			</div>
+
+			<div data-role="main" class="ui-content" id="main_sommaire">
+
+				<div data-role="collapsible" data-collapsed="false" id="col_sommaire">
+					<h1>Sommaire</h1>
+					<a href="#buts" data-transition="slidefade">Buts</a>
+				</div>
+				<div data-role="collapsible" id="col_buts">
+					<h1>Buts</h1>
+
+				</div>
+				<div data-role="collapsible" id="col_arrets">
+					<h1>Arrêts et autres vidéos	</h1>
+
+				</div>				<div data-role="collapsible">
+					<h1>Pénalités</h1>
+					<p>
+						Sommaire des pénalités
+					</p>
+				</div>
+				<div data-role="collapsible">
+					<h1>Domicile</h1>
+					<p>
+						Statistiques équipe domicile
+					</p>
+				</div>
+				<div data-role="collapsible">
+					<h1>Visiteurs</h1>
+					<p>
+						Statistiques équipe visiteur
+					</p>
+				</div>
+			</div>
+
+			<div data-role="footer">
+				<h1>www.syncstats.com</h1>
+				<a id="lien_syncboard" data-ajax="false"  class="ui-btn ui-icon-forward ui-btn-icon-right" style="display:block;"><h1>Go to SyncBoard</h1></a>
+			</div>
+		</div>
+
+		<div data-role="page" id="buts">
+			<div data-role="header">
+				<a href="#" class="ui-btn ui-icon-back ui-btn-icon-left"  data-rel="back">Retour</a>
+				<h1>SyncStats</h1>
+			</div>
+
+			<div data-role="main" class="ui-content">
+				<p>
+					Buts
+				</p>
+
+			</div>
+
+			<div data-role="footer">
+
+				<h1><a href="www.syncstats.com">www.syncstats.com</a></h1>
+			</div>
+		</div>
+		<script type="text/javascript" charset="utf-8">
+			vecTab = ['tabResume', 'tabButs', 'tabPun', 'tabStatsDom', 'tabStatsVis'];
+			vecNomTab = [window.tl_match_Resume, window.tl_stats_Buts, window.tl_match_Penalites, window.tl_resultats_Domicile, window.tl_resultats_Visiteur];
+			//			alert('sti');
+			vPerm = verifiePermission();
+
+			var matchID = getValue('match');
+			tabNum = getCookie("tab_m_match");
+			
+			if(tabNum!=null){
+				$('div[data-role="collapsible"]').attr('data-collapsed',"true");
+				switch(parseInt(tabNum)){
+					case 1: $('#col_sommaire').attr('data-collapsed',"false");
+					break;
+					case 2: $('#col_buts').attr('data-collapsed',"false");
+					break;
+					case 3: $('#col_arrets').attr('data-collapsed',"false");
+					break;					
+				}
+				
+			}
+			$('#lien_syncboard').attr('href', '/mobile/m_syncboard.html?match=' +matchID);
+
+			//		$(document).ready(function(){
+			getInfoMatch(matchID);
+			//	});
+		</script>
+
+	</body>
+</html>

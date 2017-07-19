@@ -1,0 +1,523 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+	<HEAD>
+		<title>Rapport de ligue</title>
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="stylesheet" href="/style/general_v4.css" type="text/css"/>
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		<!--meta http-equiv="refresh" content="10" -->
+			<style>
+		</style>
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+
+		<script type="text/javascript" charset="utf-8">
+			function getArbitres(arbitreId) {
+				//	return function() {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/getArbitres.php";
+				//params = "arbitreId="+arbitreId;
+				//		alert(url);
+				//alert("Params a setMatchAVenir" + params);
+				requete_ajax.open('POST', url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						listeArbitres = eval('(' + requete_ajax.responseText + ')');
+						window.loadConditions++;
+						if(window.loadConditions==2)
+							{afficheRapport();}
+						//remplirTableau();
+						//requete_ajax.responseText;
+						
+						//window.location.reload(true);
+					}
+				}
+				requete_ajax.send(params);
+				var pourMAV = new Array();
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				//		}
+			}
+
+			function getRapport() {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/getGenerique.php";
+
+				var strTable = "table=Visites";
+				var strOu= "ligueId=" + window.ligueId;
+				
+				params = strTable+"&"+strOu;
+				//alert(url);
+				requete_ajax.open('POST', url+"?"+params, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						repRap = eval('(' + requete_ajax.responseText + ')');
+						
+					}
+				};
+			}
+			
+			
+			function getEquipements() {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/getGenerique.php";
+
+				var strTable = "table=StatutCam";
+				var strOu= "ou='userId'=\"" + getCookie("userId")+"\"";
+				
+				params = strTable+"&"+strOu;
+				//alert(url);
+				requete_ajax.open('POST', url+"?"+params, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						repRap = eval('(' + requete_ajax.responseText + ')');
+					
+						var table = $.makeTable(repRap);
+						(table).appendTo("#equipements");
+						
+					}
+				};
+			}
+			
+			
+		function actualiseRapport(){
+			
+			var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/actualiseRapports.php";
+
+				
+				//alert(url);
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+					//	window.location.reload(true);
+
+					}
+				}	
+			
+			
+		}	
+
+	function getNomArbitre(arbitreId)
+	{
+		for(var a=0;a<window.listeArbitres.length;a++)
+			{if(arbitreId==window.listeArbitres[a].arbitreId)
+				return window.listeArbitres[a].prenom+" "+window.listeArbitres[a].nom}
+				return "Non défini";
+		
+	}
+	
+	
+	function getMoyenneTempsButs(MTB)
+	{
+		maString =MTB+'';
+		if(MTB==null)
+			return	0;
+			else{
+		mesButs=maString.split(",");
+		somme=0;
+		cpt=0;
+
+		//alert(MTB+" "+mesButs);
+		for(var a=0;a<mesButs.length;a++)
+		{somme+=parseInt(mesButs[a]);
+			cpt++;}
+			if(cpt>0)
+				return somme/cpt/1000;
+			else
+				return 0;
+			}
+		
+	}
+
+	function afficheRapport()
+	{
+		parent = document.getElementById('divCentrale');
+		btnActu = document.createElement('input');
+		btnActu.type='BUTTON';
+		btnActu.value='Liste des rapports';
+		btnActu.onclick=function(){window.location.href="/zstats/listeRapports.html"};
+		parent.appendChild(btnActu);
+	
+	
+	divDate = document.getElementById("date");
+	divDate.appendChild(document.createTextNode(window.rapport.date));
+	divArbitre = document.getElementById("arbitre");
+	divArbitre.appendChild(document.createTextNode(getNomArbitre(window.rapport.arbitreId)));
+	divMatch = document.getElementById("matchId");
+	divMatch.appendChild(document.createTextNode(window.rapport.matchId));
+	divTempsButs = document.getElementById("tempsButs");
+	divTempsButs.appendChild(document.createTextNode(window.rapport.tempsButs));
+	divBogues = document.getElementById("bogues");
+	divBogues.appendChild(document.createTextNode(window.rapport.bogues));
+	divBogues.style.display="block";
+	imgBogue = document.createElement('IMG');
+	divBogues.appendChild(imgBogue);
+	imgBogue.src="/images/icones/edit.png";
+	imgBogue.className="petitLogo";
+	imgBogue.alt="Edit";
+	imgBogue.onclick=function(){
+		taBogue=document.createElement('TEXTAREA');
+		taBogue.rows="8";
+		taBogue.cols="40";
+		taBogue.id="taBogueId";
+		taBogue.value=window.rapport.bogues;
+		saveBogue=document.createElement('INPUT');
+		saveBogue.type="BUTTON";
+		saveBogue.value="Sauvegarder";
+		saveBogue.onclick=function(){sauvegardeBogue();}
+		
+		inDivBogues = document.getElementById("bogues");
+		inDivBogues.appendChild(taBogue);
+		inDivBogues.appendChild(saveBogue);
+		
+	}
+	
+	divSatisfaction = document.getElementById("satisfaction");
+	divSatisfaction.appendChild(document.createTextNode(window.rapport.evaluationMatchArbitre));
+
+	}//Fin de la fonction;
+			
+		
+	function sauvegardeBogue(){
+		
+				var requete_ajax = new XMLHttpRequest();
+
+			var url = "/scriptsphp/setGenerique.php";
+			
+			var valeur ={
+			bogues:document.getElementById('taBogueId').value,
+			};
+
+			
+			
+			
+			var strTable = "table=RapportMatch";
+			var strValeur = "valeur=" + JSON.stringify(valeur);
+			var strMode = "mode=modif";
+			var strCrit = "critere=matchId='"+window.rapport.matchId+"'";
+			params = strTable + '&' + strValeur+ '&' + strMode+ '&' + strCrit ;
+			alert(params);
+			//requete_ajax.send(null);
+			//	return requete_ajax.responseText;
+
+			requete_ajax.open('POST', url, true);
+			//				requete_ajax.send(null);
+
+			requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			requete_ajax.setRequestHeader("Content-length", params.length);
+			requete_ajax.setRequestHeader("Connection", "close");
+
+			requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+					alert(requete_ajax.responseText);
+					window.location.reload();
+					// requete_ajax.responseText;
+
+				}
+			}
+			requete_ajax.send(params);
+
+		
+	}
+	
+		function getVideos(){
+							videNoeud('Videos');
+							$('<h2></h2>').text("Vidéos").appendTo($('#Videos'));
+							
+									$.ajax({
+										url : "/scriptsphp/getVideos.php",
+										type : "POST",
+										data : {
+											ligueId : window.ligueId,
+										},
+										dataType : "json"
+										
+									})
+									.done(function(data){
+									var res = data.topVideos.length;
+									//alert(new Date($('#iDeb').val()).getTime());
+									//alert(new Date($('#iDeb').val()));
+									var he =$('#iDeb').val(); 
+	//								alert(he);
+//									alert($('#iFin').val());
+									var cpt=0;
+									var matchs = Array();
+									matchs.liste = Array();
+									matchs.dataMatchs = Array();
+									matchs.dataSomme = Array();
+									for(var a=0;a<data.recentsVideos.length;a++){
+									if(data.recentsVideos[a].chrono>(new Date($('#iDeb').val())).getTime()&&data.recentsVideos[a].chrono<(new Date($('#iFin').val()).getTime())){
+									cpt++;
+										if(matchs.liste.indexOf(data.recentsVideos[a].nomMatch)<0){
+											matchs.liste.push(data.recentsVideos[a].nomMatch);
+											
+											}
+											var indexMatch =matchs.liste.indexOf(data.recentsVideos[a].nomMatch);
+											if(matchs.dataSomme[indexMatch]==undefined){
+											    myDate = new Date(parseInt(data.recentsVideos[a].chrono));
+
+                                           
+											    
+											    matchs.dataSomme[indexMatch]={nbVid:0, nbVues:0, Date:  myDate.toLocaleString()};
+//											    matchs.dataSomme[indexMatch].nbVid=0;
+ //                                             matchs.dataSomme[indexMatch].nbVues=0;
+											}
+		                                      matchs.dataSomme[indexMatch].nbVid=matchs.dataSomme[indexMatch].nbVid+1;
+		                                      matchs.dataSomme[indexMatch].nbVues+=parseInt(data.recentsVideos[a].nbVues);
+                                              
+        								}
+									}
+									$('<div></div>').text("Nombre de vidéos: "+cpt).appendTo($('#Videos'));
+									$('<div></div>').text("Vidéo le plus regardé : "+data.popVideos[0].nbVues).appendTo($('#Videos'));
+									$('<div></div>').text("Nombre de matchs filmés: "+matchs.liste.length).appendTo($('#Videos'));
+									
+									var table = $.makeTable(matchs.dataSomme);
+                                    (table).appendTo("#Videos");
+                                   // alert(JSON.stringify(matchs.dataSomme));
+                        
+									
+									//for(var a=0; a<matchs.dataMatchs.length;a++);
+									//$('<div></div>').text("Nombre de matchs filmés: "+matchs.liste.length).appendTo($('#Videos'));
+									
+									});
+
+			
+		}
+		
+				function getVisites(){
+					
+							videNoeud('Visites');
+							$('<h2></h2>').text("Visites").appendTo($('#Visites'));
+
+					
+									$.ajax({
+										url : "/scriptsphp/getVisites.php",
+										type : "POST",
+										data : {
+											ligueId: window.ligueId
+										},
+										dataType : "json"
+										
+									})
+									.done(function(data){
+																		var matchs = Array();
+									var cpt=0;
+									for(var a=0;a<data.length;a++){
+									if((new Date(data[a].date))>(new Date($('#iDeb').val()))&&(new Date(data[a].date))<(new Date($('#iFin').val()))){
+										if(matchs.indexOf(data[a].fakeId)<0){
+											matchs.push(data[a].fakeId)}
+										cpt++;
+										
+										}
+										
+									}
+									
+									$('<div></div>').text("Nombre de visites: "+cpt).appendTo($('#Visites'));
+                                    $('<div></div>').text("Nombre d'usager: "+matchs.length).appendTo($('#Visites'));
+                                    
+									dateDebSection = new Date();
+									dateFinSection = new Date(Date.now());
+									//dateFinSection = $.now();
+									dateDebSection = new Date(dateFinSection-7*24*60*60*1000);
+									resumeVisites = new Array();
+									niveau = 30;
+									for(var b=0;b<niveau;b++){
+
+									//alert(dateDebSection + " "+ dateFinSection);
+										resumeVisites[b]=0;
+											
+										for(var a=0;a<data.length;a++){
+										
+											resumeVisites[niveau]=new Array();
+											if((new Date(data[a].date))>dateDebSection&&(new Date(data[a].date))<dateFinSection){
+												resumeVisites[b]=resumeVisites[b]+1;
+											}
+										}
+										if(resumeVisites[b]>0){
+										$('<div></div>').text("Semaine du :"+formatDate(dateDebSection)+", "+"Visites : "+resumeVisites[b]).appendTo($('#Visites'));
+                                           }
+                                        dateDebSection = new Date(dateDebSection-7*24*60*60*1000);
+                                        dateFinSection = new Date(dateFinSection-7*24*60*60*1000);
+									}								
+														
+										
+
+									
+							
+
+									});
+
+			
+		}
+	function finiLaPage(){
+			getVideos();
+			getVisites();
+			getEquipements();
+			
+		$('<input></input>').attr("type","button").addClass("bouton_2").attr("value","Rafraîchir").on("click",function(){
+			getVideos();
+			getVisites();}).appendTo('#divCentrale');
+	}
+	
+    $.makeTable = function (mydata) {
+    var table = $('<table border=1>');
+    var tblHeader = "<tr>";
+    for (var k in mydata[0]) tblHeader += "<th>" + k + "</th>";
+    tblHeader += "</tr>";
+    $(tblHeader).appendTo(table);
+    $.each(mydata, function (index, value) {
+        var TableRow =$("<tr></tr>");
+        $.each(value, function (key, val) {
+
+        
+        $(TableRow).append($("<td></td>").text(val));
+              if(key=="telId"){
+                  $(TableRow).on("click", function(){
+                      
+                      window.location.href="/zadmin/interfaceAppareil.html?telId="+val;
+                      })
+        
+                      if(index%2==0){
+                  $(TableRow).addClass("lignePaire");
+              }else{
+                  $(TableRow).addClass("ligneImpaire");
+              }
+
+            }
+        });
+        $(table).append(TableRow);
+        
+    });
+    return ($(table));
+    };
+	
+	function sortResultats(vecteur,prop, asc){
+		
+		vecteur = vecteur.sort(function(a,b){
+			if(asc){
+			return (a[prop]>b[prop])?1:((a[prop]<b[prop])?-1:0);	
+				
+			}
+			else{
+				return (b[prop]<a[prop])?1:((b[prop]<a[prop])?-1:0);	
+			
+			}
+			
+		});
+	}
+	
+	function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('/');
+}
+	
+		</script>
+
+	</HEAD>
+	<body id="mbody">
+
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+		<div id="divMenuHaut"></div>
+
+		<div id="divCentrale">
+			<div id="equipements"><h3>Équipements</h3> </div>
+
+
+			<div id="Statistiques"><h3>Statistique d'utilisation</h3> </div>
+			
+			
+			<div id="Params"><h2>Params de recherche</h2> </div>
+			<div id="dateDeb"><span>Date de début  :</span><input id="iDeb" type="date" value="2010/01/01"></input> </div>
+			<div id="dateFin"><span>Date de fin  : </span><input id="iFin" type="date" value="2020/01/01"></input> </div>
+			
+			<div id="Visites"><h2>Visites</h2> </div>
+			<div id="Videos"><h2>Videos</h2> </div>
+
+		</div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+			//						alert(JSON.stringify(document.getElementById("divCentrale").all));
+	//		alert(document.getElementsByTagName("A")[0].href);
+
+
+			developper(0);
+			
+		
+
+			loadConditions=0;
+			//ligueId = getValue('ligueId');
+			$('#divCentrale').css("margin-left","20px");
+	//		alert(document.getElementById("tabResume").id);
+			finiLaPage();
+			var matchID = getValue('match');
+			$('#iFin').val(formatDate(new Date(Date.now())));
+            $('#iDeb').val(formatDate(new Date(Date.now()-365*24*60*60*1000)));
+			//alert(window.ligueId);
+			
+			//getInfoMatch(matchID);
+			
+			//getJSONdeMatchID(matchID);
+			//getRapport(matchID);
+			//getArbitres();
+			
+
+	//		alert(document.getElementById("tabResume").href);
+
+		</script>
+	</body>
+</html>

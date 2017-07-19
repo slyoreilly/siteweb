@@ -47,10 +47,10 @@ $retour = mysql_query("SELECT MatchAVenir.*
 						LEFT JOIN TableSaison
 							ON (MatchAVenir.ligueId=TableSaison.ligueRef)
 						 WHERE MatchAVenir.ligueId='{$ligueId}'
-						 AND MatchAVenir.date > (NOW()-INTERVAL 30 DAY)
+						
 						 	
 						 GROUP BY MatchAVenir.mavId")or die(mysql_error());	
-						 /*AND TableSaison.dernierMatch>NOW()*/
+						 /* AND MatchAVenir.date > (NOW()-INTERVAL 30 DAY) AND TableSaison.dernierMatch>NOW()*/
 $strRetour.= mysql_num_rows($retour);
 
 $vecMatch = array();

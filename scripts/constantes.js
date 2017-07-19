@@ -439,7 +439,14 @@ menus[35].keyValue[0].ligueId=null;
 menus[35].ingredients=new Array();
 menus[35].ingredients[0]="userId";
 
-
+menus[36]={};
+menus[36].id="1_4";
+menus[36].lien="/zdoc/infos.html";
+menus[36].type="n1";
+menus[36].innerHTML="Infos";
+menus[36].iH_fr="Infos";
+menus[36].iH_en="Infos";
+menus[36].keyValue=new Array();
 
 hierarchie= new Array(3);
 for(j=0;j<hierarchie.length;j++)
@@ -460,13 +467,13 @@ hierarchie[2][0] =2; //"1_3";
 hierarchie[2][1] =10; //"1_3_1";
 hierarchie[2][2] =11; //"1_3_2";
 hierarchie[2][3] =12; //"1_3_3";*/
-hierarchie[1][0] =13; //"1_4";
-hierarchie[1][1] =13; //"1_4";
-hierarchie[1][4] =15; //"1_4";
-hierarchie[1][2] =16; //"1_4";
+hierarchie[1][0] =36; //"1_4";
+hierarchie[1][1] =36; //"1_4";
+hierarchie[1][3] =15; //"1_4";
+hierarchie[1][2] =19; //"1_4";
 //hierarchie[2][4] =23; //"1_4";
 //hierarchie[0][6] =17; //"1_4";
-hierarchie[1][3] =19; //"1_4";
+//hierarchie[1][3] =19; //"1_4";
 //hierarchie[0][5]=9;//"1_1_5";
 //hierarchie[0][7]=20;//"1_3_5";
 hierarchie[2][0] =28; //"1_3_1";

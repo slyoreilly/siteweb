@@ -23,6 +23,8 @@ $tableEquipe = 'TableEquipe';
 //
 ////////////////////////////////////////////////////////////
 
+$erreur = file_put_contents('../test/logTest.txt', "test", FILE_APPEND);	
+error_log($erreur,3,"error_log");
 
 	if(!isset($deSyncMatch))
 {
@@ -45,24 +47,7 @@ mysql_query("SET CHARACTER SET 'utf8'");
 //
 //
 
-function trouveNomJoueurParID($ID){ 
 
-$resultJoueur = mysql_query("SELECT * FROM TableJoueur WHERE joueur_id = '{$ID}'")
-or die(mysql_error());  
-if($rangeeJoueur=mysql_fetch_array($resultJoueur))
-		  return ($rangeeJoueur['NomJoueur']); 
-else { return ("Anonyme"); }
-} 
-
-function ismidv4()//is MatchId version 4 variables
-{$i1=stripos($ID,'_');
-$i2=stripos($ID,'_',$i1+1);
-$i3=stripos($ID,'_',$i2+1);
-if($i3==false)
-{return false;}
-else 
-	{return true;}
-}
 
 /////////////////////////////////////////////////////////////
 //
@@ -177,7 +162,13 @@ return $NomEquipe;
 
 
 
+////////////////////////////////////
+//		LOG
 
+							$message = "Éexcution de scriptsphp/actualiseMatch.";
+							$log  = $message.' - '.date("F j, Y, g:i:s a").PHP_EOL.
+	        				"-------------------------".PHP_EOL;
+							file_put_contents('../test/logTest.txt', $log, FILE_APPEND);	
 
 /////////////////////////////////////////////////////////////
 // 
@@ -359,7 +350,7 @@ while($Iae<count($aEnr)) // Tous les matchs a être recalculés pour enregistrem
 	$rPeriode = mysql_query("SELECT MAX(souscode) 
 								FROM TableEvenement0 
 								WHERE match_event_id = '{$aEnr[$Iae]}' 
-								AND code=11")
+								AND (code=11 OR code =10)")
 		or die(mysql_error());  
 		$statutAr=mysql_fetch_row($rPeriode);
 		if($statutAr[0]<10)
@@ -439,11 +430,18 @@ while($Iae<count($aEnr)) // Tous les matchs a être recalculés pour enregistrem
 									(eq_dom, score_dom, eq_vis, score_vis, matchIdRef, ligueRef, date,statut) 
 								VALUES 
 									('{$eDom}', '{$cDom}', '{$eVis}', '{$cVis}','{$aEnr[$Iae]}','{$ligueId}','{$aDate}','F')")or die(mysql_error()."INSERT 	INTO TableMatch");	
-				}
+							$message = "Création match dans scriptsphp/actualiseMatch, 1er appel.";
+							$log  = $message.' - '.date("F j, Y, g:i:s a").PHP_EOL.
+	        				"-------------------------".PHP_EOL;
+							file_put_contents('../test/logTest.txt', $log, FILE_APPEND);	
+			}
 			else
-				{$retour = mysql_query("UPDATE TableMatch
+				{$q = "UPDATE TableMatch
 											SET score_dom='{$cDom}', score_vis='{$cVis}' ,statut='F'
-											WHERE matchIdRef='{$aEnr[$Iae]}'");
+											WHERE matchIdRef='{$aEnr[$Iae]}'";
+						
+					$retour = mysql_query($q) or die(mysql_error()."    - ".$q);
+//					echo $retour;
 				}
 				
 		}
@@ -454,11 +452,19 @@ while($Iae<count($aEnr)) // Tous les matchs a être recalculés pour enregistrem
 									(eq_dom, score_dom, eq_vis, score_vis, matchIdRef, ligueRef, date,statut) 
 								VALUES 
 									('{$eDom}', '{$cDom}', '{$eVis}', '{$cVis}','{$aEnr[$Iae]}','{$ligueId}','{$aDate}','{$statut}')")or die(mysql_error()."INSERT 	INTO TableMatch");	
+
+							$message = "Création match dans scriptsphp/actualiseMatch, 2e appel.";
+							$log  = $message.' - '.date("F j, Y, g:i:s a").PHP_EOL.
+	        				"-------------------------".PHP_EOL;
+							file_put_contents('../test/logTest.txt', $log, FILE_APPEND);	
 				}
 			else
-				{$retour = mysql_query("UPDATE TableMatch
+				{
+						$q ="UPDATE TableMatch
 											SET score_dom='{$cDom}', score_vis='{$cVis}' ,statut='{$statut}'
-	/										WHERE matchIdRef='{$aEnr[$Iae]}'	");
+											WHERE matchIdRef='{$aEnr[$Iae]}'";
+					$retour = mysql_query($q) or die(mysql_error()."    - ".$q);
+//					echo $retour;
 				}
 /*	
 		$matchEnCours[$Inon10]['matchID']=$aEnr[$Iae];

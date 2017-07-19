@@ -40,19 +40,6 @@ if (!mysql_select_db($database))
 mysql_query("SET NAMES 'utf8'");
 mysql_query("SET CHARACTER SET 'utf8'");
 
-/////////////////////////////////////////////////////////////
-//
-//
-
-function trouveNomJoueurParID($ID){ 
-
-$resultJoueur = mysql_query("SELECT * FROM TableJoueur WHERE joueur_id = '{$ID}'")
-or die(mysql_error());  
-if($rangeeJoueur=mysql_fetch_array($resultJoueur))
-		  return ($rangeeJoueur['NomJoueur']); 
-else { return ("Anonyme"); }
-} 
-
 
 /////////////////////////////////////////////////////////////
 // 
@@ -90,6 +77,8 @@ or die(mysql_error());
 while($rangeeSaison=mysql_fetch_array($resultSaison))
 {
 	
+	
+	
 	$premierMatch = $rangeeSaison['premierMatch'];
 	$dernierMatch = $rangeeSaison['dernierMatch'];
 	$typeSaison = $rangeeSaison['typeSaison'];
@@ -99,6 +88,10 @@ $retPost['saisons'][$Is]['dm']=$dernierMatch;
 $retPost['saisons'][$Is]['type']=$typeSaison;
 $retPost['saisons'][$Is]['nom']= $rangeeSaison['nom'];
 $retPost['saisons'][$Is]['saisonId']= $rangeeSaison['saisonId'];
+$retPost['saisons'][$Is]['structureDivision']= json_decode($rangeeSaison['structureDivision']);
+
+    ///  On ne popule de stats que la saison entière.
+if($saisonId==$rangeeSaison['saisonId']){
 
 $resultEquipe = mysql_query("SELECT TableEquipe.*,abonEquipeLigue.* FROM TableEquipe 
 								JOIN abonEquipeLigue
@@ -136,7 +129,8 @@ while($Ie < count($equipe)) {
 
 unset($resultMatch);
 unset($rangeeMatch);
-		
+mysql_query("SET SQL_BIG_SELECTS=1");
+
 $resultMatch = mysql_query("
 SELECT * 
 FROM TableMatch 
@@ -147,72 +141,64 @@ INNER JOIN(
     ORDER BY match_event_id, code DESC, souscode DESC
 ) AS s1 
 	ON (TableMatch.matchIdRef=s1.match_event_id)
-							WHERE eq_dom = '{$equipe[$Ie]['id']}' 
+LEFT JOIN(
+  SELECT TableEvenement0.match_event_id,TableEvenement0.code,TableEvenement0.souscode
+    FROM TableEvenement0 
+    WHERE code=11 OR code =10
+    ORDER BY match_event_id, code DESC, souscode DESC
+) AS s2
+	ON (TableMatch.match_id=s2.match_event_id)
+							WHERE (eq_dom = '{$equipe[$Ie]['id']}' OR  eq_vis = '{$equipe[$Ie]['id']}')
 								AND statut='F'
-    GROUP BY match_event_id ")
+    GROUP BY s1.match_event_id ")
 								
 or die(mysql_error());  
 
 while($rangeeMatch=mysql_fetch_array($resultMatch))
 {
 	if($rangeeMatch['date']>=$premierMatch&&$rangeeMatch['date']<=$dernierMatch)
-	{
-	if($rangeeMatch['score_dom']>$rangeeMatch['score_vis'])
-	$equipe[$Ie]['vicDom']++;
-	if($rangeeMatch['score_dom']<$rangeeMatch['score_vis'])
-	{
-		if($rangeeMatch['souscode']>10){
-		$equipe[$Ie]['defPDom']++;
-		}else{
-		$equipe[$Ie]['defDom']++;
+	{	
+		if($rangeeMatch['eq_dom']==$equipe[$Ie]['id'])
+		{
+		
+			if($rangeeMatch['score_dom']>$rangeeMatch['score_vis'])
+				$equipe[$Ie]['vicDom']++;
+			if($rangeeMatch['score_dom']<$rangeeMatch['score_vis'])
+			{
+				if($rangeeMatch['souscode']>10){
+				$equipe[$Ie]['defPDom']++;
+				}else{
+				$equipe[$Ie]['defDom']++;
+				}
+			}
+			if($rangeeMatch['score_dom']==$rangeeMatch['score_vis']){
+				$equipe[$Ie]['nulDom']++;}
+				
+			$equipe[$Ie]['bp']+=$rangeeMatch['score_dom'];
+			$equipe[$Ie]['bc']+=$rangeeMatch['score_vis'];
+			
 		}
-	}
-	if($rangeeMatch['score_dom']==$rangeeMatch['score_vis'])
-	$equipe[$Ie]['nulDom']++;
-	$equipe[$Ie]['bp']+=$rangeeMatch['score_dom'];
-	$equipe[$Ie]['bc']+=$rangeeMatch['score_vis'];
-	}
+		else{
+			if($rangeeMatch['score_dom']<$rangeeMatch['score_vis'])
+				$equipe[$Ie]['vicVis']++;
+			if($rangeeMatch['score_dom']>$rangeeMatch['score_vis'])
+			{
+				if($rangeeMatch['souscode']>10){
+					$equipe[$Ie]['defPVis']++;
+				}else{
+					$equipe[$Ie]['defVis']++;
+				}
+			}
+			if($rangeeMatch['score_dom']==$rangeeMatch['score_vis'])
+				$equipe[$Ie]['nulVis']++;
+			$equipe[$Ie]['bc']+=$rangeeMatch['score_dom'];
+			$equipe[$Ie]['bp']+=$rangeeMatch['score_vis'];
+		}
+		
 }
-
+}
 unset($resultMatch);
 unset($rangeeMatch);
-
-$resultMatch = mysql_query("
-SELECT * 
-FROM TableMatch 
-INNER JOIN(
-  SELECT match_event_id,code,souscode
-    FROM TableEvenement0 
-    WHERE code=11 OR code =10
-    ORDER BY match_event_id, code DESC, souscode DESC
-) AS s1 
-	ON (TableMatch.matchIdRef=s1.match_event_id)
-							WHERE eq_vis = '{$equipe[$Ie]['id']}' 
-								AND statut='F'
-    GROUP BY match_event_id ")or die(mysql_error());  
-
-while($rangeeMatch=mysql_fetch_array($resultMatch))
-{
-	if($rangeeMatch['date']>=$premierMatch&&$rangeeMatch['date']<=$dernierMatch)
-	{
-	
-	if($rangeeMatch['score_dom']<$rangeeMatch['score_vis'])
-	$equipe[$Ie]['vicVis']++;
-	if($rangeeMatch['score_dom']>$rangeeMatch['score_vis'])
-		{
-			if($rangeeMatch['souscode']>10){
-			$equipe[$Ie]['defPVis']++;
-			}else{
-			$equipe[$Ie]['defVis']++;
-			}
-		}
-	if($rangeeMatch['score_dom']==$rangeeMatch['score_vis'])
-	$equipe[$Ie]['nulVis']++;
-	$equipe[$Ie]['bc']+=$rangeeMatch['score_dom'];
-	$equipe[$Ie]['bp']+=$rangeeMatch['score_vis'];
-	}
-	}
-
 
 
 
@@ -221,7 +207,7 @@ $Ie++;
 	
 }
 
-
+}
 
 
 
@@ -244,8 +230,9 @@ $retPost['saisons'][$Is]['equipe']=$equipe;
 
 $Is++;
 }
+if($ligueId==49 || $ligueId==50 || $ligueId==51 ){
 include '../scriptsphp/customCalculPoints.php';
-$retPost['customClassement']=$retCC;
+$retPost['customClassement']=$retCC;}
 
 echo json_encode($retPost);
 	

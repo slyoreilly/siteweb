@@ -1,5 +1,5 @@
 <?php
 
-define('TYPE_TERMINAL','syncboard');
+define('TYPE_TERMINAL','siteweb');
 
 ?>

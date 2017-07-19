@@ -1,20 +1,20 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
+//$db_host="localhost";
+//$db_user="syncsta1_u01";
+//$db_pwd="test";
 
-$database = 'syncsta1_900';
+//$database = 'syncsta1_900';
 
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
+//if (!mysql_connect($db_host, $db_user, $db_pwd))
+ //   die("Can't connect to database");
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
+//if (!mysql_select_db($database))
+ //   {
+  //  	echo "<h1>Database: {$database}</h1>";
+   // 	echo "<h1>Table: {$table}</h1>";
+   // 	die("Can't select database");
+	//}
 	
 	//////////////////////////////////////////////////////////////////////
 //
@@ -31,7 +31,7 @@ $fileType = $_FILES['fichier']['type'];
 
 $fp      = fopen($tmpName, 'r');
 $content = fread($fp, filesize($tmpName));
-$contentEsc = mysql_real_escape_string($content);
+//$contentEsc = mysql_real_escape_string($content);
 fclose($fp);
 
 if(!get_magic_quotes_gpc())

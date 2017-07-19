@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Include meta tag to ensure proper rendering and touch zooming -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Include jQuery Mobile stylesheets -->
+  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+  <!-- Include the jQuery library -->
+  <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <!-- Include the jQuery Mobile library -->
+  <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+          <script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+                 <script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+          <script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+  
+  <link rel="stylesheet" href="themes/theme_mobile_1.min.css" />
+<link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" />
+
+  		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  		        <script type="text/javascript" charset="utf-8">
+			gereLangue_mob();
+        </script>
+  <script type="text/javascript">
+			function getInfoLigue(ligueId) {
+				//	return function(){
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/infoLigue2JSON.php";
+				//	alert(url);
+				var params = "ligueId=" + ligueId;
+				//alert(params);
+				requete_ajax.open('POST', url, true);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+				requete_ajax.send(params);
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						vecEquipe = eval('(' + requete_ajax.responseText + ')');
+						//alert(vecEquipe.Ligue.saisons.length);
+
+						try {
+							var k = 0;
+							listeEquipe = new Array();
+							while (k < vecEquipe.equipes.length) {
+								//					alert(vecEquipe.equipes[k].equipeId);
+								listeEquipe[k] = vecEquipe.equipes[k].equipeId;
+								k++;
+							}
+
+							vecEquipe.Ligue.saisons.sort(function(a, b) {
+								d1Cal = a.pm.split(" ")[0];
+								d1Hor = a.pm.split(" ")[1];
+
+								var d1 = new Date(d1Cal.split("-")[0], d1Cal.split("-")[1], d1Cal.split("-")[2], d1Hor.split(":")[0], d1Hor.split(":")[1], d1Hor.split(":")[2]);
+								d2Cal = b.pm.split(" ")[0];
+								d2Hor = b.pm.split(" ")[1];
+
+								var d2 = new Date(d2Cal.split("-")[0], d2Cal.split("-")[1], d2Cal.split("-")[2], d2Hor.split(":")[0], d2Hor.split(":")[1], d2Hor.split(":")[2]);
+								return (d1 - d2)
+							});
+
+							//statsJSONHome.joueurs.triPar("nbButs",1,1);
+
+							getMatchsdeLigueID(vecEquipe.Ligue.saisons[vecEquipe.Ligue.saisons.length - 1 ].saisonId);
+							
+							
+							
+							//afficheStatsDom(vecEquipe.Saisons[0], 3);
+
+							//	document.body.rangee.cellule.innerHTML ='yo';
+						} catch(err) {
+						}
+						loadConditions++;
+						if (loadConditions == window.nbloadTotal)
+							remplirTableau();
+
+					}
+				}
+				//	}
+			}
+
+			function getMatchAVenir() {
+				//			return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/getMatchAVenir.php";
+
+				var strMAVId = "mavId=" + window.mavId;
+				var strLigueId = "ligueId=" + window.ligueId;
+				params = strMAVId + '&' + strLigueId;
+				//		alert(url+'?'+param);
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						//alert(requete_ajax.responseText);
+						vecMAV = eval('(' + requete_ajax.responseText + ')');
+						var k = 0;
+						listeMatch = new Array();
+						while (k < vecMAV.length) {
+							listeMatch[k] = vecMAV[k].mavId;
+							k++;
+						}
+						loadConditions++;
+
+						if (loadConditions >= window.nbloadTotal)
+							remplirTableau();
+
+						//							window.location.reload(true);
+					}
+				}
+				//alert(requete_ajax.responseText);
+				//				alert(JSON.stringify(listeMatch));
+				//	return vecMAV;
+				//}
+			}
+
+			function getMatchsdeLigueID(saisonId) {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/matchsDsSaison.php";
+
+				var strLigueId = "ligueId=" + window.ligueId;
+				var strSaisonId = "saisonId=" + saisonId;
+				params = strLigueId + '&' + strSaisonId;
+				url = url + "?" + params;
+
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				requete_ajax.open('POST', url, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						rJSON = eval('(' + requete_ajax.responseText + ')');
+
+						loadConditions++;
+						if (loadConditions >= window.nbloadTotal)
+							remplirTableau();
+
+					}
+				}
+			}
+
+			
+
+			function remplirTableau() {
+
+				detruitNoeud("tableResultats");
+				//genTableau(window.mJS);
+	
+				matchsDsSaison = new Array();
+
+				try {
+					maSaison = vecEquipe.Ligue.saisons[vecEquipe.Ligue.saisons.length - 1 ];
+					var dPMHor = maSaison.pm.split(" ")[1];
+					var dPMCal = maSaison.pm.split(" ")[0];
+					var dDMHor = maSaison.dm.split(" ")[1];
+					var dDMCal = maSaison.dm.split(" ")[0];
+					//					alert(dPMCal);
+					//					alert(dPMHor);
+					//					alert(dDMCal);
+					//					alert(dDMHor);
+					var dPM = new Date(dPMCal.split("-")[0], dPMCal.split("-")[1], dPMCal.split("-")[2], dPMHor.split(":")[0], dPMHor.split(":")[1], dPMHor.split(":")[2]);
+					var dDM = new Date(dDMCal.split("-")[0], dDMCal.split("-")[1], dDMCal.split("-")[2], dDMHor.split(":")[0], dDMHor.split(":")[1], dDMHor.split(":")[2]);
+					var cpt = 0;
+					for (var J = 0; J < window.rJSON.matchs.length; J++) {
+						d1Cal = window.rJSON.matchs[J].date.split(" ")[0];
+						d1Hor = window.rJSON.matchs[J].date.split(" ")[1];
+
+						var d1 = new Date(d1Cal.split("-")[0], d1Cal.split("-")[1], d1Cal.split("-")[2], d1Hor.split(":")[0], d1Hor.split(":")[1], d1Hor.split(":")[2]);
+						//alert(d1+" / "+dPM+" / "+dDM );
+						if (dPM < d1 && dDM > d1) {
+							matchsDsSaison[cpt] = window.rJSON.matchs[J];
+							matchsDsSaison[cpt].etat = "termine";
+							cpt++;
+						}
+
+					}
+					
+					//	alert(cpt);
+					for (var a = 0; a < window.vecMAV.length; a++) {
+						d1Cal = window.vecMAV[a].date.split(" ")[0];
+						d1Hor = window.vecMAV[a].date.split(" ")[1];
+
+						
+
+							var d1 = new Date(d1Cal.split("-")[0], d1Cal.split("-")[1], d1Cal.split("-")[2], d1Hor.split(":")[0], d1Hor.split(":")[1], d1Hor.split(":")[2]);
+							//alert(dPM+' '+d1+' '+dDM);
+							if (dPM < d1 && dDM > d1) {
+								var trouve = 0;
+								for (var b = 0; b < matchsDsSaison.length; b++)//  Vérifier si un match planifié a déjà été joué.
+								{
+									if (trouve == 0 && matchsDsSaison[b].etat == "termine" && matchsDsSaison[b].date.split(" ")[0] == d1Cal && matchsDsSaison[b].eqDomId == window.vecMAV[a].eqDom && matchsDsSaison[b].eqVisId == window.vecMAV[a].eqVis) {
+										trouve = 1;
+									}
+								}
+								if (trouve == 0) {
+									matchsDsSaison[cpt] = window.vecMAV[a];
+									matchsDsSaison[cpt].etat = "avenir";
+									cpt++;
+								}
+							}
+						
+
+					}
+					//										alert(cpt);
+
+					//					alert(JSON.stringify(matchsDsSaison));
+
+					matchsDsSaison.sort(function(a, b) {
+
+						d1Cal = a.date.split(" ")[0];
+						d1Hor = a.date.split(" ")[1];
+
+						var d1 = new Date(d1Cal.split("-")[0], d1Cal.split("-")[1], d1Cal.split("-")[2], d1Hor.split(":")[0], d1Hor.split(":")[1], d1Hor.split(":")[2]);
+						d2Cal = b.date.split(" ")[0];
+						d2Hor = b.date.split(" ")[1];
+
+						var d2 = new Date(d2Cal.split("-")[0], d2Cal.split("-")[1], d2Cal.split("-")[2], d2Hor.split(":")[0], d2Hor.split(":")[1], d2Hor.split(":")[2]);
+
+						//							var d1 = new Date(a.date);
+						//							var d2 = new Date(b.date);
+						return (d2 - d1)
+					});
+				} catch(err) {
+					alert('err...');
+				}
+
+				afficheResultats(matchsDsSaison);
+				//defileFiches();
+
+			}
+
+			function afficheResultats(matchsDsSaison) {
+				try {
+
+					//alert(uneString);
+					//$("#divCentrale").append('<p></p>').text("Filtre");
+					
+
+					mJS = {};
+					mJS.id = "tableResultats";
+					mJS.parentId = "main_resultats";
+					mJS.titre = tl_resultats_matchDispo;
+					mJS.rangeeTitre = new Array();
+					mJS.rangeeTitre[0] = window.tl_resultats_Date;
+					mJS.rangeeTitre[1] = window.tl_resultats_Domicile;
+					mJS.rangeeTitre[2] = window.tl_resultats_Visiteur;
+					mJS.rangeeTitre[3] = "Actions";
+					genTableau(mJS);
+					document.getElementById('cellTitre_1').colSpan = 2;
+					document.getElementById('cellTitre_2').colSpan = 2;
+					document.getElementById('cellTitre_1').style.textAlign = "center";
+					document.getElementById('cellTitre_2').style.textAlign = "center";
+
+					for ( J = 0; J < matchsDsSaison.length; J = J + 1) {
+
+						if (matchsDsSaison[J].etat == "termine") {
+							rangee = document.createElement('TR');
+							rangee.id = "rangeeMatch_" + J;
+							amettre = document.getElementById('rangeeTitre');
+							amettre.parentNode.appendChild(rangee);
+
+							celluleNom = document.createElement('TD');
+							cellContDate = document.createElement('P');
+							cellContDate.innerHTML = matchsDsSaison[J].date.split(" ")[0];
+
+							//							texteNom = document.createTextNode(matchsDsSaison[J].date.split(" ")[0]);
+							celluleNom.appendChild(cellContDate);
+							celluleNom.className = "cache";
+							celluleNom.style.display = "none";
+							rangee.appendChild(celluleNom);
+
+							celluleNom = document.createElement('TD');
+							cellContDate = document.createElement('P');
+							cellContDate.innerHTML = str2humain(matchsDsSaison[J].date);
+
+							//							texteNom = document.createTextNode(matchsDsSaison[J].date.split(" ")[0]);
+							celluleNom.appendChild(cellContDate);
+							rangee.appendChild(celluleNom);
+
+							cellEqDom = document.createElement('TD')
+							cellEqDom.style.textAlign = "right";
+							tmpImg = document.createElement('IMG');
+							tmpImg.src = "/admin/afficheImage.php?ficId=" + matchsDsSaison[J].ficIdDom;
+							tmpImg.alt = matchsDsSaison[J].eqDom;
+							tmpImg.style.width = "32px";
+							tmpImg.style.height = "32px";
+							tmpTxt = document.createElement('P');
+							tmpTxt.innerHTML = matchsDsSaison[J].eqDom;
+							(matchsDsSaison[J].ficIdDom != 0) ? cellEqDom.appendChild(tmpImg) : cellEqDom.appendChild(tmpTxt);
+							rangee.appendChild(cellEqDom);
+
+							celluleScoreDom = document.createElement('TD');
+							celluleScoreDom.style.textAlign = "center";
+							texteScoreDom = document.createTextNode(matchsDsSaison[J].equipeScoreDom);
+							celluleScoreDom.style.fontSize = "18px";
+							celluleScoreDom.appendChild(texteScoreDom);
+							rangee.appendChild(celluleScoreDom);
+
+							celluleScoreVis = document.createElement('TD');
+							celluleScoreVis.style.textAlign = "center";
+							texteScoreVis = document.createTextNode(matchsDsSaison[J].equipeScoreVis);
+							celluleScoreVis.style.fontSize = "18px";
+							celluleScoreVis.appendChild(texteScoreVis);
+							rangee.appendChild(celluleScoreVis);
+
+							cellEqVis = document.createElement('TD')
+							cellEqVis.style.textAlign = "left";
+							tmpImg = document.createElement('IMG');
+							tmpImg.src = "/admin/afficheImage.php?ficId=" + matchsDsSaison[J].ficIdVis;
+							tmpImg.alt = matchsDsSaison[J].eqVis;
+							tmpImg.style.width = "32px";
+							tmpImg.style.height = "32px";
+							tmpTxt = document.createElement('P');
+							tmpTxt.innerHTML = matchsDsSaison[J].eqVis;
+							(matchsDsSaison[J].ficIdVis != 0) ? cellEqVis.appendChild(tmpImg) : cellEqVis.appendChild(tmpTxt);
+							rangee.appendChild(cellEqVis);
+
+							celluleEq = document.createElement('TD');
+							lien = document.createElement('A');
+							lien.innerHTML = window.tl_resultats_Sommaire;
+							lien.setAttribute('href', 'm_match.html?match=' + encodeURIComponent(matchsDsSaison[J].matchID) + '&m=' + window.m);
+							$(rangee).on("click", {
+						match : encodeURIComponent(matchsDsSaison[J].matchID)
+					}, function(event) {document.location.href= 'm_match.html?match=' + event.data.match+ '&m=' + window.m;}) ;
+								
+							if (J % 2 == 0)
+								rangee.setAttribute('class', 'lignePaire');
+							else
+								rangee.setAttribute('class', 'ligneImpaire');
+							celluleEq.appendChild(lien);
+							rangee.appendChild(celluleEq);
+
+						}
+
+						if (matchsDsSaison[J].etat == "avenir") {
+							rangee = document.createElement('TR');
+							rangee.id = "rangeeMatch_" + J;
+							amettre = document.getElementById('rangeeTitre');
+							amettre.parentNode.appendChild(rangee);
+
+							celluleNom = document.createElement('TD');
+							cellContDate = document.createElement('P');
+							cellContDate.innerHTML = matchsDsSaison[J].date.split(" ")[0];
+
+							//							texteNom = document.createTextNode(matchsDsSaison[J].date.split(" ")[0]);
+							celluleNom.appendChild(cellContDate);
+							celluleNom.className = "cache";
+							celluleNom.style.display = "none";
+							rangee.appendChild(celluleNom);
+
+							celluleNom = document.createElement('TD');
+							cellContDate = document.createElement('P');
+							cellContDate.innerHTML = str2humain(matchsDsSaison[J].date);
+							celluleNom.appendChild(cellContDate);
+							rangee.appendChild(celluleNom);
+
+							cellEqDom = document.createElement('TD')
+							cellEqDom.style.textAlign = "right";
+							tmpImg = document.createElement('IMG');
+							tmpImg.src = "/admin/afficheImage.php?ficId=" + window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqDom)].ficId;
+							tmpImg.alt = window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqDom)].nom;
+							tmpImg.style.width = "32px";
+							tmpImg.style.height = "32px";
+							tmpTxt = document.createElement('P');
+							tmpTxt.innerHTML = window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqDom)].nom;
+							(window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqDom)].ficId != 0) ? cellEqDom.appendChild(tmpImg) : cellEqDom.appendChild(tmpTxt);
+							rangee.appendChild(cellEqDom);
+
+							celluleVS = document.createElement('TD');
+							celluleVS.style.textAlign = 'center';
+							celluleVS.colSpan = 2;
+							texteVS = document.createTextNode('VS');
+							celluleVS.appendChild(texteVS);
+							rangee.appendChild(celluleVS);
+
+							cellEqVis = document.createElement('TD')
+							cellEqVis.style.textAlign = "left";
+							tmpImg = document.createElement('IMG');
+							tmpImg.src = "/admin/afficheImage.php?ficId=" + window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqVis)].ficId;
+							tmpImg.alt = window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqVis)].nom;
+							tmpImg.style.width = "32px";
+							tmpImg.style.height = "32px";
+							tmpTxt = document.createElement('P');
+							tmpTxt.innerHTML = window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqVis)].nom;
+							(window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqVis)].ficId != 0) ? cellEqVis.appendChild(tmpImg) : cellEqVis.appendChild(tmpTxt);
+							rangee.appendChild(cellEqVis);
+
+							if (J % 2 == 0)
+								rangee.className = 'lignePaire';
+							else
+								rangee.className = 'ligneImpaire';
+							rangee.appendChild(celluleEq);
+
+							//alert(window.Perm);
+							
+
+						}// Fin du Si a venir
+						
+
+					}//Fin des rangées
+					rangeePlus2 = document.createElement('TR');
+					cellPlus2 = document.createElement('TD');
+					cellPlus2.colSpan = 6;
+
+					cellPlus2.innerHTML = window.tl_general_nouvMatch + "[ + ]";
+					cellPlus2.style.textAlign = "center";
+					cellPlus2.style.fontSize = "small";
+					cellPlus2.style.color = "#04789D";
+					rangeePlus2.className = "lignePaire cliquable";
+
+					cellPlus2.onclick = function() {
+						nouveauMatch();
+					};
+					//cellPlus2.appendChild(element2);
+					rangeePlus2.appendChild(cellPlus2);
+					amettre = document.getElementById('rangeeTitre');
+					//alert(window.Perm);
+
+					if (window.Perm < 19) {
+						amettre.parentNode.appendChild(rangeePlus2);
+					} else {/*alert(window.Perm);*/
+					}
+
+					//	document.body.rangee.cellule.innerHTML ='yo';
+
+				} catch(err) {
+					//if (window.Perm < 10) {
+						alert("Erreur: " + err);
+					//}
+				}
+				var d = new Date();
+				//alert(getValue('mois'));
+				//alert(d.getMonth());
+				if(getValue('mois')==null ||getValue('mois')==""||getValue('mois')==undefined){
+				var mois =d.getMonth();}
+				else{
+				var mois=	parseInt(getValue('mois'))-1;
+				}
+				//alert(mois);
+				//enveloppeTableMois('tableResultats', d.getFullYear(),mois , 0);
+
+			}
+
+
+        </script>
+  		
+</head>
+<body>
+
+<div data-role="page" id="sommaire">
+  <div data-role="header">
+    <h1>SyncStats Mobile!</h1>
+  </div>
+
+  <div data-role="main" class="ui-content" id="main_resultats">
+  	
+  	
+  </div>
+
+  <div data-role="footer">
+    <h1>www.syncstats.com</h1>
+  </div>
+</div> 
+
+<div data-role="page" id="buts">
+  <div data-role="header">
+  		<a href="#" class="ui-btn ui-icon-back ui-btn-icon-left"  data-rel="back">Retour</a>
+    <h1>SyncStats</h1>
+  </div>
+
+  <div data-role="main" class="ui-content">
+    <p>Buts</p>
+
+  </div>
+
+  <div data-role="footer">
+  
+    <h1><a href="www.syncstats.com">www.syncstats.com</a></h1>
+  </div>
+</div> 
+		<script type="text/javascript" charset="utf-8">
+			
+			rang = 0;
+			bufClass = 0;
+
+			ligueId=getCookie('ligueId');
+
+			loadConditions = 0;
+			nbloadTotal = 3;
+			getInfoLigue(ligueId);
+			getMatchAVenir();
+
+		</script>
+
+</body>
+</html>

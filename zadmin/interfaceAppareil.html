@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML>
+    <HEAD>
+        <title>Rapport de ligue</title>
+        <script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/jQuery.js"></script>
+        <script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+        <!--meta http-equiv="refresh" content="10" -->
+        <style>
+        </style>
+        <script type="text/javascript" charset="utf-8">
+			gereLangue();
+        </script>
+
+        <script type="text/javascript" charset="utf-8">
+			function getEquipements() {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/getGenerique.php";
+
+				var strTable = "table=StatutCam";
+				var strOu = "ou='telId'=\"" + getValue("telId") + "\"";
+
+				params = strTable + "&" + strOu;
+				//alert(url);
+				requete_ajax.open('POST', url + "?" + params, true);
+				//				requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						repRap = eval('(' + requete_ajax.responseText + ')');
+
+						var table = $.makeTable(repRap);
+						(table).appendTo("#equipements");
+
+					}
+				};
+			}
+
+			function getControles() {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/getGenerique.php";
+
+				var strTable = "table=Controle";
+				var strOu = "ou='telId'=\"" + getValue("telId") + "\"";
+
+				params = strTable + "&" + strOu;
+				//alert(url);
+				requete_ajax.open('POST', url + "?" + params, true);
+				//              requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						repRap = eval('(' + requete_ajax.responseText + ')');
+
+						var table = $.makeTable(repRap);
+						(table).appendTo("#controles");
+
+					}
+				};
+			}
+
+			function getAppareilSurface() {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/getGenerique.php";
+
+				var strTable = "table=abonAppareilSurface";
+				var strOu = "ou='telId'=\"" + getValue("telId") + "\"";
+
+				params = strTable + "&" + strOu;
+				//alert(url);
+				requete_ajax.open('POST', url + "?" + params, true);
+				//              requete_ajax.send(null);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+	//				    alert('hep');
+
+						repRap = eval('(' + requete_ajax.responseText + ')');
+//alert('hep');
+						var table = $.makeTable(repRap);
+						(table).appendTo("#abonAppareilSurface");
+	//					alert('hep');
+						$("#abonAppareilSurface").append($('<input></input>').attr("type", "button").addClass('bouton_2').val("Ajouter").on("click", function() {
+							construitDialogue();
+							$("#divDialogue").append($('<h2></h2>').text('Arena'), $('<div></div').append($('<select></select>').attr('id', 'selArena')), $('<h2></h2>').text('Rôle'), $('<div></div').append($('<select></select>').attr('id', 'selRole').append($('<option></option>').val('1').text('Télécommande: Maître. Toutes les options sont débloquées.'), $('<option></option>').val('3').text('Télécommande: Arbitre'), $('<option></option>').val('11').text('Télécommande: Appareil contrôlant les buts de l\'équipe domicile'), $('<option></option>').val('12').text('Télécommande: Appareil contrôlant les buts de l\'équipe visiteur'), $('<option></option>').val('13').text('Télécommande: Appareil ne contrôlant qu\'un côté; à spécifier par utilisateur.'), $('<option></option>').val('101').text('Caméra: Générique'), $('<option></option>').val('111').text('Caméra: Appareil filmant les buts du côté du gardien domicile'), $('<option></option>').val('112').text('Caméra: Appareil filmant les buts du côté du gardien visiteur'))), $('<input></input>').attr("type", "button").addClass("bouton_2").attr("value", "Enregistrer").on("click", function() {
+								         valeur = {
+								         telId : window.telId,
+                                       surfaceId : $('#selArena').val(),
+                                       gabaritId : 1,
+                                       posGabId : 1,
+                                        typeAbon : 2,
+                                       role : $('#selRole').val()};
+								$.ajax({
+									url : "/scriptsphp/setGenerique.php",
+									type : 'POST',
+									data : jQuery.param({
+										table : "abonAppareilSurface",
+										valeur : JSON.stringify(valeur),
+										mode : "creer"
+									}),
+									contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+									success : function(response) {
+								//	    alert(response);
+											window.location.reload(true);									
+									},
+									error : function(xhr, status, error) {
+										var err = eval("(" + xhr.responseText + ")");
+										alert(err.Message);
+									}
+								});
+							}));
+							$.ajax({
+								url : "/stats2/getArena.php",
+								type : 'POST',
+								data : {
+									ligueId : window.ligueId
+								},
+								contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+								success : function(response) {
+									retArena = eval('(' + response + ')');
+									for (var a = 0; a < retArena.length; a++) {
+										$('#selArena').append($('<option></option>').text(retArena[a].nomArena + ' / ' + retArena[a].nomGlace).val(retArena[a].arenaId));
+									}
+								},
+								error : function(xhr, status, error) {
+									var err = eval("(" + xhr.responseText + ")");
+								}
+							});
+
+						}));
+					}
+				};
+			}
+
+			function finiLaPage() {
+
+				getEquipements();
+				getControles();
+				getAppareilSurface();
+
+				$('<input></input>').attr("type", "button").addClass("bouton_2").attr("value", "Rafraîchir").on("click", function() {
+					getVideos();
+					getVisites();
+				}).appendTo('#divCentrale');
+			}
+
+
+		
+			function sortResultats(vecteur, prop, asc) {
+
+				vecteur = vecteur.sort(function(a, b) {
+					if (asc) {
+						return (a[prop] > b[prop]) ? 1 : ((a[prop] < b[prop]) ? -1 : 0);
+
+					} else {
+						return (b[prop] < a[prop]) ? 1 : ((b[prop] < a[prop]) ? -1 : 0);
+
+					}
+
+				});
+			}
+$.makeTable = function(mydata) {
+                var table = $('<table border=1>');
+                var tblHeader = "<tr>";
+                for (var k in mydata[0])
+                tblHeader += "<th>" + k + "</th>";
+                tblHeader += "</tr>";
+                $(tblHeader).appendTo(table);
+                $.each(mydata, function(index, value) {
+                    var TableRow = $("<tr></tr>");
+                    $.each(value, function(key, val) {
+
+                        $(TableRow).append($("<td></td>").text(val));
+                        if (key == "telId") {
+
+                            if (index % 2 == 0) {
+                                $(TableRow).addClass("lignePaire");
+                            } else {
+                                $(TableRow).addClass("ligneImpaire");
+                            }
+
+                        }
+                    });
+                    $(table).append(TableRow);
+
+                });
+                return ($(table));
+            };
+
+
+        </script>
+
+    </HEAD>
+    <body id="mbody">
+
+        <div id="divHaut"></div>
+        <div id="divGauche"></div>
+        <div id="divMenuHaut"></div>
+
+        <div id="divCentrale">
+            <div id="equipements">
+                <h3>Équipements</h3>
+            </div>
+            <div id="controles">
+                <h3>Contrôles</h3>
+            </div>
+            <div id="abonAppareilSurface">
+                <h3>Abonnements Appareil Surface</h3>
+            </div>
+
+        </div>
+        <div id="divDroite"></div>
+        <script type="text/javascript" charset="utf-8">
+			//						alert(JSON.stringify(document.getElementById("divCentrale").all));
+			//		alert(document.getElementsByTagName("A")[0].href);
+
+			developper(0);
+
+			loadConditions = 0;
+			//ligueId = getValue('ligueId');
+			$('#divCentrale').css("margin-left", "20px");
+			//		alert(document.getElementById("tabResume").id);
+			telId = getValue('telId');
+			finiLaPage();
+			//alert(window.ligueId);
+
+			//getInfoMatch(matchID);
+
+			//getJSONdeMatchID(matchID);
+			//getRapport(matchID);
+			//getArbitres();
+
+			//		alert(document.getElementById("tabResume").href);
+
+        </script>
+    </body>
+</html>

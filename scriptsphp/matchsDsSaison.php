@@ -1,5 +1,4 @@
 <?php
-
 /////////////////////////////////////////////////////////////
 //
 //  Définitions des variables
@@ -188,6 +187,18 @@ function trouveArbitre($arbitreId, $array_arb) {
 
 }
 
+function trouveMatch($matchId, $array_match) {
+	foreach ($array_match as $valeur) {
+		if (strcmp($valeur['matchID'], $matchId)==0) {
+			return $valeur;
+		}
+	}
+	$nVec = Array();
+	$nVec['cpt']=$matchId;
+	return $nVec;
+
+}
+
 function trouveGardiens($match, $array_gard) {
 	foreach ($array_gard as $valeur) {
 		if ($valeur['match'] == $match) {
@@ -237,23 +248,22 @@ $Ine = 0;
 unset($resultEvent);
 unset($rangeeEv);
 ////  Sélectionne tous les débuts de matchs dans une saison.
-$qGros = "SELECT TableEquipe.*, Ligue.*, TableMatch.*,TableEvenement0.* 
-								FROM TableMatch 
-								JOIN Ligue
-									ON TableMatch.ligueRef=Ligue.ID_Ligue
-								JOIN TableEvenement0
-									ON TableMatch.matchIdRef=TableEvenement0.match_event_id
-								LEFT JOIN TableEquipe
-									ON TableMatch.eq_dom=TableEquipe.equipe_id
-								WHERE TableEvenement0.code='10' 
-									AND TableEvenement0.souscode='0'
-									AND TableMatch.ligueRef='{$ligueId}'
-									AND TableMatch.date>'{$premierMatch}'
-									AND TableMatch.date<'{$dernierMatch}'
-									";
-$resultEvent = mysql_query($qGros) or die(mysql_error() . " dans " . $qGros);
-
-$qJoueurs = "SELECT Ligue.*, TableMatch.*,TableEvenement0.*,TableJoueur.*
+/*$qGros = "SELECT TableEquipe.*, Ligue.*, TableMatch.*,TableEvenement0.*
+ FROM TableMatch
+ JOIN Ligue
+ ON TableMatch.ligueRef=Ligue.ID_Ligue
+ JOIN TableEvenement0
+ ON TableMatch.matchIdRef=TableEvenement0.match_event_id
+ LEFT JOIN TableEquipe
+ ON TableMatch.eq_dom=TableEquipe.equipe_id
+ WHERE TableEvenement0.code='10'
+ AND TableEvenement0.souscode='0'
+ AND TableMatch.ligueRef='{$ligueId}'
+ AND TableMatch.date>'{$premierMatch}'
+ AND TableMatch.date<'{$dernierMatch}'
+ ";*/
+ 
+ $qJoueurs = "SELECT Ligue.*, TableMatch.*,TableEvenement0.*,TableJoueur.*
 								FROM TableMatch 
 								JOIN Ligue
 									ON TableMatch.ligueRef=Ligue.ID_Ligue
@@ -273,6 +283,88 @@ while ($row = mysql_fetch_assoc($resultJoueurs)) {
 	$joueurs_array[] = $row;
 	// Inside while loop
 }
+ 
+ 
+$qGros = "SELECT TableEquipe.*, Ligue.*, TableMatch.*
+								FROM TableMatch 
+								JOIN Ligue
+									ON TableMatch.ligueRef=Ligue.ID_Ligue
+								LEFT JOIN TableEquipe
+									ON TableMatch.eq_dom=TableEquipe.equipe_id
+								WHERE  TableMatch.ligueRef='{$ligueId}'
+									AND TableMatch.date>'{$premierMatch}'
+									AND TableMatch.date<'{$dernierMatch}' 
+									";
+$resultEvent = mysql_query($qGros) or die(mysql_error() . " dans " . $qGros);
+$qVent = "SELECT TableEquipe.equipe_id,
+				Ligue.ID_Ligue, 
+				TableMatch.*,
+				TableEvenement0.joueur_event_ref,
+				TableEvenement0.equipe_event_id,
+				TableEvenement0.match_event_id,
+				TableEvenement0.code,
+				TableEvenement0.chrono 
+								FROM TableMatch 
+								JOIN Ligue
+									ON TableMatch.ligueRef=Ligue.ID_Ligue
+								LEFT JOIN TableEquipe
+									ON TableMatch.eq_dom=TableEquipe.equipe_id
+								JOIN TableEvenement0
+									ON TableMatch.matchIdRef=TableEvenement0.match_event_id
+								WHERE  TableMatch.ligueRef='{$ligueId}'
+									AND TableMatch.date>'{$premierMatch}'
+									AND TableMatch.date<'{$dernierMatch}' 
+									AND (code = 0 OR code = 10 OR code=11)
+									ORDER BY TableMatch.match_id ASC, TableEvenement0.chrono ASC
+									";
+$resultVent = mysql_query($qVent) or die(mysql_error() . " dans " . $qVent);
+$lesMatchs = Array();
+$cptM =0;
+while ($row = mysql_fetch_assoc($resultVent)) {
+	//$cptM = count($lesMatchs);
+	if ($cptM == 0) {
+		$lesMatchs[0] = Array();
+		$lesMatchs[0]['matchID'] = $row['match_event_id'];
+		$lesMatchs[0]['ventDom'] = Array();
+		$lesMatchs[0]['ventVis'] = Array();
+			array_push($lesMatchs[0]['ventDom'],0);
+			array_push($lesMatchs[0]['ventVis'],0);
+			$cptM++;
+	} else {
+		if (strcmp($lesMatchs[$cptM - 1]['matchID'] , $row['match_event_id'])!=0) {
+			$lesMatchs[$cptM] = Array();
+			$lesMatchs[$cptM]['matchID'] = $row['match_event_id'];
+			$lesMatchs[$cptM]['ventDom'] = Array();
+			$lesMatchs[$cptM]['ventVis'] = Array();
+			array_push($lesMatchs[$cptM]['ventDom'],0);
+			array_push($lesMatchs[$cptM]['ventVis'],0);
+			$cptM++;
+		}
+	}
+	if ($row['code'] == 11) {
+
+		array_push($lesMatchs[$cptM-1]['ventDom'],0);
+		array_push($lesMatchs[$cptM-1]['ventVis'],0);
+	} else if ($row['code'] == 0) {
+		if ($row['eq_dom']== $row['equipe_event_id']) {
+			$lesMatchs[$cptM - 1]['ventDom'][count($lesMatchs[$cptM - 1]['ventDom'])-1]++;
+			if(array_sum($lesMatchs[$cptM - 1]['ventDom'])==$row['score_vis']+1){
+				$tmpJ = trouveJoueur($row['joueur_event_ref'], $joueurs_array);
+				$lesMatchs[$cptM - 1]['butGagnant'] =$tmpJ['NomJoueur'];
+			}
+		} else {
+			$lesMatchs[$cptM - 1]['ventVis'][count($lesMatchs[$cptM - 1]['ventVis'])-1]++;
+			if(array_sum($lesMatchs[$cptM - 1]['ventVis'])==$row['score_dom']+1){
+				$tmpJ = trouveJoueur($row['joueur_event_ref'], $joueurs_array);
+				$lesMatchs[$cptM - 1]['butGagnant'] =$tmpJ['NomJoueur'];
+			}
+		}
+
+	}
+
+}
+
+
 
 $qFic = "SELECT *
 													FROM TableEquipe
@@ -314,18 +406,18 @@ while ($rGard = mysql_fetch_assoc($resultGard)) {
 	$matchGard = array();
 	$matchGard['match'] = $rGard['matchIdRef'];
 	$matchDeja = false;
-	$cle=-1;
+	$cle = -1;
 
-	for($a=0;$a<count($array_gard);$a++){
-		if($array_gard[$a]['match']==$matchGard['match']){
-			$cle=$a;
-		}	
+	for ($a = 0; $a < count($array_gard); $a++) {
+		if ($array_gard[$a]['match'] == $matchGard['match']) {
+			$cle = $a;
+		}
 	}
 
 	if ($rGard['eq_dom'] == $rGard['equipe_event_id']) {
 		$matchGard['gDom'] = $rGard['joueur_event_ref'];
 
-		if ($cle>-1) {
+		if ($cle > -1) {
 			$array_gard[$cle]['gDom'] = $rGard['joueur_event_ref'];
 		} else {array_push($array_gard, $matchGard);
 		}
@@ -334,7 +426,7 @@ while ($rGard = mysql_fetch_assoc($resultGard)) {
 	if ($rGard['eq_vis'] == $rGard['equipe_event_id']) {
 		$matchGard['gVis'] = $rGard['joueur_event_ref'];
 
-		if ($cle>-1) {
+		if ($cle > -1) {
 			$array_gard[$cle]['gVis'] = $rGard['joueur_event_ref'];
 		} else {array_push($array_gard, $matchGard);
 		}
@@ -350,7 +442,13 @@ $IF = 0;
  $JSONstring .= $premierMatch;
  $JSONstring .= $dernierMatch;
  */
+////////////////////////////////////////
+//
+//  	Début du gros While, ou on boucle sur les équipes
+//
+
 while ($rangeeEv = mysql_fetch_array($resultEvent)) {
+
 	$trouveDom = 0;
 	$trouveVis = 0;
 	for ($a = 0; $a < $IF; $a++) {
@@ -366,35 +464,22 @@ while ($rangeeEv = mysql_fetch_array($resultEvent)) {
 		$mesFic[$IF] = array();
 		$mesFic[$IF]['eqId'] = $rangeeEv['eq_dom'];
 		$mE = trouveFic($rangeeEv['eq_dom'], $fic_array);
-		/*$qFic = "SELECT ficId
-		 FROM TableEquipe
-		 WHERE equipe_id= '{$rangeeEv['eq_dom']}'";
-		 $rFic = mysql_query($qFic) or die(mysql_error() . " dans " . $qFic);
-		 $tmpFic = mysql_fetch_row($rFic);
-		 $mesFic[$IF]['ficId'] = $tmpFic[0];
-		 $trouveDom = $tmpFic[0];*/
+
 		$trouveDom = $mE['ficId'];
 		$mesFic[$IF]['ficId'] = $trouveDom;
+		$IF++;
 	}
 	if ($trouveVis == 0) {
 		$mesFic[$IF] = array();
 		$mesFic[$IF]['eqId'] = $rangeeEv['eq_vis'];
-		/*		$qFic = "SELECT ficId
-		 FROM TableEquipe
-		 WHERE equipe_id= '{$rangeeEv['eq_vis']}'";
-		 $rFic = mysql_query($qFic) or die(mysql_error() . " dans " . $qFic);
-		 $tmpFic = mysql_fetch_row($rFic);
-		 $mesFic[$IF]['ficId'] = $tmpFic[0];
-		 $trouveVis = $tmpFic[0];*/
+
 		$mE = trouveFic($rangeeEv['eq_vis'], $fic_array);
 		$trouveVis = $mE['ficId'];
 		$mesFic[$IF]['ficId'] = $trouveVis;
+		$IF++;
 
 	}
 
-	$etoile1 = "";
-	$etoile2 = "";
-	$etoile3 = "";
 	$tmpCV = str_replace('"{', '{', $rangeeEv['cleValeur']);
 	$tmpCV = str_replace('}"', '}', $tmpCV);
 
@@ -407,55 +492,10 @@ while ($rangeeEv = mysql_fetch_array($resultEvent)) {
 	else {$tmpJS = $tmpCV;
 	}
 	$mJS = array();
-	if (isset($tmpJS['etoile1'])) {$mJS['etoile1'] = $tmpJS['etoile1'];
-	}
-	if (isset($tmpJS['etoile2'])) {$mJS['etoile2'] = $tmpJS['etoile2'];
-	}
-	if (isset($tmpJS['etoile3'])) {$mJS['etoile3'] = $tmpJS['etoile3'];
-	}
-	if (isset($tmpJS['arbitreId'])) {$mJS['arbitreId'] = $tmpJS['arbitreId'];
-	}
-	if (isset($mJS['etoile1'])) {
 
-		/*$qJou = "SELECT NomJoueur
-		 FROM TableJoueur
-		 WHERE joueur_id= '{$mJS['etoile1']}'";
-		 $rJou = mysql_query($qJou) or die(mysql_error() . " dans " . $qJou);
-		 $tmpJou = mysql_fetch_row($rJou);
-		 $etoile1 = $tmpJou[0];*/
-		$mJ = trouveJoueur($mJS['etoile1'], $joueurs_array);
-		$etoile1 = $mJ['NomJoueur'];
-		//echo "/.".$etoile1;
-	}
-	if (isset($mJS['etoile2'])) {
-		$mJ = trouveJoueur($mJS['etoile2'], $joueurs_array);
-		$etoile2 = $mJ['NomJoueur'];
-		/*		$qJou2 = "SELECT NomJoueur
-		 FROM TableJoueur
-		 WHERE joueur_id= '{$mJS['etoile2']}'";
-		 $rJou2 = mysql_query($qJou2) or die(mysql_error() . " dans " . $qJou2);
-		 $tmpJou2 = mysql_fetch_row($rJou2);
-		 $etoile2 = $tmpJou2[0];*/
-	}
-	if (isset($mJS['etoile3'])) {
-		$mJ = trouveJoueur($mJS['etoile3'], $joueurs_array);
-		$etoile3 = $mJ['NomJoueur'];
-
-		/*		$qJou3 = "SELECT NomJoueur
-		 FROM TableJoueur
-		 WHERE joueur_id= '{$mJS['etoile3']}'";
-		 $rJou3 = mysql_query($qJou3) or die(mysql_error() . " dans " . $qJou3);
-		 $tmpJou3 = mysql_fetch_row($rJou3);
-		 $etoile3 = $tmpJou3[0];*/
-	}
 	$arbitre = "";
 	if (isset($mJS['arbitreId'])) {
-		/*		$qArb = "SELECT prenom,nom
-		 FROM TableArbitre
-		 JOIN TableUser
-		 ON (TableArbitre.userId=TableUser.noCompte)
-		 WHERE arbitreId= '{$mJS['arbitreId']}'";
-		 $rArb = mysql_query($qArb) or die(mysql_error() . " dans " . $qArb);*/
+
 		$mA = trouveArbitre($mJS['arbitreId']);
 		if (!is_null($mA)) {
 			$arbitre = $mA['prenom'] + " " + $mA['nom'];
@@ -464,37 +504,11 @@ while ($rangeeEv = mysql_fetch_array($resultEvent)) {
 
 	///////////   Gardiens gagnants, perdant.
 
-	$gardiens = trouveGardiens($rangeeEv['match_event_id'], $array_gard);
+	$gardiens = trouveGardiens($rangeeEv['matchIdRef'], $array_gard);
 
-	/*	$qGardDom = "SELECT TableJoueur.NomJoueur
-	 FROM TableEvenement0
-	 JOIN TableJoueur
-	 ON (TableJoueur.joueur_id=TableEvenement0.joueur_event_ref)
-	 WHERE
-	 match_event_id='{$rangeeEv['match_event_id']}'
-	 AND code='3'
-	 AND souscode='5'
-	 AND equipe_event_id='{$rangeeEv['eq_dom']}'";
-	 $rGardDom = mysql_query($qGardDom) or die(mysql_error() . " dans " . $qGardDom);
-
-	 $tmpGardDom = mysql_fetch_row($rGardDom);
-	 $gardDom = $tmpGardDom[0];
-	 */
 	$gD = trouveJoueur($gardiens['dom'], $joueurs_array);
 	$gardDom = $gD['NomJoueur'];
-	/*
-	 $qGardVis = "SELECT TableJoueur.NomJoueur
-	 FROM TableEvenement0
-	 JOIN TableJoueur
-	 ON (TableJoueur.joueur_id=TableEvenement0.joueur_event_ref)
-	 WHERE
-	 match_event_id='{$rangeeEv['match_event_id']}'
-	 AND code='3'
-	 AND souscode='5'
-	 AND equipe_event_id='{$rangeeEv['eq_vis']}'";
-	 $rGardVis = mysql_query($qGardVis) or die(mysql_error() . " dans " . $qGardVis);
-	 $tmpGardVis = mysql_fetch_row($rGardVis);
-	 $gardVis = $tmpGardVis[0];*/
+
 	$gV = trouveJoueur($gardiens['vis'], $joueurs_array);
 	$gardVis = $gV['NomJoueur'];
 	$gGagne = "";
@@ -507,13 +521,14 @@ while ($rangeeEv = mysql_fetch_array($resultEvent)) {
 		$gPerd = $gardDom;
 	}
 	$butGagne = "";
+	/*
 	if ($rangeeEv['score_dom'] > $rangeeEv['score_vis']) {
 		$qBG = "SELECT TableJoueur.NomJoueur
 													FROM TableEvenement0
 													JOIN TableJoueur
 														ON (TableJoueur.joueur_id=TableEvenement0.joueur_event_ref)
 													WHERE 
-														match_event_id='{$rangeeEv['match_event_id']}'
+														match_event_id='{$rangeeEv['matchIdRef']}'
 														AND code='0'
 														AND equipe_event_id='{$rangeeEv['eq_dom']}'
 														ORDER BY `TableEvenement0`.`chrono` ASC
@@ -527,7 +542,7 @@ while ($rangeeEv = mysql_fetch_array($resultEvent)) {
 													JOIN TableJoueur
 														ON (TableJoueur.joueur_id=TableEvenement0.joueur_event_ref)
 													WHERE 
-														match_event_id='{$rangeeEv['match_event_id']}'
+														match_event_id='{$rangeeEv['matchIdRef']}'
 														AND code='0'
 														AND equipe_event_id='{$rangeeEv['eq_vis']}'
 														ORDER BY `TableEvenement0`.`chrono` ASC
@@ -540,126 +555,168 @@ while ($rangeeEv = mysql_fetch_array($resultEvent)) {
 		$tmpButGagne = mysql_fetch_row($rButGagne);
 		$butGagne = $tmpButGagne[0];
 	}
+*/
+	/////////////////////////////////////
+	//
+	//
+	//
+	//
 	////// Section ventilation des buts
+	/*
+	 $qVentPer = "SELECT chrono, code, souscode
+	 FROM TableEvenement0
 
-	$qVentPer = "SELECT chrono, code, souscode
-													FROM TableEvenement0
-													
-													WHERE 
-														match_event_id='{$rangeeEv['match_event_id']}'
-														AND (code='10' OR code='11') 
-														ORDER BY TableEvenement0.souscode ASC";
+	 WHERE
+	 match_event_id='{$rangeeEv['matchIdRef']}'
+	 AND (code='10' OR code='11')
+	 ORDER BY TableEvenement0.souscode ASC";
 
-	//			echo "/////".$qBG;
+	 //			echo "/////".$qBG;
 
-	$lesPer = array();
-	$IP = 0;
-	$chronoDeb = 0;
-	$rVentPer = mysql_query($qVentPer) or die(mysql_error() . " dans " . $qVentPer);
-	while ($rangVentPer = mysql_fetch_array($rVentPer)) {
-		if ($rangVentPer['code'] == 11) {
-			$lesPer[$IP] = $rangVentPer['chrono'];
-			$IP++;
-		}
-		if ($rangVentPer['code'] == 10 && $rangVentPer['souscode'] == 0) {$chronoDeb = $rangVentPer['chrono'];
-		}
-	}
+	 $lesPer = array();
+	 $IP = 0;
+	 $chronoDeb = 0;
+	 $rVentPer = mysql_query($qVentPer) or die(mysql_error() . " dans " . $qVentPer);
+	 while ($rangVentPer = mysql_fetch_array($rVentPer)) {
+	 if ($rangVentPer['code'] == 11) {
+	 $lesPer[$IP] = $rangVentPer['chrono'];
+	 $IP++;
+	 }
+	 if ($rangVentPer['code'] == 10 && $rangVentPer['souscode'] == 0) {$chronoDeb = $rangVentPer['chrono'];
+	 }
+	 }
 
-	$qVentBut = "SELECT chrono,equipe_event_id
-													FROM TableEvenement0
-													
-													WHERE 
-														match_event_id='{$rangeeEv['match_event_id']}'
-														AND (code='0') 
-														ORDER BY `TableEvenement0`.`chrono` ASC";
+	 $qVentBut = "SELECT chrono,equipe_event_id
+	 FROM TableEvenement0
 
-	$ventDom = array_fill(0, count($lesPer) + 1, 0);
-	$ventVis = array_fill(0, count($lesPer) + 1, 0);
+	 WHERE
+	 match_event_id='{$rangeeEv['matchIdRef']}'
+	 AND (code=0)
+	 ORDER BY `TableEvenement0`.`chrono` ASC";
 
-	$rVentBut = mysql_query($qVentBut) or die(mysql_error() . " dans " . $qVentBut);
+	 $ventDom = array_fill(0, count($lesPer) + 1, 0);
+	 $ventVis = array_fill(0, count($lesPer) + 1, 0);
 
-	$perCour = 0;
-	while ($rangVentBut = mysql_fetch_array($rVentBut)) {
-		if ($rangVentBut['equipe_event_id'] == $rangeeEv['eq_dom']) {
-			$trouve = false;
-			while (!$trouve) {
-				if ($perCour >= count($lesPer) - 1)// Cas de la derniere periode
-				{
-					$ventDom[$perCour]++;
-					$trouve = true;
-				} else {
+	 $rVentBut = mysql_query($qVentBut) or die(mysql_error() . " dans " . $qVentBut);
 
-					if ($rangVentBut['chrono'] > $chronoDeb && $rangVentBut['chrono'] < $lesPer[0]) {$ventDom[0]++;
-						$trouve = true;
-					} else if ($rangVentBut['chrono'] > $lesPer[$perCour] && $rangVentBut['chrono'] < $lesPer[$perCour + 1]) {$ventDom[$perCour + 1]++;
-						$trouve = true;
-					} else {$perCour++;
-					}
-				}
-			}
-		} else if ($rangVentBut['equipe_event_id'] == $rangeeEv['eq_vis']) {
-			$trouve = false;
-			while (!$trouve) {
-				if ($perCour >= count($lesPer) - 1)// Cas de la derniere periode
-				{
-					$ventVis[$perCour]++;
-					$trouve = true;
-				} else {
+	 $perCour = 0;
+	 while ($rangVentBut = mysql_fetch_array($rVentBut)) {
+	 if ($rangVentBut['equipe_event_id'] == $rangeeEv['eq_dom']) {
+	 $trouve = false;
+	 while (!$trouve) {
+	 if ($perCour >= count($lesPer) - 1)// Cas de la derniere periode
+	 {
+	 $ventDom[$perCour]++;
+	 $trouve = true;
+	 } else {
 
-					if ($rangVentBut['chrono'] > $chronoDeb && $rangVentBut['chrono'] < $lesPer[0]) {$ventVis[0]++;
-						$trouve = true;
-					} else if ($rangVentBut['chrono'] > $lesPer[$perCour] && $rangVentBut['chrono'] < $lesPer[$perCour + 1]) {$ventVis[$perCour + 1]++;
-						$trouve = true;
-					} else {$perCour++;
-					}
-				}
-			}
+	 if ($rangVentBut['chrono'] > $chronoDeb && $rangVentBut['chrono'] < $lesPer[0]) {$ventDom[0]++;
+	 $trouve = true;
+	 } else if ($rangVentBut['chrono'] > $lesPer[$perCour] && $rangVentBut['chrono'] < $lesPer[$perCour + 1]) {$ventDom[$perCour + 1]++;
+	 $trouve = true;
+	 } else {$perCour++;
+	 }
+	 }
+	 }
+	 } else if ($rangVentBut['equipe_event_id'] == $rangeeEv['eq_vis']) {
+	 $trouve = false;
+	 while (!$trouve) {
+	 if ($perCour >= count($lesPer) - 1)// Cas de la derniere periode
+	 {
+	 $ventVis[$perCour]++;
+	 $trouve = true;
+	 } else {
 
-		}
+	 if ($rangVentBut['chrono'] > $chronoDeb && $rangVentBut['chrono'] < $lesPer[0]) {$ventVis[0]++;
+	 $trouve = true;
+	 } else if ($rangVentBut['chrono'] > $lesPer[$perCour] && $rangVentBut['chrono'] < $lesPer[$perCour + 1]) {$ventVis[$perCour + 1]++;
+	 $trouve = true;
+	 } else {$perCour++;
+	 }
+	 }
+	 }
 
-	}
+	 }
 
+	 }
+	 */
 	unset($matchID);
-	$matchID = $rangeeEv['match_event_id'];
+	$matchID = $rangeeEv['matchIdRef'];
 
-	$leMatch = parseMatchID($matchID);
-	$dateMatch = strtotime($leMatch['date']);
+	//$leMatch = parseMatchID($matchID);
+	//$dateMatch = strtotime($leMatch['date']);
 	//$pm = strtotime($premierMatch);
 	//$dm = strtotime($dernierMatch);
 
 	//	if(($dateMatch>=$pm)&&($dateMatch<=$dm))
 	//	{
-	$JSONstring .= "{\"matchID\": \"" . $matchID . "\",";
-	$JSONstring .= "\"date\": \"" . $rangeeEv['date'] . "\",";
+	/*
+	 $JSONstring .= "{\"matchID\": \"" . $matchID . "\",";
+	 $JSONstring .= "\"date\": \"" . $rangeeEv['date'] . "\",";
+	 $JSONstring .= "\"mavId\": \"" . $rangeeEv['matchId'] . "\",";
 
+	 $mE = trouveFic($rangeeEv['eq_dom'], $fic_array);
+	 $JSONstring .= "\"eqDom\": \"" . $mE['nom_equipe'] . "\",";
+
+	 $JSONstring .= "\"eqDomId\": \"" . $rangeeEv['eq_dom'] . "\",";
+	 $JSONstring .= "\"ficIdDom\": \"" . $trouveDom . "\",";
+	 //	$JSONstring .="\"eqDom\": \"".$leMatch['dom']."\",";
+	 $JSONstring .= "\"equipeScoreDom\": \"" . $rangeeEv['score_dom'] . "\",";
+	 $JSONstring .= "\"equipeScoreVis\": \"" . $rangeeEv['score_vis'] . "\",";
+	 $JSONstring .= "\"statut\": \"" . $rangeeEv['statut'] . "\",";
+	 //$JSONstring .="\"eqVis\": \"".$leMatch['vis']."\"},";
+	 $JSONstring .= "\"eqVisId\": \"" . $rangeeEv['eq_vis'] . "\",";
+	 $JSONstring .= "\"ficIdVis\": \"" . $trouveVis . "\",";
+
+	 $JSONstring .= "\"arbitre\": \"" . $arbitre . "\",";
+	 $JSONstring .= "\"butGagnant\": \"" . $butGagne . "\",";
+	 $JSONstring .= "\"gGagnant\": \"" . $gGagne . "\",";
+	 $JSONstring .= "\"gPerdant\": \"" . $gPerd . "\",";
+	 $JSONstring .= "\"ventDom\":" . json_encode($ventDom) . ",";
+	 $JSONstring .= "\"ventVis\":" . json_encode($ventVis) . ",";
+	 $JSONstring .= "\"cleValeur\":" . json_encode($tmpJS) . ",";
+	 $mE = trouveFic($rangeeEv['eq_vis'], $fic_array);
+	 $JSONstring .= "\"eqVis\": \"" . $mE['nom_equipe'] . "\"},";
+	 */
+
+	$JS2 = Array();
+
+	$mMatch = trouveMatch($matchID, $lesMatchs);
+
+	$JS2['matchID'] = $matchID;
+	$JS2['date'] = $rangeeEv['date'];
+	$JS2['mavId'] = $rangeeEv['mavId'];
 	$mE = trouveFic($rangeeEv['eq_dom'], $fic_array);
-	$JSONstring .= "\"eqDom\": \"" . $mE['nom_equipe'] . "\",";
-	$JSONstring .= "\"eqDomId\": \"" . $rangeeEv['eq_dom'] . "\",";
-	$JSONstring .= "\"ficIdDom\": \"" . $trouveDom . "\",";
-	//	$JSONstring .="\"eqDom\": \"".$leMatch['dom']."\",";
-	$JSONstring .= "\"equipeScoreDom\": \"" . $rangeeEv['score_dom'] . "\",";
-	$JSONstring .= "\"equipeScoreVis\": \"" . $rangeeEv['score_vis'] . "\",";
-	$JSONstring .= "\"statut\": \"" . $rangeeEv['statut'] . "\",";
-	//$JSONstring .="\"eqVis\": \"".$leMatch['vis']."\"},";
-	$JSONstring .= "\"eqVisId\": \"" . $rangeeEv['eq_vis'] . "\",";
-	$JSONstring .= "\"ficIdVis\": \"" . $trouveVis . "\",";
-	if (strlen($etoile1) > 0)
-		$JSONstring .= "\"etoile1\": \"" . $etoile1 . "\",";
-	if (strlen($etoile2) > 0)
-		$JSONstring .= "\"etoile2\": \"" . $etoile2 . "\",";
-	if (strlen($etoile3) > 0)
-		$JSONstring .= "\"etoile3\": \"" . $etoile3 . "\",";
-	$JSONstring .= "\"arbitre\": \"" . $arbitre . "\",";
-	$JSONstring .= "\"butGagnant\": \"" . $butGagne . "\",";
-	$JSONstring .= "\"gGagnant\": \"" . $gGagne . "\",";
-	$JSONstring .= "\"gPerdant\": \"" . $gPerd . "\",";
-	$JSONstring .= "\"ventDom\":" . json_encode($ventDom) . ",";
-	$JSONstring .= "\"ventVis\":" . json_encode($ventVis) . ",";
-	$JSONstring .= "\"cleValeur\":" . json_encode($tmpJS) . ",";
+	$JS2['eqDom'] = $mE['nom_equipe'];
+	$JS2['coulDom'] = $mE['couleur1'];
+	$JS2['eqDomId'] = $rangeeEv['eq_dom'];
+	$JS2['alDom'] = json_decode($rangeeEv['alignementDom'],false);
+	$JS2['alVis'] = json_decode($rangeeEv['alignementVis'],false);
+	$JS2['gDom'] = $rangeeEv['gardienDom'];
+	$JS2['gVis'] = $rangeeEv['gardienVis'];
+	$JS2['ficIdDom'] = $trouveDom;
+	$JS2['equipeScoreDom'] = $rangeeEv['score_dom'];
+	$JS2['equipeScoreVis'] = $rangeeEv['score_vis'];
+	$JS2['statut'] = $rangeeEv['statut'];
+	$JS2['eqVisId'] = $rangeeEv['eq_vis'];
+	$JS2['ficIdVis'] = $trouveVis;
+	$JS2['arbitre'] = $arbitre;
+	$JS2['butGagnant'] = $mMatch['butGagnant'];
+	$JS2['gGagnant'] = $gGagne;
+	$JS2['gPerdant'] = $gPerd;
+	$JS2['ventDom'] = $mMatch['ventDom'];
+	$JS2['ventVis'] = $mMatch['ventVis'];
+	//	$JS2['ventVis'] =$ventVis;
+	$JS2['cleValeur'] = $tmpJS;
 	$mE = trouveFic($rangeeEv['eq_vis'], $fic_array);
-	$JSONstring .= "\"eqVis\": \"" . $mE['nom_equipe'] . "\"},";
+	$JS2['coulVis'] = $mE['couleur1'];
+	$JS2['eqVis'] = $mE['nom_equipe'];
+	$JS2['arenaId'] = $rangeeEv['arenaId'];
+	$JSONstring .= json_encode($JS2) . ", ";
+
 	array_push($liste, $matchID);
 	//	}
+
 }
 
 $Ine++;
@@ -669,6 +726,8 @@ if (!strcmp(",", substr($JSONstring, -1)))// Pour �viter les vides;
 	$JSONstring = substr($JSONstring, 0, -1);
 }
 $JSONstring .= "]}";
+//$JSONstring .= "------------------------------------------------------------------------------------------------------------";
+//$JSONstring .= json_encode($lesMatchs);
 
 //echo json_encode($Sommaire);
 echo $JSONstring;

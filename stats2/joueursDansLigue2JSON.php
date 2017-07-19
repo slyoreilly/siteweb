@@ -191,15 +191,15 @@ if ($dernierMatch > date("Y-m-d")) {$dateAbon = date("Y-m-d");
 	unset($joueurs);
 	$joueurs = Array();
 //	 match_event_id = '{$lesMatchs[$Im]}' AND 
-	$strQuery = "SELECT TableEvenement0.*, abonJoueurEquipe.*, TableEquipe.nom_equipe,TableEquipe.ficId, 
-								TableEquipe.ligue_equipe_ref, TableJoueur.NomJoueur, TableJoueur.NumeroJoueur ,TableJoueur.ficIdPortrait 
+	$strQuery = "SELECT TableEvenement0.*, abonJoueurEquipe.*,abonEquipeLigue.ligueId, TableEquipe.nom_equipe,TableEquipe.ficId, 
+								 TableJoueur.NomJoueur, TableJoueur.NumeroJoueur ,TableJoueur.ficIdPortrait 
 				FROM TableEvenement0 
-					LEFT JOIN TableJoueur 
+					INNER JOIN TableJoueur 
 						 ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id)
 					INNER JOIN abonJoueurEquipe 
 						 ON (TableEvenement0.joueur_event_ref=abonJoueurEquipe.joueurId)
 					INNER JOIN abonEquipeLigue 
-						 ON (abonJoueurEquipe.equipeId=abonEquipeLigue.equipeId)
+						 ON (abonJoueurEquipe.equipeId=abonEquipeLigue.equipeId AND TableEvenement0.equipe_event_id=abonEquipeLigue.equipeId)
 						  
 					INNER JOIN TableEquipe
 						 ON (abonJoueurEquipe.equipeId=TableEquipe.equipe_id) 
@@ -231,6 +231,8 @@ if ($dernierMatch > date("Y-m-d")) {$dateAbon = date("Y-m-d");
 
 		$I0++;
 	}
+	while ($Im < count($lesMatchs)) {
+	
 	unset($resultEvent);
 	unset($rangeeEv);
 
@@ -262,8 +264,8 @@ if ($dernierMatch > date("Y-m-d")) {$dateAbon = date("Y-m-d");
 						$I0++;
 		}
 	}
-//	$Im++;
-//}
+	$Im++;
+	}
 
 ///////////////////////////////////////////////////////////
 //

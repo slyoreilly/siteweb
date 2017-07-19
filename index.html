@@ -7,7 +7,9 @@
 		<meta name="keyword" content="hockey,statistics,android,mobile app, smartphone, scoreboard, video replay,">
 		<meta name="author" content="Sylvain O'Reilly">
 		<link rel="shortcut icon" href="/favicon.ico" />
+		<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
 		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/jquery.watermark.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
 		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
 		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
@@ -27,6 +29,10 @@
 				//
 				// Vos Stats détaillées;
 				//Découvrez SyncStats;
+				
+				
+$( document ).ready(function() {
+				
 				elParent = document.getElementById('divCentrale');
 				//elParent.style.height="80%";
 				elParent.style.minHeight = "400px";
@@ -36,7 +42,7 @@
 				titreIndexJS.innerHTML = window.tl_titreIndex;
 				sousTitreIndexJS = document.getElementById('sousTitreIndex');
 				sousTitreIndexJS.innerHTML = window.tl_sousTitreIndex;
-
+/*
 				bulle1 = document.getElementById('bulle1Id');
 				bulle1.onclick = function() {
 					window.location.href = window.menus[0].lien;
@@ -48,8 +54,176 @@
 					window.location.href = window.menus[28].lien;
 				}
 				inBulle1.innerHTML = window.tl_indexBulle1;
-				inBulle2.innerHTML = window.tl_indexBulle2;
+				inBulle2.innerHTML = window.tl_indexBulle2;*/
+				
+				$('#divCentrale').css('display','table')
+				$('#divIndex1').css('width','40%');
+				$('#divIndex2').append($('<h3 id="rechercheRapide"></h3>').text("Recherche rapide"));
+				$('#divIndex2').append($('<div class="boiteRecherche" id="IDL"></div>').append($('<p></p>').attr("id","titreLigue").text('Ligue')).append($('<input></input>').attr("type", "text").attr('id', 'recherche-ligue')));
+				$('#divIndex2').append($('<div class="boiteRecherche" id="IDJ"></div>').append($('<p></p>').attr("id","titreJoueur").text('Joueur')).append($('<input></input>').attr("type", "text").attr('id', 'recherche-joueur')));
+				$('#divIndex2').append($('<div class="boiteRecherche" id="IDM"></div>').append($('<p></p>').attr("id","titreMatch").text('Match (AAAA/MM/JJ)')).append($('<input></input>').attr("type", "text").attr('id', 'recherche-match')));
+/*
+(function ($) {			
+   $('#recherche-ligue').watermark('Ligue');
+   $('#recherche-joueur').watermark('Joueur');
+   $('#recherche-match').watermark('Match (AAAA-MM-JJ)');
+})(jQuery);*/
+
+  $("#recherche-ligue").val("Nom de la ligue").css("color","#ccc");
+  $("#recherche-joueur").val("Nom du joueur").css("color","#ccc");
+  $("#recherche-match").val("AAAA/MM/JJ").css("color","#ccc");
+
+    
+   $("#recherche-ligue").on("focusout", function(){
+	   $("#recherche-ligue").val("Nom de la ligue").css("color","#ccc");
+   }).on("focusin", function(){
+        $("#recherche-ligue").val("").css("color","#000");
+
+    });
+   $("#recherche-joueur").on("focusout", function(){
+	   $("#recherche-joueur").val("Nom du joueur").css("color","#ccc");
+   }).on("focusin", function(){
+        $("#recherche-joueur").val("").css("color","#000");
+
+    });
+   $("#recherche-match").on("focusout", function(){
+	   $("#recherche-match").val("AAAA/MM/JJ").css("color","#ccc");
+   }).on("focusin", function(){
+        $("#recherche-match").val("").css("color","#000");
+
+    });
+
+			$('#recherche-ligue').keyup(function(event) {
+			
+			$.ajax({
+				url : "/scriptsphp/recherche.php",
+				type : "POST",
+				data : {
+					searchString : $('#recherche-ligue').val()
+				}
+			}).done(function(msg) {
+				detruitNoeud('boiteResRecherche');
+				$('<div id="boiteResRecherche"></div>').appendTo('#IDL').css("text-align", "left").append($('<div class="btnFerme" id="CBL">X</div>').click(function(){$('#recherche-ligue').val("").blur();$('#boiteResRecherche').remove();}));
+				res = jQuery.parseJSON(msg);
+				if (res.ligue.length > 0) {
+					$("#boiteResRecherche").append($('<h3></h3>').text("Ligues").css("display","inline"));
+				}
+				for (var a = 0; a < res.ligue.length; a++) {
+					$("#boiteResRecherche").append($('<div></div>').text(res.ligue[a].nom).hover(function() {
+						$(this).css("background", "#AAAAAA");
+					}, function() {
+						$(this).css("background", "#FFFFFF");
+					}).click({
+						id : res.ligue[a].id
+					}, function(event) {
+						document.location.href = "/zstats/accueilligue.html?ligueId=" + event.data.id;
+					}));
+				}
+			});
+			
+		});
+			$('#recherche-joueur').keyup(function(event) {
+
+			$.ajax({
+				url : "/scriptsphp/recherche.php",
+				type : "POST",
+				data : {
+					searchString : $('#recherche-joueur').val()
+				}
+			}).done(function(msg) {
+				detruitNoeud('boiteResRecherche');
+				$('<div id="boiteResRecherche"></div>').appendTo('#IDJ').css("text-align", "left").append($('<div class="btnFerme" id="CBJ">X</div>').click(function(){$('#recherche-joueur').val("").blur();$('#boiteResRecherche').remove();}));
+				res = jQuery.parseJSON(msg);
+								if (res.joueur.length > 0) {
+					$("#boiteResRecherche").append($('<h3></h3>').text("Joueurs").css("display","inline"));
+				}
+				for (var a = 0; a < res.joueur.length; a++) {
+					$("#boiteResRecherche").append($('<div></div>').text(res.joueur[a].nom).hover(function() {
+						$(this).css("background", "#AAAAAA")
+					}, function() {
+						$(this).css("background", "#FFFFFF")
+					}).click({
+						id : res.joueur[a].id
+					}, function(event) {
+						document.location.href = "/zstats/statsjoueur.html?joueurId=" + event.data.id;
+					}));
+				}
+
+			});
+		});
+			$('#recherche-match').keyup(function(event) {
+			if($('#recherche-match').val().length==10){
+			$.ajax({
+				url : "/scriptsphp/recherche.php",
+				type : "POST",
+				data : {
+					searchString : $('#recherche-match').val(),
+					typeRecherche: "match"
+				}
+			}).done(function(msg) {
+				detruitNoeud('boiteResRecherche');
+				$('<div id="boiteResRecherche"></div>').appendTo('#IDM').css("text-align", "left").append($('<div class="btnFerme" id="CBM">X</div>').click(function(){$('#recherche-match').val("").blur();$('#boiteResRecherche').remove();}));
+				res = jQuery.parseJSON(msg);
+								if (res.match.length > 0) {
+					$("#boiteResRecherche").append($('<h3></h3>').text("Match").css("display","inline"));
+				}
+				for (var a = 0; a < res.match.length; a++) {
+					$("#boiteResRecherche").append($('<div></div>').text(res.match[a].nom + ' : ' +res.match[a].eqDom + ' vs '+res.match[a].eqVis + ' / '+ res.match[a].date.split(' ')[0]).hover(function() {
+						$(this).css("background", "#AAAAAA")
+					}, function() {
+						$(this).css("background", "#FFFFFF")
+					}).click({
+						id : res.match[a].matchId,
+					}, function(event) {
+						document.location.href = "/zstats/match.html?match="+ event.data.id;
+					}));
+				}
+			
+			});
 			}
+		});
+
+			$('#ligueVedette').click(function(){document.location.href="/zstats/accueilligue.html?ligueId=1"});
+			$('#versInfos').click(function(){document.location.href="/zdoc/infos.html"});
+			
+			traduction();
+
+
+			});				
+			
+			
+			}
+			function traduction(){
+				 			$('#li111').text(window.tl_produits_li111);
+				 			$('#li112').text(window.tl_produits_li112);
+				 			$('#li113').text(window.tl_produits_li113);
+				 			$('#li121').text(window.tl_produits_li121);
+				 			$('#li122').text(window.tl_produits_li122);
+				 			$('#li123').text(window.tl_produits_li123);
+				 			$('#li124').text(window.tl_produits_li124);
+				 			$('#li131').text(window.tl_produits_li131);
+				 			$('#li132').text(window.tl_produits_li132);
+				 			$('#li133').text(window.tl_produits_li133);
+				 			$('#li134').text(window.tl_produits_li134);
+				 			$('#li141').text(window.tl_produits_li141);
+				 			$('#li142').text(window.tl_produits_li142);
+				 			$('#li143').text(window.tl_produits_li143);
+				 			$('#h1ProdSyncStats').text(window.tl_produits_h1ProdSyncStats);
+				 			$('#h1ProdWebSite').text(window.tl_produits_h1ProdWebSite);
+				 			$('#h1ProdSyncCam').text(window.tl_produits_h1ProdSyncCam);
+				 			$('#h1SyncBoard').text(window.tl_produits_h1SyncBoard);		
+				 			$('#titreAvantages').text(window.tl_produits_titreAvantages);				 							 			
+				 			$('#ligueVedette').text(window.tl_index_ligueVedette);		
+				 			$('#versInfos').text(window.tl_index_versInfos);				 							 			
+				 			$('#titreJoueur').text(window.tl_match_Joueur);
+				 			$('#titreLigue').text(window.tl_statseq_Ligue);
+				 			$('#titreMatch').text(window.tl_zc_Match);
+				 			$('#rechercheRapide').text(window.tl_index_rechercheRapide);
+				 			$('#recherche-match').val(window.tl_index_hintAAAMMJJ);
+				 			$('#recherche-joueur').val(window.tl_index_hintJoueur);
+				 			$('#recherche-ligue').val(window.tl_index_hintLigue);
+				 		}
+
 		</script>
 	</head>
 	<body id="mbody">
@@ -117,26 +291,117 @@
 		</div>
 		<div id="divGauche"></div>
 		<div id="divMenuHaut"></div>
-		<div id="divCentrale">
+		<div id="divCentrale" >
 			<div id="divIndex1">
 				<h1 id="titreIndex">Smart Hockey</h1>
-				<p id="sousTitreIndex">
-					Mobile app to replace scoresheets for automated stats management of hockey leagues and tournaments.</h2>
-					<div id="bulle1Id" class="divBulle vert cliquable">
-						<div id="inBulle1Id">
-							Your detailed stats
-						</div>
-					</div>
-					<div id="bulle2Id" class="divBulle bleu cliquable">
+
+				<!--img src="/images/cellEtPucks.png"  height="100" style="float:left; padding:10px;"></img-->
+				<p id="sousTitreIndex" style="padding:15px;">
+					Mobile app to replace scoresheets for automated stats management of hockey leagues and tournaments.</p>
+
+
+
+					<!--div id="bulle2Id" class="divBulle bleu cliquable">
 						<div id="inBulle2Id">
 							Discover SyncStats
 						</div>
 
+					</div-->
+					<div id="ligueVedette" class="boutonRedirige bleu cliquable">
+						Voir notre ligue en vedette >>>>>> 
+
+					</div>
+					<div id="versInfos" class="boutonRedirige vert cliquable">
+						Apprenez sur SyncStats >>>>>> 
+
 					</div>
 
+
+
+			</div>
+			<div id="divIndex2">
+
+			</div>
+				
+			<div id="divProduitSurPli" style="width:100%;position:relative;padding-bottom: 0px;">
+					
+					<div id="titreAvantages">Amazing Add-ons to boost-up your game</div>
+
+				<a href="/products/syncstats.html">
+				<div id="divProdSyncStats" class="boiteProduit2">
+					<img     src="/images/icones/smartphone-2.png"></img><h1 id="h1ProdSyncStats">The Hockey App</h1>
+					<h2 id="h2ProdSyncStats"></h2>
+					<div class="boiteAvantages">
+						<ul>
+							<li id="li111">No more paper! No more wasted time!</li>
+							<li id="li112">Easy, flexible, complete app</li>
+							<li id="li113">Can be used by referee or scorekeeper</li>
+						</ul>
+						
+						
+					</div>
+				</div>
+				</a>
+				<a href="/products/website.html">
+				<div id="divProdWebSite" class="boiteProduit2">
+					<img     src="/images/icones/web.png"></img><h1 id="h1ProdWebSite">Complete Web Site</h1>
+					<h2 id="h2ProdWebSite"></h2>
+					<div class="boiteAvantages">
+						<ul>
+							<li id="li121">All stats and videos logged by apps</li>
+							<li id="li122">User, player, team profiles</li>
+							<li id="li123">Schedules, Standings</li>
+							<li id="li124">and MUCH more...</li>
+						</ul>
+
+						
+					</div>
+				</div>
+				</a>
+				<a href="/products/synccam.html">
+				
+				<div id="divProdSyncCam" class="boiteProduit2">
+					<img     src="/images/icones/video.png"></img>	
+									<h1 id="h1ProdSyncCam">AutoEdited Videos</h1>
+					<h2 id="h2ProdSyncCam"></h2>
+					<div class="boiteAvantages">
+						<ul>
+							<li id="li131">Simple Android phones required</li>
+							<li id="li132">Install whereever you like: no limit in quantity</li>
+							<li id="li133">Enjoy all benefits of the stats web site</li>
+							<li id="li134">Just a simple "start" and "Stop button" </li>
+						</ul>
+
+						
+					</div>
+				</div>
+				
+								</a>
+				<a href="/products/syncboard.html">
+
+				<div id="divSyncBoard" class="boiteProduit2">
+										<img     src="/images/icones/television.png"></img><h1 id="h1SyncBoard">Intelligent Scoreboard</h1>
+					<h2 id="h2SyncBoard"></h2>
+					<div class="boiteAvantages">
+						<ul>
+							<li id="li141">Controlled wirelessly by SyncStats app</li>
+							<li id="li142">Display Score, time, teams...</li>
+							<li id="li143">Also stats and even videos!</li>
+						</ul>
+
+						
+					</div>
+				</div>
+				</a>
+								 	
+				
 			</div>
 
+
+
 		</div>
+		
+		
 		<div id="divDroite">
 			<div id="divIndexDroite">
 				<h1>SyncStats</h1>
@@ -169,35 +434,28 @@
 				</p>
 
 			</div>
-			<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-			<!-- boiteContexteAdSense -->
-			<ins class="adsbygoogle"
-			style="display:inline-block;width:250px;height:250px"
-			data-ad-client="ca-pub-2263794877114969"
-			data-ad-slot="9575808332"></ins>
-			<script>
-				( adsbygoogle = window.adsbygoogle || []).push({});
-			</script>
+
 
 		</div>
 		<div id="divBas"></div>
 
 		<script type="text/javascript" charset="utf-8">
-			developper(1);
+				$('#divHaut').empty();
+				$('#divDroite').empty();
+			developper(28);
 
 			detruitNoeud('divGauche');
-			detruitNoeud('dBC_1');
-			detruitNoeud('dBC_2');
+	//		detruitNoeud('dBC_1');
+		//	detruitNoeud('dBC_2');
 
 			//		videNoeud('divDroite');
-			document.getElementById('divCentrale').style.width = "66%";
+			document.getElementById('divCentrale').style.width = "76%";
 			document.getElementById('divCentrale').style.marginLeft = "2%";
 			document.getElementById('divCentrale').style.marginRight = "2%";
 
 			document.getElementById('divCentrale').style.left = "0";
 
-			document.getElementById('divDroite').style.width = "26%";
-			document.getElementById('divDroite').style.backgroundColor = "#FFF";
+			//document.getElementById('divDroite').style.backgroundColor = "#FFF";
 			//		detruitDivGaucheDroite();
 			bN = document.getElementById('barreTitreContexte');
 			for (var a = 0; a < bN.childNodes.length; a++) {
@@ -206,7 +464,7 @@
 			}
 			document.getElementById('barreNav').style.display = "none";
 			faitDivIndex1();
-
+			$(".adsbygoogle").remove();
 			/*
 			 maListe = document.getElementById("liste1");
 			 li1 = document.createElement('LI')

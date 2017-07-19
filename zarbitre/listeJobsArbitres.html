@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<HTML>
+	<HEAD>
+		<title>Arbitres</title>
+
+				<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<!--script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script-->
+		<script src="/scripts/jquery.js"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible"/>
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+
+		<script type="text/javascript" charset="utf-8">
+
+			
+			function getArbitres() {
+			    
+			     $.ajax({
+			             url: "/scriptsphp/getJobsArbitres.php", 
+			             type : 'POST', 
+			             dataType: 'text',
+			             cache: false,
+			             success: function(result){
+			                 reponse =  jQuery.parseJSON(result);
+			                 alert(reponse);
+                            listeJobsArbitres=reponse;
+                            remplirTableau();
+                    },
+                        error:function(xhr, status, error) {
+                            alert("Erreur...");
+                           alert( eval('(' + xhr.responseText + ')'));
+                 }
+                        });
+			    
+			    /*
+				//	return function() {
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/getJobsArbitres.php";
+				//		alert(url);
+				//alert("Params a setMatchAVenir" + params);
+				requete_ajax.open('POST', url, true);
+				params="";
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+					    alert(requete_ajax.responseText );
+						listeJobsArbitres = eval('(' + requete_ajax.responseText + ')');
+						
+						remplirTableau();
+						//requete_ajax.responseText;
+						
+						//window.location.reload(true);
+					}
+				};
+				requete_ajax.send(params);
+				var pourMAV = new Array();    */
+				//requete_ajax.send(null);
+				//	return requete_ajax.responseText;
+
+				//		}
+			}
+
+		
+		function remplirTableau(){
+			
+					
+			
+					//rJSON.periodes.shift();
+					if (window.listeJobsArbitres.jobs.length == 0) {
+						rangee = document.createElement('div');
+						rangee.id = "rangeeVide";
+						amettre = document.getElementById("rangeeTitre");
+						amettre.parentNode.appendChild(rangee);
+						td1 = document.createElement('div');
+						td1.className = "titreTableau";
+						td1.innerHTML = window.tl_general_noData;
+						rangee.appendChild(td1);
+					}
+					//alert(listeJobsArbitres.length);
+					for ( J = 0; J < listeJobsArbitres.jobs.length; J = J + 1) {
+
+						//	if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
+						rangee = document.createElement('div');
+						amettre = document.getElementById('rangeeTitre');
+						amettre.parentNode.appendChild(rangee);
+//						strImg = "<img src=\"\/images\/icones\/edit.png\" onclick=editMatch(" + J + "); width=\"32\" height=\"32\" alt=\"Edit\"\>";
+//						strImg2 = "<img src=\"\/images\/icones\/view.png\" onclick=window.location.href='" + menus[12].lien + "?ligueId=" + window.ligueId + "&mavId=" + listeArbitres[J].mavId + "'; width=\"32\" height=\"32\" alt=\"Edit\"\>";
+//						strImg3 = "<img src=\"\/images\/icones\/poubelle.png\" onclick=effaceMatch(" + J + "); width=\"32\" height=\"32\" alt=\"Edit\"\>";
+
+						var lesCols = new Array();
+						$(rangee).append(
+						$('<div></div>').text(listeJobsArbitres.jobs[J].montantOffert),
+                        $('<div></div>').text(listeJobsArbitres.jobs[J].dateMatch));
+                        for(var a=0;a<listeJobsArbitres.requis.length;a++){
+                            if(listeJobsArbitres.jobs[J].requis[0].requisId==listeJobsArbitres.requis[a].requisId){
+                                $(rangee).append($('<div></div>').text(listeJobsArbitres.requis[a].enonce_fr));
+                                
+                            }
+                            
+                        }
+                        
+                        
+					}//Fin des rangées;
+			
+			
+		}
+
+		</script>
+	</HEAD>
+	<body id="mbody">
+
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+				<div id="divMenuHaut"></div>
+
+		<div id="divCentrale"></div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+
+			developper(26);
+
+			mJS = {};
+			mJS.id = "tableauArbitres";
+			mJS.parentId = "divCentrale";
+			mJS.titre = "Liste des arbitres";
+			mJS.rangeeTitre = new Array();
+			mJS.rangeeTitre[0] = "Date";
+			mJS.rangeeTitre[1] = "Montant";
+			mJS.rangeeTitre[2] = "requis";
+			genTableau(mJS);
+
+
+
+			getArbitres();
+
+
+
+			// 	rangee = document.createElement('TD');
+			//	yo2
+		</script>
+
+		</DIV>
+
+	</body>
+</html>

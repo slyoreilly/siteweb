@@ -245,26 +245,6 @@ function getStatsJoueurJSON(joueurId)
 	}
 
 
-	function setMAJBut(strMAJ)  // id est le username. 
-	{
-	var requete_ajax = new XMLHttpRequest();
-				var url ="/stats2/setMAJBut.php";
-		var params = "strMAJ="+strMAJ;
-		requete_ajax.open("POST", url, false);
-
-		//Send the proper header information along with the request
-		requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		requete_ajax.setRequestHeader("Content-length", params.length);
-		requete_ajax.setRequestHeader("Connection", "close");
-
-
-			requete_ajax.send(params);
-			window.location.reload(true);
-//	alert(requete_ajax.responseText);
-//	alert("params: "+params);
-	return requete_ajax.responseText;
-	}
-
 	
 
 function postwith (to,p) {
@@ -508,9 +488,9 @@ function verifiePermission() {
 
 
 
-			var strAbon = getJSONabonnementDeLigueID(ligueId);
-			//alert(strAbon);
-			var aJSON = eval('(' + strAbon + ')');
+		//	var strAbon = getJSONabonnementDeLigueID(ligueId);
+		//	alert(strAbon);
+		//	var aJSON = eval('(' + strAbon + ')');
 		var ap =getPermissions(ligueId,userId);
 		
 		//alert(ap);
@@ -591,6 +571,7 @@ function verifiePermission() {
 							{cuisinier(window.menus[pageId].ingredients);}
 						if(window.m!=1)
 						{
+							try{
 							gestionBackEnd();
 							peupleDivHaut();
 							peupleDivBas();
@@ -598,6 +579,8 @@ function verifiePermission() {
 							barreTitreContexte(pageId);
 							if(window.innerWidth>=640)
 									{genereBoites();}
+								}
+								catch(err){};
 						}
 						else
 						{
@@ -769,16 +752,24 @@ function forceSelectionLigue(){
 				var affiche =true;
 				for ( var J = 0; J <= window.rJSON.Ligues.length; J++) {
 //					alert(window.rJSON.Ligues[J].cleValeur);
+					affiche=true;
+					
+					try {
 					
 					if(window.rJSON.Ligues[J].cleValeur==null)
 					{affiche=true;}
 					else{
+									try {
+
 						if(window.rJSON.Ligues[J].cleValeur.statut=="efface")
 						{affiche=false;}
 						if(window.rJSON.Ligues[J].cleValeur.statut=="secret"){
 							if(window.liguesAbon.indexOf(window.rJSON.Ligues[J].ligueId)<0)
 							{affiche=false;}
 						}
+									} catch(err) {
+									}
+
 						}	
 							
 					if(affiche==true)
@@ -835,6 +826,9 @@ function forceSelectionLigue(){
 					cellulePas2.appendChild(textePas2);
 					rangee.appendChild(cellulePas2);
 					}//fin du if efface;
+								} catch(err) {
+									}
+
 				}//Fin du for
 
 				//	document.body.rangee.cellule.innerHTML ='yo';
@@ -1183,5 +1177,10 @@ function UrlExists(url)
 		}		//
 		})(url);   
 }
+Number.prototype.pad = function(size) {
+      var s = String(this);
+      while (s.length < (size || 2)) {s = "0" + s;}
+      return s;
+    }
 
-
+	

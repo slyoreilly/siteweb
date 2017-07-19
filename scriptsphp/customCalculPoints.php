@@ -30,6 +30,7 @@ while ($rangeeSaison = mysql_fetch_array($resultSaison)) {
 	$retCC['saisons'][$Is]['type'] = $typeSaison;
 	$retCC['saisons'][$Is]['nom'] = $rangeeSaison['nom'];
 	$retCC['saisons'][$Is]['saisonId'] = $rangeeSaison['saisonId'];
+	$retCC['saisons'][$Is]['structureDivision'] = json_decode($rangeeSaison['structureDivision']);
 
 	$resultEquipe = mysql_query("SELECT TableEquipe.*,abonEquipeLigue.* FROM TableEquipe 
 								JOIN abonEquipeLigue

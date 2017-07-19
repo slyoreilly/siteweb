@@ -1,0 +1,6 @@
+ceci est un test - October 5, 2016, 9:58 am
+-------------------------
+Exécution stats2/listeMatchs2JSON. - April 9, 2017, 10:38:58 pm
+-------------------------
+Création match dans stats2/listeMatchs2JSON, 1er appel. - April 9, 2017, 10:39:37 pm
+-------------------------

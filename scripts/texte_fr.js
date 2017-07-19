@@ -6,6 +6,7 @@ tl_general_logout="Déconnexion";
 tl_general_signin="Inscription";
 tl_general_welcome="Bienvenue, ";
 tl_general_contact="Contactez-nous";
+tl_general_contact2="nous contacter";
 
 tl_general_ligueAct="Ligue Actuelle";
 tl_general_ligueChange="Changer de Ligue";
@@ -65,6 +66,31 @@ tl_produitDescSS8="Ou Contactez-nous!";
 
 tl_produitDescSB1="Est un scoreboard qui est contrôlé à distance via notre application SyncStats. Peut être affiché sur n'importe quel écran plat et ne nécessite pas de connexion internet.";
 
+tl_produits_titreAvantages="Des ajouts incroyables qui bonifieront vos matchs";
+
+tl_produits_h1ProdSyncStats="L'application Hockey";
+tl_produits_h1ProdWebSite="Site web complet";
+tl_produits_h1ProdSyncCam="Vidéos auto-édités";
+tl_produits_h1SyncBoard="Tableau indicateur intelligent";
+
+tl_produits_li111="Fini le papier! Fini le gaspillage de temps!";
+tl_produits_li112="Facile, flexible, application mobile complète";
+tl_produits_li113="Peut être utilisé par l'arbitre, le marqueur ou autre";
+
+tl_produits_li121="Toutes les statistiques et les vidéos enregistrés par les apps";
+tl_produits_li122="Utilisateurs, joueurs, équipes,";
+tl_produits_li123="Horaires, classements,";
+tl_produits_li124="Et BIEN plus...";
+
+tl_produits_li131="De simples téléphones Android suffisent";
+tl_produits_li132="Installer où vous le voulez: pas de limite sur la quantité";
+tl_produits_li133="Profiter de la du même coup des statistiques du site";
+tl_produits_li134="Un simple clic de bouton \"start\" et \"Stop\"";
+
+tl_produits_li141="Contrôlé WiFi par l'application SyncStats";
+tl_produits_li142="Affiche le pointage, le temps, les équipes...";
+tl_produits_li143="Même les statistiques et les vidéos!";
+
 
 tl_indexBulle1="Vos stats détaillées";
 tl_indexBulle2="Découvrez SyncStats";
@@ -104,6 +130,17 @@ tl_l1e3 = "<a href='/zdoc/savoirplus.html'>Pour en savoir plus...</a>";
 
 tl_l2e1 = "Exemple Live d'un but noté par l'arbitre";
 tl_l2e2 = "Vidéo à vitesse réelle pour illustrer la rapidité de l'opération";
+
+tl_index_ligueVedette="Voir notre ligue en vedette >>>>>>";
+tl_index_versInfos="Apprenez sur SyncStats >>>>>>";
+
+tl_index_rechercheRapide="Recherche Rapide";
+tl_index_rechercheMatch="Match (AAAA/MM/JJ)";
+
+tl_index_hintLigue="Nom de la ligue";
+tl_index_hintJoueur="Nom du joueur";
+tl_index_hintAAAMMJJ="AAAA/MM/JJ";
+
 
 
 ///////////  Boites Contextuelles
@@ -160,6 +197,7 @@ tl_resultats_ButsVis = "Buts - vis";
 	tl_class_BP  = "Buts pour";
 	tl_class_BC  = "Buts contre";
 	tl_class_PJ  = "Parties jouées";
+	tl_class_abr_PJ  = "Parties jouées";
 	tl_class_Diff  = "Différence";
 
 	tl_class_Classement = "Classement";
@@ -442,5 +480,42 @@ tl_faq_h2_6_ul2_li1="Entrer le match sur le site web; ";
  tl_faq_h2_6_ul4_li2="Prendre une bonne bière au bar et appérécier l'après-match.";
  
 
+////////////////////////////////////////////////
+//
+//	Infos.html
 
+tl_infos_queFait="Que fait SyncStats?";
+tl_infos_commentFonctionne="Comment ça fonctionne?";
+tl_infos_combien="Combien ça coûte?";
+tl_infos_commentOrganise="Comment on s'organise?";
+
+tl_infos_titre1="Des Vidéos, Des Stats et plus";
+tl_infos_1ul="Avec SyncStats, on peut: ";
+tl_infos_1li1="Facilement noter les statistiques d'un match";
+tl_infos_1li2="Découper et obtenir les séquences vidéos sans avoir regarder le match au complet";
+tl_infos_1li3="Consulter les reprises vidéo pendant le match";
+tl_infos_1li4="Allez voir notre section Produits pour plus d'info";
+tl_infos_1introVideo="Petit vidéo pour se mettre l'eau à la bouche! ";
+
+
+tl_infos_titre2="Des appareils intelligent, une utilisation facile";
+tl_infos_2li1="Les caméras vidéos filment le match";
+tl_infos_2li2="L'arbitre (ou le marqueur) possède un \"cliqueur\"";
+tl_infos_2li3="Lorsque l'arbitre clique, un signal est envoyé aux caméras";
+tl_infos_2li4="Les caméras découpent les vidéos et l'envoie sur le site web.";
+tl_infos_2introVideo="Le vidéo ci-contre montre un arbitre entrer un but sur son téléphone.";
+
+
+tl_infos_titre3="Pour une poignée de rondelles";
+tl_infos_3p1="Chaque ligue a sa propre façon de fonctionner et ses propres besoins.";
+tl_infos_3p2="Des façon générale, nos clients paient entre 5$ et 10$ par match (les joueurs ne paient rien pour voir les vidéos).";
+tl_infos_3p3="Le prix va varier selon plusieurs facteurs";
+tl_infos_3li1="La résolution des vidéos";
+tl_infos_3li2="Si vous utilisez vos propres appareils ou si vous les louez";
+tl_infos_3li3="Le nombre de caméras utilisées pendant les matchs";
+tl_infos_3li4="La main d'oeuvre, si disponible";
+
+
+tl_infos_titre4="Service pro-actif";
+tl_infos_4p1="L'idéal, à ce moment, est de ";
 				

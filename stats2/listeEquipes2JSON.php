@@ -3,7 +3,7 @@
 
 /////////////////////////////////////////////////////////////
 //
-//  Définitions des variables
+//  Dï¿½finitions des variables
 // 
 ////////////////////////////////////////////////////////////
 
@@ -19,7 +19,7 @@ $tableEquipe = 'TableEquipe';
 
 ////////////////////////////////////////////////////////////
 //
-// 	Connections à la base de données
+// 	Connections ï¿½ la base de donnï¿½es
 //
 ////////////////////////////////////////////////////////////
 
@@ -33,114 +33,46 @@ if (!mysql_select_db($database))
 
 }
 
-/////////////////////////////////////////////////////////////
-//
-//
 
-function trouveNomJoueurParID($ID){ 
-
-$resultJoueur = mysql_query("SELECT * FROM TableJoueur WHERE joueur_id = '{$ID}'")
-or die(mysql_error());  
-if($rangeeJoueur=mysql_fetch_array($resultJoueur))
-		  return ($rangeeJoueur['NomJoueur']); 
-else { return ("Anonyme"); }
-} 
-
-
-/////////////////////////////////////////////////////////////
-//
-//
-
-function parseMatchID($ID){
-	 
-$monMatch['date'] = substr($ID,0,stripos($ID,'_'));
-$longueur = strlen($monMatch['date']);
-$monMatch['dom'] = substr($ID,stripos($ID,'_')+1,stripos(substr($ID,$longueur+2),'_')+1);
-$monMatch['vis'] = substr($ID,strripos($ID,'_')+1);
-return $monMatch;
-} 
-
-
-/////////////////////////////////////////////////////
-	//
-//   Trouve ID de l'equipe à partir du nom.
-//
-////////////////////////////////////////////////////
-
-function trouveIDParNomEquipe($nomEq)
-{
-$resultEquipe = mysql_query("SELECT * FROM {$tableEquipe}")
-or die(mysql_error());  
-while($rangeeEquipe=mysql_fetch_array($resultEquipe))
-{
-		if(!strcmp($rangeeEquipe['nom_equipe'],$nomEq))
-	{$equipeID =$rangeeEquipe['equipe_id'];// Ce sont de INT
-	}
-}
-return $equipeID;
-}
-/////////////////////////////////////////////////////
-	//
-//   Trouve Nom de l'equipe à partir du ID.
-//
-////////////////////////////////////////////////////
-
-function trouveNomParIDEquipe($IEq)
-{
-//$resultEquipe2 = mysql_query("SELECT * FROM {$tableEquipe}")
-//or die(mysql_error());  
-//while($rangeeEquipe2=mysql_fetch_array($resultEquipe2))
-//{
-			
-//		if($rangeeEquipe2['equipe_id']==$IEq)
-//	{
-	//$NomEquipe =$rangeeEquipe2['nom_equipe'];// Ce sont de INT
-//	}
-//}
-$NomEquipe ="1";
-return $NomEquipe;
-}
-
-//////////////////////////////////////////////////////
-//
-//  	Section "Matchs"
-//
-//////////////////////////////////////////////////////
-
-
-
-$equipeId = $_GET["equipeId"];
-$ligueId = $_GET["LigueID"];
+$equipeId = $_POST["equipeId"];
+$ligueId = $_POST["ligueId"];
 	
-	// Retrieve all the data from la table
-if(is_numeric($equipeId))
-{
-$resultEvent = mysql_query("SELECT * FROM {$tableEquipe} WHERE ligue_equipe_ref = '{$ligueId}' AND equipe_id = '{$equipeId}' ")
+
+	if($equipeId==null||$equipeId==undefined)
+	{
+		
+		$qEq ="SELECT * FROM TableEquipe
+								INNER JOIN abonEquipeLigue
+									ON (equipeId=equipe_id) 
+									WHERE ligueId = '{$ligueId}'";
+$resultEquipe = mysql_query($qEq)
 or die(mysql_error());  
+		
+		$equipe=array();
+while($rangeeEquipe=mysql_fetch_assoc($resultEquipe))
+{
+	$equipe[]=$rangeeEquipe;
 }
-else {
-$resultEvent = mysql_query("SELECT * FROM {$tableEquipe} WHERE ligue_equipe_ref = '{$ligueId}'")
+		
+		
+		
+	}else{
+				$qEq ="SELECT * FROM {$tableEquipe} WHERE equipe_id = '{$equipeId}'";
+		
+$resultEquipe = mysql_query($qEq)
 or die(mysql_error());  	
-}
 
-$liste=array();
-$Ieq =0;
-
-$JSONstring = "{";
-$JSONstring .="\"equipes\": [";
-
-while($rangeeEv=mysql_fetch_array($resultEvent))
+while($rangeeEquipe=mysql_fetch_assoc($resultEquipe))
 {
-$JSONstring .= "{\"nomEquipe\": \"".$rangeeEv['nom_equipe']."\",";
-$JSONstring .="\"equipeId\": \"".$rangeeEv['nom_equipe']."\",";
-$JSONstring .="\"logo\": \"".$rangeeEv['logo']."\",";	
+	$equipe[]=$rangeeEquipe;
 }
 
-	$JSONstring = substr($JSONstring, 0,-1);
-	$JSONstring .= "]}";
+
+		
+	}
 	
-//echo json_encode($Sommaire);
-echo $JSONstring;
+//	echo $qEq;
+echo json_encode($equipe);
 	
 
 

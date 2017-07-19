@@ -70,8 +70,10 @@ mysql_query("SET CHARACTER SET 'utf8'");
 	
 	if(!is_numeric($userId))
 		{$userId=trouveIDParNomUser($userId);}
-	$query_ligue = "INSERT INTO Ligue (Nom_Ligue, Horaire, Lieu,ficId, dernierMAJ) ".
-"VALUES ('$nom', '$horaire', '$lieu','$ficId', NOW())";
+		$accolade = "{}";
+		$accolade2=mysql_real_escape_string($accolade);
+	$query_ligue = "INSERT INTO Ligue (Nom_Ligue, Horaire, Lieu,ficId, dernierMAJ,cleValeur) ".
+"VALUES ('$nom', '$horaire', '$lieu','$ficId', NOW(),'$accolade2')";
 		
 $retour = mysql_query($query_ligue)or die('Error, query Ligue failed'.$query_ligue.": ".mysql_error());
 $resultEvent = mysql_query("SELECT * FROM Ligue WHERE Nom_Ligue = '{$nom}' ORDER BY ID_Ligue DESC")or die (mysql_error());
@@ -81,7 +83,7 @@ $resultEvent = mysql_query("SELECT * FROM Ligue WHERE Nom_Ligue = '{$nom}' ORDER
 while($rang=mysql_fetch_array($resultEvent))
 {$ligueId= $rang['ID_Ligue'];}
 
-$query_saison = "INSERT INTO TableSaison (typeSaison, saisonActive, premierMatch, dernierMatch, ligueRef ) ".
+$query_saison = "INSERT INTO TableSaison (typeSaison, saisonActive, premierMatch, dernierMatch, ligueRef	 ) ".
 "VALUES (1, 1, NOW(), '2020-01-01','{$ligueId}')";
 	mysql_query($query_saison)	
 or die('Error, query saison failed: '.mysql_error());

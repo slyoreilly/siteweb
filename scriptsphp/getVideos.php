@@ -51,8 +51,10 @@ if(strcmp($ligueId,""))
 {$reqChrono = "SELECT * 
 			FROM Video
 			JOIN TableMatch
-				ON (Video.nomMatch = TableMatch.matchIdRef)
+				ON (Video.nomMatch = TableMatch.match_id)
 			WHERE ligueRef={$ligueId} ORDER BY chrono DESC";}
+//Anciennement TableMatch.matchIdRef
+
 
 $rChrono = mysql_query($reqChrono)
 or die(mysql_error());  
@@ -86,7 +88,7 @@ if(strcmp($ligueId,""))
 {$reqPop = "SELECT * 
 			FROM Video
 			JOIN TableMatch
-				ON (Video.nomMatch = TableMatch.matchIdRef)
+				ON (Video.nomMatch = TableMatch.match_id)
 			WHERE ligueRef={$ligueId} ORDER BY nbVues DESC";
 }
 			$rPop = mysql_query($reqPop)
@@ -121,7 +123,7 @@ if(strcmp($ligueId,""))
 {$reqTop = "SELECT * 
 			FROM Video
 			JOIN TableMatch
-				ON (Video.nomMatch = TableMatch.matchIdRef)
+				ON (Video.nomMatch = TableMatch.match_id)
 			WHERE ligueRef={$ligueId} ORDER BY eval DESC";
 }
 $rTop = mysql_query($reqTop)

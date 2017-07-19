@@ -49,11 +49,17 @@ else {
 	{
 		$critere = $_POST['critere'];
 		
+	}else {
+	if(strcmp($table, "TableMatch")==0)
+	{
+		$critere = $_POST['critere'];
+		
 	}
 	else {
 		$critere = str_replace("'","",$_POST['critere']);
 	}
 
+	}
 }
 //$critere = stripslashes($_POST['critere']);
 

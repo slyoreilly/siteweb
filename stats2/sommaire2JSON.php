@@ -61,38 +61,9 @@ else { return ("Anonyme"); }
 } 
 
 
-/////////////////////////////////////////////////////////////
-//
-//
-
-function parseMatchID($ID){
-	 
-$monMatch['date'] = substr($ID,0,stripos($ID,'_'));
-$longueur = strlen($monMatch['date']);
-$monMatch['dom'] = substr($ID,stripos($ID,'_')+1,stripos(substr($ID,$longueur+2),'_')+1);
-$monMatch['vis'] = substr($ID,strripos($ID,'_')+1);
-return $monMatch;
-} 
 
 /////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////
-	//
-//   Trouve ID de l'equipe � partir du nom.
-//
-////////////////////////////////////////////////////
 
-function trouveIDParNomEquipe($nomEq)
-{
-$resultEquipe = mysql_query("SELECT * FROM TableEquipe WHERE nom_equipe='{$nomEq}'")
-or die(mysql_error());  
-while($rangeeEquipe=mysql_fetch_array($resultEquipe))
-{
-		if(!strcmp($rangeeEquipe['nom_equipe'],$nomEq))
-	{$equipeID =$rangeeEquipe['equipe_id'];// Ce sont de INT
-	}
-}
-return $equipeID;
-}
 /////////////////////////////////////////////////////
 	//
 //   Trouve Nom de l'equipe � partir du ID.
@@ -121,11 +92,11 @@ return $NomEquipe;
 //
 //////////////////////////////////////////////////////
 	
-$matchID = stripslashes(mysql_real_escape_string(stripslashes($_POST["matchId"])));
-	
+//$matchID = stripslashes(mysql_real_escape_string(stripslashes($_POST["matchId"])));
+$matchID = $_POST['matchId'];	
 //////////////////////////////////////////////
 
-$resultEvent = mysql_query("SELECT TableMatch.*, TEdom.nom_equipe AS NEdom,TEvis.nom_equipe AS NEvis
+$resultEvent = mysql_query("SELECT TableMatch.*, TEdom.nom_equipe AS NEdom,TEvis.nom_equipe AS NEvis, TEdom.equipe_id AS eqDomId,TEvis.equipe_id AS eqVisId
 									 FROM TableMatch 
 									JOIN TableEquipe AS TEdom 
 										ON (TableMatch.eq_dom=TEdom.equipe_id)
@@ -140,10 +111,21 @@ while($rangeeEv=mysql_fetch_array($resultEvent))
 	$mDate=$rangeeEv['date'];
 	$mEqDom=$rangeeEv['NEdom'];
 	$mEqVis=$rangeeEv['NEvis'];
+	$mEqDomId=$rangeeEv['eqDomId'];
+	$mEqVisId=$rangeeEv['eqVisId'];
 }
 
+
+		$resultAssoc = mysql_query("SELECT match_id
+									 FROM TableMatch 
+									WHERE matchIdRef = '{$matchID}'") or die(mysql_error());  
+	$rangeeAssoc= mysql_fetch_row($resultAssoc);
+	$matchPourVideos=$rangeeAssoc[0];	
+
+
+
 //{
-$qVids = 	"SELECT nomFichier,camId,chrono,eval,nbVues,etat,videoId  FROM Video  WHERE nomMatch = '{$matchID}' ORDER BY nomMatch, angleOk DESC";
+$qVids = 	"SELECT nomFichier,camId,chrono,eval,nbVues,etat,videoId,emplacement, nomThumbnail  FROM Video  WHERE nomMatch = '{$matchID}'  OR nomMatch = '{$matchPourVideos}' ORDER BY nomMatch, angleOk DESC";
 $resultVids = mysql_query($qVids)
 or die(mysql_error().$qVids);  	
 $mesVids=array();
@@ -153,6 +135,8 @@ $mesEval=array();
 $mesNbVues=array();
 $mesEtat=array();
 $mesVidId=array();
+$mesEmplacement=array();
+$mesThumbnails=array();
 while($rangeeVids=mysql_fetch_array($resultVids))
 	{
 		array_push($mesVids,$rangeeVids[0]);
@@ -162,7 +146,9 @@ while($rangeeVids=mysql_fetch_array($resultVids))
 		array_push($mesNbVues,$rangeeVids[4]);
 				array_push($mesEtat,$rangeeVids[5]);
 				array_push($mesVidId,$rangeeVids[6]);
-							}
+				array_push($mesEmplacement,$rangeeVids[7]);
+				array_push($mesThumbnails,$rangeeVids[8]);
+											}
 
 
 $I0=0;
@@ -173,13 +159,24 @@ $JSONstring .="\"date\": \"".$mDate."\",";
 $JSONstring .="\"nbVids\": \"".count($mesVids)."\",";
 $JSONstring .="\"eqDom\": \"".$mEqDom."\",";
 $JSONstring .="\"eqVis\": \"".$mEqVis."\",";
+$JSONstring .="\"eqDomId\": \"".$mEqDomId."\",";
+$JSONstring .="\"eqVisId\": \"".$mEqVisId."\",";
+$JSONstring .="\"qVids\": \"".$qVids."\",";
 //$JSONstring .="\"buts\": [";
 $buts=array();
 //foreach($equipe as $Ieq)
 //{
-		
+	////////////////////////////////////////
+	//
+	//		Partie des Clips
+	//
+	//		NB: Les clips remplacent les évèenements de TableEvenement0.
+	//		En principe, ils vont déclencher un nouvel élément de la table Video.
+	//
+	////////////////////////////////////////////////
+
 	$resultClips = mysql_query("SELECT * FROM Clips 
-											 WHERE matchId = '{$matchID}' ORDER BY chrono")
+											 WHERE matchId = '{$matchID}'  OR matchId = '{$matchPourVideos}' ORDER BY chrono")
 or die(mysql_error());  	
 $IC=0;
 $clips=array();
@@ -188,27 +185,29 @@ while($rangeeClips=mysql_fetch_array($resultClips))
 			{
 				
 				$clips[$IC]=array();
+				$clips[$IC]['video']=array();
+				$clips[$IC]['chrono']=$rangeeClips['chrono'];
 			for($b=0;$b<count($mesVids);$b++)
 		{
 			if(abs($rangeeClips['chrono']-$mesChrono[$b])<20000)
 			{
+				$clips[$IC]['video'][count($clips[$IC]['video'])]['fic']=$mesVids[$b];
+				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['cam']=$mesCam[$b];
+				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['eval']=$mesEval[$b];
+				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['nbVues']=$mesNbVues[$b];
+				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['etat']=$mesEtat[$b];
+				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['videoId']=$mesVidId[$b];
+				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['chrono']=$rangeeClips['chrono'];
+				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['emplacement']=$mesEmplacement[$b];
+				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['emplacement']=$mesThumbnails[$b];
 				
-				$clips[$IC]['fic']=$mesVids[$b];
-				$clips[$IC]['cam']=$mesCam[$b];
-				$clips[$IC]['eval']=$mesEval[$b];
-				$clips[$IC]['nbVues']=$mesNbVues[$b];
-				$clips[$IC]['etat']=$mesEtat[$b];
-				$clips[$IC]['videoId']=$mesVidId[$b];
-				$clips[$IC]['chrono']=$rangeeClips['chrono'];
-	
-				$IC++;
 				
 			}
 		}
 					
 				
 				
-				
+				$IC++;
 			}
 		
 $JSONstring .= "\"clips\": ".json_encode($clips).",";
@@ -234,7 +233,9 @@ while($rangeeEv=mysql_fetch_array($resultEvent))
 				$Sommaire[$Ibuts]['video'][count($Sommaire[$Ibuts]['video'])-1]['nbVues']=$mesNbVues[$b];
 				$Sommaire[$Ibuts]['video'][count($Sommaire[$Ibuts]['video'])-1]['etat']=$mesEtat[$b];
 				$Sommaire[$Ibuts]['video'][count($Sommaire[$Ibuts]['video'])-1]['videoId']=$mesVidId[$b];
-			}
+				$Sommaire[$Ibuts]['video'][count($Sommaire[$Ibuts]['video'])-1]['emplacement']=$mesEmplacement[$b];
+				$Sommaire[$Ibuts]['video'][count($Sommaire[$Ibuts]['video'])-1]['thumbnail']=$mesThumbnails[$b];
+							}
 		}
 		
 //		foreach($mesVids as $val)
@@ -494,8 +495,12 @@ echo  $JSONstring;
 foreach($Sommaire as $buts )
 {
 	if(count($buts['video'])>0)
-	{$reqIns = "UPDATE Video SET tagPrincipal='{$buts['marqueurId']}' WHERE videoId='{$buts['video'][0]['videoId']}'";
-	mysql_query($reqIns)or die(mysqli_error());
+	{
+		for($a=0; $a<count($buts['video']);$a++)
+		{
+		$reqIns = "UPDATE Video SET tagPrincipal='{$buts['marqueurId']}' WHERE videoId='{$buts['video'][$a]['videoId']}'";
+		mysql_query($reqIns)or die(mysqli_error());
+		}
 	}
 }
 	

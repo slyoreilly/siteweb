@@ -34,9 +34,7 @@ $retour = mysql_query("SELECT *
 }
 
 else {
-	$qSelOu ="SELECT *
-						FROM $table
-						 WHERE $ou"; 
+	$qSelOu ="SELECT * FROM $table WHERE $ou"; 
 	$retour = mysql_query($qSelOu)or die(mysql_error()."   /  ".$qSelOu);
 }
 

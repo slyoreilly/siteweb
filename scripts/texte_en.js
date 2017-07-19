@@ -6,6 +6,7 @@ tl_general_logout="Log out";
 tl_general_signin="Sign in";
 tl_general_welcome="Welcome, ";
 tl_general_contact="Contact us";
+tl_general_contact2="contact us";
 
 tl_general_ligueAct="Current League";
 tl_general_ligueChange="Change League";
@@ -62,6 +63,31 @@ tl_produitDescSS8="Or contact us!";
 
 tl_produitDescSB1="Is a scoreboard that can be remotely controlledwith our SyncStats app. Can be displayed on any flatscreen and doesn't need an internet connection.";
 
+tl_produits_titreAvantages="Amazing Add-ons to boost-up your game";
+tl_produits_h1ProdSyncStats="The Hockey App";
+tl_produits_h1ProdWebSite="Complete Web Site";
+tl_produits_h1ProdSyncCam="AutoEdited Videos";
+tl_produits_h1SyncBoard="Intelligent Scoreboard";
+
+tl_produits_li111="No more paper! No more wasted time!";
+tl_produits_li112="Easy, flexible, complete app";
+tl_produits_li113="Can be used by referee or scorekeeper";
+
+tl_produits_li121="All stats and videos logged by apps";
+tl_produits_li122="User, player, team profiles";
+tl_produits_li123="Schedules, Standings";
+tl_produits_li124="and MUCH more...";
+
+tl_produits_li131="Simple Android phones required";
+tl_produits_li132="Install whereever you like: no limit in quantity";
+tl_produits_li133="Enjoy all benefits of the stats web site";
+tl_produits_li134="Just a simple \"Start\" and \"Stop button\"";
+
+tl_produits_li141="Controlled wirelessly by SyncStats app";
+tl_produits_li142="Display Score, time, teams...";
+tl_produits_li143="Also stats and even videos!";
+
+
 tl_indexBulle1="Your detailed stats";
 tl_indexBulle2="Discover SyncStats";
 
@@ -107,6 +133,18 @@ tl_l1e3 = "<a href='/zdoc/savoirplus.html'>Tell me more...</a>";
 
 tl_l2e1 = "Live example of a goal logged by the referee";
 tl_l2e2 = "True speed video to illustrated how fast it can be";
+
+
+tl_index_ligueVedette="See our featured league >>>>>>";
+tl_index_versInfos="Learn more about SyncStats >>>>>>";
+
+tl_index_rechercheRapide="Quick Search";
+tl_index_rechercheMatch="Game (YYYY/MM/DD)";
+
+tl_index_hintLigue="League's Name";
+tl_index_hintJoueur="Player's Name";
+tl_index_hintAAAMMJJ="YYYY/MM/DD";
+
 
 ///////////  Boites Contextuelles
 
@@ -166,7 +204,8 @@ tl_resultats_ButsVis = "Score - Away";
 	tl_class_BC  = "Goal Against";
 	tl_class_PJ  = "Game Played";
 	tl_class_Diff  = "Difference";
-	
+	tl_class_abr_PJ  = "GP";
+
 	tl_class_Classement = "Standings";
 	
 
@@ -448,3 +487,43 @@ tl_faq_h2_6_ul2_li1="Create the game on web site";
 				
 	 tl_faq_h2_6_ul4_li1="Connect to Internet to let the phone synchronize; ";
  tl_faq_h2_6_ul4_li2="Take a cold beer at the bar and enjoy post-game.";			
+
+
+////////////////////////////////////////////////
+//
+//	Infos.html
+
+tl_infos_queFait="What does SyncStats?";
+tl_infos_commentFonctionne="How does it work?";
+tl_infos_combien="How much it costs?";
+tl_infos_commentOrganise="How do we set up?";
+
+tl_infos_titre1="Vids, Stats and Much More";
+tl_infos_1ul="With SyncStats, you can: ";
+tl_infos_1li1="Easily log game stats";
+tl_infos_1li2="Cut and get video sequences without even looking at recorded game";
+tl_infos_1li3="Watch video replays during the game";
+tl_infos_1li4="Go see our Products page for more info";
+tl_infos_1introVideo="Get in the mood with short video!";
+
+
+tl_infos_titre2="Smarter Devices, Less Work";
+tl_infos_2li1="Cameras film the game";
+tl_infos_2li2="Referee (or scorekeeper) keeps a \"clicker\"";
+tl_infos_2li3="When referee clicks, a signal is sent to cameras";
+tl_infos_2li4="Cameras cut video sequences and send it to web site";
+tl_infos_2introVideo="Following video shows a referee logging a goal on his device (french)";
+
+
+tl_infos_titre3="For a Handfull of Pucks";
+tl_infos_3p1="Each league has its own way to do things and needs";
+tl_infos_3p2="Generaly speaking, our clients pays between 5$ and 10$ per game (players don't pay to see videos or stats)";
+tl_infos_3p3="Prices vary following several factors:";
+tl_infos_3li1="Video resolutions";
+tl_infos_3li2="If you bring your devices or you lease them";
+tl_infos_3li3="Number of desired camera during the game";
+tl_infos_3li4="Workforce needed, if available";
+
+
+tl_infos_titre4="Pro-active Service";
+tl_infos_4p1="Yet the best is to ";

@@ -1,3 +1,4 @@
+
 <?php
 $db_host="localhost";
 $db_user="syncsta1_u01";
@@ -14,8 +15,7 @@ $tableUser = 'TableUser';
 
 $mavId = $_POST['mavId'];
 $ligueId = $_POST['ligueId'];
-$vielledate = date("Y/m/d H:i:s",$_POST['vielledate']);
-$vielledate= str_replace('/','-',$vielledate);
+$vielledate =$_POST['vielledate'];
 
 if (!mysql_connect($db_host, $db_user, $db_pwd))
     die("Can't connect to database");
@@ -34,16 +34,19 @@ mysql_query("SET CHARACTER SET 'utf8'");
 //$jVis = json_decode($jVisJSON, true);
 $strRetour.="yo";
 $strRetour.=$mavId;
-$qString="SELECT abonEquipeLigue.*, MatchAVenir.*	FROM MatchAVenir 
+$qString="SELECT abonEquipeLigue.*,	TableMatch.* FROM MatchAVenir 
 						JOIN abonEquipeLigue 
 							ON (abonEquipeLigue.ligueId=MatchAVenir.ligueId)
+						INNER JOIN TableMatch 
+							ON (MatchAVenir.mavId=TableMatch.mavId)
+							
 						WHERE MatchAVenir.ligueId='{$ligueId}' 
-							AND dernierMAJ>'{$vielledate}'
+							AND MatchAVenir.dernierMAJ>'{$vielledate}'
 							AND abonEquipeLigue.finAbon>NOW()
 							AND MatchAVenir.date>(NOW()-INTERVAL 1 DAY)
 							AND MatchAVenir.date<(NOW()+INTERVAL 2 WEEK)
 							AND (MatchAVenir.eqDom=abonEquipeLigue.equipeId OR MatchAVenir.eqVis=abonEquipeLigue.equipeId)
-						GROUP BY mavId";
+						GROUP BY TableMatch.mavId";
 						
 unset($retour);
 $retour = mysql_query($qString) or die(mysql_error());	
@@ -54,6 +57,10 @@ $vecMatch = array();
 $Im=0;
 while($r = mysql_fetch_array($retour)) {
     $vecMatch[]=$r;
+	    $vecMatch[$Im]['nom']=$r['matchIdRef'];
+	    $vecMatch[$Im]['matchId']=$r['match_id'];
+		$vecMatch[$Im]['eqDom']=$r['eq_dom'];
+		$vecMatch[$Im]['eqVis']=$r['eq_vis'];
     $Im++;
 }
 $adomper= stripslashes(json_encode($vecMatch));

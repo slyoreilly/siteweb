@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		        <title>Genere Horaire</title>
+        <link rel='stylesheet' type='text/css' href='/style/general.css' />
+        <link rel="alternate" media="only screen and (max-width: 800px)" href="http://syncstats.com/mobile/m_match.html">
+
+        <script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <script src="/scripts/jquery.js"></script>
+
+        <!--script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script-->
+        <script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+         <style>
+           .cellule {
+                display: table-cell;
+                width: 100px;
+            }
+            
+            .lp {background-color:#ccc;}
+           .limp {background-color:#aaa;}
+
+            </style>
+
+        <!-- All style sheets -->
+
+        <!--meta http-equiv="refresh" content="10" -->
+
+        <script type="text/javascript" charset="utf-8">
+            gereLangue();
+        </script>
+		
+	</HEAD>
+	<body id="mbody">
+		
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+								<div id="divMenuHaut"></div>
+
+		<div id="divCentrale">
+		    
+		</div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+		nomEquipes =["La machine","Les Lapins Crétins","Peter Stastny","Les Atroces personnages","Les Poilus", "Les Rois du nord","Les Fourmis","Wigwams","Les pas laites","Les baleinieres","Les broches à foins","Les Cardiaques","Loups Garous" ];
+        nomPlages =["Gym 1 @19h","Gym 2 @19h","Gym 1 @20h","Gym 2 @20h","Gym 1 @21h","Gym 2 @21h","Gym 1 @22h" ];
+        nomSemaines =["25 avril","2 mai","9 mai","16 mai","23 mai","30 mai","6 juin","13 juin" ];
+        nbConfrontationMax=1;
+        nbEq = nomEquipes.length;
+        nbPlages = nomPlages.length;
+        nbSem = 8; 
+        minMatchSemaine = 1;
+
+		  $('#divCentrale').append(
+		  $('<div></div>').text("Nombre d'équipes: "+nbEq),$('<br/>'),
+          $('<div></div>').text("Nombre de plage: "+nbPlages),$('<br/>'),
+          $('<div></div>').text("Nombre de semaines: "+nbSem),$('<br/>'));
+          
+          nbMatchEq =nbConfrontationMax* Math.floor(nbSem*nbPlages/(nbEq/2));
+          //$('#divCentrale').append(
+          //$('<div></div>').text("Nombre de match par équipe: "+nbMatchEq),$('<br/>')
+          //);
+           $('#divCentrale').append(
+               $('<div></div>').attr("id","divRap"),
+          $('<div></div>').attr("id","divBest"),$('<div></div>').attr("id","divTest")
+          );
+         
+          b=0;
+          function estHoraireOptimal(p1,p2){
+              matOpt = [[0,0,1,1,0,0,0],[0,0,1,1,0,0,0],[1,1,0,0,1,1,0],[1,1,0,0,1,1,0],[0,0,1,1,0,0,1],[0,0,1,1,0,0,1],[0,0,0,0,1,1,0]];
+                  //  $('#divTest').append(
+                 //                 $('<div></div>').text("   Teest horaire optimal: "+ matOpt[p1][p2]),$('<br/>'));
+              return matOpt[p1][p2];
+          }
+
+          function placeMatchSemaine(semaine, indMatchPris) {
+               eqRejoue=0;    
+                            for(var m=0;m<nomEquipes.length;m++){
+                                             eqDouble=0;
+                                             for(var n=0;n<nbPlages;n++){
+                                                    eqDouble+=equipes[m][semaine][n];
+                                             }
+                                                    if(eqDouble==2){
+                                                        eqRejoue=1;
+                                                    }
+                                            }
+                                           
+              
+                    
+              shuffleArray(lesMatch);
+              maxUneEquipeRejoue = 1;
+               $('#divTest').append(
+                                  $('<div></div>').text("   Semaine: "+nomSemaines[semaine]),$('<br/>'));
+
+             
+                  for(var a=0;a<lesMatch.length;a++){       // On prend un match
+                      if((lesMatch[a].dom==3&&lesMatch[a].vis==4) || (lesMatch[a].dom==4&&lesMatch[a].vis==3)){
+                                      permissionSpecifique=false;
+                                  }else{
+                          permissionSpecifique=true;}
+                          
+                          cptSem = 0;
+                          cptDom=0;
+                          cptVis=0;
+                          while(cptSem<=semaine){
+                         
+                            cptDom=cptDom+ equipesMatchParSemaine[lesMatch[a].dom][cptSem];
+                            cptVis=cptVis+ equipesMatchParSemaine[lesMatch[a].vis][cptSem];
+                            cptSem++;
+                         }
+                         
+                         if((cptDom>=semaine+2) || (cptVis>=semaine+2)){
+                             permissionSpecifique=false;
+                   //                  $('#divTest').append(
+                     //                   $('<div></div>').text("permSpecFalse"+ cptDom+" "+cptVis+", sem "+semaine),$('<br/>'));
+                         }
+                      
+                      
+                      if(indMatchPris.indexOf(a)==-1&& permissionSpecifique){        // On vérifie qu'il ne soit pas déjàplacé
+                          libre=true;
+                          tmpEqRejoue=0;
+                          b=0;
+                          horaireOptimal=true;
+                          while(b< (semaineMatchs[semaine].length)&&libre&&b<(nbPlages-1)){
+                              
+                              bA =  semaineMatchs[semaine][b].dom == lesMatch[a].dom ? 1 :0;
+                              bB =  semaineMatchs[semaine][b].dom == lesMatch[a].vis? 1 :0;
+                              bC =  semaineMatchs[semaine][b].vis == lesMatch[a].dom? 1 :0;
+                              bD =  semaineMatchs[semaine][b].vis == lesMatch[a].vis? 1 :0;
+  //                                                       $('#divCentrale').append(
+  //                           $('<div></div>').text("smDom: "+semaineMatchs[semaine][b].dom +"SMvis: "+semaineMatchs[semaine][b].vis +", Dom: "+ lesMatch[a].dom+", Vis: "+lesMatch[a].vis),$('<br/>'));
+                             
+                              if((bA+bB+bC+bD)>0){
+                                //  libre=false;
+                                  }
+                               if((bA+bB+bC+bD)>=1){
+                                      tmpEqRejoue=tmpEqRejoue+bA+bB+bC+bD;
+                                  }    
+                              b++;     
+                             
+                          }   
+                          succes=0;
+                          resMaxJoue = ((eqRejoue+tmpEqRejoue)<=maxUneEquipeRejoue);
+                          resbPlages =  b<nbPlages;
+                            if(/*libre&&*/resMaxJoue&&resbPlages/*&&horaireOptimal*/){
+                                 semaineMatchs[semaine][b] = Array();
+                                  semaineMatchs[semaine][b].dom = lesMatch[a].dom;
+                                   semaineMatchs[semaine][b].vis = lesMatch[a].vis;
+                                equipes[lesMatch[a].dom][semaine][b]++;
+                                 equipes[lesMatch[a].vis][semaine][b]++;
+                                 equipesMatchParSemaine[lesMatch[a].dom][semaine]++;
+                                 equipesMatchParSemaine[lesMatch[a].vis][semaine]++;
+                                indMatchPris.push(a);
+                                succes=1;
+                                eqRejoue=eqRejoue+tmpEqRejoue;
+                    //             $('#divTest').append(
+                     //             $('<div></div>').text("eqRejoue? "+eqRejoue +"tmpEqRejoue? "+tmpEqRejoue + " reste des plages? "+ resbPlages),
+                      //            $('<br/>'));
+                            
+                                  /*                       $('#divTest').append(
+                                  $('<div></div>').text(nomPlages[b]+"  "+nomEquipes[lesMatch[a].dom]+" VS "+nomEquipes[lesMatch[a].vis]),$('<br/>'));
+*/
+                                 }else{
+                                                  /*             $('#divTest').append(
+                                  $('<div></div>').text("On Testait  "+nomEquipes[lesMatch[a].dom]+" VS "+nomEquipes[lesMatch[a].vis]),$('<br/>'));
+
+                                     
+                                      $('#divTest').append(
+                                  $('<div></div>').text("N'a pas inscrit. eqRejoue? "+eqRejoue +"tmpEqRejoue? "+tmpEqRejoue + " reste des plages? "+ resbPlages+" horaire optimal? "+horaireOptimal),
+                                  $('<br/>'));*/
+
+                                     
+                                     
+                                 }   
+                                 if(semaineMatchs[semaine].length>=nbPlages){
+                                                 
+                                     cptTestHoraire=0;
+                                     maxTestsHoraire=20;
+                                     succesH=false;
+                                     while(cptTestHoraire<maxTestsHoraire&&!succesH){
+                                     //   $('#divTest').append(
+                                    //                $('<div></div>').text("Compteur cptTestHoraire: "+cptTestHoraire),$('<br/>'));
+                                        
+                                         for(var m=0;m<nomEquipes.length;m++){
+                                             eqDouble=0;
+                                             plA=0;
+                                             plB=0;
+                                             for(var n=0;n<nbPlages;n++){
+                                                    eqDouble+=equipes[m][semaine][n];
+                                                  if(equipes[m][semaine][n]==1&&eqDouble==1){
+                                                      plA=n;
+                                                  }else if(equipes[m][semaine][n]==1&&eqDouble==2){
+                                                      plB=n;
+                                                  }
+                                             }
+                                                    if(eqDouble==2){
+                                                  //         $('#divTest').append(
+                                                  //  $('<div></div>').text("eqDouble: "+nomEquipes[m]),$('<br/>'));
+                                                     
+                                                       if(estHoraireOptimal(plA,plB)){
+                                                           succesH=true;
+                                                           //for(var e=0;e<nomEquipes.length;e++){
+                                                                for(var p=0;p<nbPlages;p++){
+                                                                    $('#divTest').append(
+                                                                    $('<div></div>').text(nomPlages[p]+"  "+nomEquipes[semaineMatchs[semaine][p].dom]+" VS "+nomEquipes[semaineMatchs[semaine][p].vis]),$('<br/>'));
+                                                                }
+                                                            //}
+                                                       }
+                                                    }
+                                            }
+                                            if(!succesH){
+                                                shuffleArray(semaineMatchs[semaine]);
+                                                for(var m=0;m<nomEquipes.length;m++){
+                                                         for(var n=0;n<nbPlages;n++){
+                                                            equipes[m][semaine][n]=0;
+                                                        }
+                                                    }
+                                                for(var d = 0;d<semaineMatchs[semaine].length;d++){
+                                                    
+                                                    //for(var m=0;m<nomEquipes.length;m++){
+                                                     //    for(var n=0;n<nbPlages;n++){
+                                                            equipes[semaineMatchs[semaine][d].dom ][semaine][d]++;
+                                                            equipes[semaineMatchs[semaine][d].vis ][semaine][d]++;
+                                                    //    }
+                                                   // }
+                                                }
+                                            }
+                                              
+                                         
+                                         cptTestHoraire++;
+                                     }
+                                     if(succesH){
+                                         
+                                         
+                                     }
+                                  
+                                     
+                                     
+                                     
+                         //                $('#divTest').append(
+                          //              $('<div></div>').text("On devrait sortir..."),$('<br/>'));
+                                         eqRejoue=0;
+                                         if(succes){
+                                         return 0;}
+                                         else{return -1;}
+                                        } 
+                                 
+                          
+                          //if(eqRejoue>maxUneEquipeRejoue){eqRejoue--;}
+                          
+                      }
+                  }
+                  if(b<nbPlages){return 1;}
+              }
+              
+              
+              
+          essais=0;
+          vielEssai=10000;
+          equipes=Array();
+          equipesMatchParSemaine=Array();
+          while(essais<40){
+        for(var a=0;a<nomEquipes.length;a++){
+            equipes[a]=Array();
+            equipesMatchParSemaine[a]=Array();
+            
+            for(var b=0;b<nbSem;b++){
+                equipes[a][b]=Array();
+                 for(var c=0;c<nbPlages;c++){
+                    equipes[a][b][c]=0;
+                }
+            }
+             for(var b=0;b<nbSem;b++){
+                equipesMatchParSemaine[a][b]=0;
+            }
+        }
+          
+          
+          lesMatch = Array(); 
+  //        for(var a=0; a<(nbMatchEq*nbEq);a++){
+              for(var i = 0;i<nbEq;i++){
+                for(var j = 0;j<nbEq;j++){
+                    var b=0;
+                    trouve = false;
+                    if(i!=j){
+                      while(b<lesMatch.length && !trouve){
+                            if(lesMatch[b].dom==i && lesMatch[b].vis==j || lesMatch[b].vis==i && lesMatch[b].dom==j){
+                                trouve=true;
+                            }
+                          b++;
+                      }
+                      if(!trouve){
+                          lesMatch[b] = Array();
+                          lesMatch[b].dom=i;
+                          lesMatch[b].vis=j;
+                          // $('#divTest').append(
+                           // $('<div></div>').text("Dom: "+i+", Vis: "+j),$('<br/>')
+                          //      );
+                          
+                      }
+                      }
+                }   
+              }
+             indMatchPris = Array();
+            semaineMatchs = Array();
+            
+            cptTentative =0;
+            MaxTentative = 10+nbSem;
+            Tentative2= 10;
+            a=0;
+            
+            while(a<nbSem&&cptTentative<MaxTentative){
+                semaineMatchs[a]=Array();
+                cpt=0;
+                recom = true;
+                while(recom&&cpt<Tentative2){
+                    retourPlace =placeMatchSemaine(a, indMatchPris);
+                    if(retourPlace==1){
+                        recom=true;}
+                        else{recom=false;}
+                    
+                    cpt++;
+                    if(cpt==Tentative2 ){
+                   //        $('#divTest').append(
+                   //         $('<div></div>').text("Tentative "+cpt),$('<br/>'));
+                   }
+                }
+                 toutLeMondeJoueUnMatch = true;
+                 for(var b=0;b<nomEquipes.length;b++){
+                   
+                        if(equipesMatchParSemaine[b][a]==0){
+                          //  $('#divTest').append(
+                          //  $('<div></div>').text("Equipe "+nomEquipes[b]+" n'a pas joué."),$('<br/>'));
+                            
+                            toutLeMondeJoueUnMatch=false;
+                            for(var c=0;c<nomEquipes.length;c++){
+                                for(var d=0;d<equipes[c][a].length;d++){
+                                equipes[c][a][d]=0;
+                                equipesMatchParSemaine[c][a]=0;
+                                }
+                            }
+                            
+                            }
+                        
+                      
+                  }
+                  if(toutLeMondeJoueUnMatch){
+                      a++;
+                      }
+                      cptTentative++;
+              }
+              if(cptTentative==MaxTentative){
+                     //  $('#divRap').append(
+                     //       $('<div></div>').text("Échec de faire jouer tout le monde dans ces conditions"),$('<br/>'));
+              }else{  //    $('#divRap').append(
+                       //     $('<div></div>').text("Succes en "+cptTentative+" tentatives"),$('<br/>'));
+    
+                  }
+              
+            semaine =0;
+            superSommeVar2=0;
+            eqParPlages= Array();
+            for(var a=0;a<equipes.length;a++){
+                eqParPlages[a]=Array();
+          //      equipeCour = $('<div></div>');
+          //           $('#divTest').append(equipeCour);
+                          somme=0;
+                          sommeVar2=0; 
+              for(var c=0;c<nbPlages;c++){
+                  eqParPlages[a][c]=0;
+                    for(var b=0;b<nbSem;b++){
+                    eqParPlages[a][c]=eqParPlages[a][c]+equipes[a][b][c];
+                    somme =somme+ equipes[a][b][c];
+                    }
+                }
+                moy = somme/nbPlages;
+
+                for(var b=0;b<nbPlages;b++){
+          //                  $(equipeCour).append($('<div></div>').text(eqParPlages[a][b]));
+                    sommeVar2 = sommeVar2+(eqParPlages[a][b]-moy)*(eqParPlages[a][b]-moy);
+                }
+         //                   $(equipeCour).append($('<div></div>').text("-----"+sommeVar2));
+                         superSommeVar2=superSommeVar2+sommeVar2;
+   
+            }
+                           $('#divTest').append(
+                            $('<div></div>').text("Viel essais "+vielEssai+", nouveau: "+superSommeVar2),$('<br/>')
+                                );
+                                if(superSommeVar2<vielEssai){
+                                    vielEssai=superSommeVar2;
+                                    $('#divBest').empty();
+                                    $('#divBest').append($('#divTest').children());
+                                    tabRes = $('<div></div>').attr("id","tabRes");
+                                    $('#divBest').append(tabRes);
+                                    $(tabRes).append($('<div></div>').attr("id","ligneTitre").append($('<div></div>').addClass("cellule").text("Semaine")));
+                                    for(var p=0;p<equipes.length;p++){
+                                            $("#ligneTitre").append($('<div></div>').addClass("cellule").text(nomEquipes[p])); 
+                                      
+                                            }
+                                     for(var q=0;q<nbSem;q++){
+                                         $(tabRes).append($('<div></div>').attr("id","sem_"+q).append($('<div></div>').addClass("cellule").text(nomSemaines[q])));
+                                           if(q%2==0){$("#sem_"+q).addClass("lp");}
+                                           else{$("#sem_"+q).addClass("limp");}
+                                        
+                                         for(var p=0;p<equipes.length;p++){
+                                            $("#sem_"+q).append($('<div></div>').attr("id","sem_"+q+"_eq_"+p)); 
+                                       
+                                            for(var r=0;r<nbPlages;r++){
+                                                    if(equipes[p][q][r]==1){
+                                                        $("#sem_"+q+"_eq_"+p).addClass("cellule").append($('<div></div>').text(nomPlages[r])); 
+                                                    }
+                                                }
+                                            }
+                             
+                                        }
+                                    
+                                    tabSomme = $('<div></div>').attr("id","tabSomme");
+                                    $('#divBest').append(tabSomme);
+                                    $(tabSomme).append($('<div></div>').attr("id","ligneTitreSomme").append($('<div></div>').addClass("cellule").text("Semaine")));
+                                    
+                                    sommeMatchEq =Array();
+                                    for(var p=0;p<equipes.length;p++){
+                                        sommeMatchEq[p]=0;
+                                            $("#ligneTitreSomme").append($('<div></div>').addClass("cellule").text(nomEquipes[p])); 
+                                      
+                                            }
+                                   
+                                      for(var r=0;r<nbPlages;r++){
+                                       $(tabSomme).append($('<div></div>').attr("id","somme_eq_"+r).append($('<div></div>').addClass("cellule").text(nomPlages[r])));
+                                         if(r%2==0){$("#somme_eq_"+r).addClass("lp");}else{$("#somme_eq_"+r).addClass("limp");}
+                                         for(var p=0;p<equipes.length;p++){
+                                            $("#somme_eq_"+r).append($('<div></div>').attr("id","plage_"+r+"_eq_"+p)); 
+                                      
+                                          
+                                                sommeEqPart=0;
+                                                
+                                                 for(var q=0;q<nbSem;q++){
+                                                     sommeEqPart+=equipes[p][q][r];
+                                                  sommeMatchEq[p]+=equipes[p][q][r];
+                                                }
+                                                    $("#plage_"+r+"_eq_"+p).addClass("cellule").append($('<div></div>').text(sommeEqPart)); 
+                                                    
+                                            }
+                             
+                                        }
+                                    $(tabSomme).append($('<div></div>').attr("id","ligneTotalSomme").append($('<div></div>').addClass("cellule").text("Total")));
+                                    
+                                     for(var p=0;p<equipes.length;p++){
+                                        
+                                            $("#ligneTotalSomme").append($('<div></div>').addClass("cellule").text(sommeMatchEq[p])); 
+                                      
+                                            }
+                                    
+                                    
+                                    
+                                }
+                                    $('#divTest').empty();
+            //                                               $('#divCentrale').append(
+            //               $('<div></div>').text("SommeVar2: "+superSommeVar2),$('<br/>'));
+
+            
+            essais++;
+            }
+            
+            function shuffleArray(array){
+                for(var i=array.length -1; i>0 ; i--){
+                    var j = Math.floor(Math.random()*(i+1));
+                    var temp = array[i];
+                    array[i] = array[j];
+                    array[j] = temp;
+                    
+                }
+                return array;
+            }
+              
+                          
+              
+  
+  //        }
+          
+          
+	
+		</script>
+	</body>
+</html>

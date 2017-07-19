@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<title>Infos</title>
+		<link rel="stylesheet" href="/style/general.css" type="text/css">
+				<link rel="shortcut icon" href="/favicon.ico" />
+
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+			<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+			<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		<style>
+		</style>
+		<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+				 		
+				 		
+				 		
+				 		
+				 		function traduction(){
+				 			$('#queFait').text(window.tl_infos_queFait);
+				 			$('#commentFonctionne').text(window.tl_infos_commentFonctionne);
+				 			$('#combien').text(window.tl_infos_combien);
+				 			$('#commentOrganise').text(window.tl_infos_commentOrganise);
+				 			$('#titre1').text(window.tl_infos_titre1);
+
+				 			$('#1p1').text(window.tl_infos_1ul);
+				 			$('#1p2').text(window.tl_infos_1introVideo);
+				 			$('#1li1').text(window.tl_infos_1li1);
+				 			$('#1li2').text(window.tl_infos_1li2);
+				 			$('#1li3').text(window.tl_infos_1li3);
+				 			$('#1li4').text(window.tl_infos_1li4);
+				 			
+				 			$('#titre2').text(window.tl_infos_titre2);
+
+				 			$('#2p1').text(window.tl_infos_2introVideo);
+				 			$('#2li1').text(window.tl_infos_2li1);
+				 			$('#2li2').text(window.tl_infos_2li2);
+				 			$('#2li3').text(window.tl_infos_2li3);
+				 			$('#2li4').text(window.tl_infos_2li4);
+				 			
+				 			$('#titre3').text(window.tl_infos_titre3);
+
+				 			$('#3p1').text(window.tl_infos_3p1);
+				 			$('#3p2').text(window.tl_infos_3p2);
+				 			$('#3p3').text(window.tl_infos_3p3);
+				 			$('#3li1').text(window.tl_infos_3li1);
+				 			$('#3li2').text(window.tl_infos_3li2);
+				 			$('#3li3').text(window.tl_infos_3li3);
+				 			$('#3li4').text(window.tl_infos_3li4);
+				 			
+				 			$('#titre4').text(window.tl_infos_titre4);
+
+
+				 			$('#4p1').text(window.tl_infos_4p1).append($('<a/>').addClass('cliquable').attr('src','mailto:info@syncstats.com').text(window.tl_general_contact2));
+				 			
+				 		}
+				 		
+		</script>
+
+
+	</HEAD>
+	<body id="mbody">
+		
+		
+
+
+		<div id="divHaut"></div>
+		<div id="divGauche" style="display:none"></div>
+					<div id="divMenuHaut"></div>
+
+
+		<div id="divCentrale">
+			<ul id="menu-info">
+				<li id="queFait" class="titre-section choisi">Que fait SyncStats?</li>
+				<li id="commentFonctionne" class="titre-section">Comment ça fonctionne?</li>
+				<li id="combien" class="titre-section">Combien ça coûte?</li>
+				<li id="commentOrganise" class="titre-section">Comment on s'organise?</li>
+				
+			</ul>
+			
+			<section id="quoi" class="info choisi">
+				<h1 id="titre1"> Des Vidéos, Des Stats et plus</h1>
+				<p id="1p1">Avec SyncStats, on peut:</p>
+				<li id="1li1">Facilement noter les statistiques d'un match</li>
+				<li id="1li2">Découper et obtenir les séquences vidéos sans avoir regarder le match au complet</li>
+				<li id="1li3">Consulter les reprises vidéo pendant le match</li>
+				<li id="1li4">Allez voir notre section <a href="/produits.html">Produits</a> pour plus d'info</li>
+				
+				<p id="1p2">Petit vidéo pour se mettre l'eau à la bouche!
+								<div class="divVideo">
+					<iframe width="560" height="315" src="https://www.youtube.com/embed/OlUFbieWls0" frameborder="0" allowfullscreen></iframe>
+			
+				</div>
+				</p>
+				
+			</section>
+			<section id="comment" class="info">
+				<h1 id="titre2">Des appareils intelligent, une utilisation facile</h1>
+				<ul>
+				<li id="2li1">Les caméras vidéos filment le match</li>
+				<li id="2li2">L'arbitre (ou le marqueur) possède un "cliqueur"</li>
+				<li id="2li3">Lorsque l'arbitre clique, un signal est envoyé aux caméras</li>
+				<li id="2li4">Les caméras découpent les vidéos et l'envoie sur le site web.</li>
+				</ul>
+				<p id="2p1">Le vidéo ci-contre montre un arbitre entrer un but sur son téléphone.
+								<div class="divVideo">
+					<iframe width="420" height="315" src="http://www.youtube.com/embed/2XOKY-Z2WrI" frameborder="0" allowfullscreen style="zIndex:0.5;"></iframe>
+			
+				</div>
+				</p>
+				</ul>
+				</section>
+			<section id="combien" class="info">
+				<h1 id="titre3">Pour une poignée de rondelles</h1>
+				<p id="3p1">Chaque ligue a sa propre façon de fonctionner et ses propres besoins.</p> 
+					<p id="3p2">Des façon générale, nos clients paient entre 5$ et 10$ par match (les joueurs ne paient rien pour voir les vidéos).</p>
+					<p id="3p3">Le prix va varier selon plusieurs facteurs</p>
+					<ul>
+				<li id="3li1">La résolution des vidéos</li>
+				<li id="3li2">Si vous utilisez vos propres appareils ou si vous les louez</li>
+				<li id="3li3">Le nombre de caméras utilisées pendant les matchs</li>
+				<li id="3li4">La main d'oeuvre, si disponible</li>
+					</ul>
+			</section>
+			<section id="organisation" class="info">
+				<h1 id="titre4">Service pro-actif</h1>
+				<p id="4p1">L'idéal, à ce moment, est de <a href="mailto:info@syncstats.com">nous contacter</a></p>
+				
+			</section>
+			
+			
+			
+			
+			
+		</div>
+		<div id="divDroite"></div>
+		
+		
+		
+		
+		<script type="text/javascript" charset="utf-8">
+			developper(15);
+			$("#divCentrale").css("width","80%");
+		
+			$('.titre-section').click(function(){
+				$('.titre-section').toggleClass("choisi",false);
+				$(this).toggleClass("choisi",true);
+				$('section').toggleClass("choisi",false);
+				var indice = $(this).index()+2;
+				$('section:nth-child('+indice+')').toggleClass("choisi",true);
+			});
+			
+			
+			//////
+			 $('.titre-section').mouseenter(function(){
+          $(this).css({
+                transition : 'color 0.35s ease-in-out',
+                "color": "#00A5DC"
+            });
+      }).mouseleave(function(){
+          $(this).css({
+                transition : 'color 0.35s ease-in-out',
+                "color": "black"
+            });
+      });
+      
+      traduction();
+			////////
+
+		</script>
+
+		
+	</body>
+</html>

@@ -45,26 +45,41 @@ $retour = mysql_query("SELECT abonJouLig
 		/// Section Equipe
 		//////////////////////////////////
 		
-		
-		$retour = mysql_query("SELECT abonJouEq 
+		$qAbonEq = "SELECT abonJouEq ,equipeId
 						FROM abonJoueurEquipe 
 						JOIN abonEquipeLigue
 							ON (abonJoueurEquipe.equipeId=abonEquipeLigue.equipeId)
 						WHERE joueurId={$joueurId}
 						AND ligueId = {$lesParams['ligueId']}
-						AND abonJoueurEquipe.equipeId <> {$lesParams['equipeId']}
-						AND abonJoueurEquipe.finAbon>NOW()")or die(mysql_error()."select bug EQ");  	
+						AND abonJoueurEquipe.finAbon>NOW()";
+		
+		
+		$resultAbonEq = mysql_query($qAbonEq)
+		or die(mysql_error().$qAbonEq);  
+		
 
-		if(mysql_num_rows($retour)>0)
-		{
-						$mr = mysql_fetch_row($retour);
-						mysql_query("UPDATE abonJoueurEquipe SET finAbon=NOW() WHERE abonJouEq='{$mr[0]}' ")
-				or die(mysql_error()."update bug EQ");  
+		$abonOk=false;
+		//On passe dans les abonnements actifs
+		while($rangeeAbonEq=mysql_fetch_array($resultAbonEq)){
+			
+			if($lesParams['equipeId']!=$rangeeAbonEq['equipeId']){
+				mysql_query("UPDATE abonJoueurEquipe SET finAbon=NOW() WHERE abonJouEq='{$rangeeAbonEq[0]}' ")
+				or die(mysql_error()."update bug EQ");
+			}
+			else	{
+					
+				$abonOk=true;
+			}	  
+
 		}
- if($intEquipe!=0)
-{
-	$retour = mysql_query("INSERT INTO abonJoueurEquipe (joueurId, equipeId, permission, debutAbon, finAbon) 
-		VALUES ('{$joueurId}', '{$intEquipe}',30, NOW(),'2030-01-01')")or die(mysql_error()."insert bug EQ");  	
-}
+
+		if($intEquipe!=0&&!$abonOk)
+		{
+			$retour = mysql_query("INSERT INTO abonJoueurEquipe (joueurId, equipeId, permission, debutAbon, finAbon) 
+			VALUES ('{$joueurId}', '{$intEquipe}',30, NOW(),'2030-01-01')")or die(mysql_error()."insert bug EQ");  	
+		}		
+		
+
+
 }
 ?>

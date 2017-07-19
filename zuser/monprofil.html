@@ -97,7 +97,7 @@
 					return requete_ajax.responseText;
 				}
 				//		else{alert("Petit problème de développement");}
-			}
+			};
 			requete_ajax.send(params);
 			//alert(requete_ajax.responseText);
 			var pourMAJ = new Array();
@@ -389,7 +389,7 @@
 					//mesActions(liguesJSON);
 
 				}
-			}
+			};
 			//				alert(JSON.stringify(listeMatch));
 			//	return vecMAV;
 			//}
@@ -412,7 +412,7 @@
 				}
 				requete_ajax.open('GET', '/stats/statsJoueur2JSON.php?joueurId=' + joueurId, true);
 				requete_ajax.send();
-			}
+			};
 		}
 
 		function getProfilMembre(id) {
@@ -450,9 +450,9 @@
 						videNoeud('onglet_0');
 						amettre = document.getElementById('onglet_0');
 						p1 = document.createElement('P');
-						p1.innerHTML = "Vous n'avez pas de joueur associés à votre compte."
+						p1.innerHTML = "Vous n'avez pas de joueur associés à votre compte.";
 						ol2 = document.createElement('OL');
-						ol2.innerHTML = "Pour vous identifier à un joueur existant:"
+						ol2.innerHTML = "Pour vous identifier à un joueur existant:";
 						li21 = document.createElement('LI');
 						li21.innerHTML = "Allez voir les stats de votre ligue";
 						li22 = document.createElement('LI');
@@ -492,7 +492,7 @@
 					}
 
 				}
-			}
+			};
 			requete_ajax.send(params);
 
 		}
@@ -1710,8 +1710,9 @@
 				amettre.appendChild(rangee);
 
 				try {
-					strImg = "<img src=\"\/images\/icones\/edit.png\" onclick=modifierSaison(" + J + ") width=\"32\" height=\"32\" alt=\"Edit\"\>";
-					strImg2 = "<img src=\"\/images\/icones\/equipes.png\" onclick=tableauEquipes(" + J + ") width=\"32\" height=\"32\" alt=\"Equipes\"\>";
+				    rangJ = lJSON.Ligue.saisons.length-J-1;
+					strImg = "<img src=\"\/images\/icones\/edit.png\" onclick=modifierSaison(" + rangJ + ") width=\"32\" height=\"32\" alt=\"Edit\"\>";
+					strImg2 = "<img src=\"\/images\/icones\/equipes.png\" onclick=tableauEquipes(" + rangJ + ") width=\"32\" height=\"32\" alt=\"Equipes\"\>";
 
 					var lesCols = new Array();
 					lesCols[0] = lJSON.Ligue.saisons[J].nom;
@@ -2319,7 +2320,7 @@
 						//remplirTableauLigue(string2);
 						//							alert('hep');
 					}
-				}
+				};
 				requete_ajax.send(params);
 			}
 			//}

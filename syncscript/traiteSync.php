@@ -21,6 +21,9 @@ $transPJ = $_POST['transPJ'];
 $matchsTS = $_POST['matchs'];
 $heure = $_POST['heure'];
 $heureServeur = time()*1000;
+$controlTemps=array();
+array_push($controlTemps,time());
+
 //echo $_POST['matchs'];
 //$t1 = $_POST['transJ'];
 $t1 = stripslashes(stripslashes(stripslashes($_POST['transJ'])));
@@ -38,6 +41,7 @@ $decTransE = json_decode($transE, true);
 $m1 = stripslashes($matchsTS);
 $m2 = str_replace('"{','{',$m1);
 $leMatch=array();
+
 $matchjson = str_replace('}"','}',$m2);
 $leMatch = json_decode($matchjson, true);
 //error_log("matchjson\n".$matchjson, 3, "/home1/syncsta1/public_html/scriptsphp/error_log");
@@ -76,6 +80,7 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 	}
 		// Prend le ID du user pour trouver les ligues abonn�es.
 }
+array_push($controlTemps,time());
 
 $resultAbon = mysql_query("SELECT * FROM AbonnementLigue ORDER BY ligueid")
 or die(mysql_error());  
@@ -103,7 +108,7 @@ while($rangeeAbonArb=mysql_fetch_array($resultAbonArb))
 		if(!in_array($rangeeAbonArb['ligueId'],$AbonSelect))
 			{array_push($AbonSelect, $rangeeAbonArb['ligueId']);}
 	}
-	
+	array_push($controlTemps,time());
 	// On obtient un array de ligueID auquel userSelect est abonn�.
 $lesSync=array();
 $lesSync=json_decode(stripslashes($syncJ));
@@ -120,8 +125,51 @@ $lesSyncMAV=json_decode(stripslashes($syncMav));
 $rep=array();
 $lesLigues=array();
 $lesMAV=array();
+$lesMAV2=array();
+
+function my_walk_recursive(&$array, $mode) {
+    foreach ($array as $k => &$v) {
+        if (!is_array($v)) {
+            // leaf node (file) -- print link
+            switch ($mode)
+            {
+				case 1:
+					changerId($v,$k);
+				break;
+				case 2: 
+					changerEqId($v,$k);
+				break;
+            }
+         }
+        else {
+        	switch ($mode)
+            {
+				case 1:
+						if(!strcmp($k,'alDom')||!strcmp($k,'alVis' ))
+					{
+					if(is_array($v))
+						foreach($v as &$lesJ)
+						{
+							if($lesJ>999999)
+							{
+								$lesJ=vieuAnouveau($lesJ);
+							}
+						}
+					}
+					else{
+						my_walk_recursive($v,$mode);
+					}
+					changerId($v,$k);
+				break;
+				case 2:
+					my_walk_recursive($v,$mode);
+				break;
+			}
 
 
+        }
+    }
+}
 
 function changerEqId(&$valeur,$cle)
 {
@@ -138,7 +186,7 @@ function changerEqId(&$valeur,$cle)
 
 function changerId(&$valeur,$cle)
 {
-	if(!strcmp($cle,'m')||!strcmp($cle,'p1')||!strcmp($cle,'p2')||!strcmp($cle,'joueur')||!strcmp($cle,'gardien'))
+	if(!strcmp($cle,'m')||!strcmp($cle,'p1')||!strcmp($cle,'p2')||!strcmp($cle,'joueur')||!strcmp($cle,'gardien')||!strcmp($cle,'gDom')||!strcmp($cle,'gVis'))
 	{
 		if($valeur>999999)
 		{
@@ -197,19 +245,20 @@ function vieuAnouveauEq($vieu)
 
 //		if($transJ!=null)
 //			{
-					include 'dechargeTransactions.php';
+include 'dechargeTransactions.php';
+array_push($controlTemps,time());
 //				$lesLigues[$ILigue]=$ligue;
 				
-				foreach($leMatch as &$vec){
+foreach($leMatch as &$vec){
 //					$vec->{'vieuId'};
-					array_walk_recursive($vec, 'changerId');
-				}
-				unset($vec);
-				foreach($leMatch as &$vec){
+		my_walk_recursive($vec, 1);
+	}
+unset($vec);
+foreach($leMatch as &$vec){
 	//				$vec->{'vieuId'};
-					array_walk_recursive($vec, 'changerEqId');
-				}
-				unset($vec);
+	my_walk_recursive($vec, 2);
+}
+unset($vec);
 				
 
 //			}
@@ -252,7 +301,9 @@ $nbLigueCons=0;
 			}
 		if($syncMav!=null)
 			{	include 'dechargeMAV.php';
+				include 'dechargeMAV2.php';
 				$lesMAV[$ILigue]=$vecMAV;
+				$lesMAV2[$ILigue]=$vecMAV2;
 			}
 		$ILigue++;
 		
@@ -260,20 +311,22 @@ $nbLigueCons=0;
 		
 		
 	}//Fin du scan des ligues auquel l'utilisateur est abbonn�.
-	
+	array_push($controlTemps,time());
 	
 //echo json_encode($Sommaire);
 //////////////////////////////////////////////////////////////////////////////////////////
 
 $syncOK = array();
 $extra = array();
-$extra['info0']="pouite";
+$extra['info0']=$controlTemps;
 
 include 'dechargeMatchs.php';
-include('../scriptsphp/actualiseMatchs.php');			
+array_push($controlTemps,time());
+//include('../scriptsphp/actualiseMatchs.php');			// ActualiseMAtch a emmener de gros problème de répétition des entrées...
 
+array_push($controlTemps,time());
 include 'majJoueur2.php';
-
+array_push($controlTemps,time());
 //$extra['info']=json_encode($leMatch);
 //$extra['info2']=stripslashes($matchsTS);
 //$extra['info3']=stripslashes($_POST['matchs']);
@@ -286,6 +339,7 @@ $rep['extra']=$extra;
 $rep['transJ']=$retTransJ;
 $rep['transE']=$retTransE;
 $rep['MAV']=$lesMAV;
+$rep['MAV2']=$lesMAV2;
 $rep['ligues']=$lesLigues;
 //echo json_encode($extra);
 echo json_encode($rep);
@@ -296,7 +350,7 @@ echo json_encode($rep);
 //echo "post: ".$_POST['matchs']."\n";
 //echo "m1:".$m1."\n";
 
-header('Content-type: text/plain; charset=utf-8');
- header("HTTP/1.1 200 OK");
+//header('Content-type: text/plain; charset=utf-8');
+ //header("HTTP/1.1 200 OK");
 
 ?>

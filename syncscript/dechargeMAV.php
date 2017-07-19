@@ -36,12 +36,7 @@ while($r = mysql_fetch_array($retour,MYSQL_ASSOC)) {
 
 $vecMAV=$vecMatch;
 $infoMav = $qString;
-/*
-if(count($vecMatch)!=0)
-echo $adomper;
-else {
-	echo  "";
-}*/
+
 
 
 	//		header("HTTP/1.1 200 OK");

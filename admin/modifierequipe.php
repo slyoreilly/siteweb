@@ -18,8 +18,7 @@ $logo = $_POST['logo'];
 $ligueId = $_POST['ligueId'];
 $code = $_POST['code'];
 $ficId = $_POST['ficId'];
-
-
+$couleur1 = $_POST['couleur'];
 
 
 if (!mysql_connect($db_host, $db_user, $db_pwd))
@@ -45,18 +44,18 @@ mysql_query("SET CHARACTER SET 'utf8'");
 //	Les queries
 //
 
-	echo $code;
+
 	if(1==$code)  // Code 1:  Cr�er une nouvelle equipe.
 {
-	$query_equipe = "INSERT INTO TableEquipe (nom_equipe, logo, ligue_equipe_ref,ficId,equipeActive,dernierMAJ) ".
-"VALUES ('$nomEquipe', '$logo', '$ligueId','$ficId',1,NOW())";
+	$query_equipe = "INSERT INTO TableEquipe (nom_equipe, logo, ligue_equipe_ref,ficId,equipeActive,dernierMAJ,couleur1) ".
+"VALUES ('$nomEquipe', '$logo', '$ligueId','$ficId',1,NOW(),'$couleur1')";
 		
 		$retour = mysql_query($query_equipe) or die("Erreur: ".$query_equipe.mysql_error);
-echo "et là \n";
+
 
 $requeteDernId = "SELECT * FROM TableEquipe WHERE nom_equipe='$nomEquipe' ORDER BY equipe_id DESC";
 $rDernId = mysql_query($requeteDernId) or die("Erreur: ".$requeteDernId.mysql_error);
-echo "encore \n";
+
 
 $rEID = mysql_fetch_array($rDernId);
 
@@ -66,7 +65,7 @@ $requeteAbon = "INSERT INTO abonEquipeLigue (equipeId, ligueId, permission, debu
 "VALUES ('$rEID[0]', '$ligueId', 30, NOW(), '2050-01-01')";
 
 $retour2 = mysql_query($requeteAbon) or die("Erreur: ".$requeteAbon.mysql_error);
-echo "et toujours \n";
+echo "$rEID[0]";
 
 }
 	
@@ -76,7 +75,7 @@ echo "et toujours \n";
 		
 		
 		
-	$query_update = "UPDATE TableEquipe SET nom_equipe='$nomEquipe', logo='$logo', ficId='$ficId', dernierMAJ=NOW() WHERE equipe_id= '$equipeId'";	
+	$query_update = "UPDATE TableEquipe SET nom_equipe='$nomEquipe', logo='$logo', ficId='$ficId', couleur1='$couleur1', dernierMAJ=NOW() WHERE equipe_id= '$equipeId'";	
 	mysql_query($query_update)or die(mysql_error()." update");	
 	
 	

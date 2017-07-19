@@ -154,10 +154,10 @@ if(!strcmp($saisonId,"")&&strcmp($ligueId,""))// Sp�cifie par la ligue
 //	$saisonId =2;
 }
 	$prSaison = mysql_query("SELECT premierMatch FROM TableSaison where saisonId =$saisonId")
-or die(mysql_error());  
+or die(mysql_error()."qPM sID: ".$saisonId);  
 $premierMatch=mysql_result($prSaison, 0);
 	$drSaison = mysql_query("SELECT dernierMatch FROM TableSaison where saisonId =$saisonId")
-or die(mysql_error());  
+or die(mysql_error()."qDM");  
 $dernierMatch=mysql_result($drSaison, 0);
 
 $butsAccorde = array();
@@ -170,35 +170,44 @@ $Im=0;
 //or die(mysql_error());  
 //$rMatchs = mysql_query("SELECT * FROM {$tableMatch} where ligueRef ='{$ligueId}' and date>='{$premierMatch}'  and date<='{$dernierMatch}'")
 //or die(mysql_error()); 
-
+	mysql_query("SET SQL_BIG_SELECTS=1");
 $stringOut .="GrosBug";
-
-$rMatchs = mysql_query("SELECT TableMatch.*, TableEvenement0.joueur_event_ref, TableEvenement0.equipe_event_id 
-				FROM {$tableMatch} 
+$reqMatch= "SELECT TableMatch.*, TableEvenement0.joueur_event_ref, TableEvenement0.equipe_event_id , TEdom.nom_equipe AS NEdom,TEvis.nom_equipe AS NEvis, TEdom.equipe_id AS eqDomId,TEvis.equipe_id AS eqVisId
+				FROM TableMatch
 				JOIN TableEvenement0 
 					ON (TableMatch.matchIdRef=TableEvenement0.match_event_id) 
+				JOIN TableEquipe AS TEdom 
+										ON (TableMatch.eq_dom=TEdom.equipe_id)
+									JOIN TableEquipe AS TEvis
+										ON (TableMatch.eq_vis=TEvis.equipe_id)
 					where TableMatch.ligueRef ='{$ligueId}' and TableMatch.date>='{$premierMatch}'  
 					and TableMatch.date<='{$dernierMatch}' and TableEvenement0.code='3' 
-					and TableEvenement0.souscode=5")
-or die(mysql_error()); 
+					and TableEvenement0.souscode=5";
+$rMatchs = mysql_query($reqMatch)
+or die(mysql_error()."qM"); 
+//echo $reqMatch." - ";
 while($lMatchs=mysql_fetch_array($rMatchs))  /// On regarde tous les matchs de la saison.
 	{
-				 	if(strcmp($lMatchs['equipe_event_id'],$lMatchs['eq_vis'])==0&&((!empty($equipeId)&&($equipeId==$lMatchs['eq_vis']))||(strcmp($equipeId,"null")==0)))
+		
+				 	if(strcmp($lMatchs['equipe_event_id'],$lMatchs['eq_vis'])==0&&((!empty($equipeId)&&($equipeId==$lMatchs['eq_vis']))||(strcmp($equipeId,"null")==0)||$equipeId==null))
 					{// S'il y a une �quipe de d�finie, le gardien fait-il partie de cette �quipe?
-					$butsAccorde[$Im][0]=$lMatchs['score_dom'];   // Buts accordés // obsolet, réécrit.
-					$rEvent_dom = mysql_query("SELECT TableEvenement0.souscode 
+					//$butsAccorde[$Im][0]=$lMatchs['score_dom'];   // Buts accordés // obsolet, réécrit.
+					$rEvent_dom = mysql_query("SELECT TableEvenement0.souscode
 												FROM TableEvenement0 
 												WHERE match_event_id='{$lMatchs['matchIdRef']}' 
 												AND equipe_event_id = '{$lMatchs['eq_dom']}'
 												AND code = 0 
 												AND souscode!=9")
-					or die(mysql_error());
+					or die(mysql_error()."qVis");
 					$butsAccorde[$Im][0]=mysql_num_rows($rEvent_dom);   // Buts accordés
 					$butsAccorde[$Im][1]=$lMatchs['eq_vis'];		// Équipe du gardien
 					$butsAccorde[$Im][2]=$lMatchs['matchIdRef'];
 					$butsAccorde[$Im][3]=trouveNomJoueurParID($lMatchs['joueur_event_ref']);
 					$butsAccorde[$Im][5]=trouveNoJoueurParID($lMatchs['joueur_event_ref']);
 					$butsAccorde[$Im][6]=$lMatchs['joueur_event_ref'];  // ID
+				//	echo " - ".$lMatchs['joueur_event_ref']." / ".$lMatchs['equipe_event_id']." / ".$lMatchs['eq_vis'];
+		
+					$butsAccorde[$Im][7]=$lMatchs['NEvis'];  // Nom de l'équipe du gardien
 						if($lMatchs['score_dom']>$lMatchs['score_vis'])
 							{$butsAccorde[$Im][4]=0;}  // D�faite du gardien
 						else 
@@ -210,22 +219,23 @@ while($lMatchs=mysql_fetch_array($rMatchs))  /// On regarde tous les matchs de l
 							}
 						
 					}
-				 	if(strcmp($lMatchs['equipe_event_id'],$lMatchs['eq_dom'])==0&&((!empty($equipeId)&&($equipeId==$lMatchs['eq_dom']))||(strcmp($equipeId,"null")==0)))
+				 	if(strcmp($lMatchs['equipe_event_id'],$lMatchs['eq_dom'])==0&&((!empty($equipeId)&&($equipeId==$lMatchs['eq_dom']))||(strcmp($equipeId,"null")==0)||$equipeId==null))
 					{
-					$butsAccorde[$Im][0]=$lMatchs['score_vis'];
-					$rEvent_vis = mysql_query("SELECT TableEvenement0.souscode 
+					//$butsAccorde[$Im][0]=$lMatchs['score_vis'];
+					$rEvent_vis = mysql_query("SELECT TableEvenement0.souscode
 												FROM TableEvenement0 
 												WHERE match_event_id='{$lMatchs['matchIdRef']}' 
 												AND equipe_event_id = '{$lMatchs['eq_vis']}'
 												AND code = 0 
 												AND souscode!=9")
-					or die(mysql_error());
+					or die(mysql_error()."qDom");
 					$butsAccorde[$Im][0]=mysql_num_rows($rEvent_vis);   // Buts accordés
 										$butsAccorde[$Im][1]=$lMatchs['eq_dom'];
 					$butsAccorde[$Im][2]=$lMatchs['matchIdRef'];
 					$butsAccorde[$Im][3]=trouveNomJoueurParID($lMatchs['joueur_event_ref']);
 					$butsAccorde[$Im][5]=trouveNoJoueurParID($lMatchs['joueur_event_ref']);
 					$butsAccorde[$Im][6]=$lMatchs['joueur_event_ref'];  // ID
+					$butsAccorde[$Im][7]=$lMatchs['NEdom'];  // Nom de l'équipe du gardien
 						if($lMatchs['score_dom']>$lMatchs['score_vis'])
 						{
 							$butsAccorde[$Im][4]=2;// Victoire du gardien
@@ -262,7 +272,10 @@ $NbEntre=$Im;//count($butsAccorde);
 	
 	while($Ievent<$NbEntre)
 	{
-		$ligneEvent1 = $butsAccorde[$Ievent][3];
+		
+		
+		$ligneEvent1 = $butsAccorde[$Ievent][6];
+		//echo $Ievent."  ".$butsAccorde[$Ievent][6]." ";
 		$Itrouve=0;
 		$boule =0;
 		while($Itrouve<count($joueursEntres))
@@ -272,12 +285,11 @@ $NbEntre=$Im;//count($butsAccorde);
 		$Itrouve++;
 		}
 
-		if(($boule==0)&&(strcmp($ligneEvent1,null))&&(($butsAccorde[$Ievent][1]==$equipeId)||(strcmp($equipeId,"null")==0)))//gardien pas dans la liste et dans l'équipe
+		if(($boule==0)/*&&(strcmp($ligneEvent1,null))*/&&(($butsAccorde[$Ievent][1]==$equipeId)||(strcmp($equipeId,"null")==0)||$equipeId==null))//gardien pas dans la liste et dans l'équipe
 		{$joueursEntres[$Itrouve]= $ligneEvent1;
 		$stringOut.= "----  Liste est rendue a ".$Itrouve;
-		$rangeeStats[$Itrouve][0]=$ligneEvent1;
+		$rangeeStats[$Itrouve][0]=$butsAccorde[$Ievent][3];
 		$stringOut.= $ligneEvent1." ";
-	
 		$rangeeStats[$Itrouve][1]=0;//V
 		$rangeeStats[$Itrouve][2]=0;//D
 		$rangeeStats[$Itrouve][3]=0;//N
@@ -285,11 +297,13 @@ $NbEntre=$Im;//count($butsAccorde);
 		$rangeeStats[$Itrouve][5]=$butsAccorde[$Ievent][5];//No joueur
 		$rangeeStats[$Itrouve][6]=$butsAccorde[$Ievent][1];//Equipe
 		$rangeeStats[$Itrouve][7]=$butsAccorde[$Ievent][6];//ID
-				}
+		$rangeeStats[$Itrouve][8]=$butsAccorde[$Ievent][7];//Equipe		
+		}
 			
 		$Ievent++;
 		
 	}
+	//echo $stringOut;
 	
 	///////////////////////////////////////////////////////
 	//
@@ -305,7 +319,7 @@ $NbEntre=$Im;//count($butsAccorde);
 			while($indexJoueur<$NbRangeeStats)
 				{
 	
-				if(!strcmp($rangeeStats[$indexJoueur][0],$butsAccorde[$Ievent][3]))  //  Si on trouve un evenement compatible avec un joueur
+				if(!strcmp($rangeeStats[$indexJoueur][7],$butsAccorde[$Ievent][6]))  //  Si on trouve un evenement compatible avec un joueur
         			{$rangeeStats[$indexJoueur][4]+=$butsAccorde[$Ievent][0];
 //					$rangeeStats[$indexJoueur][0]=$butsAccorde[$Ievent][3];
 					switch ($butsAccorde[$Ievent][4]) 
@@ -344,7 +358,7 @@ $stats[$Ievent]['nbButs'] = $rangeeStats[$Ievent][4];
 $stats[$Ievent]['no'] = $rangeeStats[$Ievent][5];
 $stats[$Ievent]['equipe'] = $rangeeStats[$Ievent][6];
 $stats[$Ievent]['id'] = $rangeeStats[$Ievent][7];
-
+$stats[$Ievent]['nomEquipe'] = $rangeeStats[$Ievent][8];
 				$JSONstring .= json_encode($stats[$Ievent]).",";
 
 		$Ievent++;
