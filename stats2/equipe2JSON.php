@@ -37,7 +37,7 @@ mysql_query("SET CHARACTER SET 'utf8'");
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$equipeId = $_GET["equipeId"];
+$equipeId = $_POST["equipeId"];
 
 if(!function_exists("array_column"))
 {
@@ -107,6 +107,8 @@ while ($rangeeLiEq = mysql_fetch_array($rLiEq))//  Pour chacun des abonnements d
 				$stats[$IE] = Array();
 				$stats[$IE]['joueurId'] = $rangMatch['joueur_id'];
 				$stats[$IE]['nom'] = $rangMatch['NomJoueur'];
+				$stats[$IE]['numero'] = $rangMatch['NumeroJoueur'];
+				$stats[$IE]['position'] = $rangMatch['position'];
 				$stats[$IE]['nbButs'] = 0;
 				$stats[$IE]['nbPasses'] = 0;
 				$stats[$IE]['minPun'] = 0;
@@ -134,13 +136,16 @@ while ($rangeeLiEq = mysql_fetch_array($rLiEq))//  Pour chacun des abonnements d
 		$jId = 0;
 		while ($rangAbon = mysql_fetch_array($rAbon)) {
 			//print_r(array_column($stats, 'joueurId'));
+			
 			$key = array_search($rangAbon['joueurId'], array_column($stats, 'joueurId'));
 //			echo $key+"-";
 
-			if ($key == false) {			$IE++;
+			if ($key === false) {			$IE++;
 				$stats[$IE] = Array();
 				$stats[$IE]['joueurId'] = $rangAbon['joueurId'];
 				$stats[$IE]['nom'] = $rangAbon['NomJoueur'];
+				$stats[$IE]['numero'] = $rangAbon['NumeroJoueur'];
+				$stats[$IE]['position'] = $rangAbon['position'];
 				$stats[$IE]['nbButs'] = 0;
 				$stats[$IE]['nbPasses'] = 0;
 				$stats[$IE]['minPun'] = 0;

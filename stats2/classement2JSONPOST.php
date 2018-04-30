@@ -61,6 +61,9 @@ or die(mysql_error()." Select saisonId");
 //////////////////////////////////////////////////////
 
 	
+	
+	
+	
 if($saisonId=="null"||$saisonId=="undefined")// Sp�cifie par la saison
 	{$saisonId = trouveSaisonActiveDeLigueId($ligueId);}
 		
@@ -70,6 +73,13 @@ if($saisonId=="null"||$saisonId=="undefined")// Sp�cifie par la saison
 	$JSONstring = "{\"ligueId\": \"".$ligueId."\",";
 	
 	$Is=0;
+	
+	$resultLigue = mysql_query("SELECT * FROM Ligue WHERE ID_Ligue = '{$ligueId}'")
+or die(mysql_error());  
+$rangeeLigue=mysql_fetch_assoc($resultLigue);
+$jsonLigue = json_decode($rangeeLigue['cleValeur'],true);
+$nbPunMax = $jsonLigue['reglements']['nbPunMax'];
+
 	
 //$resultSaison = mysql_query("SELECT * FROM TableSaison WHERE saisonId = '{$saisonId}'")
 $resultSaison = mysql_query("SELECT * FROM TableSaison WHERE ligueRef = '{$ligueId}'")
@@ -116,6 +126,7 @@ while($rangeeEquipe=mysql_fetch_array($resultEquipe))
 	$equipe[$Ie]['nulVis']=0;
 	$equipe[$Ie]['defPDom']=0;
 	$equipe[$Ie]['defPVis']=0;
+	$equipe[$Ie]['ptsDisc']=0;
 	$equipe[$Ie]['bp']=0;
 	$equipe[$Ie]['bc']=0;
 	$equipe[$Ie]['ficId']=$rangeeEquipe['ficId'];
@@ -131,7 +142,50 @@ unset($resultMatch);
 unset($rangeeMatch);
 mysql_query("SET SQL_BIG_SELECTS=1");
 
-$resultMatch = mysql_query("
+/*$resultMatch = mysql_query("
+SELECT * 
+FROM TableMatch 
+INNER JOIN(
+  SELECT match_event_id,code,souscode
+    FROM TableEvenement0 
+    WHERE code=11 OR code =10
+    ORDER BY match_event_id, code DESC, souscode DESC
+) AS s1 
+	ON (TableMatch.matchIdRef=s1.match_event_id)
+							WHERE (eq_dom = '{$equipe[$Ie]['id']}' OR  eq_vis = '{$equipe[$Ie]['id']}')
+								AND statut='F' AND ligueRef='{$ligueId}'
+    GROUP BY s1.match_event_id ")*/
+   
+   $resultMatch = mysql_query("
+    SELECT * 	
+FROM TableMatch 	
+LEFT JOIN(	
+	  SELECT match_event_id, MAX(souscode) AS sc10
+	    FROM TableEvenement0 
+	    WHERE code =10
+    	GROUP BY match_event_id
+	) AS s1 
+ON (TableMatch.matchIdRef=s1.match_event_id)	
+	LEFT JOIN(
+	  SELECT match_event_id,MAX(souscode) AS sc11
+	    FROM TableEvenement0 
+	    WHERE code =11
+        GROUP BY match_event_id
+	) AS s2
+ON (TableMatch.matchIdRef=s2.match_event_id)	
+	LEFT JOIN(
+	  SELECT match_event_id, COUNT(*) AS punitions
+	    FROM TableEvenement0 
+	    WHERE code=4 AND equipe_event_id='{$equipe[$Ie]['id']}'
+	    GROUP BY match_event_id
+	) AS s3
+ON (TableMatch.matchIdRef=s3.match_event_id)	
+WHERE (eq_dom = '{$equipe[$Ie]['id']}' OR  eq_vis = '{$equipe[$Ie]['id']}')	
+	AND statut='F' AND ligueRef='{$ligueId}'")
+    
+								
+/*
+ * "
 SELECT * 
 FROM TableMatch 
 INNER JOIN(
@@ -149,15 +203,21 @@ LEFT JOIN(
 ) AS s2
 	ON (TableMatch.match_id=s2.match_event_id)
 							WHERE (eq_dom = '{$equipe[$Ie]['id']}' OR  eq_vis = '{$equipe[$Ie]['id']}')
-								AND statut='F'
-    GROUP BY s1.match_event_id ")
+								AND statut='F' AND ligueRef='{$ligueId}'
+    GROUP BY s1.match_event_id "
+ * 
+ * */								
+								
 								
 or die(mysql_error());  
 
 while($rangeeMatch=mysql_fetch_array($resultMatch))
 {
 	if($rangeeMatch['date']>=$premierMatch&&$rangeeMatch['date']<=$dernierMatch)
-	{	
+	{
+		if($rangeeMatch['punitions']<=$nbPunMax){
+			$equipe[$Ie]['ptsDisc']++;
+		}	
 		if($rangeeMatch['eq_dom']==$equipe[$Ie]['id'])
 		{
 		
@@ -165,7 +225,7 @@ while($rangeeMatch=mysql_fetch_array($resultMatch))
 				$equipe[$Ie]['vicDom']++;
 			if($rangeeMatch['score_dom']<$rangeeMatch['score_vis'])
 			{
-				if($rangeeMatch['souscode']>10){
+				if($rangeeMatch['sc11']>10){
 				$equipe[$Ie]['defPDom']++;
 				}else{
 				$equipe[$Ie]['defDom']++;
@@ -183,7 +243,7 @@ while($rangeeMatch=mysql_fetch_array($resultMatch))
 				$equipe[$Ie]['vicVis']++;
 			if($rangeeMatch['score_dom']>$rangeeMatch['score_vis'])
 			{
-				if($rangeeMatch['souscode']>10){
+				if($rangeeMatch['sc11']>10){
 					$equipe[$Ie]['defPVis']++;
 				}else{
 					$equipe[$Ie]['defVis']++;

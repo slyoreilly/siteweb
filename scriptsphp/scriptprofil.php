@@ -70,7 +70,6 @@ $ficId = $_POST['ficId'];
 //////////////////////////////////
 
 
-echo "que je cherche".$ficId;
 	
 	if($code==1||$code==41)  // Code 10:  Modifie ligue existante.
 	{
@@ -80,18 +79,16 @@ echo "que je cherche".$ficId;
 
 	if($code==40)  // Code 10:  Modifie ligue existante.
 	{
-echo " que je cherche";
-
 				
 		
 		
 	$query_insert = "INSERT INTO `TableJoueur`(`NomJoueur`, `NumeroJoueur`, `position`, `Ligue`,`Equipe`,`equipe_id_ref`, `nom`, `prenom`, `taille`, `poids`, `sexe`, `anneeNaissance`, `villeOrigine`, `dernierMAJ`,`ficIdJoueur`,`ficIdPortrait`,`proprio`) 
 	VALUES ('$pseudo','$numero','$position','$ligueId','aucune',NULL,'$nom','$prenom', '$taille','$poids','$sexe','$anneeNaissance','$villeOrigine',
 			NOW(),0,0,0)";	
-	echo $query_insert;
+	//echo $query_insert;
 			$ret =mysql_query($query_insert) or die('TableJoueur Insert '+mysql_error()); 
 	$mes1='TableJoueur Insert '+mysql_error();
-	echo " que je cherche";
+	//echo " que je cherche";
 	
 	if($ret)
 	{$reqSel="SELECT joueur_id FROM TableJoueur WHERE NomJoueur='$pseudo' ORDER BY joueur_id  DESC";
@@ -100,16 +97,19 @@ echo " que je cherche";
 	$requeteInsertAbon = "INSERT INTO `abonJoueurLigue`(`joueurId`, `ligueId`, `permission`, `debutAbon`, `finAbon`) 
 	VALUES ({$jId['joueur_id']},'$ligueId',30,NOW(),'2050-01-01')";
 		mysql_query($requeteInsertAbon)or die('TableJoueur Abon '+mysql_error()); 
+			echo $jId['joueur_id'];
+	
+	}
+	else{
+		echo "Erreur!";
 	}	
 
 	
 	
-		echo $mes1;
 	//echo "test";
 	}
 
 	
-echo "que je cherche";
 /*
 
 if($code<40)

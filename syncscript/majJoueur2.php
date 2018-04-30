@@ -45,7 +45,7 @@ $retour = mysql_query("SELECT abonJouLig
 		/// Section Equipe
 		//////////////////////////////////
 		
-		$qAbonEq = "SELECT abonJouEq ,equipeId
+		$qAbonEq = "SELECT abonJouEq ,abonJoueurEquipe.equipeId
 						FROM abonJoueurEquipe 
 						JOIN abonEquipeLigue
 							ON (abonJoueurEquipe.equipeId=abonEquipeLigue.equipeId)

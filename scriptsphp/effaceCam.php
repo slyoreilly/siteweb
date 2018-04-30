@@ -71,3 +71,4 @@ $resCam=mysql_query($qDel) or die(mysql_error().' damn');
 echo "Number of files deleted: ".$numDelFiles;
 
 ?>
+

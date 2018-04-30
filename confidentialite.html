@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<?xml version="1.0" encoding="utf-8"?>
+<html>
+    <head>
+        <title>SyncStats</title>
+        <meta name="description" content="With SyncStats, your hockey statistics are put online seamlessly. Based on an easy-to-use mobile app, you also get a nice web site for your stats. Stay tuned, even nicer features to come!	">
+        <meta name="keyword" content="hockey,statistics,android,mobile app, smartphone, scoreboard, video replay,">
+        <meta name="author" content="Sylvain O'Reilly">
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+        <script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/jquery.watermark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+        <script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+        <script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+
+        <script type="text/javascript" charset="utf-8">
+			gereLangue();
+        </script>
+        <style>
+            a {
+                color: #8DBB22;
+            }
+            @media only screen and (max-width: 500px) {
+                #divDroite {
+                    display: none;
+                }
+                #divCentrale {
+                    width: 100%;
+                }
+                #divIndex1 {
+                    width: 100%;
+                }
+                #divIndex2 {
+                    width: 100%;
+                }
+
+            }
+
+        </style>
+
+    </head>
+    <body id="mbody">
+
+        <div id="divHaut">
+            <div id="divTitreDoc">
+                <div id="divLogo">
+                    <a href="/"><h1>SYNCSTATS</h1></a>
+                    <img id="imgLogo" src="/images/logoSeul.png" alt="SyncStats Logo"> </img>
+
+                </div>
+                <div id="menuDivHaut">
+                    <div id="divMenu">
+
+                        <ul id="menu">
+                            <li id="1_1">
+                                <a href="/zstats/accueilligue.html">Stats</a>
+                                <ul>
+                                    <li>
+                                        <a href="/zstats/accueilligue.html">Home</a>
+                                    </li>
+                                    <li>
+                                        <a href="/zstats/statistiques.html">Standings</a>
+                                    </li>
+                                    <li>
+                                        <a href="/zstats/meneurs.html">Leaders</a>
+                                    </li>
+                                    <li>
+                                        <a href="/zstats/resultats.html">Results</a>
+                                    </li>
+                                    <li>
+                                        <a href="/zuser/monprofil.html">My profile</a>
+                                    </li>
+
+                                </ul>
+                            </li>
+                            <li id="1_4">
+                                <a href="/zdoc/videos.html">Infos</a>
+                                <ul>
+                                    <li>
+                                        <a href="/zdoc/videos.html">Infos</a>
+                                    </li>
+                                    <li>
+                                        <a href="/zdoc/videos.html">Video</a>
+                                    </li>
+                                    <li>
+                                        <a href="/zdoc/demarrer.html">Start with SyncStats</a>
+                                    </li>
+                                    <li>
+                                        <a href="/zdoc/faq.html">FAQ</a>
+                                    </li>
+
+                                </ul>
+
+                            </li>
+                            <li id="1_5">
+
+                                <a href="/produits.html">Products</a>
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="divGauche"></div>
+        <div id="divMenuHaut"></div>
+        <div id="divCentrale" >
+            <h2>Collecte des renseignements personnels</h2>
+            <p>
+                Nous collectons les renseignements suivants :
+            </p>
+            <ul>
+                <li>
+                    Nom
+                </li>
+                <li>
+                    Prénom
+                </li>
+                <li>
+                    Code postal
+                </li>
+                <li>
+                    Adresse électronique
+                </li>
+                <li>
+                    Genre / Sexe
+                </li>
+                <li>
+                    Âge / Date de naissance
+                </li>
+                <li>
+                    Description physique
+                </li>
+            </ul>
+
+            <p>
+                Les renseignements personnels que nous collectons sont recueillis au travers de formulaires et grÂce à
+                l'interactivité établie entre vous et notre site Web.
+                Nous utilisons également, comme indiqué dans la section suivante, des fichiers témoins et/ou journaux
+                pour réunir des informations vous concernant.
+            </p>
+            <hr/>
+            <h2>Formulaires et interactivité:</h2>
+            <p>
+                Vos renseignements personnels sont collectés par le biais de formulaire, à savoir :
+            </p>
+            <ul>
+                <li>
+                    Formulaire d'inscription au site Web
+                </li>
+            </ul>
+            <p>
+                Nous utilisons les renseignements ainsi collectés pour les finalités suivantes :
+            </p>
+            <ul>
+                <li>
+                    Gestion du site Web (présentation, organisation)
+                </li>
+            </ul>
+            <p>
+                Vos renseignements sont également collectés par le biais de l'interactivité pouvant s'établir entre vous et notre site Web et ce, de la façon suivante:
+            </p>
+            <ul>
+                <li>
+                    Gestion du site Web (présentation, organisation)
+                </li>
+            </ul>
+            <p>
+                Nous utilisons les renseignements ainsi collectés pour les finalités suivantes :
+                <br />
+            </p>
+            <ul>
+                <li>
+                    Correspondance
+                </li>
+            </ul>
+            <hr/>
+            <h2>Fichiers journaux et témoins </h2>
+            <p>
+                Nous recueillons certaines informations par le biais de fichiers journaux (log file) et de fichiers témoins (cookies). Il s'agit principalement des informations suivantes :
+            </p>
+            <ul>
+                <li>
+                    Pages visitées et requêtes
+                </li>
+                <li>
+                    Heure et jour de connexion
+                </li>
+            </ul>
+
+            <br />
+            <p>
+                Le recours à de tels fichiers nous permet :
+            </p>
+            <ul >
+                <li>
+                    Amélioration du service et accueil personnalisé
+                </li>
+                <li>
+                    Statistique
+                </li>
+            </ul>
+            <hr/>
+            <h2>Droit d'opposition et de retrait</h2>
+            <p>
+                Nous nous engageons à vous offrir un droit d'opposition et de retrait quant à vos renseignements personnels.
+                <br />
+                Le droit d'opposition s'entend comme étant la possiblité offerte aux internautes de refuser que leurs renseignements
+                personnels soient utilisées à certaines fins mentionnées lors de la collecte.
+                <br />
+            </p>
+            <p>
+                Le droit de retrait s'entend comme étant la possiblité offerte aux internautes de demander à ce que leurs
+                renseignements personnels ne figurent plus, par exemple, dans une liste de diffusion.
+                <br />
+            </p>
+            <p>
+                Pour pouvoir exercer ces droits, vous pouvez :
+                <br />
+                Code postal : 8552 15e avenue, Montréal H1Z 3N7
+                <br />
+                Courriel : info@syncstats.com
+                <br />
+                Téléphone : 514-887-8429
+                <br />
+                Section du site web : syncstats.com/
+                <br />
+            </p>
+            <hr/>
+            <h2>Droit d'accès</h2>
+            <p>
+                Nous nous engageons à reconnaître un droit d'accès et de rectification aux personnes
+                concernées désireuses de consulter, modifier, voire radier les informations les concernant.
+                <br />
+
+                L'exercice de ce droit se fera :
+                <br />
+                Code postal : 8552 15e avenue, Montréal H1Z 3N7
+                <br />
+                Courriel : info@syncstats.com
+                <br />
+                Téléphone : 514-887-8429
+                <br />
+                Section du site web : syncstats.com/
+                <br />
+            </p>
+            <hr/>
+            <h2>Sécurité</h2>
+            <p>
+
+                Les renseignements personnels que nous collectons sont conservés
+                dans un environnement sécurisé. Les personnes travaillant pour nous sont tenues de respecter la confidentialité de vos informations.
+                <br />
+                Pour assurer la sécurité de vos renseignements personnels, nous avons recours aux mesures suivantes :
+            </p>
+            <ul>
+                <li>
+                    Protocole SSL (Secure Sockets Layer)
+                </li>
+                <li>
+                    Gestion des accès - personne autorisée
+                </li>
+                <li>
+                    Logiciel de surveillance du réseau
+                </li>
+                <li>
+                    Sauvegarde informatique
+                </li>
+                <li>
+                    Développement de certificat numérique
+                </li>
+                <li>
+                    Identifiant / mot de passe
+                </li>
+                <li>
+                    Pare-feu (Firewalls)
+                </li>
+            </ul>
+
+            <p>
+                Nous nous engageons à maintenir un haut degré de confidentialité en intégrant les dernières innovations technologiques permettant d'assurer
+                la confidentialité de vos transactions. Toutefois, comme aucun mécanisme n'offre une sécurité maximale, une part de risque est toujours présente
+                lorsque l'on utilise Internet pour transmettre des renseignements personnels.
+            </p>
+            <hr/>
+            <h2>Label</h2>
+            <p>
+                Nos engagements en matière de protection des renseignements personnels répondent aux exigences du programme suivant :
+            </p>
+            <ul>
+                <li>
+                    SiteLock
+                </li>
+            </ul>
+        </div>
+
+        <div id="divDroite">
+            <div id="divIndexDroite">
+                <h1>SyncStats</h1>
+                <h2>Base mobile app</h2>
+                <ul>
+                    <li>
+                        Keep track of score and statistics during the game
+                    </li>
+                    <li>
+                        Eliminate paperwork and retyping, all synced online automaticaly
+                    </li>
+                    <li>
+                        Enjoy a nice web site for your league
+                    </li>
+                    <li>
+                        Not expensive at all, only need a smartphone!
+                    </li>
+                </ul>
+                <h2>Extended features*</h2>
+                <ul>
+                    <li>
+                        Use a remotely controlled scoreboard
+                    </li>
+                    <li>
+                        Record videos of your goals, get highlights, all automatic!
+                    </li>
+                </ul>
+                <p>
+                    * Extended features still under development, contact us to try them.
+                </p>
+
+            </div>
+
+        </div>
+        <div id="divBas"></div>
+
+        <script type="text/javascript" charset="utf-8">
+$('#divHaut').empty();
+$('#divDroite').empty();
+developper(28);
+
+detruitNoeud('divGauche');
+//		detruitNoeud('dBC_1');
+//	detruitNoeud('dBC_2');
+
+//		videNoeud('divDroite');
+document.getElementById('divCentrale').style.width = "76%";
+document.getElementById('divCentrale').style.marginLeft = "2%";
+document.getElementById('divCentrale').style.marginRight = "2%";
+
+document.getElementById('divCentrale').style.left = "0";
+
+//document.getElementById('divDroite').style.backgroundColor = "#FFF";
+//		detruitDivGaucheDroite();
+bN = document.getElementById('barreTitreContexte');
+for (var a = 0; a < bN.childNodes.length; a++) {
+bN.childNodes[a].style.display = "none";
+
+}
+document.getElementById('barreNav').style.display = "none";
+faitDivIndex1();
+$(".adsbygoogle").remove();
+/*
+maListe = document.getElementById("liste1");
+li1 = document.createElement('LI')
+li1.innerHTML=window.tl_l1e1;
+li2 = document.createElement('LI')
+li2.innerHTML=window.tl_l1e2;
+li3 = document.createElement('LI')
+li3.innerHTML=window.tl_l1e3;
+maListe.appendChild(li1);
+maListe.appendChild(li2);
+maListe.appendChild(li3);
+
+maListe = document.getElementById("liste2");
+li1 = document.createElement('LI')
+li1.innerHTML=window.tl_l2e1;
+li2 = document.createElement('LI')
+li2.innerHTML=window.tl_l2e2;
+maListe.appendChild(li1);
+maListe.appendChild(li2);
+
+document.getElementById('index_h1').innerHTML=window.tl_index_h1;
+*/
+/*window.onload = function () {
+document.getElementById('divSync').className="apresGauche";
+document.getElementById('divStats').className="apresDroite";
+}*/
+
+        </script>
+    </body>
+</html>

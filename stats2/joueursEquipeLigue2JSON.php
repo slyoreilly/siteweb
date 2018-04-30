@@ -91,8 +91,8 @@ $Iequipe = 0;
 													JOIN abonJoueurEquipe
 														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
 														WHERE equipeId={$rangeeEquipe['equipe_id'] }
-														AND debutAbon<=DATE(NOW())
-														AND finAbon>DATE(NOW())")
+														AND debutAbon<=NOW()
+														AND finAbon>NOW()")
 						or die(mysql_error());  
 						$rangeeJoueur=0;
 						$Ij=0;
@@ -141,8 +141,8 @@ $Iequipe = 0;
 														JOIN TableJoueur
 															ON (TableJoueur.joueur_id=abonJoueurLigue.joueurId)
 																WHERE ligueId={$ligueId}
-																AND debutAbon<=DATE(NOW())
-														AND finAbon>DATE(NOW())")
+																AND debutAbon<=NOW()
+														AND finAbon>NOW()")
 						or die(mysql_error());  
 						$rangeeJoueur=0;
 						$Ij=0;

@@ -48,6 +48,20 @@ $retour = mysql_query($query_equipe)
 or die('Error, query failed');
 
 }
+
+	if(2==$code)  // Code 1:  desabonne une equipe.
+{
+	$query_equipe = "UPDATE abonEquipeLigue 
+						SET finAbon= DATE_SUB('$dm',INTERVAL 1 DAY)
+						WHERE equipeId=$equipeId AND ligueId=$ligueId
+						ORDER BY finAbon DESC
+						LIMIT 1 ";
+		
+$retour = mysql_query($query_equipe)
+or die('Error, query failed'.$query_equipe);
+
+}
+
 	
 	if(10==$code)  // Code 10:  Modifie ligue existante.
 	{

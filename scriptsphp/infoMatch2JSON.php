@@ -51,7 +51,7 @@ if(is_numeric($match)&&is_numeric($ligueId))
 									ON TableMatch.eq_dom=TableEquipe.equipe_id
 								LEFT JOIN TableArena ON
 									TableMatch.arenaId=TableArena.arenaId	
-								WHERE TableMatch.ligueRef='$ligueId'
+								WHERE TableMatch.ligueRef='$ligueId' AND TableMatch.date <= DATE_ADD(CURDATE(), INTERVAL 6 DAY)
 								ORDER BY date DESC
 								LIMIT $match,1")or die(mysql_error()); 
 
@@ -63,7 +63,7 @@ if(is_numeric($match)&&is_numeric($ligueId))
 									ON TableMatch.eq_vis=TableEquipe.equipe_id
 								LEFT JOIN TableArena ON
 									TableMatch.arenaId=TableArena.arenaId	
-								WHERE TableMatch.ligueRef='$ligueId'
+								WHERE TableMatch.ligueRef='$ligueId' AND TableMatch.date <= DATE_ADD(CURDATE(), INTERVAL 6 DAY)
 								ORDER BY date DESC
 								LIMIT $match,1")or die(mysql_error()); 
 	

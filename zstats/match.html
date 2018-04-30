@@ -10,10 +10,11 @@
         <script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
 
         <link rel="shortcut icon" href="/favicon.ico" />
-        <script src="/scripts/jquery.js"></script>
+        <!--script src="/scripts/jquery.js"></script-->
 
-        <!--script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script-->
+        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
         <script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+        
         <script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
         <script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
 
@@ -32,9 +33,33 @@
         <script src="/scripts/jquery.mCustomScrollbar.js"></script>
         <script src="/scripts/visionneuse.js"></script>
         <script src="/scripts/jquery.raty.js"></script>
+       
         <script type="text/javascript" charset="utf-8">
 			if (screen.width <= 800) {
 				window.location = "http://www.syncstats.com/mobile/m_match.html?match=" + getValue('match');
+			}
+
+			function getJSONJoueursEquipes(equipeId, ligueId)//  Fonction similaire utilisée dans zeroconfig.html
+			{
+
+				$.ajax({
+					url : "/stats2/joueursEquipeLigue2JSON.php",
+					type : "POST",
+					data : {
+						ligueId : ligueId,
+						equipeId : equipeId
+					},
+					contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+					success : function(response) {
+						lesJoueursDeLigue = eval("(" + response + ")");
+					},
+
+					error : function(xhr, status, error) {
+						var err = eval("(" + xhr.responseText + ")");
+						alert(err.Message + "  --  ereur joueurEquipeLigue");
+					}
+				});
+
 			}
 
 			function getInfoMatch(matchId) {
@@ -69,8 +94,13 @@
 				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 
+						$('section').empty();
+						detruitNoeud('contResumeMatch');
 						infoMatch = eval('(' + requete_ajax.responseText + ')');
 						ligueId = infoMatch.ligueId;
+						getStatsJSON('H', matchID);
+						getStatsJSON('V', matchID);
+
 						//					alert(getCookie('ligueId')==null||getCookie('ligueId')=="");
 						if (getCookie('ligueId') == null || getCookie('ligueId') == "") {
 							setCookie('ligueId', ligueId, 120);
@@ -79,8 +109,8 @@
 						//				alert(document.getElementById("tabResume").href);
 						afficheResumeMatch(infoMatch);
 						getJSONdeMatchID(matchID);
-						if(window.vPerm<10){
-						faitOngletSysteme(infoMatch.noMatchId, infoMatch.arenaId);
+						if (window.vPerm < 10) {
+							faitOngletSysteme(infoMatch.noMatchId, infoMatch.arenaId);
 						}
 
 						window.etoileConditions++;
@@ -135,6 +165,190 @@
 				};
 			}
 
+			/////////////////////////////////////////////////////////
+			//
+			//  Fin de afficheSommairePunitions
+
+			function afficheSommairePunitions(rJSON) {
+				var lesTitres = new Array();
+				lesTitres[0] = window.tl_match_Equipe;
+				lesTitres[1] = window.tl_match_Joueur;
+				lesTitres[2] = window.tl_match_Motif;
+				lesTitres[3] = window.tl_match_Chrono;
+				div1 = document.getElementById('tabPun');
+                if (window.vPerm < 19) {
+                    //                  alert(window.tl_match_Manque);
+                    //                   alert(window.tl_match_corrigePresence);
+                    $(div1).append($('<div></div>').attr("id", "admin_pun").append($('<h2 id="admin_title2"></h2>')));
+                    $('#admin_title2').text("Admin Tools");
+                    $('#admin_pun').append($('<div></div>').addClass("lien").text("Ajouter une punition").click(function() {
+                        nouvellePun(1);
+                    }));
+
+                }
+
+				//  div1.id = "divSommairePunitions";
+				//  div1.className = "centrale";
+				tb = document.createElement('TBODY');
+				tb.id = "bodyTable";
+				//lecorps = document.getElementById('divCentrale');
+				table1 = document.createElement('TABLE');
+				table1.id = "tableSommairePunitions";
+				table1.className = "c_tableau";
+				tr1 = document.createElement('TR');
+				tr1.id = "date2";
+				td1 = document.createElement('TD');
+				td1.className = "titreTableau";
+				td1.colSpan = lesTitres.length;
+				td1.innerHTML = window.tl_match_titreTabPun;
+				tr2 = document.createElement('TR');
+				tr2.id = "rangeeTitreSommairePunitions";
+				tr2.className = "rangeeTitreSommaire";
+				for (var i = 0; i < lesTitres.length; i++) {
+					tdi = document.createElement('TD');
+					tdi.className = "rangeeTitre";
+					tdi.innerHTML = lesTitres[i];
+					tr2.appendChild(tdi);
+				}
+
+				tr1.appendChild(td1);
+				tb.appendChild(tr1);
+				tb.appendChild(tr2);
+				table1.appendChild(tb);
+				div1.appendChild(table1);
+				//  lecorps.appendChild(div1);
+
+				/////////////////////////////////////////////////////////////
+
+				////////////////////////////////////////////////////////////
+
+				try
+				{
+
+					maPer = new Array();
+					//rJSON.periodes.shift();
+
+					if (rJSON.periodes.length > 0)
+						maPer = rJSON.periodes[0];
+					else {
+						// if(rJSON.buts>0){
+						maPer.chrono = rJSON.buts[0].chrono;
+						//}
+
+					}
+					var Iper = 0;
+					for (var J = 0; J < rJSON.punitions.length; J = J + 1) {
+
+						try {
+							if (rJSON.periodes.length > Iper) {
+								if (parseInt(rJSON.periodes[Iper].chrono) < parseInt(rJSON.punitions[J].chrono)) {
+									//                  maPer = rJSON.periodes.shift();
+									maPer = rJSON.periodes[Iper];
+									Iper++;
+									//                      rangeePer = $('#rangeeTitreSommairePunitions').parent().append($('<TR></TR>').attr('id', 'tr_' + J));
+									rangeePer = document.createElement('TR');
+									rangeePer.setAttribute('id', 'tr_' + J);
+									amettrePer = document.getElementById('rangeeTitreSommairePunitions');
+									amettrePer.parentNode.appendChild(rangeePer);
+									cPer = document.createElement('TD');
+									cPer.setAttribute("colSpan", "4");
+									cPer.setAttribute("class", "rangeeTitre");
+									tPer = document.createTextNode(window.tl_match_periode + " " + maPer.numero);
+									cPer.appendChild(tPer);
+									rangeePer.appendChild(cPer);
+								}
+							}
+						} catch(err) {
+							if (vPerm < 10) {
+								alert(err);
+								alert(err.message + " Erreur dans sommaire punition");
+							}
+						}
+
+						//  if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
+						//rangee = $('#rangeeTitreSommairePunitions').parent().append($('<TR></TR>').attr('id', 'tr_' + J));
+						rangee = document.createElement('TR');
+						rangee.setAttribute('id', 'tr_' + J);
+						amettre = document.getElementById('rangeeTitreSommairePunitions');
+						amettre.parentNode.appendChild(rangee);
+						minutes = Math.floor((parseInt(rJSON.punitions[J].chrono) - parseInt(maPer.chrono)) / 60000);
+						//  alert("minutes"+minutes+" ");
+						dizSecondes = Math.floor(((parseInt(rJSON.punitions[J].chrono) - parseInt(maPer.chrono)) - minutes * 60000) / 10000);
+						secondes = Math.floor(((parseInt(rJSON.punitions[J].chrono) - parseInt(maPer.chrono)) - minutes * 60000 - dizSecondes * 10000) / 1000);
+						//  alert("secondes"+secondes+" ");
+						strChrono = minutes + ":" + dizSecondes + secondes;
+						mSrc = "";
+						mSrc = (rJSON.eqDom == rJSON.punitions[J].equipe) ? '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdDom : '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdVis;
+
+						var lesCols = new Array();
+						try {
+							lesCols[0] = '<img src=\"' + mSrc + '\" alt=\"' + rJSON.punitions[J].equipe + '\" width=\"32\" height=\"32\"\\/\>';
+						} catch(err) {
+							lesCols[0] = rJSON.punitions[J].equipe;
+						}
+
+						lesCols[1] = rJSON.punitions[J].joueur;
+						lesCols[2] = rJSON.punitions[J].motif;
+						lesCols[3] = strChrono;
+
+						var lesLiens = new Array();
+						lesLiens[0] = null;
+						lesLiens[1] = '/zstats/statsjoueur.html?joueurId=' + rJSON.punitions[J].joueurId;
+						lesLiens[2] = null;
+						lesLiens[3] = null;
+
+						for ( K = 0; K < lesCols.length; K++) {
+							cellule = document.createElement('TD');
+							if (lesCols[K] != undefined) {
+								if (lesLiens[K] != null) {
+									lien = document.createElement('A');
+									lien.innerHTML = lesCols[K];
+									lien.href = lesLiens[K];
+									cellule.appendChild(lien);
+								} else {
+									ptexte = document.createElement('P');
+									ptexte.innerHTML = lesCols[K];
+									//                  texte = document.createTextNode(lesCols[K]);
+									cellule.appendChild(ptexte);
+								}
+							}
+							if (J % 2 == 0) {
+								rangee.className += ' lignePaire';
+							} else {
+								rangee.className += ' ligneImpaire';
+							}
+							//J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
+							//$('#tr_' + J).append($(cellule));
+
+							//              J % 2 == 0 ? cellule.className = 'lignePaire' : cellule.className = 'ligneImpaire';
+							rangee.appendChild(cellule);
+						}
+
+					}// fin du for des punitions
+
+					if (rJSON.punitions.length == 0) {
+						rangee = document.createElement('TR');
+						amettre = document.getElementById('rangeeTitreSommairePunitions');
+						amettre.parentNode.appendChild(rangee);
+						cellule = document.createElement('TD');
+						cellule.colSpan = amettre.childNodes.length;
+						rangee.appendChild(cellule);
+						cellule.innerHTML = "Aucune punition";
+						cellule.style.textAlign = "center";
+					}
+
+				} catch(err) {
+					if (vPerm < 10) {
+						alert(err);
+						alert(err.message + " Erreur dans sommaire punition global");
+					}
+				}
+				//////////////////////////////////////////////////////////
+
+				//////////////////////////////////////////////////////////
+
+			}
+
 			function getStatsJSON(equipe, matchId) {
 				var requete_ajax = new XMLHttpRequest();
 
@@ -175,7 +389,7 @@
 							//alert(requete_ajax.responseText);
 							statsJSONVis = eval('(' + requete_ajax.responseText + ')');
 							afficheStatsDom(statsJSONVis, 2);
-                            $('#nomEquipe_2').text(infoMatch.equipeNomVis);
+							$('#nomEquipe_2').text(infoMatch.equipeNomVis);
 							window.etoileConditions++;
 							if (window.etoileConditions >= 4) {
 								afficheEtoiles();
@@ -193,34 +407,30 @@
 
 				divLogoVis = document.createElement('DIV');
 				divLogoVis.id = "logoVis";
-				divNomEqVille = $('<div></div>').attr('id','nomEqVille').append(function(){
+				divNomEqVille = $('<div></div>').attr('id', 'nomEqVille').append(function() {
 
-                if(infoMatch.equipeVilleDom.length > 0){
-                  return $('<p></p>').attr('id','villeEqDom').text(infoMatch.equipeVilleDom).addClass("moyenTexte");  
-                }
-                    
-                }).append($('<p></p>').attr('id','nomEqDom').text(infoMatch.equipeNomDom).addClass('moyenTexte'));
-				divLogoDom = $('<div></div>').attr('id','logoDom').append(
-				                         $('<a></a>').attr('id','lienImgDom').attr('href',"/zstats/statsequipe.html?equipeId=" + infoMatch.equipeIdDom + "&ligueId=" + infoMatch.ligueId)
-				                                        .append($('<img></img>').attr('id','logoEquipeDom').addClass("grosLogo")));
+					if (infoMatch.equipeVilleDom.length > 0) {
+						return $('<p></p>').attr('id', 'villeEqDom').text(infoMatch.equipeVilleDom).addClass("moyenTexte");
+					}
 
-                divNomEqVilleVis = $('<div></div>').attr('id','nomEqVille').append(function(){
+				}).append($('<p></p>').attr('id', 'nomEqDom').text(infoMatch.equipeNomDom).addClass('moyenTexte'));
+				divLogoDom = $('<div></div>').attr('id', 'logoDom').append($('<a></a>').attr('id', 'lienImgDomSommaire').attr('href', "/zstats/statsequipe.html?equipeId=" + infoMatch.equipeIdDom + "&ligueId=" + infoMatch.ligueId).append($('<img></img>').attr('id', 'logoEquipeSomDom').addClass("grosLogo")));
 
-                if(infoMatch.equipeVilleVis.length > 0){
-                  return $('<p></p>').attr('id','villeEqVis').text(infoMatch.equipeVilleVis).addClass("moyenTexte");  
-                }
-                    
-                }).append($('<p></p>').attr('id','nomEqVis').text(infoMatch.equipeNomVis).addClass('moyenTexte'));
-                divLogoVis = $('<div></div>').attr('id','logoVis').append(
-                                         $('<a></a>').attr('id','lienImgVis').attr('href',"/zstats/statsequipe.html?equipeId=" + infoMatch.equipeIdVis + "&ligueId=" + infoMatch.ligueId)
-                                                        .append($('<img></img>').attr('id','logoEquipeVis').addClass("grosLogo")));
+				divNomEqVilleVis = $('<div></div>').attr('id', 'nomEqVille').append(function() {
 
-/*
+					if (infoMatch.equipeVilleVis.length > 0) {
+						return $('<p></p>').attr('id', 'villeEqVis').text(infoMatch.equipeVilleVis).addClass("moyenTexte");
+					}
+
+				}).append($('<p></p>').attr('id', 'nomEqVis').text(infoMatch.equipeNomVis).addClass('moyenTexte'));
+				divLogoVis = $('<div></div>').attr('id', 'logoVis').append($('<a></a>').attr('id', 'lienImgVisSommaire').attr('href', "/zstats/statsequipe.html?equipeId=" + infoMatch.equipeIdVis + "&ligueId=" + infoMatch.ligueId).append($('<img></img>').attr('id', 'logoEquipeSomVis').addClass("grosLogo")));
+
+				/*
 				lienImgVisJS = document.createElement('A');
 				lienImgVisJS.id = "lienImgVis";
 				lienImgVisJS.href = "/zstats/statsequipe.html?equipeId=" + infoMatch.equipeIdVis + "&ligueId=" + infoMatch.ligueId;
 				divImgVis = document.createElement('IMG');
-				divImgVis.id = "logoEquipeVis";
+				divImgVis.id = "logoEquipeSomVis";
 				divImgVis.className = "grosLogo";
 				pNomEqVis = document.createElement('P');
 				pNomEqVis.id = "nomEqVis";
@@ -230,58 +440,42 @@
 				pVilleEqVis = document.createElement('P');
 				pVilleEqVis.id = "villeEqVis";
 				pVilleEqVis.innerHTML = infoMatch.equipeVilleVis + "<br/>";
-*/
+				*/
 				//	divScoreDom.style.margin="5%";
 				//	divScoreVis.style.margin="5%";
-				divDash = $('<div></div>').attr('id','divDash').addClass("grosTexte").append($('<p></p>').addClass("grosTexte").text("-"));
+				divDash = $('<div></div>').attr('id', 'divDash').addClass("grosTexte").append($('<p></p>').addClass("grosTexte").text("-"));
 
 				divCont = document.createElement('DIV');
 
+				//			infoMatch.equipeVilleVis.length > 0 ? divLogoVis.appendChild(pVilleEqVis) : "";
 
-	//			infoMatch.equipeVilleVis.length > 0 ? divLogoVis.appendChild(pVilleEqVis) : "";
-				
-//				divLogoVis.appendChild(lienImgVisJS);
-//				lienImgVisJS.appendChild(divImgVis);
-//				divLogoVis.appendChild(pNomEqVis);
+				//				divLogoVis.appendChild(lienImgVisJS);
+				//				lienImgVisJS.appendChild(divImgVis);
+				//				divLogoVis.appendChild(pNomEqVis);
 
-//				divImgVis.src = '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdVis;
-                var statut;
-                if(infoMatch.statut=='F'){
-                    statut = "Final";//
-                }
-                else if(infoMatch.statut<10){
-                    statut = tl_match_periode+ infoMatch.statut;
-                }
+				//				divImgVis.src = '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdVis;
+				var statut;
+				if (infoMatch.statut == 'F') {
+					statut = "Final";
+					//
+				} else if (infoMatch.statut < 10) {
+					statut = tl_match_periode + infoMatch.statut;
+				}
 
-				$(divCont).append($(divNomEqVille),$(divLogoDom));
-				$(divCont).append($('<div></div>').attr('id','boiteCentre').append(
-				    $('<div></div>').attr('id','boiteStatut').append(
-				        $('<p></p>').text(statut)
-				        ),
-                    $('<div></div>').attr('id','boiteArena').append(
-                        $('<br></br>'),
-                        $('<p></p>').text(infoMatch.nomArena+', '+infoMatch.nomGlace)
-                        ),
-				    $('<div></div>').attr('id','boiteScore').append(
-    				    $('<div></div>').attr('id','scoreDom').addClass('grosTexte').append($('<p></p>').attr('id','tScoreDom').addClass('grosTexte').text(infoMatch.equipeScoreDom)),
-                         $(divDash),
-                         $('<div></div>').attr('id','scoreVis').addClass('grosTexte').append(
-                        $('<p></p>').attr('id','tScoreVis').addClass('grosTexte').text(infoMatch.equipeScoreVis))
-                        )
-                    )
-                );
-        $(divCont).append($(divLogoVis),$(divNomEqVilleVis));
-                
-//                $(divCont).append($(divLogoVis));
-                //$(divCont).append($(pNomEqVis));
-                //$(divCont).append();
+				$(divCont).append($(divNomEqVille), $(divLogoDom));
+				$(divCont).append($('<div></div>').attr('id', 'boiteCentre').append($('<div></div>').attr('id', 'boiteStatut').append($('<p></p>').text(statut)), $('<div></div>').attr('id', 'boiteArena').append($('<br></br>'), $('<p></p>').text(infoMatch.nomArena + ', ' + infoMatch.nomGlace)), $('<div></div>').attr('id', 'boiteScore').append($('<div></div>').attr('id', 'scoreDom').addClass('grosTexte').append($('<p></p>').attr('id', 'tScoreDom').addClass('grosTexte').text(infoMatch.equipeScoreDom)), $(divDash), $('<div></div>').attr('id', 'scoreVis').addClass('grosTexte').append($('<p></p>').attr('id', 'tScoreVis').addClass('grosTexte').text(infoMatch.equipeScoreVis)))));
+				$(divCont).append($(divLogoVis), $(divNomEqVilleVis));
+
+				//                $(divCont).append($(divLogoVis));
+				//$(divCont).append($(pNomEqVis));
+				//$(divCont).append();
 
 				divLigne.appendChild(divCont);
- 
- 				$('#divCentrale').prepend(divLigne);
-        
-$('#logoEquipeDom').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdDom);
-$('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdVis);
+
+				$('#divCentrale').prepend(divLigne);
+
+				$('#logoEquipeSomDom').attr('src', '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdDom);
+				$('#logoEquipeSomVis').attr('src', '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdVis);
 
 			}
 
@@ -408,14 +602,10 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 			function ajoutePeriode(noeudParent, noPer) {
 				//perStop = false;
 
-//                                    amettrePer = document.getElementById('rangeeTitreHighlights');
- //                                   amettrePer.parentNode.appendChild(rangeePer);
-                $(noeudParent).append(
-                    $('<TR></TR>').addClass("periode").append(
-                                        $('<TD></TD>').attr("colSpan","7").addClass("rangeeTitre periode").text(window.tl_match_periode + " " + noPer)
-                                    )
-                );
-                                    				/* Iper++;
+				//                                    amettrePer = document.getElementById('rangeeTitreHighlights');
+				//                                   amettrePer.parentNode.appendChild(rangeePer);
+				$(noeudParent).append($('<TR></TR>').addClass("periode").append($('<TD></TD>').attr("colSpan", "7").addClass("rangeeTitre periode").text(window.tl_match_periode + " " + noPer)));
+				/* Iper++;
 				if (Iper < rSMB.periodes.length) {
 				if (parseInt(rSMB.periodes[Iper].chrono) > parseInt(rSMB.buts[J].chrono)) {
 				perStop = true;
@@ -438,10 +628,16 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 				lesTitres[6] = "";
 				div1 = document.getElementById('tabButs');
 				if (window.vPerm < 19) {
-					$(div1).append('<div></div>').append('<h2 id="admin_title"></h2>', '<img id="admin_vids"></img>');
-					$('#admin_title').text("Admin Tools").css("margin;10px", "display;inline");
-					$('#admin_title').append($('<div></div>').text("Ajouter un but").css("margin;10px", "display;inline").click(function() {
+					//				    alert(window.tl_match_Manque);
+					//                   alert(window.tl_match_corrigePresence);
+					$(div1).append($('<div></div>').attr("id", "admin_match").append($('<h2 id="admin_title"></h2>'), $('<img id="admin_vids"></img>')));
+					$('#admin_title').text("Admin Tools");
+					$('#admin_match').append($('<div></div>').text(window.tl_match_ajouteBut).click(function() {
 						nouveauBut(1);
+					}), $('<div></div>').text(window.tl_match_ajouteFusillade).click(function() {
+						nouveauFusillade(1);
+					}), $('<div></div>').text(window.tl_match_corrigePresence).click(function() {
+						corrigePresences();
 					}));
 
 					$('#admin_vids').attr("src", "/images/icones/movie.png").attr("alt", "Video").on("click", {
@@ -451,7 +647,7 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 						rJSON_loc = event.data.rjson;
 						//		alert(JSON.stringify(rJSON));
 						dial = document.getElementById('divDialogue');
-						$('<div id="divt"></div>').text("Available cams").appendTo(dial);
+						$('<div id="divt"></div>').css("display", "block").text("What do you want to do?").appendTo(dial).append($('<table></table>').attr("id", "tableAdminCams").append($('<th></th>').attr("id", "colCam").append($('<h3></h3>').text("Cam")), $('<th></th>').attr("id", "colAction").append($('<h3></h3>').text("Action")), $('<th></th>').attr("id", "colCondition").append($('<h3></h3>').text("Condition"))));
 						var arrayCam = [];
 						for (var a = 0; a < rJSON_loc.buts.length; a++) {
 							//				alert("but"+a);
@@ -464,48 +660,168 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 						}
 						//			alert(arrayCam.length);
 						for (var a = 0; a < arrayCam.length; a++) {
-							$('<div></div>').attr("id", "ligneCam_" + a).addClass("ligneBloc").appendTo(dial);
-							$('<div></div>').attr("id", "blocGauche_" + a).addClass("blocGauche").text("Camera #" + arrayCam[a]).appendTo($('#ligneCam_' + a));
-							$('<div></div>').attr("id", "blocDroit_" + a).addClass("blocDroit").appendTo($('#ligneCam_' + a));
-							$('<div></div>').attr("id", "cellTableProm_" + a).addClass("cliquable cellTableCourt").appendTo($("#blocDroit_" + a)).append('<img src="/images/icones/arrow-up-double.png" alt="promote"></img>');
-							$('<div></div>').attr("id", "cellTableDem_" + a).addClass("cliquable cellTableCourt").appendTo($("#blocDroit_" + a)).append('<img src="/images/icones/arrow-down-double.png" alt="demote"></img>')
-							$('<div></div>').attr("id", "cellTableDel_" + a).addClass("cliquable cellTableCourt").appendTo($("#blocDroit_" + a)).append('<img src="/images/icones/delete.png" alt="delete"></img>')
+							//$('<div></div>').attr("id", "ligneCam_" + a).appendTo(dial);
+							$('<tr></tr>').appendTo($('#tableAdminCams')).append($('<td></td>').text("Camera #" + arrayCam[a]).append($('<input></input>').attr("type", "hidden").val(arrayCam[a])), $('<td></td>').append($('<select></select>').css("width", "100%").append($('<option></option>').val(0).text(window.tl_match_aucun), $('<option></option>').val(1).text("Open"), $('<option></option>').val(2).text("Delete"))), $('<td></td>').append($('<select></select>').css("width", "100%").append($('<option></option>').val(0).text("All"), $('<option></option>').val(1).text(infoMatch.equipeNomDom + " only"), $('<option></option>').val(2).text(infoMatch.equipeNomVis + " only"))));
+
+							//							$('<div></div>').attr("id", "blocDroit_" + a).addClass("blocDroit").appendTo($('#ligneCam_' + a));
+							//						$('<div></div>').attr("id", "cellTableProm_" + a).addClass("cliquable cellTableCourt").appendTo($("#blocDroit_" + a)).append('<img src="/images/icones/arrow-up-double.png" alt="promote"></img>');
+							//					$('<div></div>').attr("id", "cellTableDem_" + a).addClass("cliquable cellTableCourt").appendTo($("#blocDroit_" + a)).append('<img src="/images/icones/arrow-down-double.png" alt="demote"></img>')
+							//				$('<div></div>').attr("id", "cellTableDel_" + a).addClass("cliquable cellTableCourt").appendTo($("#blocDroit_" + a)).append('<img src="/images/icones/delete.png" alt="delete"></img>')
 						}
-						$('[id^=cellTableDel_]').on("click", {
-							arrayCam : arrayCam
-						}, function(event) {
-							var id = $(this).attr("id").split('_')[1];
-							var camId = event.data.arrayCam[id];
-							$('#blocDroit_' + id).fadeOut(200, function() {
-								$('<div></div>').attr("id", "askErase").addClass("blocDroit").text("Do you really want to erase this camera?").appendTo($('#ligneCam_' + id)).fadeIn();
-								$('<br></br>').appendTo('#askErase');
-								$('<div></div>').addClass("cliquable cellTableCourt").text("Yup!").appendTo('#askErase').on("click", {
-									camId : camId
-								}, function(event) {
-									$.ajax({
-										url : "/scriptsphp/effaceCam.php",
-										type : "POST",
-										data : {
-											camId : event.data.camId,
-											matchId : window.matchID
-										},
-										dataType : "html"
-									});
+						$('#divt').append($('<input></input>').attr("type", "button").val("Apply").on("click", function() {
+							for (var a = 0; a < arrayCam.length; a++) {
+								var ind = a + 1;
+								str1 = '#tableAdminCams tr:nth-child(' + ind + ') td:nth-child(' + 2 + ') option:selected';
+								str2 = '#tableAdminCams tr:nth-child(' + ind + ') td:nth-child(' + 3 + ') option:selected';
+								var b = $('#tableAdminCams tr:nth-child(' + ind + ') td:nth-child(' + 1 + ') input').val();
+// alert(str1);
+								// alert($(str1).val());
+								if (parseInt($(str1).val()) == 2) {///  Efface
+								    
+								    
+								    fics = [];
+//alert(rSMB.buts.length);
+                                    for (var d = 0; d < rSMB.buts.length; d++) {
+//alert(rSMB.buts[d].video.length);
+                                        for (var e = 0; e < rSMB.buts[d].video.length; e++) {
+    //                                      alert(rSMB.buts[d].video[e].cam);
+                                            if (rSMB.buts[d].video[e].cam == arrayCam[a]) {
+                                                if (parseInt($(str2).val()) == 0)
+                                                {
+                                                fics.push(rSMB.buts[d].video[e].fic);
+                                                   
+                                                }
+                                                else {
+                                                    if(parseInt($(str2).val()) == 1 && rSMB.buts[d].equipe==infoMatch.equipeNomDom ||parseInt($(str2).val()) == 2 && rSMB.buts[d].equipe==infoMatch.equipeNomVis)
+                                                         {
+                                                        fics.push(rSMB.buts[d].video[e].fic);
+                                                        }
+                                                }  
 
-									//				window.location.reload(true);
-								});
-								$('<div></div>').addClass("cliquable cellTableCourt").text("Noooo!").appendTo('#askErase').on("click", function() {
-									$('#askErase').remove();
-									$('[id^=blocDroit]').show();
-								});
+                                            }
 
-							});
-						});
+                                        }
 
-						$('.cellTableCourt').css("margin", "10px");
+                                    }
+								    nbFini=0;
+								    for (var i = 0; i < fics.length; i++) {
+                                      $.ajax({
+                                        url : "/scriptsphp/effaceVideo.php",
+                                        type : "POST",
+                                        data : {
+                                            fic : fics[i]
+                                        },
+                                        dataType : "html",
+                                        success : function(response) {
+                                           nbFini++;
+                                            if(nbFini == fics.length){
+                                               recalculeUnMatch() ;
+                                               detruitDialogue();
+                                                
+                                            }
+                                            
+                                            
+                                        }
+                                    });
+
+                                    }
+								    
+									
+									
+									//              window.location.reload(true);
+
+								}
+								if (parseInt($(str1).val()) == 1) {/// Download
+								   // alert( arrayCam[a]);
+									fics = [];
+//alert(rSMB.buts.length);
+									for (var d = 0; d < rSMB.buts.length; d++) {
+//alert(rSMB.buts[d].video.length);
+										for (var e = 0; e < rSMB.buts[d].video.length; e++) {
+	//									    alert(rSMB.buts[d].video[e].cam);
+											if (rSMB.buts[d].video[e].cam == arrayCam[a]) {
+											    if (parseInt($(str2).val()) == 0)
+											    {
+											    fics.push(rSMB.buts[d].video[e].emplacement + "/lookatthis/" + rSMB.buts[d].video[e].fic);
+                                                   
+											    }
+											    else {
+											        if(parseInt($(str2).val()) == 1 && rSMB.buts[d].equipe==infoMatch.equipeNomDom ||parseInt($(str2).val()) == 2 && rSMB.buts[d].equipe==infoMatch.equipeNomVis)
+											             {
+                                                        fics.push(rSMB.buts[d].video[e].emplacement + "/lookatthis/" + rSMB.buts[d].video[e].fic);
+                                                        }
+											    }  
+
+											}
+
+										}
+
+									}
+
+									for (var i = 0; i < fics.length; i++) {
+									    //window.location="download.action?para1=value1";.
+									    chemin = "http://" + fics[i];
+									   // alert(chemin);
+									  //  $.fileDownload(chemin)
+									   // .done(function () { alert('File download a success!'); })
+									    //.fail(function () { alert('File download failed!'); });
+									    
+									    window.open("http://" + fics[i], '_blank'); 
+										/*var iframe =     $('<iframe style="visibility: collapse;"></iframe>');
+										$('body').append(iframe);
+										var content = iframe[0].contentDocument;
+										var form = '<form action="http://' + fics[i] + '" method="GET"></form>';
+										content.write(form);
+										$('form', content).submit();
+										setTimeout((function(iframe) {
+											return function() {
+												iframe.remove();
+											}
+										})(iframe), 2000);*/
+									}
+
+								}
+							}
+
+						}));
+					});
+
+					/*
+
+					$('[id^=cellTableDel_]').on("click", {
+					arrayCam : arrayCam
+					}, function(event) {
+					var id = $(this).attr("id").split('_')[1];
+					var camId = event.data.arrayCam[id];
+					$('#blocDroit_' + id).fadeOut(200, function() {
+					$('<div></div>').attr("id", "askErase").addClass("blocDroit").text("Do you really want to erase this camera?").appendTo($('#ligneCam_' + id)).fadeIn();
+					$('<br></br>').appendTo('#askErase');
+					$('<div></div>').addClass("cliquable cellTableCourt").text("Yup!").appendTo('#askErase').on("click", {
+					camId : camId
+					}, function(event) {
+					$.ajax({
+					url : "/scriptsphp/effaceCam.php",
+					type : "POST",
+					data : {
+					camId : event.data.camId,
+					matchId : window.matchID
+					},
+					dataType : "html"
+					});
+
+					//				window.location.reload(true);
+					});
+					$('<div></div>').addClass("cliquable cellTableCourt").text("Noooo!").appendTo('#askErase').on("click", function() {
+					$('#askErase').remove();
+					$('[id^=blocDroit]').show();
+					});
 
 					});
-					$(div1).append('<hline></hline>');
+					});
+					*/
+					//$('.cellTableCourt').css("margin", "10px");
+
+					//$(div1).append('<hline></hline>');
 				}
 				//div1.id = "divSommaireButs";
 				//div1.className = "centrale";
@@ -524,7 +840,7 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 				td1.innerHTML = window.tl_match_titreTab;
 				tr2 = document.createElement('TR');
 				tr2.id = "rangeeTitreSommaireButs";
-				tr2.className="rangeeTitreSommaire";
+				tr2.className = "rangeeTitreSommaire";
 
 				for ( i = 0; i < lesTitres.length; i++) {
 					tdi = document.createElement('TD');
@@ -555,8 +871,11 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 					if (rSMB.periodes.length > 0)
 						maPer = rSMB.periodes[0];
 					else {
+						if (rSMB.buts.length > 0) {
+							maPer.chrono = rSMB.buts[0].chrono;
+						} else {
 
-						maPer.chrono = rSMB.buts[0].chrono;
+						}
 					}
 					var Iper = 0;
 					for (var J = 0; J < rSMB.buts.length; J = J + 1) {
@@ -580,10 +899,7 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 							}
 
 							//								}
-						}
-						//						} catch(err) {
-						//						}
-
+						}//  Fin de for périodes
 						//	if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
 
 						$('#rangeeTitreSommaireButs').parent().append($('<TR></TR>').attr('id', 'tr_' + J));
@@ -615,6 +931,10 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 							lesCols[0] = '<img src=\"' + mSrc + '\" alt=\"' + rSMB.buts[J].equipe + '\" class=\"tresPetitLogo\" \\/\>';
 						} catch(err) {
 							lesCols[0] = rSMB.buts[J].equipe;
+
+							if (vPerm < 10) {
+								alert(err.message + " cols equipes");
+							}
 						}
 						//alert(rSMB.buts[J].equipe);
 						//
@@ -742,7 +1062,7 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 
 					//	document.body.rangee.cellule.innerHTML ='yo';
 				} catch(err) {
-					//					alert(err.message);
+					alert(err.message + "  ---  Sommaire Buts");
 				}
 			}
 
@@ -807,8 +1127,19 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 					if (rSMB.periodes.length > 0)
 						maPer = rSMB.periodes[0];
 					else {
+						if (rSMB.clips.length > 0) {
+							maPer.chrono = rSMB.clips[0].chrono;
 
-						maPer.chrono = rSMB.clips[0].chrono;
+						} else {
+							if (rSMB.buts.length > 0) {
+								maPer.chrono = rSMB.buts[0].chrono;
+
+							} else {
+								maPer.chrono = 0;
+							}
+
+						}
+
 					}
 					var Iper = 0;
 					for (var J = 0; J < rSMB.clips.length; J = J + 1) {
@@ -819,31 +1150,27 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 							while (Iper < rSMB.periodes.length && !perStop) {
 								//                  maPer = rSMB.periodes.shift();
 
-							       //   alert(parseInt(rSMB.periodes[Iper].chrono)-parseInt(rSMB.buts[J].chrono)+" , Iper: "+Iper+", J: "+J);
+								//   alert(parseInt(rSMB.periodes[Iper].chrono)-parseInt(rSMB.buts[J].chrono)+" , Iper: "+Iper+", J: "+J);
 
 								if (parseInt(rSMB.periodes[Iper].chrono) < parseInt(rSMB.clips[J].chrono)) {
 									maPer = rSMB.periodes[Iper];
-									
-									$('#rangeeTitreHighlights').parent().append(
-									   $('<TR></TR>').addClass("periode").append(
-                                             $('<TD></TD>').attr("colSpan","5").addClass("rangeeTitre periode").text(window.tl_match_periode + " " + maPer.numero)
-                                        )    
-									);
-//									amettrePer = document.getElementById('rangeeTitreHighlights');
-	//								amettrePer.parentNode.appendChild(rangeePer);
-//									cPer = document.createElement('TD');
-//									cPer.setAttribute("colSpan", "2")
-//									cPer.setAttribute("class", "rangeeTitre")
-//									tPer = document.createTextNode();
-//									cPer.appendChild(tPer);
-//									rangeePer.appendChild(cPer);
+
+									$('#rangeeTitreHighlights').parent().append($('<TR></TR>').addClass("periode").append($('<TD></TD>').attr("colSpan", "5").addClass("rangeeTitre periode").text(window.tl_match_periode + " " + maPer.numero)));
+									//									amettrePer = document.getElementById('rangeeTitreHighlights');
+									//								amettrePer.parentNode.appendChild(rangeePer);
+									//									cPer = document.createElement('TD');
+									//									cPer.setAttribute("colSpan", "2")
+									//									cPer.setAttribute("class", "rangeeTitre")
+									//									tPer = document.createTextNode();
+									//									cPer.appendChild(tPer);
+									//									rangeePer.appendChild(cPer);
 									Iper++;
 									if (Iper < rSMB.periodes.length) {
 										if (parseInt(rSMB.periodes[Iper].chrono) > parseInt(rSMB.clips[J].chrono)) {
 											perStop = true;
 										}
 									} else {
-									    
+
 										perStop = true;
 									}
 
@@ -854,7 +1181,7 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 							}
 
 							//                              }
-						}
+						}// Fin du S'il y a des périodes
 						//                      } catch(err) {
 						//                      }
 
@@ -882,103 +1209,105 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 						//          lesCols[6] = (rSMB.buts[J].video.length <= 0) ? "" : "Voir";
 
 						if (rSMB.clips.length > 0) {
-						    try{
+							try {
 
-							var mBut = rSMB.clips[J];
-							strV = mBut;
-							pVids = document.createElement('A');
-							//          pVids[a].innerHTML= UrlExists("../lookatthis/" + strV.fic)?" Cam  "+b+" ":"";
-							imgVid = document.createElement('IMG');
-							imgVid.src = "/images/icones/movie.png";
-							imgVid.alt = "Video";
+								var mBut = rSMB.clips[J];
+								strV = mBut;
+								pVids = document.createElement('A');
+								//          pVids[a].innerHTML= UrlExists("../lookatthis/" + strV.fic)?" Cam  "+b+" ":"";
+								imgVid = document.createElement('IMG');
+								imgVid.src = "/images/icones/movie.png";
+								imgVid.alt = "Video";
 
-							/*$(imgVid).hover(function(){
-							 $(this).attr('src','/images/icones/movie.ico');
-							 },function(){
-							 $(this).attr('src','/images/icones/movie.ico');
-							 });*/
+								/*$(imgVid).hover(function(){
+								 $(this).attr('src','/images/icones/movie.ico');
+								 },function(){
+								 $(this).attr('src','/images/icones/movie.ico');
+								 });*/
+								if (mBut != null) {
+									if (mBut.video.length > 0) {
+										pVids.appendChild(imgVid);
+										//              pVids.innerHTML= " Video Replay ";
+										pVids.id = "../lookatthis/" + mBut.fic;
+										pVids.className = "cliquable";
+										pVids.onclick = (function(mBut) {
+											return function() {
+												//                  window.location="../lookatthis/" + strV.fic;
+												$("#contVids").empty();
+												construitVid();
+												//alert("Construit vids clips");
+												vidIndex = 0;
 
-							pVids.appendChild(imgVid);
-							//              pVids.innerHTML= " Video Replay ";
-							pVids.id = "../lookatthis/" + mBut.fic;
-							pVids.className = "cliquable";
-							pVids.onclick = (function(mBut) {
-								return function() {
-									//                  window.location="../lookatthis/" + strV.fic;
-									$("#contVids").empty();
-									construitVid();
-									//alert("Construit vids clips");
-									vidIndex = 0;
+												strV = mBut.video[vidIndex];
+												monOverlay = document.createElement('DIV');
+												monOverlay.id = "ecranSombre";
+												document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
+												$('.media-box').show();
+												place = mBut.video[0].emplacement;
+												if (place == null || !strcmp(place, "")) {
+													place = "syncstats.com";
+												}
+												document.getElementsByTagName('SOURCE')[0].src = "http://" + place + "/lookatthis/" + mBut.video[0].fic;
+												document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
+												$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
+													"opacity" : "1",
+													"position" : "fixed",
+													"left" : "100px",
+													"top" : "100px",
+													"z-index" : "2000"
+												}));
 
-									strV = mBut.video[vidIndex];
-									monOverlay = document.createElement('DIV');
-									monOverlay.id = "ecranSombre";
-									document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
-									$('.media-box').show();
-									place = mBut.video[0].emplacement;
-									if (place == null || !strcmp(place, "")) {
-										place = "syncstats.com";
-									}
-									document.getElementsByTagName('SOURCE')[0].src = "http://" + place + "/lookatthis/" + mBut.video[0].fic;
-									document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
-									$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
-										"opacity" : "1",
-										"position" : "fixed",
-										"left" : "100px",
-										"top" : "100px",
-										"z-index" : "2000"
-									}));
+												getInfoVid(vidIndex, mBut);
 
-									getInfoVid(vidIndex, mBut);
-
-								};
-							})(mBut);
-
-							var lesLiens = new Array();
-							lesLiens[0] = null;
-							lesLiens[1] = null;
-
-							for ( K = 0; K < lesCols.length; K++) {
-								// alert(K);
-								cellule = document.createElement('TD');
-								if (lesCols[K] != undefined) {
-									if (lesLiens[K] != null) {
-										//alert("should not");
-										lien = document.createElement('A');
-										lien.innerHTML = lesCols[K];
-										lien.href = lesLiens[K];
-										cellule.appendChild(lien);
-									} else {
-										//          alert(K );
-
-										if (K == 1) {
-											//  alert('Ss');
-											cellule.appendChild(pVids);
-											//alert(pVids.id);
-										} else {
-											ptexte = document.createElement('P');
-
-											ptexte.innerHTML = lesCols[K];
-											//                  texte = document.createTextNode(lesCols[K]);
-											cellule.appendChild(ptexte);
-										}
+											};
+										})(mBut);
 									}
 								}
-								rangee.appendChild(cellule);
+								var lesLiens = new Array();
+								lesLiens[0] = null;
+								lesLiens[1] = null;
+
+								for ( K = 0; K < lesCols.length; K++) {
+									// alert(K);
+									cellule = document.createElement('TD');
+									if (lesCols[K] != undefined) {
+										if (lesLiens[K] != null) {
+											//alert("should not");
+											lien = document.createElement('A');
+											lien.innerHTML = lesCols[K];
+											lien.href = lesLiens[K];
+											cellule.appendChild(lien);
+										} else {
+											//          alert(K );
+
+											if (K == 1) {
+												//  alert('Ss');
+												cellule.appendChild(pVids);
+												//alert(pVids.id);
+											} else {
+												ptexte = document.createElement('P');
+
+												ptexte.innerHTML = lesCols[K];
+												//                  texte = document.createTextNode(lesCols[K]);
+												cellule.appendChild(ptexte);
+											}
+										}
+									}
+									rangee.appendChild(cellule);
+								}
+								J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
+							} catch(err) {
+								if (vPerm < 10) {
+									alert("Alerte admin: Pas réussi à afficher le vidéo");
+								}
 							}
-							J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
-                        } catch(err){
-                            if(vPerm<10){
-                                alert("Alerte admin: Pas réussi à afficher le vidéo");
-                            }
-                        }
 						}// Fin du If video
 
 					}
 
 					//  document.body.rangee.cellule.innerHTML ='yo';
 				} catch(err) {
-					                 alert(err.message +"\n Alerte admin: Pas réussi à faire la table more highlights");
+					alert(err.message + "\n Alerte admin: Pas réussi à faire la table more highlights");
 				}
 
 			}
@@ -986,6 +1315,248 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 			//////////////////////////////////////////////////////////
 			// fin affichePlusHighlights
 			//////////////////////////////////////////////////////////
+
+			//////////////////////////////////////////////////////////
+			//
+			//   function affichePlusHighlights(rSMB)
+			//
+			//
+			//////////////////////////////////////////////////////////
+
+			function afficheIntegrales(rSMB) {
+				var lesTitres = new Array();
+
+				lesTitres[0] = window.tl_match_Chrono;
+				lesTitres[1] = "";
+				div1 = document.getElementById('tabButs');
+
+				//  lecorps = document.getElementById('divCentrale');
+				table1 = document.createElement('TABLE');
+				table1.id = "tableIntegral";
+				table1.className = "c_tableau";
+				tb = document.createElement('TBODY');
+				tb.id = "bodyTable";
+				tr1 = document.createElement('TR');
+				tr1.id = "rangeeHeaderIntegral";
+				td1 = document.createElement('TD');
+				td1.className = "titreTableau";
+				td1.colSpan = lesTitres.length;
+				td1.innerHTML = "Vidéos Intégrales";
+				tr2 = document.createElement('TR');
+				tr2.id = "rangeeTitreIntegral";
+
+				for ( i = 0; i < lesTitres.length; i++) {
+					tdi = document.createElement('TD');
+					tdi.className = "rangeeTitre";
+					tdi.innerHTML = lesTitres[i];
+					tr2.appendChild(tdi);
+				}
+
+				tr1.appendChild(td1);
+				tb.appendChild(tr1);
+				tb.appendChild(tr2);
+				table1.appendChild(tb);
+				div1.appendChild(table1);
+				//lecorps.appendChild(div1);
+				//lecorps.appendChild(frameModif);
+
+				/////////////////////////////////////////////////////////////
+
+				////////////////////////////////////////////////////////////
+
+				try
+				{
+
+					maPer = new Array();
+					//rSMB.periodes.shift();
+
+					if (rSMB.periodes.length > 0)
+						maPer = rSMB.periodes[0];
+					else {
+						if (rSMB.clips.length > 0) {
+							maPer.chrono = rSMB.clips[0].chrono;
+
+						} else {
+							if (rSMB.buts.length > 0) {
+								maPer.chrono = rSMB.buts[0].chrono;
+
+							} else {
+								maPer.chrono = 0;
+							}
+
+						}
+
+					}
+					var Iper = 0;
+					for (var J = 0; J < rSMB.clips.length; J = J + 1) {
+						//                      try {
+						var perStop = false;
+						if (rSMB.periodes.length > 0) {
+							//if (parseInt(rSMB.periodes[Iper].chrono) < parseInt(rSMB.buts[J].chrono)) {
+							while (Iper < rSMB.periodes.length && !perStop) {
+								//                  maPer = rSMB.periodes.shift();
+
+								//   alert(parseInt(rSMB.periodes[Iper].chrono)-parseInt(rSMB.buts[J].chrono)+" , Iper: "+Iper+", J: "+J);
+
+								if (parseInt(rSMB.periodes[Iper].chrono) < parseInt(rSMB.clips[J].chrono)) {
+									maPer = rSMB.periodes[Iper];
+
+									$('#rangeeTitreHighlights').parent().append($('<TR></TR>').addClass("periode").append($('<TD></TD>').attr("colSpan", "5").addClass("rangeeTitre periode").text(window.tl_match_periode + " " + maPer.numero)));
+									//                                  amettrePer = document.getElementById('rangeeTitreHighlights');
+									//                              amettrePer.parentNode.appendChild(rangeePer);
+									//                                  cPer = document.createElement('TD');
+									//                                  cPer.setAttribute("colSpan", "2")
+									//                                  cPer.setAttribute("class", "rangeeTitre")
+									//                                  tPer = document.createTextNode();
+									//                                  cPer.appendChild(tPer);
+									//                                  rangeePer.appendChild(cPer);
+									Iper++;
+									if (Iper < rSMB.periodes.length) {
+										if (parseInt(rSMB.periodes[Iper].chrono) > parseInt(rSMB.clips[J].chrono)) {
+											perStop = true;
+										}
+									} else {
+
+										perStop = true;
+									}
+
+								} else {
+									perStop = true;
+								}
+
+							}
+
+							//                              }
+						}// Fin du S'il y a des périodes
+						//                      } catch(err) {
+						//                      }
+
+						//  if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
+						rangee = document.createElement('TR');
+						amettre = document.getElementById('rangeeTitreHighlights');
+						amettre.parentNode.appendChild(rangee);
+						minutes = Math.floor((parseInt(rSMB.clips[J].chrono) - parseInt(maPer.chrono)) / 60000);
+						//  alert("minutes"+minutes+" ");
+						dizSecondes = Math.floor(((parseInt(rSMB.clips[J].chrono) - parseInt(maPer.chrono)) - minutes * 60000) / 10000);
+						secondes = Math.floor(((parseInt(rSMB.clips[J].chrono) - parseInt(maPer.chrono)) - minutes * 60000 - dizSecondes * 10000) / 1000);
+						//  alert("secondes"+secondes+" ");
+						strChrono = minutes + ":" + dizSecondes + secondes;
+
+						var lesCols = new Array();
+						//
+						//alert('mSrc');
+						//alert(mSrc);
+						//alert(rSMB.buts[J].equipe);
+						//
+						lesCols[0] = strChrono;
+						lesCols[1] = "";
+
+						//          alert(rSMB.buts[J].video.length);
+						//          lesCols[6] = (rSMB.buts[J].video.length <= 0) ? "" : "Voir";
+
+						if (rSMB.clips.length > 0) {
+							try {
+
+								var mBut = rSMB.clips[J];
+								strV = mBut;
+								pVids = document.createElement('A');
+								//          pVids[a].innerHTML= UrlExists("../lookatthis/" + strV.fic)?" Cam  "+b+" ":"";
+								imgVid = document.createElement('IMG');
+								imgVid.src = "/images/icones/movie.png";
+								imgVid.alt = "Video";
+
+								/*$(imgVid).hover(function(){
+								 $(this).attr('src','/images/icones/movie.ico');
+								 },function(){
+								 $(this).attr('src','/images/icones/movie.ico');
+								 });*/
+								if (mBut != null) {
+									if (mBut.video.length > 0) {
+										pVids.appendChild(imgVid);
+										//              pVids.innerHTML= " Video Replay ";
+										pVids.id = "../lookatthis/" + mBut.fic;
+										pVids.className = "cliquable";
+										pVids.onclick = (function(mBut) {
+											return function() {
+												//                  window.location="../lookatthis/" + strV.fic;
+												$("#contVids").empty();
+												construitVid();
+												//alert("Construit vids clips");
+												vidIndex = 0;
+
+												strV = mBut.video[vidIndex];
+												monOverlay = document.createElement('DIV');
+												monOverlay.id = "ecranSombre";
+												document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
+												$('.media-box').show();
+												place = mBut.video[0].emplacement;
+												if (place == null || !strcmp(place, "")) {
+													place = "syncstats.com";
+												}
+												document.getElementsByTagName('SOURCE')[0].src = "http://" + place + "/lookatthis/" + mBut.video[0].fic;
+												document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
+												$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
+													"opacity" : "1",
+													"position" : "fixed",
+													"left" : "100px",
+													"top" : "100px",
+													"z-index" : "2000"
+												}));
+
+												getInfoVid(vidIndex, mBut);
+
+											};
+										})(mBut);
+									}
+								}
+								var lesLiens = new Array();
+								lesLiens[0] = null;
+								lesLiens[1] = null;
+
+								for ( K = 0; K < lesCols.length; K++) {
+									// alert(K);
+									cellule = document.createElement('TD');
+									if (lesCols[K] != undefined) {
+										if (lesLiens[K] != null) {
+											//alert("should not");
+											lien = document.createElement('A');
+											lien.innerHTML = lesCols[K];
+											lien.href = lesLiens[K];
+											cellule.appendChild(lien);
+										} else {
+											//          alert(K );
+
+											if (K == 1) {
+												//  alert('Ss');
+												cellule.appendChild(pVids);
+												//alert(pVids.id);
+											} else {
+												ptexte = document.createElement('P');
+
+												ptexte.innerHTML = lesCols[K];
+												//                  texte = document.createTextNode(lesCols[K]);
+												cellule.appendChild(ptexte);
+											}
+										}
+									}
+									rangee.appendChild(cellule);
+								}
+								J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
+							} catch(err) {
+								if (vPerm < 10) {
+									alert("Alerte admin: Pas réussi à afficher le vidéo");
+								}
+							}
+						}// Fin du If video
+
+					}
+
+					//  document.body.rangee.cellule.innerHTML ='yo';
+				} catch(err) {
+					alert(err.message + "\n Alerte admin: Pas réussi à faire la table integrale");
+				}
+
+			}
 
 			function afficheTabVent(rJSON) {
 
@@ -1043,34 +1614,51 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 					try {
 						maPer = rJSON.periodes[0];
 					} catch(err) {
+						alert(err.message + "Erreur vent");
 					}
 					var Iper = 0;
 					for ( J = 0; J < rJSON.buts.length; J = J + 1) {
 						trouve = false;
 						while (!trouve) {
+							if (rJSON.periodes.length > 0 && Iper < rJSON.periodes.length) {
 
-							try {
+								try {
 
-								if (parseInt(rJSON.periodes[Iper].chrono) < parseInt(rJSON.buts[J].chrono)) {
-									//					maPer = rJSON.periodes.shift();
-									while (parseInt(rJSON.periodes[Iper].chrono) < parseInt(rJSON.buts[J].chrono) && Iper < rJSON.periodes.length) {
-										maPer = rJSON.periodes[Iper];
-										Iper++;
-										//										$('trTitreVent').append('<td>'+maPer.numero+'</td>')
-										tdTitrePer = document.createElement('TD');
-										tdTitrePer.innerHTML = maPer.numero;
-										document.getElementById('trTitreVent').appendChild(tdTitrePer);
+									if (parseInt(rJSON.periodes[Iper].chrono) < parseInt(rJSON.buts[J].chrono)) {
+										//					maPer = rJSON.periodes.shift();
+										while (parseInt(rJSON.periodes[Iper].chrono) < parseInt(rJSON.buts[J].chrono) && Iper < rJSON.periodes.length) {
+											maPer = rJSON.periodes[Iper];
+											Iper++;
+											//										$('trTitreVent').append('<td>'+maPer.numero+'</td>')
+											tdTitrePer = document.createElement('TD');
+											tdTitrePer.innerHTML = maPer.numero;
+											document.getElementById('trTitreVent').appendChild(tdTitrePer);
 
-										tdDomPer = document.createElement('TD');
-										tdDomPer.innerHTML = 0;
-										document.getElementById('trDomVent').appendChild(tdDomPer);
-										tdVisPer = document.createElement('TD');
-										tdVisPer.innerHTML = 0;
-										document.getElementById('trVisVent').appendChild(tdVisPer);
+											tdDomPer = document.createElement('TD');
+											tdDomPer.innerHTML = 0;
+											document.getElementById('trDomVent').appendChild(tdDomPer);
+											tdVisPer = document.createElement('TD');
+											tdVisPer.innerHTML = 0;
+											document.getElementById('trVisVent').appendChild(tdVisPer);
+										}
+
+									} else {
+										if (J == 0) {
+											tdTitrePer = document.createElement('TD');
+											tdTitrePer.innerHTML = 0;
+											document.getElementById('trTitreVent').appendChild(tdTitrePer);
+
+											tdDomPer = document.createElement('TD');
+											tdDomPer.innerHTML = 0;
+											document.getElementById('trDomVent').appendChild(tdDomPer);
+											tdVisPer = document.createElement('TD');
+											tdVisPer.innerHTML = 0;
+											document.getElementById('trVisVent').appendChild(tdVisPer);
+										}
 									}
 
-								} else {
-									if (J == 0) {
+								} catch(err) {
+									if (Iper == 0) {
 										tdTitrePer = document.createElement('TD');
 										tdTitrePer.innerHTML = 0;
 										document.getElementById('trTitreVent').appendChild(tdTitrePer);
@@ -1081,10 +1669,14 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 										tdVisPer = document.createElement('TD');
 										tdVisPer.innerHTML = 0;
 										document.getElementById('trVisVent').appendChild(tdVisPer);
+										Iper++;
 									}
-								}
+									if (vPerm < 10) {
+										//	alert(err.message + " erreur vent 3, per "+Iper);
+									}
 
-							} catch(err) {
+								}
+							} else {
 								if (Iper == 0) {
 									tdTitrePer = document.createElement('TD');
 									tdTitrePer.innerHTML = 0;
@@ -1098,6 +1690,7 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 									document.getElementById('trVisVent').appendChild(tdVisPer);
 									Iper++;
 								}
+
 							}
 							if (rJSON.buts[J].equipe == rJSON.eqDom) {
 								tdDomPer.innerHTML = parseInt(tdDomPer.innerHTML) + 1;
@@ -1126,7 +1719,265 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 
 				//	document.body.rangee.cellule.innerHTML ='yo';
 				catch(err) {
+					if (vPerm < 10) {
+						alert(err.message + " erreur vent 2");
+					}
 				}
+
+			}
+
+			function corrigePresences() {
+				getJSONJoueursEquipes(null, window.ligueId);
+				construitDialogue();
+				$('#divDialogue').append($('<div></div>').attr('id', 'divJoueursPresents').css("width", "50%").css("float", "left"), $('<div></div>').attr('id', 'boiteSelectDom').css("width", "50%").css("float", "right"), $('<div></div>').attr('id', 'boiteSelectVis').css("width", "50%").css("float", "right"));
+
+				lequipe = window.statsJSONHome;
+				$('#divJoueursPresents').append($('<h1></h1>').text(window.rJSON.eqDom));
+				$('#divJoueursPresents').append($('<div id="jouDom"></div>').append($('<h3></h3>').text("Joueurs")));
+				for ( a = 0; a < lequipe.joueurs.length; a++) {
+					$('#jouDom').append($('<div></div>').css("display", "block").css("clear", "both").append($('<input class="cbpres" type="checkbox"></input>').attr("id", "cbpres_" + lequipe.joueurs[a].joueurId).css("float", "left").click({
+						equipeId : window.rJSON.eqDomId,
+						id : lequipe.joueurs[a].joueurId,
+						souscode : 0
+					}, function(event) {
+						//    alert("sti");
+						if ($(this).is(':checked'))
+							setPresence(event.data.equipeId, event.data.id, 0);
+						else
+							setPresence(event.data.equipeId, event.data.id, -1);
+
+					}), $('<div></div>').text(lequipe.joueurs[a].numero + " - " + lequipe.joueurs[a].nom).val(lequipe.joueurs[a].joueurId).css("display", "inline")));
+					if (parseInt(lequipe.joueurs[a].pj) > 0) {
+						//alert( $('#cbpres_'+lequipe.joueurs[a].joueurId).prop( "checked"));
+						$('#cbpres_' + lequipe.joueurs[a].joueurId).prop("checked", true);
+					}
+					/* $(":checkbox").parent().click(function(evt) {
+					 if (evt.target.type !== 'checkbox') {
+					 var $checkbox = $(":checkbox", this);
+					 $checkbox.attr('checked', !$checkbox.attr('checked'));
+					 $checkbox.change();
+					 }
+					 });*/
+
+				}
+
+				$('#jouDom').append($('<input></input>').attr('type', 'button').val("Ajouter Joueur").on('click', function() {
+					$(this).replaceWith($('<input></input>').attr('type', 'text').attr('id', 'boiteRecherchePresence').keyup(function() {
+						//alert("up!");
+						ajouteJoueur(1, 0);
+					}));
+					//fin de replaceWith
+
+				}));
+
+				$('#divJoueursPresents').append($('<div id="gardDom"></div>').append($('<h3></h3>').text("Gardiens")));
+
+				for ( a = 0; a < lequipe.gardiens.length; a++) {
+					$('#gardDom').append($('<div></div>').css("display", "block").css("clear", "both").append($('<input class="cbpres" type="checkbox"></input>').attr("id", "cbpres_" + lequipe.gardiens[a].joueurId).css("float", "left").click({
+						equipeId : window.rJSON.eqDomId,
+						id : lequipe.gardiens[a].joueurId,
+						souscode : 0
+					}, function(event) {
+						//    alert("sti");
+						if ($(this).is(':checked'))
+							setPresence(event.data.equipeId, event.data.id, 0);
+						else
+							setPresence(event.data.equipeId, event.data.id, -1);
+
+					}), $('<div></div>').text(lequipe.gardiens[a].numero + " - " + lequipe.gardiens[a].nom).val(lequipe.gardiens[a].joueurId).css("display", "inline")));
+					if (parseInt(lequipe.gardiens[a].pj) > 0) {
+						//alert( $('#cbpres_'+lequipe.joueurs[a].joueurId).prop( "checked"));
+						$('#cbpres_' + lequipe.gardiens[a].joueurId).prop("checked", true);
+					}
+				}
+
+				$('#gardDom').append($('<input></input>').attr('type', 'button').val("Ajouter Gardien").on('click', function() {
+					$(this).replaceWith($('<input></input>').attr('type', 'text').attr('id', 'boiteRecherchePresence').keyup(function() {
+						//alert("up!");
+						ajouteJoueur(1, 5);
+					}));
+					//fin de replaceWith
+
+				}));
+
+				$('#divJoueursPresents').append($('<h1></h1>').text(window.rJSON.eqVis));
+				$('#divJoueursPresents').append($('<div id="jouVis"></div>').append($('<h3></h3>').text("Joueurs")));
+				lequipe = window.statsJSONVis;
+				for ( a = 0; a < lequipe.joueurs.length; a++) {
+
+					$('#jouVis').append($('<div></div>').css("display", "block").css("clear", "both").append($('<input class="cbpres" type="checkbox"></input>').attr("id", "cbpres_" + lequipe.joueurs[a].joueurId).css("float", "left").click({
+						equipeId : window.rJSON.eqVisId,
+						id : lequipe.joueurs[a].joueurId,
+						souscode : 0
+					}, function(event) {
+						//    alert("sti");
+						if ($(this).is(':checked'))
+							setPresence(event.data.equipeId, event.data.id, 0);
+						else
+							setPresence(event.data.equipeId, event.data.id, -1);
+
+					}), $('<div></div>').text(lequipe.joueurs[a].numero + " - " + lequipe.joueurs[a].nom).val(lequipe.joueurs[a].joueurId).css("display", "inline")));
+					if (parseInt(lequipe.joueurs[a].pj) > 0) {
+						//alert( $('#cbpres_'+lequipe.joueurs[a].joueurId).prop( "checked"));
+						$('#cbpres_' + lequipe.joueurs[a].joueurId).prop("checked", true);
+					}
+				}
+
+				$('#jouVis').append($('<input></input>').attr('type', 'button').val("Ajouter Joueur").on('click', function() {
+					$(this).replaceWith($('<input></input>').attr('type', 'text').attr('id', 'boiteRecherchePresence').keyup(function() {
+						ajouteJoueur(2, 0);
+					}));
+					//fin de replaceWith
+
+				}));
+
+				$('#divJoueursPresents').append($('<div id="gardVis"></div>').append($('<h3></h3>').text("Gardiens")));
+
+				for ( a = 0; a < lequipe.gardiens.length; a++) {
+					$('#gardVis').append($('<div></div>').css("display", "block").css("clear", "both").append($('<input class="cbpres" type="checkbox"></input>').attr("id", "cbpres_" + lequipe.gardiens[a].joueurId).css("float", "left").click({
+						equipeId : window.rJSON.eqVisId,
+						id : lequipe.gardiens[a].joueurId,
+						souscode : 0
+					}, function(event) {
+						//    alert("sti");
+						if ($(this).is(':checked'))
+							setPresence(event.data.equipeId, event.data.id, 0);
+						else
+							setPresence(event.data.equipeId, event.data.id, -1);
+
+					}), $('<div></div>').text(lequipe.gardiens[a].numero + " - " + lequipe.gardiens[a].nom).val(lequipe.gardiens[a].joueurId).css("display", "inline")));
+					if (parseInt(lequipe.gardiens[a].pj) > 0) {
+						//alert( $('#cbpres_'+lequipe.joueurs[a].joueurId).prop( "checked"));
+						$('#cbpres_' + lequipe.gardiens[a].joueurId).prop("checked", true);
+					}
+				}
+
+				$('#gardVis').append($('<input></input>').attr('type', 'button').val("Ajouter Gardien").on('click', function() {
+					$(this).replaceWith($('<input></input>').attr('type', 'text').attr('id', 'boiteRecherchePresence').keyup(function() {
+						//alert("up!");
+						ajouteJoueur(2, 5);
+					}));
+					//fin de replaceWith
+
+				}));
+
+				$('#divJoueursPresents').children().css("width", "50%");
+
+			}
+
+			function ajouteJoueur(domvis, souscode) {
+
+				if (domvis == 1) {
+
+					$('#boiteSelectDom').empty();
+					$('#boiteSelectDom').append($('<div id="boiteResRecherchePres"></div>').css("position", "relative").css("text-align", "left").css("background-color", "white"));
+					equipeId = window.rJSON.eqDomId;
+				} else {
+					$('#boiteSelectVis').empty();
+					$('#boiteSelectVis').append($('<div id="boiteResRecherchePres"></div>').css("position", "relative").css("text-align", "left").css("background-color", "white"));
+					equipeId = window.rJSON.eqVisId;
+				}
+
+				if (window.lesJoueursDeLigue != null) {
+					str = $('#boiteRecherchePresence').val().toLowerCase();
+					//alert(str);
+					for (var b = 0; b < window.lesJoueursDeLigue.equipe.length; b++) {
+						//  alert(JSON.stringify(window.lesJoueursDeLigue.equipe[b]));
+						for (var a = 0; a < window.lesJoueursDeLigue.equipe[b].joueur.length; a++) {
+							//alert(window.lesJoueursDeLigue.equipe[b].joueur[a].nomJoueur);
+							//alert(window.lesJoueursDeLigue.equipe[b].joueur[a].nomJoueur.toLowerCase()+" --  "+str);
+							if (window.lesJoueursDeLigue.equipe[b].joueur[a].nomJoueur.toLowerCase().indexOf(str) >= 0) {
+
+								$("#boiteResRecherchePres").append($('<div></div>').text(window.lesJoueursDeLigue.equipe[b].joueur[a].nomJoueur).hover(function() {
+									$(this).css("background", "#AAAAAA");
+								}, function() {
+									$(this).css("background", "#FFFFFF");
+								}).click({
+									equipeId : equipeId,
+									id : lesJoueursDeLigue.equipe[b].joueur[a].joueurId,
+									souscode : souscode
+								}, function(event) {
+									setPresence(event.data.equipeId, event.data.id, souscode);
+
+									//document.location.href = "/zstats/statsjoueur.html?joueurId=" + event.data.id;
+								}));
+
+							}
+						}
+					}
+				}
+			}
+
+			function setPresence(equipeId, joueurId, souscode) {
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/setGenerique.php";
+				if (souscode > -1) {
+					var valeur = {
+						match_event_id : window.matchID,
+						equipe_event_id : equipeId,
+						joueur_event_ref : joueurId,
+						code : 3,
+						souscode : souscode,
+						chrono : (new Date()).getTime(),
+						noSequence : 0
+					};
+					var strTable = "table=TableEvenement0";
+					var strValeur = "valeur=" + JSON.stringify(valeur);
+					var strMode = "mode=creer";
+					params = strTable + '&' + strValeur + '&' + strMode;
+
+				} else {
+					critere = " match_event_id='" + window.matchID + "' AND joueur_event_ref='" + joueurId + "' AND code=3";
+
+					var strTable = "table=TableEvenement0";
+					var strCritere = "critere=" + critere;
+					var strMode = "mode=efface";
+					params = strTable + '&' + strCritere + '&' + strMode;
+
+				}
+
+				requete_ajax.open('POST', url, true);
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						//alert("WAIT FOR SHADOW!!");
+						recalculeUnMatch();
+						//						window.location.reload(true);
+					}
+				};
+				requete_ajax.send(params);
+
+			}
+
+			function recalculeUnMatch() {
+				var requete_ajax = new XMLHttpRequest();
+				var url = "/scriptsphp/calculeUnMatch.php";
+				var params = "noMatchId=" + infoMatch.noMatchId;
+				requete_ajax.open("POST", url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+				requete_ajax.onreadystatechange = function() {
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						//alert("WAIT!");
+						getInfoMatch(infoMatch.matchId);
+						//                        window.location.href = '/zstats/match.html?match=' + encodeURIComponent(window.matchID) + '&onglet=1' + '&m=' + window.m;
+						// window.location.reload(true);
+					}
+				};
+
+				//  alert(requete_ajax.responseText);
+				//  alert("params: "+params);
+				return requete_ajax.responseText;
 
 			}
 
@@ -1144,13 +1995,64 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 
 				requete_ajax.send(params);
 				requete_ajax.onreadystatechange = function() {
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						//alert("WAIT!");7
+						recalculeUnMatch();
+						//						window.location.href = '/zstats/match.html?match=' + encodeURIComponent(window.matchID) + '&onglet=1' + '&m=' + window.m;
+						// window.location.reload(true);
+					}
+				};
+
+				//  alert(requete_ajax.responseText);
+				//  alert("params: "+params);
+				return requete_ajax.responseText;
+			}
+			
+            function setMAJPun(strMAJ)// id est le username.
+            {
+                var requete_ajax = new XMLHttpRequest();
+                var url = "/stats2/setMAJPun.php";
+                var params = "strMAJ=" + strMAJ;
+                requete_ajax.open("POST", url, true);
+
+                //Send the proper header information along with the request
+                requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                requete_ajax.setRequestHeader("Content-length", params.length);
+                requete_ajax.setRequestHeader("Connection", "close");
+
+                requete_ajax.send(params);
+                requete_ajax.onreadystatechange = function() {
                     if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-                       // alert("WAIT!");
-                        window.location.href = '/zstats/match.html?match=' + encodeURIComponent(window.matchID)+ '&onglet=1'  + '&m=' + window.m;
-                       // window.location.reload(true);
-}
-};
-				
+                        recalculeUnMatch();
+                    }
+                };
+                return requete_ajax.responseText;
+            }
+
+			
+
+			function setMAJFus(strMAJ)// id est le username.
+			{
+				var requete_ajax = new XMLHttpRequest();
+				var url = "/stats2/setMAJFus.php";
+				var params = "strMAJ=" + strMAJ;
+				requete_ajax.open("POST", url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+				requete_ajax.onreadystatechange = function() {
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						//alert("WAIT!");
+						recalculeUnMatch();
+						//                        window.location.href = '/zstats/match.html?match=' + encodeURIComponent(window.matchID) + '&onglet=0' + '&m=' + window.m;
+						// window.location.reload(true);
+					}
+				};
+
 				//  alert(requete_ajax.responseText);
 				//  alert("params: "+params);
 				return requete_ajax.responseText;
@@ -1167,10 +2069,12 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 
 				if (window.rJSON.eqDom == window.rJSON.buts[but].equipe) {
 					lequipe = window.statsJSONHome;
+					equipeId = window.rJSON.eqDomId;
 				} else if (window.rJSON.eqVis == window.rJSON.buts[but].equipe) {
 					lequipe = window.statsJSONVis;
+					equipeId = window.rJSON.eqVisId;
 				} else
-					(alert("Erreur d'attribution de nom d'équipe, contactez un membre de Syncstats."))
+					alert("Erreur d'attribution de nom d'équipe, contactez un membre de Syncstats.");
 				//var doc = frameModif.contentDocument || frameModif.contentWindow.document;
 				//	butModif = new Array();
 
@@ -1207,7 +2111,7 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 				}
 				//	lequipe.joueurs.push(null);
 				opt = document.createElement('OPTION');
-				opt.innerHTML = "- " + window.tl_match_aucun + " -";
+				opt.innerHTML = "- " + window.tl_match_aucun + " (Delete goal)- ";
 				if (!trouveM)
 					opt.setAttribute("selected", "true");
 				opt2 = document.createElement('OPTION');
@@ -1254,6 +2158,7 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 					butModif = {
 						matchId : window.matchID,
 						noSeq : but,
+						equipeId : equipeId,
 						"marqueurId" : marqueurId,
 						"passeur1Id" : passeur1Id,
 						"passeur2Id" : passeur2Id
@@ -1286,6 +2191,7 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 
 				//var doc = frameModif.contentDocument || frameModif.contentWindow.document;
 				//  butModif = new Array();
+				$(doc).append($('<h1></h1>').text("Ajouter un But"));
 
 				$(doc).append($('<SELECT></SELECT>').attr('id', 'selEq').change(function() {
 					$('#selMarq, #selPass1, #selPass2').empty();
@@ -1299,15 +2205,16 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 					$('#selPass2').append($('<option></option>').text("- " + window.tl_match_aucun + " -").attr("selected", "true").attr("id", "optPass2").val(null));
 
 					for ( a = 0; a < lequipe.joueurs.length; a++) {
-						$('#selMarq').append($('<option></option>').text(lequipe.joueurs[a].nom).val(lequipe.joueurs[a].joueurId));
-						$('#selPass1').append($('<option></option>').text(lequipe.joueurs[a].nom).val(lequipe.joueurs[a].joueurId));
-						$('#selPass2').append($('<option></option>').text(lequipe.joueurs[a].nom).val(lequipe.joueurs[a].joueurId));
+						$('#selMarq').append($('<option></option>').text(lequipe.joueurs[a].numero + " - " + lequipe.joueurs[a].nom).val(lequipe.joueurs[a].joueurId));
+						$('#selPass1').append($('<option></option>').text(lequipe.joueurs[a].numero + " - " + lequipe.joueurs[a].nom).val(lequipe.joueurs[a].joueurId));
+						$('#selPass2').append($('<option></option>').text(lequipe.joueurs[a].numero + " - " + lequipe.joueurs[a].nom).val(lequipe.joueurs[a].joueurId));
 					}
 					//  lequipe.joueurs.push(null);
 
 				}).append($('<option></option>').val("0").attr("selected", "true").text("- Choisir -"), $('<option></option>').val("1").text(window.rJSON.eqDom), $('<option></option>').val("2").text(window.rJSON.eqVis)));
 
 				$(doc).append($('<SELECT></SELECT>').attr("id", "selMarq"), $('<SELECT></SELECT>').attr("id", "selPass1"), $('<SELECT></SELECT>').attr("id", "selPass2"));
+				$(doc).append($('<p></p>').text(window.tl_match_avertissementTrouvePasJoueur));
 
 				/////////////////////////////////////////////////////////
 				//
@@ -1327,7 +2234,7 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 				boutOK.type = "button";
 				boutOK.value = "OK";
 				boutOK.onclick = function() {
-						
+
 					equipeId = $('#selEq').val() == 1 ? window.rJSON.eqDomId : window.rJSON.eqVisId;
 
 					if (window.rJSON.buts.length > 0) {
@@ -1352,6 +2259,178 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 					//alert(strBut);
 
 					setMAJBut(strBut);
+
+					detruitDialogue();
+				};
+				doc.appendChild(boutOK);
+
+				//};
+
+				//document.getElementById("div").appendChild(iframe); //this is a div  that I have in body.
+
+			}
+
+
+            function nouvellePun(domVis) {
+                construitDialogue();
+                doc = document.getElementById('divDialogue');
+                $(doc).append($('<h1></h1>').text("Ajouter une punition"));
+
+                $(doc).append($('<SELECT></SELECT>').attr('id', 'selEq').change(function() {
+                    $('#selJoueur').empty();
+                    if ($(this).val() == 1) {
+                        lequipe = window.statsJSONHome;
+                    } else {
+                        lequipe = window.statsJSONVis;
+                    }
+                    $('#selJoueur').append($('<option></option>').text("- " + window.tl_match_aucun + " -").attr("selected", "true").attr("id", "optMarq").val(null));
+
+                    for ( a = 0; a < lequipe.joueurs.length; a++) {
+                        $('#selJoueur').append($('<option></option>').text(lequipe.joueurs[a].numero + " - " + lequipe.joueurs[a].nom).val(lequipe.joueurs[a].joueurId));
+                    }
+                    //  lequipe.joueurs.push(null);
+
+                }).append($('<option></option>').val("0").attr("selected", "true").text("- Choisir -"), $('<option></option>').val("1").text(window.rJSON.eqDom), $('<option></option>').val("2").text(window.rJSON.eqVis)));
+
+                $(doc).append($('<SELECT></SELECT>').attr("id", "selJoueur"), $('<SELECT></SELECT>').attr("id", "selMotif"));
+                $(doc).append($('<p></p>').text(window.tl_match_avertissementTrouvePasJoueur));
+                
+                motifPun = ['Accrocher', 'Cingler', 'Conduite anti-sportive', 'Donner de la bande',
+                    'Obstruction', 'Retarder le match', 'Retenu', 'Rudesse', 'S\'être battu', 'Trébucher', 'Assaut',
+                   'Bâton élevé', 'Coup de coude', 'Cracher', 'Darder', 'Donner du genou', 'Double-échec', 'Instigateur',
+                    'Mise en échec', 'Pousser un joueur', 'Six pouces', 'Tentative de blessure', 'Alignement en retard',
+                    'Balle extérieure', 'Bâton brisé', 'Bâton haut (sans contact)', 'Changement illégal', 'Chute obstrusive',
+                    'Geler la balle', 'Lancer le bâton', 'Pied sur la balle', 'Quitter banc des punitions', 'Pénalité majeure',
+                    'Grossière inconduite', 'Pénalité de match', 'Mauvaise conduite', 'Inconduite de partie' ];
+                   
+                   for(var a=0;a<motifPun.length;a++){
+                       $('#selMotif').append($('<OPTION></OPTION>').val(a+1).text(motifPun[a]));
+                       //alert(motifPun[a]);
+                   }
+
+                /////////////////////////////////////////////////////////
+                //
+                //  Structure JSON du but à modifier.
+                //
+                //  noSeq
+                //  matchId
+                //  marqueurId
+                //  passeur1Id
+                //  passeur2Id
+                //
+                //////////////////////////////////////////////////////////
+
+                boutOK = document.createElement('INPUT');
+                boutOK.className = "okFrame";
+                boutOK.id = "boutOK";
+                boutOK.type = "button";
+                boutOK.value = "OK";
+                boutOK.onclick = function() {
+
+                    equipeId = $('#selEq').val() == 1 ? window.rJSON.eqDomId : window.rJSON.eqVisId;
+
+                    if (window.rJSON.buts.length > 0) {
+                        //alert(window.rJSON.buts[window.rJSON.buts.length-1].chrono);
+                        chronoCorr = parseInt(window.rJSON.buts[window.rJSON.buts.length - 1].chrono) + 60000;
+                        //alert(chronoCorr);
+                    } else {
+                        chronoCorr = Date.now();
+                    }
+                    punModif = {
+                        "nouvellePun" : true,
+                        matchId : window.matchID,
+                        equipeId : equipeId,
+                        chrono : chronoCorr,
+                        "joueurId" : $('#selJoueur').val(),
+                        "motifId" : $('#selMotif').val(),
+                    };
+                    strPun = JSON.stringify(punModif);
+
+                    setMAJPun(strPun);
+
+                    detruitDialogue();
+                };
+                doc.appendChild(boutOK);
+            }
+
+
+			function nouveauFusillade(domVis) {
+				//  frameModif = document.getElementById("frameModif")
+				//  frameModif.className = "affiche";
+				construitDialogue();
+				doc = document.getElementById('divDialogue');
+
+				//  frameModif.onload = function()
+				//{
+
+				//var doc = frameModif.contentDocument || frameModif.contentWindow.document;
+				//  butModif = new Array();
+				$(doc).append($('<h1></h1>').text("Ajouter un tir de fusillade"));
+
+				$(doc).append($('<SELECT></SELECT>').attr('id', 'selEq').change(function() {
+					$('#selMarq, #reussiManque').empty();
+					if ($(this).val() == 1) {
+						lequipe = window.statsJSONHome;
+					} else {
+						lequipe = window.statsJSONVis;
+					}
+					$('#selMarq').append($('<option></option>').text("- " + window.tl_match_aucun + " -").attr("selected", "true").attr("id", "optMarq").val(null));
+					$('#reussiManque').append($('<option></option>').text("- " + window.tl_bouton_Choisir + " -").attr("selected", "true").attr("id", "optRM").val(null));
+
+					for ( a = 0; a < lequipe.joueurs.length; a++) {
+						$('#selMarq').append($('<option></option>').text(lequipe.joueurs[a].numero + " - " + lequipe.joueurs[a].nom).val(lequipe.joueurs[a].joueurId));
+					}
+					$('#reussiManque').append($('<option></option>').text(window.tl_match_Reussi).val("1"));
+					$('#reussiManque').append($('<option></option>').text(window.tl_match_Manque).val("5"));
+
+					//  lequipe.joueurs.push(null);
+
+				}).append($('<option></option>').val("0").attr("selected", "true").text("- Choisir -"), $('<option></option>').val("1").text(window.rJSON.eqDom), $('<option></option>').val("2").text(window.rJSON.eqVis)));
+
+				$(doc).append($('<SELECT></SELECT>').attr("id", "selMarq"), $('<SELECT></SELECT>').attr("id", "reussiManque"));
+
+				/////////////////////////////////////////////////////////
+				//
+				//  Structure JSON du but à modifier.
+				//
+				//  noSeq
+				//  matchId
+				//  marqueurId
+				//  passeur1Id
+				//  passeur2Id
+				//
+				//////////////////////////////////////////////////////////
+
+				boutOK = document.createElement('INPUT');
+				boutOK.className = "okFrame";
+				boutOK.id = "boutOK";
+				boutOK.type = "button";
+				boutOK.value = "OK";
+				boutOK.onclick = function() {
+
+					equipeId = $('#selEq').val() == 1 ? window.rJSON.eqDomId : window.rJSON.eqVisId;
+
+					if (window.rJSON.buts.length > 0) {
+						//alert(window.rJSON.buts[window.rJSON.buts.length-1].chrono);
+						chronoCorr = parseInt(window.rJSON.buts[window.rJSON.buts.length - 1].chrono) + 60000;
+						//alert(chronoCorr);
+					} else {
+						chronoCorr = Date.now();
+					}
+					butModif = {
+						"nouveaufus" : true,
+						matchId : window.matchID,
+						equipeId : equipeId,
+						chrono : chronoCorr,
+						"marqueurId" : $('#selMarq').val(),
+						"reussiManque" : $('#reussiManque').val()
+					};
+					strBut = JSON.stringify(butModif);
+					//alert(selMarq.selectedIndex);
+					//alert(lequipe.joueurs[selMarq.selectedIndex].joueurId);
+					//alert(strBut);
+
+					setMAJFus(strBut);
 
 					detruitDialogue();
 				};
@@ -1423,7 +2502,9 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 
 						infoVid = eval('(' + requete_ajax.responseText + ')');
 						$('#rateSpan').text("RATING: " + infoVid.eval + " / 5");
-						$('#nbVuesSpan').text("Vue " + infoVid.nbVues + " fois");
+						if(parseInt(infoVid.nbVues)>=5){
+                        $('#nbVuesSpan').text("Vue " + infoVid.nbVues + " fois");
+						}
 						$('.video-info p').text("Marqueur: " + infoVid.NomJoueur);
 						evalBut = getCookie('videoId_eval_' + infoVid.videoId);
 						if (evalBut != null) {
@@ -1442,20 +2523,23 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 							});
 
 						}
-						
-					
-                        //$('#video-info').append($('<div></div>').text('TEST!'));//.append($('<ins></ins>').addClass('adsbygoogle')));
-                        $('#pub-google').append($('<ins></ins>').addClass('adsbygoogle').css("display","inline-block").css("width","234px").css("height","60px").attr("data-ad-slot","9551625935").attr("data-ad-client","ca-pub-2263794877114969"));
-                        
-                        
+
+						//$('#video-info').append($('<div></div>').text('TEST!'));//.append($('<ins></ins>').addClass('adsbygoogle')));
+						$('#pub-google').append($('<ins></ins>').addClass('adsbygoogle').css("display", "inline-block").css("width", "234px").css("height", "60px").attr("data-ad-slot", "9551625935").attr("data-ad-client", "ca-pub-2263794877114969"));
+
 						//alert(vidIndex);
 						vidSuite(vidIndex, mBut);
 						//alert(vidIndex);
-						$('ins').each(function(){
-                            (adsbygoogle = window.adsbygoogle || []).push({});
-                            });
+						try {
+						$('ins').each(function() {
+							( adsbygoogle = window.adsbygoogle || []).push({});
+						});
+						}
+                        catch(err) {
+                            console.log(err.message);
+                        }
 						//(adsbygoogle = window.adsbygoogle || []).push({});
-						
+
 						$.post('/scriptsphp/incrementeVidNbVues.php', {
 							videoId : infoVid.videoId
 						});
@@ -1519,9 +2603,12 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 
 						infoVid = eval('(' + requete_ajax.responseText + ')');
 						$('#rateSpan').text("RATING: " + infoVid.eval + " / 5");
-						$('#nbVuesSpan').text("Vue " + infoVid.nbVues + " fois");
-						$('.video-info p').text("Marqueur: " + infoVid.NomJoueur);
+						if(parseInt(infoVid.nbVues)>=5){
+						    $('#nbVuesSpan').text("Vue " + infoVid.nbVues + " fois");
+						}
 						
+						$('.video-info p').text("Marqueur: " + infoVid.NomJoueur);
+
 						evalBut = getCookie('videoId_eval_' + infoVid.videoId);
 						if (evalBut != null) {
 							$('#rating-star').raty({
@@ -1539,13 +2626,11 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 							});
 
 						}
-						
-						
+
 						//$('#video-info').append($('<div></div>').text('TEST!'));//.append($('<ins></ins>').addClass('adsbygoogle')));
-                        $('#video-info').append($('<ins></ins>').addClass('adsbygoogle').css("display","inline-block").css("width","234px").css("height","60px").attr("data-ad-slot","9551625935").attr("data-ad-client","ca-pub-2263794877114969"));
-                        vidSuite(0, "");
-                        
-                        
+						$('#video-info').append($('<ins></ins>').addClass('adsbygoogle').css("display", "inline-block").css("width", "234px").css("height", "60px").attr("data-ad-slot", "9551625935").attr("data-ad-client", "ca-pub-2263794877114969"));
+						vidSuite(0, "");
+
 						$.post('/scriptsphp/incrementeVidNbVues.php', {
 							videoId : infoVid.videoId
 						});
@@ -1575,22 +2660,22 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 
 					$('#media-play-list').empty();
 					$('#media-play-list').append(/*$('<div></div>').attr('id','toggle-liste').click(function(){
-					    $('#media-play-list').hide();
-					}).append('<h3></h3>').text(' < Cacher < '),*/$('<ul id="play-list"></ul>'));
-					
+					 $('#media-play-list').hide();
+					 }).append('<h3></h3>').text(' < Cacher < '),*/
+					$('<ul id="play-list"></ul>'));
+
 					for (var a = 0; a < mBut.video.length; a++) {
-					    place = mBut.video[a].emplacement;
-                         if (place == null || !strcmp(place, "")) {
-                            place = "syncstats.com";
-                            }
-                         mVid = "http://" + place + "/lookatthis/" + mBut.video[vidIndex].fic;
+						place = mBut.video[a].emplacement;
+						if (place == null || !strcmp(place, "")) {
+							place = "syncstats.com";
+						}
+						mVid = "http://" + place + "/lookatthis/" + mBut.video[vidIndex].fic;
 						//alert(vidsAlt.video[a].fic);
 						strThumb = "/images/icones/movie.png";
-                            if(mBut.video[a].thumbnail!=null){
-                                strThumb= "http://" + place + "/thumbnails/"+mBut.video[a].thumbnail;
-                            }
+						if (mBut.video[a].thumbnail != null) {
+							strThumb = "http://" + place + "/thumbnails/" + mBut.video[a].thumbnail;
+						}
 						$('#play-list').append($('<li></li>').append(
-						    
 
 						// $('<video></video>').addClass('play-item').attr('src',vidsAlt.video[a].fic),
 						$('<div></div>').addClass('thumbnail-wrap').append(/*$('<span></span>').addClass('thumbnail-title').text(vidsAlt.video[a].cam),*/
@@ -1633,6 +2718,7 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 						place = "syncstats.com";
 					}
 					mVid = "http://" + place + "/lookatthis/" + mBut.video[vidIndex].fic;
+					$('#titreCam').text("Cam "+mBut.video[vidIndex].cam);
 					//alert(mVid);
 					$('#vidPrincId').attr("src", mVid);
 					$('#parent-erreur').remove();
@@ -1715,16 +2801,14 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 				//////////////////////
 				// FB Override
 
-                
-
-
 			};
 
 			function construitVid() {
 				$('<div/>').addClass('media-box').append($('<span/>').addClass('close-btn'), $('<div/>').attr({
 					id : "media-play-list",
 					'class' : 'content mCustomScrollbar'
-				}), $('<video/>').attr({
+				})
+				, $('<video/>').attr({
 					id : "media-video",
 					width : "480",
 					height : "320",
@@ -1733,12 +2817,11 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 				}).append($('<source/>').attr({
 					id : "vidPrincId",
 					type : "video/mp4"
-				})), $('<div/>').attr('id','video-info').addClass('video-info').append($('<div/>').append($('<img>').attr({
+				})), $('<div/>').attr('id', 'video-info').addClass('video-info').append($('<div/>').append($('<img>').attr({
 					id : 'info-img',
 					src : "/images/info-img.png"
-				}), $('<span/>').text('Video Info').addClass('title')), $('<p>').addClass('video-content').text('Aimez-vous cette nouvelle interface?')/*, $('<div>').addClass('share').append($('<img/>').attr('src', "/images/fb.png"), $('<img/>').attr('src', "/images/tweet.png"), $('<img/>').attr('src', "/images/google.png"), $('<img/>').attr('src', "/images/youtube.png"))*/, $('<span/>').attr('id', 'rateSpan').text('RATING : 3.5 / 5 '), $('<span/>').attr('id', 'nbVuesSpan').text('Vue 0 fois'), 
-				$('<div/>').attr('id','pub-google'),
-				$('<button/>').attr('type', 'button').addClass('btn-style').append($('<span/>').addClass('comment').text('Write a comment')))/*, $('<span/>').addClass('play-btn').attr("id", "btn-play-centre").append($('<img/>').attr('src', '/images/main-play.png'))*/
+				}), $('<span/>').text('Video Info').addClass('title')), $('<p>').addClass('video-content').text('Aimez-vous cette nouvelle interface?')/*,     $('<div>').addClass('share').append($('<img/>').attr('src', "/images/fb.png"), $('<img/>').attr('src', "/images/tweet.png"), $('<img/>').attr('src', "/images/google.png"), $('<img/>').attr('src', "/images/youtube.png"))*/, 
+				$('<span/>').attr('id', 'rateSpan').text('RATING : 3.5 / 5 '), $('<span/>').attr('id', 'nbVuesSpan').text(''), $('<div/>').attr('id', 'pub-google')/*, $('<button/>').attr('type', 'button').addClass('btn-style').append($('<span/>').addClass('comment').text('Write a comment'))*/)/*, $('<span/>').addClass('play-btn').attr("id", "btn-play-centre").append($('<img/>').attr('src', '/images/main-play.png'))*/
 				).appendTo('#contVids');
 				// fin de div.append
 				/*
@@ -1748,67 +2831,69 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
 			function detruitVid() {
 				$('#contVids').empty();
 			};
-			
-			function faitOngletSysteme(noMatchId, arenaId){
-			    
-			    $.ajax({
-                                        url : "/scriptsphp/getAppareilsAbonne.php",
-                                        type : "POST",
-                                        
-                                        data: jQuery.param({ matchId : noMatchId, userId: window.userId, arenaId: arenaId }) ,
-                       contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                       success: function (response) {
-                            var laTable = eval("(" + response + ")");
-                // alert(laTable.cams);
-                // alert(laTable.remotes);
-                          if(laTable.cams!=null){
-                 var table = $.makeTable(laTable.cams);
-                        (table).appendTo("#Systeme");}
-                          if(laTable.remotes!=null){
-                 var table2 = $.makeTable(laTable.remotes);
-                        (table2).appendTo("#Systeme");
-                } 
-                },
-                        error:  function(xhr, status, error) {
-                             var err = eval("(" + xhr.responseText + ")");
-                              alert(err.Message+"  --  ereur gardMax");
-                                }
-                                   
-                                    });
 
-			    
+			function faitOngletSysteme(noMatchId, arenaId) {
+
+				$.ajax({
+					url : "/scriptsphp/getAppareilsAbonne.php",
+					type : "POST",
+
+					data : jQuery.param({
+						matchId : noMatchId,
+						userId : window.userId,
+						arenaId : arenaId
+					}),
+					contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+					success : function(response) {
+						var laTable = eval("(" + response + ")");
+						// alert(laTable.cams);
+						// alert(laTable.remotes);
+						if (laTable.cams != null) {
+							var table = $.makeTable(laTable.cams);
+							(table).appendTo("#Systeme");
+						}
+						if (laTable.remotes != null) {
+							var table2 = $.makeTable(laTable.remotes);
+							(table2).appendTo("#Systeme");
+						}
+					},
+					error : function(xhr, status, error) {
+						var err = eval("(" + xhr.responseText + ")");
+						alert(err.Message + "  --  ereur gardMax");
+					}
+				});
+
 			}
-			
+
+
 			$.makeTable = function(mydata) {
-                var table = $('<table border=1>');
-                var tblHeader = "<tr>";
-                for (var k in mydata[0])
-                tblHeader += "<th>" + k + "</th>";
-                tblHeader += "</tr>";
-                $(tblHeader).appendTo(table);
-                $.each(mydata, function(index, value) {
-                    var TableRow = $("<tr></tr>");
-                    $.each(value, function(key, val) {
+				var table = $('<table border=1>');
+				var tblHeader = "<tr>";
+				for (var k in mydata[0])
+				tblHeader += "<th>" + k + "</th>";
+				tblHeader += "</tr>";
+				$(tblHeader).appendTo(table);
+				$.each(mydata, function(index, value) {
+					var TableRow = $("<tr></tr>");
+					$.each(value, function(key, val) {
 
-                        $(TableRow).append($("<td></td>").text(val));
-                        if (key == "telId") {
+						$(TableRow).append($("<td></td>").text(val));
+						if (key == "telId") {
 
-                            if (index % 2 == 0) {
-                                $(TableRow).addClass("lignePaire");
-                            } else {
-                                $(TableRow).addClass("ligneImpaire");
-                            }
+							if (index % 2 == 0) {
+								$(TableRow).addClass("lignePaire");
+							} else {
+								$(TableRow).addClass("ligneImpaire");
+							}
 
-                        }
-                    });
-                    $(table).append(TableRow);
+						}
+					});
+					$(table).append(TableRow);
 
-                });
-                return ($(table));
-            };
+				});
+				return ($(table));
+			};
 
-
-			
         </script>
 
     </HEAD>
@@ -1832,71 +2917,73 @@ $('#logoEquipeVis').attr('src','/admin/afficheImage.php?ficId=' + infoMatch.equi
         <script type="text/javascript" charset="utf-8">
 			//						alert(JSON.stringify(document.getElementById("divCentrale").all));
 			//		alert(document.getElementsByTagName("A")[0].href);
+			jQuery(document).ready(function() {
 
-			developper(22);
-			detruitDivGauche();
-			
-			var matchID = getValue('match');
-			vecTab = ['tabResume', 'tabButs', 'tabPun', 'tabStatsDom'/*, 'tabStatsVis'*/];
-			vecNomTab = [window.tl_match_Resume, window.tl_stats_Buts, window.tl_match_Penalites, window.tl_stats_Statistiques/*, window.tl_resultats_Visiteur*/];
-			//			alert('sti');
-			vPerm = verifiePermission();
-			if(vPerm<10){
-            vecTab = ['tabResume', 'tabButs', 'tabPun', 'tabStatsDom','Systeme'];
-            vecNomTab = [window.tl_match_Resume, window.tl_stats_Buts, window.tl_match_Penalites, window.tl_stats_Statistiques,'Systeme'/*, window.tl_resultats_Visiteur*/];
-			   
-			}else{
-            vecTab = ['tabResume', 'tabButs', 'tabPun', 'tabStatsDom'/*, 'tabStatsVis'*/];
-            vecNomTab = [window.tl_match_Resume, window.tl_stats_Buts, window.tl_match_Penalites, window.tl_stats_Statistiques/*, window.tl_resultats_Visiteur*/];
-			    
-			    
-			}
+				developper(22);
+				detruitDivGauche();
+				
+				setCookie("fileDownload",true,3600);
+				setCookie("path","/",3600);
+                
 
-			faitEntete();
+				matchID = getValue('match');
+				vecTab = ['tabResume', 'tabButs', 'tabPun', 'tabStatsDom'/*, 'tabStatsVis'*/];
+				vecNomTab = [window.tl_match_Resume, window.tl_stats_Buts, window.tl_match_Penalites, window.tl_stats_Statistiques/*, window.tl_resultats_Visiteur*/];
+				//			alert('sti');
+				vPerm = verifiePermission();
+				if (vPerm < 10) {
+					vecTab = ['tabResume', 'tabButs', 'tabPun', 'tabStatsDom', 'Systeme'];
+					vecNomTab = [window.tl_match_Resume, window.tl_stats_Buts, window.tl_match_Penalites, window.tl_stats_Statistiques, 'Systeme'/*, window.tl_resultats_Visiteur*/];
 
-			//	alert(document.getElementById("tabResume").id);
-
-			etoileConditions = 0;
-			//			alert('de');
-			
-
-			construitVid();
-
-			getInfoMatch(matchID);
-			//	alert('calis');
-			getStatsJSON('H', matchID);
-			getStatsJSON('V', matchID);
-			//		alert(document.getElementById("tabResume").href);
-
-			if (getValue('onglet') == "" || getValue('onglet') == undefined) {
-				selectOnglet(0);
-			} else {
-				selectOnglet(parseInt(getValue('onglet')));
-			}
-
-			if (getValue('videofile') != "" && getValue('videofile') != undefined) {
-				if (getValue('but') != "" && getValue('but') != undefined && getValue('vidIndex') != "" && getValue('vidIndex') != undefined) {
-					getInfoVid(getValue('vidIndex'), getValue('but'));
 				} else {
-					monOverlay = document.createElement('DIV');
-					monOverlay.id = "ecranSombre";
-					document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
-					$('.media-box').show();
-					document.getElementsByTagName('SOURCE')[0].src = "http://5.39.8.14/lookatthis/" + getValue('videofile');
-					document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
+					vecTab = ['tabResume', 'tabButs', 'tabPun', 'tabStatsDom'/*, 'tabStatsVis'*/];
+					vecNomTab = [window.tl_match_Resume, window.tl_stats_Buts, window.tl_match_Penalites, window.tl_stats_Statistiques/*, window.tl_resultats_Visiteur*/];
 
-					$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
-						"opacity" : "1",
-						"position" : "fixed",
-						"left" : "100px",
-						"top" : "100px",
-						"z-index" : "2000"
-					}));
-
-					getInfoVid_videofile(getValue('videofile'));
 				}
-			}
 
+				faitEntete();
+
+				//	alert(document.getElementById("tabResume").id);
+
+				etoileConditions = 0;
+				//			alert('de');
+
+				construitVid();
+
+				getInfoMatch(matchID);
+				//	alert('calis');
+
+				//		alert(document.getElementById("tabResume").href);
+
+				if (getValue('onglet') == "" || getValue('onglet') == undefined) {
+					selectOnglet(0);
+				} else {
+					selectOnglet(parseInt(getValue('onglet')));
+				}
+
+				if (getValue('videofile') != "" && getValue('videofile') != undefined) {
+					if (getValue('but') != "" && getValue('but') != undefined && getValue('vidIndex') != "" && getValue('vidIndex') != undefined) {
+						getInfoVid(getValue('vidIndex'), getValue('but'));
+					} else {
+						monOverlay = document.createElement('DIV');
+						monOverlay.id = "ecranSombre";
+						document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
+						$('.media-box').show();
+						document.getElementsByTagName('SOURCE')[0].src = "http://5.39.8.14/lookatthis/" + getValue('videofile');
+						document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
+
+						$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
+							"opacity" : "1",
+							"position" : "fixed",
+							"left" : "100px",
+							"top" : "100px",
+							"z-index" : "2000"
+						}));
+
+						getInfoVid_videofile(getValue('videofile'));
+					}
+				}
+			});
         </script>
 
         <!-- list hover effect -->

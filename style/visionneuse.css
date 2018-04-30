@@ -50,7 +50,7 @@
 	height: 100%;
 	position: relative;
 	z-index: 999;
-	width: 0;
+	width: 1px;
 }
 
 .player .button-holder {
@@ -723,4 +723,9 @@ button {
 	background: #000; 
 	margin:auto;
 	
+}
+#titreCam {
+    position:absolute;
+    left:45%;
+    color:#ddd;
 }

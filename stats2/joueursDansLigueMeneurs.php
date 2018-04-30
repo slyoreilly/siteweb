@@ -161,7 +161,8 @@ $resultMatch = mysql_query("SELECT *
 $Im = 0;
 $JoueurSommeEvenement = array();
 $I0 = 0;
-
+$vecTemps= Array();
+$vecTemps['depart'] = time();
 /////////////////  Section avec abonnement, on liste les equipes.
 
 $resultEq = mysql_query("SELECT abonEquipeLigue.*  
@@ -194,33 +195,42 @@ $pmts = strtotime($premierMatch);
 $dmts = strtotime($dernierMatch);
 
 //	 match_event_id = '{$lesMatchs[$Im]}' AND
-$strQuery = "SELECT TableEvenement0.*, abonJoueurEquipe.*,abonEquipeLigue.ligueId, TableEquipe.nom_equipe,TableEquipe.ficId, 
+$strQuery = "
+
+SELECT TableEvenement0.*, TableEquipe.nom_equipe,TableEquipe.ficId, 								
 								 TableJoueur.NomJoueur, TableJoueur.NumeroJoueur ,TableJoueur.ficIdPortrait 
-				FROM TableEvenement0 
-					INNER JOIN TableJoueur 
-						 ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id)
-					INNER JOIN abonJoueurEquipe 
-						 ON (TableEvenement0.joueur_event_ref=abonJoueurEquipe.joueurId)
-					INNER JOIN abonEquipeLigue 
-						 ON (abonJoueurEquipe.equipeId=abonEquipeLigue.equipeId AND TableEvenement0.equipe_event_id=abonEquipeLigue.equipeId)
-						  
-					INNER JOIN TableEquipe
-						 ON (abonJoueurEquipe.equipeId=TableEquipe.equipe_id) 
-						 						 
-					WHERE abonJoueurEquipe.debutAbon<='{$dateAbon}'
-						AND abonJoueurEquipe.finAbon>'{$dateAbon}'
-						AND abonEquipeLigue.debutAbon<='{$dateAbon}'
-						AND abonEquipeLigue.finAbon>'{$dateAbon}'
-						AND abonEquipeLigue.ligueId = 	{$getLigue}		
-						AND abonEquipeLigue.permission<31		
-						AND chrono>'{$pmts}'
-						AND chrono<'{$dmts}'
-						AND code<10
-						GROUP BY event_id";
+				FROM TableEvenement0 				
+								
+								
+					INNER JOIN ( 			
+						SELECT equipeId,joueurId FROM abonJoueurEquipe		
+						WHERE		
+						debutAbon<='{$dateAbon}'		
+							AND finAbon>'{$dateAbon}') AS abJoEq	
+						 ON (TableEvenement0.joueur_event_ref=abJoEq.joueurId)		
+					INNER JOIN ( 			
+						SELECT equipeId,ligueId, permission FROM abonEquipeLigue 		
+						WHERE		
+						debutAbon<='{$dateAbon}'		
+							AND finAbon>'{$dateAbon}' AND permission<31) AS abEqLi	
+						 ON (abJoEq.equipeId=abEqLi.equipeId AND TableEvenement0.equipe_event_id=abEqLi.equipeId)		
+					INNER JOIN TableEquipe			
+						 ON (abJoEq.equipeId=TableEquipe.equipe_id) 		
+						 	INNER JOIN TableMatch 	
+						 ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)		
+					INNER JOIN TableJoueur 			
+						 ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id)		
+						WHERE		
+						  TableMatch.ligueRef = 	{$getLigue}		
+						AND chrono>'{$pmts}'		
+						AND chrono<'{$dmts}'		
+						AND code<10		
+						GROUP BY event_id		
+";
 
 mysql_query("SET SQL_BIG_SELECTS=1");
 $resultEvent = mysql_query($strQuery) or die(mysql_error() . "query gros stock");
-
+$vecTemps['postQ1'] = time();
 while ($rangeeEv = mysql_fetch_array($resultEvent)) {
 	$JoueurSommeEvenement[$I0]['event_id'] = $rangeeEv['event_id'];
 	$JoueurSommeEvenement[$I0]['joueur_event_ref'] = $rangeeEv['joueur_event_ref'];
@@ -237,25 +247,29 @@ while ($rangeeEv = mysql_fetch_array($resultEvent)) {
 	$I0++;
 }
 //while ($Im < count($lesMatchs)) {
-
+$vecTemps['whileQ1'] = time();
 unset($resultEvent);
 unset($rangeeEv);
 
 //// Section remplaçants: non abonné dans une équipe.
-
+mysql_query("SET SQL_BIG_SELECTS=1");
 $resultEvent = mysql_query("SELECT TableEvenement0.*, TableJoueur.NomJoueur,TableJoueur.joueur_id,TableJoueur.ficIdPortrait, TableJoueur.NumeroJoueur  
 				FROM TableEvenement0 
 					LEFT JOIN TableJoueur 
 						 ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id)
-					INNER JOIN abonJoueurLigue 
-						 ON (TableEvenement0.joueur_event_ref=abonJoueurLigue.joueurId) 		
+					INNER JOIN TableMatch 
+						 ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)		
 					WHERE  
 					   chrono>'{$pmts}'
 						AND chrono<'{$dmts}'
-						AND abonJoueurLigue.ligueId = 	{$getLigue}		
+						AND TableMatch.ligueRef = 	{$getLigue}		
 					 AND code<10
-						") or die(mysql_error() . "query stats pers");
-
+					") or die(mysql_error() . "query stats pers");
+					
+					/// Ligne retirée: INNER JOIN abonJoueurLigue 
+					//	 ON (TableEvenement0.joueur_event_ref=abonJoueurLigue.joueurId) 
+					
+$vecTemps['postQ2'] = time();
 while ($rangeeEv = mysql_fetch_array($resultEvent)) {
 	if (in_array($rangeeEv['event_id'], $evenement) == false) {
 		array_push($evenement, $JoueurSommeEvenement[$I0]['event_id']);
@@ -273,6 +287,7 @@ while ($rangeeEv = mysql_fetch_array($resultEvent)) {
 	}
 
 }
+$vecTemps['whileQ2'] = time();
 //$Im++;
 //}
 
@@ -326,7 +341,7 @@ while ($Ievent < $NbEntre) {
 ///////////////////////////////////////////////////////
 //
 // 	Construit la matrice de stats
-
+$vecTemps['5'] = time();
 $NbRangeeStats = count($rangeeStats);
 $Ievent = 0;
 while ($Ievent < $NbEntre) {
@@ -367,7 +382,7 @@ while ($Ievent < $NbEntre) {
 	}
 	$Ievent++;
 }
-
+$vecTemps['6'] = time();
 //////////////////////////////////////////////////
 //
 // 	Affichage des stats
@@ -394,7 +409,9 @@ while ($Ievent < $NbRangeeStats) {
 if ($Ievent != 0)
 	$JSONstring = substr($JSONstring, 0, -1);
 $JSONstring .= "]}";
+$vecTemps['7'] = time();
 //	$JSONstring .= $strQuery;
 
 echo $JSONstring;
+//echo json_encode($vecTemps);
 ?>

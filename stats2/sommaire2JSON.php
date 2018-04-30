@@ -199,7 +199,7 @@ while($rangeeClips=mysql_fetch_array($resultClips))
 				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['videoId']=$mesVidId[$b];
 				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['chrono']=$rangeeClips['chrono'];
 				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['emplacement']=$mesEmplacement[$b];
-				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['emplacement']=$mesThumbnails[$b];
+				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['thumbnail']=$mesThumbnails[$b];
 				
 				
 			}

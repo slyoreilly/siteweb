@@ -32,7 +32,7 @@ mysql_query("SET CHARACTER SET 'utf8'");
 	
 //$jDom = json_decode($jDomJSON, true);
 //$jVis = json_decode($jVisJSON, true);
-$strRetour.="yo";
+$strRetour="yo";
 $strRetour.=$mavId;
 $qString="SELECT abonEquipeLigue.*,	TableMatch.* FROM MatchAVenir 
 						JOIN abonEquipeLigue 
@@ -43,7 +43,7 @@ $qString="SELECT abonEquipeLigue.*,	TableMatch.* FROM MatchAVenir
 						WHERE MatchAVenir.ligueId='{$ligueId}' 
 							AND MatchAVenir.dernierMAJ>'{$vielledate}'
 							AND abonEquipeLigue.finAbon>NOW()
-							AND MatchAVenir.date>(NOW()-INTERVAL 1 DAY)
+							AND MatchAVenir.date>(NOW()-INTERVAL 3 DAY)
 							AND MatchAVenir.date<(NOW()+INTERVAL 2 WEEK)
 							AND (MatchAVenir.eqDom=abonEquipeLigue.equipeId OR MatchAVenir.eqVis=abonEquipeLigue.equipeId)
 						GROUP BY TableMatch.mavId";

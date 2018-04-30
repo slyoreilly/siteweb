@@ -89,6 +89,7 @@ var flag=0;
 			if($('.video').length<1){
 				// Wrap the video in a div with the class of your choosing
 				$this.wrap('<div class="'+$settings.videoClass+'"></div>');
+				$('.'+$settings.videoClass).prepend('<h2 id="titreCam"></h2>');
 			}
 				// Select the div we just wrapped our video in for easy selection.
 				
@@ -195,6 +196,7 @@ var flag=0;
 					$duration =$spc.duration, // Video Duration
 					$volume = $spc.volume, // Video volume
 					currentTime;
+					console.log($duration+" durée");
 				
 				// Some other misc variables to check when things are happening
 				var $mclicking = false, 
@@ -220,6 +222,8 @@ var flag=0;
 						
 				// Set some widths
 				var progWidth = $that.find('.progress').width();
+				
+				//alert(progWidth);
 				
 
 				var bufferLength = function() {
@@ -254,13 +258,19 @@ var flag=0;
 				
 				// Run the buffer function
 				bufferLength();
-				
+				$ignore=false;
 				// The timing function, updates the time.
 				var timeUpdate = function($ignore) {
+					
+				if(!progWidth>0){
+					progWidth=340;
+				}
+					//console.log("Courant le temps haut-date");
 					
 					// The current time of the video based on progress bar position
 					var time = Math.round(($('.progress-bar').width() / progWidth) * $duration);
 					
+					//console.log(time+"---"+$('.progress-bar').width()+"---"+progWidth+"---"+$duration+"---");
 					// The 'real' time of the video
 					var curTime = $spc.currentTime;
 					
@@ -313,11 +323,11 @@ var flag=0;
 				};
 				
 				// Run the timing function twice, once on init and again when the time updates.
-				timeUpdate();
+				timeUpdate(false);
 				$spc.addEventListener('timeupdate', timeUpdate);
 								
 				// When the user clicks play, bind a click event	
-				$('.play-pause , #media-video, .play-btn , .thumbnail-content').off('click').on('click', function(){arreteDemarre(),false});
+				$('.play-pause , #media-video, .play-btn , .thumbnail-content').off('click').on('click', function(){arreteDemarre();});
 				//$('#media-video').off('click').on('click', function(){arreteDemarre();});
 				
 				function arreteDemarre(){
@@ -517,8 +527,8 @@ var flag=0;
 						}
 						
 						// Change CSS based on previous conditional statement
-						$that.find('.progress-bar').css({'width' : $progMove+'px'});
-						$that.find('.progress-button').css({'left' : ($progMove-buttonWidth)+'px'});
+						$that.find('.progress-bar').css({'width' : progMove+'px'});
+						$that.find('.progress-button').css({'left' : (progMove-buttonWidth)+'px'});
 						
 					}
 					
@@ -732,7 +742,7 @@ var flag=0;
 	
 	
 })(jQuery);
-
+/*
 		//define a progress abstraction
 		function onprogress(vidSource)
 		{
@@ -786,4 +796,4 @@ var flag=0;
 			}
 		}
 		
-
+*/

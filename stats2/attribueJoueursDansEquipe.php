@@ -46,10 +46,10 @@ while($Ij<count($lesJoueurs))
 							 ON (abonJoueurEquipe.equipeId=abonEquipeLigue.equipeId) 
 							WHERE  joueurId='{$lesJoueurs[$Ij]['joueurId']}' 
 								AND abonEquipeLigue.ligueId=$ligueId
-								AND abonEquipeLigue.finAbon>DATE(NOW())
-								AND abonEquipeLigue.debutAbon<=DATE(NOW())
-								AND abonJoueurEquipe.finAbon>DATE(NOW())
-								AND abonJoueurEquipe.debutAbon<=DATE(NOW())");
+								AND abonEquipeLigue.finAbon>NOW()
+								AND abonEquipeLigue.debutAbon<=NOW()
+								AND abonJoueurEquipe.finAbon>NOW()
+								AND abonJoueurEquipe.debutAbon<=NOW()");
 		if(mysql_num_rows($retour1)>0)			//S'il y avait déjà un abonnement, mettre fin à celui-ci.
 		{while($rangee = mysql_fetch_assoc($retour1))
 			//{$equipe=$rangee['equipeId'];}

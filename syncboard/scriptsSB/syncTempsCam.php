@@ -207,12 +207,36 @@ while ($rangeeMatch = mysql_fetch_array($resultMatch)){// && !$trouve) {
 	$IM++;
 
 }
-
+//$nouveauxTemps = array();
+$nouveauxIndices = array();
 $repSite = array();
+
+	$repSite['match']=array();
+	$repSite['chronoBut']=array();
+	$repSite['video']=array();
+while(count($nouveauxIndices)< count($chronoRetour)){
+	$min = 15000000000000000;
+	$ind = 0;
+for($a=0 ;$a< count($chronoRetour);$a++ )
+{
+
+	if(intval($chronoRetour[$a])<$min && !in_array($a, $nouveauxIndices)){
+			$min = intval($chronoRetour[$a]);
+			$ind = $a;
+		}
+}
+//	$nouveauxTemps[count($nouveauxTemps)]=$min;
+	$repSite['match'][count($nouveauxIndices)] = $matchRetour[$ind];
+	$repSite['chronoBut'][count($nouveauxIndices)] = $chronoRetour[$ind];
+	$repSite['video'][count($nouveauxIndices)] = $video[$ind];
+	$nouveauxIndices[count($nouveauxIndices)]=$ind;
+}
+
+
 $repSite['heure'] = time();
-$repSite['chronoBut'] = $chronoRetour;
-$repSite['match'] = $matchRetour;
-$repSite['video'] = $video;
+//$repSite['chronoBut'] = $chronoRetour;
+//$repSite['match'] = $matchRetour;
+//$repSite['video'] = $video;
 //$repSite['ligues'] = $Ligues;
 $repSite['ligues'] =$vecLigues;
 $repSite['equipes'] = $Equipes;

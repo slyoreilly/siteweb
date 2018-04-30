@@ -5,6 +5,20 @@
 //
 ////////////////////////////////////////////////////////////
 
+$postdata = file_get_contents("php://input");
+$request = json_decode($postdata);
+$ligueId = $request->ligueId;
+$saisonId = $request->saisonId;
+
+$ligueId = 3;
+$saisonId = 145;
+
+echo "<pre>";
+
+//$ligueId = $_POST["ligueId"];
+//$saisonId = $_POST["saisonId"];
+//echo $ligueId."  t  ".$saisonId." 2 ";
+
 $db_host = "localhost";
 $db_user = "syncsta1_u01";
 $db_pwd = "test";
@@ -23,17 +37,15 @@ $tableEquipe = 'TableEquipe';
 
 if (!isset($deSyncMatch)) {
 
-	if (!mysql_connect($db_host, $db_user, $db_pwd))
-		die("Can't connect to database");
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
 
-	if (!mysql_select_db($database)) {
-		echo "<h1>Database: {$database}</h1>";
-		die("Can't select database");
-
-	}
-
-	mysql_query("SET NAMES 'utf8'");
-	mysql_query("SET CHARACTER SET 'utf8'");
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+mysqli_set_charset($conn, "utf8");
 }
 
 /////////////////////////////////////////////////////////////
@@ -42,8 +54,8 @@ if (!isset($deSyncMatch)) {
 
 function trouveNomJoueurParID($ID) {
 
-	$resultJoueur = mysql_query("SELECT * FROM TableJoueur WHERE joueur_id = '{$ID}'") or die(mysql_error() . " dans trouveNomJoueurParID");
-	if ($rangeeJoueur = mysql_fetch_array($resultJoueur))
+	$resultJoueur = mysqli_query($conn, "SELECT * FROM TableJoueur WHERE joueur_id = '{$ID}'") or die(mysqli_error($conn) . " dans trouveNomJoueurParID");
+	if ($rangeeJoueur = mysqli_fetch_array($resultJoueur))
 		return ($rangeeJoueur['NomJoueur']);
 	else {
 		return ("Anonyme");
@@ -91,8 +103,8 @@ function parseMatchID($ID) {
 ////////////////////////////////////////////////////
 
 function trouveIDParNomEquipe($nomEq) {
-	$resultEquipe = mysql_query("SELECT * FROM TableEquipe") or die(mysql_error() . " dans trouveIDParNomEquipe");
-	while ($rangeeEquipe = mysql_fetch_array($resultEquipe)) {
+	$resultEquipe = mysqli_query($conn, "SELECT * FROM TableEquipe") or die(mysqli_error($conn) . " dans trouveIDParNomEquipe");
+	while ($rangeeEquipe = mysqli_fetch_array($resultEquipe)) {
 		if (!strcmp($rangeeEquipe['nom_equipe'], $nomEq)) {$equipeID = $rangeeEquipe['equipe_id'];
 			// Ce sont de INT
 		}
@@ -101,14 +113,14 @@ function trouveIDParNomEquipe($nomEq) {
 }
 
 function trouveIDParNomEqEtLigue($nomEq, $ligueId) {
-	$resultEquipe = mysql_query("SELECT * FROM TableEquipe
+	$resultEquipe = mysqli_query($conn, "SELECT * FROM TableEquipe
 										JOIN abonEquipeLigue
 											ON (TableEquipe.equipe_id =abonEquipeLigue.equipeId) 
 										WHERE 
 											abonEquipeLigue.ligueId='{$ligueId}'
 										AND
-											TableEquipe.nom_equipe='{$nomEq}'") or die(mysql_error() . " dans trouveIDParNomEqEtLigue");
-	while ($rangeeEquipe = mysql_fetch_array($resultEquipe)) { {
+											TableEquipe.nom_equipe='{$nomEq}'") or die(mysqli_error($conn) . " dans trouveIDParNomEqEtLigue");
+	while ($rangeeEquipe = mysqli_fetch_array($resultEquipe)) { {
 			return $rangeeEquipe['equipe_id'];
 			// Ce sont de INT
 		}
@@ -122,8 +134,8 @@ function trouveIDParNomEqEtLigue($nomEq, $ligueId) {
 ////////////////////////////////////////////////////
 
 function trouveIDParNomLigue($nomLi) {
-	$resultLigue = mysql_query("SELECT * FROM Ligue WHERE 1") or die(mysql_error() . " dans trouveIDParNomLigue");
-	while ($rangeeLigue = mysql_fetch_array($resultLigue)) {
+	$resultLigue = mysqli_query($conn, "SELECT * FROM Ligue WHERE 1") or die(mysqli_error($conn) . " dans trouveIDParNomLigue");
+	while ($rangeeLigue = mysqli_fetch_array($resultLigue)) {
 		if (!strcmp($rangeeLigue['Nom_Ligue'], $nomLi)) {$LigueID = $rangeeLigue['ID_Ligue'];
 			// Ce sont de INT
 		}
@@ -137,8 +149,8 @@ function trouveIDParNomLigue($nomLi) {
 //
 ////////////////////////////////////////////////////
 function trouveNomParIDEquipe($IEq) {
-	$resultEquipe2 = mysql_query("SELECT * FROM TableEquipe WHERE equipe_id='{$IEq}'") or die(mysql_error() . " dans trouveNomParIDEquipe");
-	while ($rangeeEquipe2 = mysql_fetch_array($resultEquipe2)) {
+	$resultEquipe2 = mysqli_query($conn, "SELECT * FROM TableEquipe WHERE equipe_id='{$IEq}'") or die(mysqli_error($conn) . " dans trouveNomParIDEquipe");
+	while ($rangeeEquipe2 = mysqli_fetch_array($resultEquipe2)) {
 
 		if ($rangeeEquipe2['equipe_id'] == $IEq) {
 			$NomEquipe = $rangeeEquipe2['nom_equipe'];
@@ -153,8 +165,8 @@ function trouveNomParIDEquipe($IEq) {
 //
 
 function trouveSaisonActiveDeLigueId($ID) {
-	$rfSaison = mysql_query("SELECT saisonId FROM TableSaison WHERE ligueRef = '{$ID}' and saisonActive=1") or die(mysql_error() . " trouveSaisonActiveDeLigueId");
-	return (mysql_result($rfSaison, 0));
+	$rfSaison = mysqli_query($conn,"SELECT saisonId FROM TableSaison WHERE ligueRef = '{$ID}' and saisonActive=1") or die(mysqli_error($conn) . " trouveSaisonActiveDeLigueId");
+	return (mysqli_result($rfSaison, 0));
 }
 
 function trouveJoueur($joueurId, $array_joueur) {
@@ -218,17 +230,19 @@ function trouveGardiens($match, $array_gard) {
 //
 ///////////////////////////////////
 
-$ligueId = $_POST["ligueId"];
-$saisonId = $_POST["saisonId"];
-
 //	if(!isset($ligueId))
 //	$ligueId=3;
 //	$ligueId = trouveIDParNomLigue($monGet);
 
 $qMatchSai = "SELECT premierMatch,dernierMatch FROM TableSaison where saisonId ='{$saisonId}'";
-$prSaison = mysql_query($qMatchSai) or die(mysql_error() . " dans " . $qMatchSai);
-$premierMatch = mysql_result($prSaison, 0, 0);
-$dernierMatch = mysql_result($prSaison, 0, 1);
+
+$prSaison = mysqli_query($conn,$qMatchSai) or die(mysqli_error($conn) . " dans " . $qMatchSai);
+$rang= mysqli_fetch_row($prSaison);
+//echo mysqli_num_rows($prSaison);
+$premierMatch = $rang[0];
+//echo $premierMatch;
+$dernierMatch = $rang[1];
+//echo $dernierMatch;
 //echo $premierMatch." ".$dernierMatch;
 ////////////////////////////////////////
 //
@@ -277,9 +291,9 @@ unset($rangeeEv);
 									AND TableMatch.date<'{$dernierMatch}'
 								GROUP BY TableJoueur.joueur_id
 									";
-$resultJoueurs = mysql_query($qJoueurs) or die(mysql_error() . " dans " . $qJoueurs);
-
-while ($row = mysql_fetch_assoc($resultJoueurs)) {
+$resultJoueurs = mysqli_query($conn, $qJoueurs) or die(mysqli_error($conn) . " dans " . $qJoueurs);
+//echo "/qJ".$qJoueurs;
+while ($row = mysqli_fetch_assoc($resultJoueurs)) {
 	$joueurs_array[] = $row;
 	// Inside while loop
 }
@@ -295,7 +309,9 @@ $qGros = "SELECT TableEquipe.*, Ligue.*, TableMatch.*
 									AND TableMatch.date>'{$premierMatch}'
 									AND TableMatch.date<'{$dernierMatch}' 
 									";
-$resultEvent = mysql_query($qGros) or die(mysql_error() . " dans " . $qGros);
+								
+$resultEvent = mysqli_query($conn, $qGros) or die(mysqli_error($conn) . " dans " . $qGros);
+//echo "/qG".$qGros;
 $qVent = "SELECT TableEquipe.equipe_id,
 				Ligue.ID_Ligue, 
 				TableMatch.*,
@@ -317,10 +333,11 @@ $qVent = "SELECT TableEquipe.equipe_id,
 									AND (code = 0 OR code = 10 OR code=11)
 									ORDER BY TableMatch.match_id ASC, TableEvenement0.chrono ASC
 									";
-$resultVent = mysql_query($qVent) or die(mysql_error() . " dans " . $qVent);
+$resultVent = mysqli_query($conn, $qVent) or die(mysqli_error($conn) . " dans " . $qVent);
+//echo "/qV".$qVent;
 $lesMatchs = Array();
 $cptM =0;
-while ($row = mysql_fetch_assoc($resultVent)) {
+while ($row = mysqli_fetch_assoc($resultVent)) {
 	//$cptM = count($lesMatchs);
 	if ($cptM == 0) {
 		$lesMatchs[0] = Array();
@@ -370,9 +387,9 @@ $qFic = "SELECT *
 													FROM TableEquipe
 													WHERE 1";
 
-$resultFic = mysql_query($qFic) or die(mysql_error() . " dans " . $qFic);
+$resultFic = mysqli_query($conn, $qFic) or die(mysqli_error($conn) . " dans " . $qFic);
 
-while ($row = mysql_fetch_assoc($resultFic)) {
+while ($row = mysqli_fetch_assoc($resultFic)) {
 	$fic_array[] = $row;
 	// Inside while loop
 }
@@ -382,9 +399,9 @@ $qArb = "SELECT *
 													JOIN TableUser
 														ON (TableArbitre.userId=TableUser.noCompte)
 													WHERE 1";
-$rArb = mysql_query($qArb) or die(mysql_error() . " dans " . $qArb);
+$rArb = mysqli_query($conn, $qArb) or die(mysqli_error($conn) . " dans " . $qArb);
 
-while ($row = mysql_fetch_assoc($rArb)) {
+while ($row = mysqli_fetch_assoc($rArb)) {
 	$arb_array[] = $row;
 	// Inside while loop
 }
@@ -399,10 +416,10 @@ $qGard = "SELECT TableMatch.*,TableEvenement0.*
 									AND TableMatch.date>'{$premierMatch}'
 									AND TableMatch.date<'{$dernierMatch}'
 									";
-$resultGard = mysql_query($qGard) or die(mysql_error() . " dans " . $qGard);
+$resultGard = mysqli_query($conn, $qGard) or die(mysqli_error($conn) . " dans " . $qGard);
 
 $array_gard = array();
-while ($rGard = mysql_fetch_assoc($resultGard)) {
+while ($rGard = mysqli_fetch_assoc($resultGard)) {
 	$matchGard = array();
 	$matchGard['match'] = $rGard['matchIdRef'];
 	$matchDeja = false;
@@ -438,6 +455,7 @@ while ($rGard = mysql_fetch_assoc($resultGard)) {
 $Ieq = 0;
 $mesFic = array();
 $IF = 0;
+$mesMatchs = array();
 /*$JSONstring .= $ligueId;
  $JSONstring .= $premierMatch;
  $JSONstring .= $dernierMatch;
@@ -447,7 +465,7 @@ $IF = 0;
 //  	Début du gros While, ou on boucle sur les équipes
 //
 
-while ($rangeeEv = mysql_fetch_array($resultEvent)) {
+while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 
 	$trouveDom = 0;
 	$trouveVis = 0;
@@ -551,8 +569,8 @@ while ($rangeeEv = mysql_fetch_array($resultEvent)) {
 	//			echo "/////".$qBG;
 	if ($rangeeEv['score_dom'] != $rangeeEv['score_vis'])// S'il n'y a pas d'égalité
 	{
-		$rButGagne = mysql_query($qBG) or die(mysql_error() . " dans " . $qBG);
-		$tmpButGagne = mysql_fetch_row($rButGagne);
+		$rButGagne = mysqli_query($conn, $qBG) or die(mysqli_error($conn) . " dans " . $qBG);
+		$tmpButGagne = mysqli_fetch_row($rButGagne);
 		$butGagne = $tmpButGagne[0];
 	}
 */
@@ -576,8 +594,8 @@ while ($rangeeEv = mysql_fetch_array($resultEvent)) {
 	 $lesPer = array();
 	 $IP = 0;
 	 $chronoDeb = 0;
-	 $rVentPer = mysql_query($qVentPer) or die(mysql_error() . " dans " . $qVentPer);
-	 while ($rangVentPer = mysql_fetch_array($rVentPer)) {
+	 $rVentPer = mysqli_query($conn, $qVentPer) or die(mysqli_error($conn) . " dans " . $qVentPer);
+	 while ($rangVentPer = mysqli_fetch_array($rVentPer)) {
 	 if ($rangVentPer['code'] == 11) {
 	 $lesPer[$IP] = $rangVentPer['chrono'];
 	 $IP++;
@@ -597,10 +615,10 @@ while ($rangeeEv = mysql_fetch_array($resultEvent)) {
 	 $ventDom = array_fill(0, count($lesPer) + 1, 0);
 	 $ventVis = array_fill(0, count($lesPer) + 1, 0);
 
-	 $rVentBut = mysql_query($qVentBut) or die(mysql_error() . " dans " . $qVentBut);
+	 $rVentBut = mysqli_query($conn, $qVentBut) or die(mysqli_error($conn) . " dans " . $qVentBut);
 
 	 $perCour = 0;
-	 while ($rangVentBut = mysql_fetch_array($rVentBut)) {
+	 while ($rangVentBut = mysqli_fetch_array($rVentBut)) {
 	 if ($rangVentBut['equipe_event_id'] == $rangeeEv['eq_dom']) {
 	 $trouve = false;
 	 while (!$trouve) {
@@ -713,12 +731,14 @@ while ($rangeeEv = mysql_fetch_array($resultEvent)) {
 	$JS2['eqVis'] = $mE['nom_equipe'];
 	$JS2['arenaId'] = $rangeeEv['arenaId'];
 	$JSONstring .= json_encode($JS2) . ", ";
-
+	
+array_push($mesMatchs, $JS2);
+	
 	array_push($liste, $matchID);
 	//	}
-
+$Ieq++;
 }
-
+	
 $Ine++;
 
 if (!strcmp(",", substr($JSONstring, -1)))// Pour �viter les vides;
@@ -726,11 +746,17 @@ if (!strcmp(",", substr($JSONstring, -1)))// Pour �viter les vides;
 	$JSONstring = substr($JSONstring, 0, -1);
 }
 $JSONstring .= "]}";
+
+$jsRetour= array();
+$jsRetour['matchs'] = $mesMatchs;
+echo json_encode($jsRetour);
+
+
 //$JSONstring .= "------------------------------------------------------------------------------------------------------------";
 //$JSONstring .= json_encode($lesMatchs);
 
 //echo json_encode($Sommaire);
-echo $JSONstring;
+//echo $JSONstring;
 //	echo json_encode($matchEnCours);
 //	echo json_encode($liste);
 ?>

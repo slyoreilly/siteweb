@@ -14,7 +14,6 @@
 //	alert(requete_ajax.responseText);
 	
 	return requete_ajax.responseText;
-	return "1";
 	}
 	function getJSONdeEquipeID(equipeId)
 	{
@@ -400,7 +399,7 @@ function str2humain(longueDate) {
    "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
  var months = ["January", "February", "March", "April", "May", 
    "June", "July", "August", "September", "October", "November", "December"];
-  var pad = function(str) { str = String(str); return (str.length < 2) ? "0" + str : str; }
+  var pad = function(str) { str = String(str); return (str.length < 2) ? "0" + str : str; };
 
 var date=longueDate.split(' ')[0];
  var mMois=parseInt(date.split('-')[1]);
@@ -524,7 +523,9 @@ function verifiePermission() {
 				 				else 
 				 					{	
 				 						if(getCookie('ligueId')!=null)
-											{ligueId=getCookie('ligueId');}
+											{ligueId=getCookie('ligueId');
+	//																			alert(window.ligueId);
+	}
 										else{
 											forceSelectionLigue();
 											/*
@@ -569,6 +570,7 @@ function verifiePermission() {
 						
 						if(window.menus[pageId].ingredients!=undefined)
 							{cuisinier(window.menus[pageId].ingredients);}
+					//	alert($('#divCentrale').css('width'));
 						if(window.m!=1)
 						{
 							try{
@@ -577,18 +579,31 @@ function verifiePermission() {
 							peupleDivBas();
 							//genereLiensContext(pageId);
 							barreTitreContexte(pageId);
-							if(window.innerWidth>=640)
-									{genereBoites();}
+							if(window.innerWidth>=500)
+									{
+										
+										genereBoites();}
 								}
-								catch(err){};
+								catch(err){
+									if(window.Perm<10){
+										alert(err.message+" - Erreur dans developper()")	
+										}
+								};
 						}
+						
 						else
 						{
 							detruitNoeud('divGauche');
 							detruitNoeud('divDroite');
-							document.getElementById('divCentrale').style.width="100%";
-						}
+							if(document.documentElement.clientWidth < 500)
+							{
+								$('#divCentrale').addClass('mobile');
+							}else{
+								$('#divCentrale').css('width','100%');
+							}
 						
+						}
+						//	alert($('#divCentrale').css('width'));
 					}
 					function gestionBackEnd(){
 						var d = new Date();
@@ -741,7 +756,7 @@ function forceSelectionLigue(){
 				
 				
 				
-		})
+		});
 		
 		function rempliLigues(){
 			

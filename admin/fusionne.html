@@ -78,11 +78,11 @@
 
 						}
 						faitBoite(mEq);
-					}
+					};
 					faitBoite(mEq);
 
 				}
-			}
+			};
 			requete_ajax.send(params);
 			//				alert(JSON.stringify(listeMatch));
 			//	return vecMAV;
@@ -139,7 +139,7 @@
 					// requete_ajax.responseText;
 
 				}
-			}
+			};
 			requete_ajax.send(params);
 			//				alert(JSON.stringify(listeMatch));
 			//	return vecMAV;
@@ -152,7 +152,7 @@
 			//videNoeud('boiteJoueurs');
 
 			if (document.getElementById('boiteProfil').childNodes.length > 0) {
-				videNoeud('fusionneTop')
+				videNoeud('fusionneTop');
 				fT = document.getElementById('fusionneTop');
 				fT.appendChild(document.createTextNode('Cliquez ici pour intégrer les statistiques de ' + window.pF[1].nomJoueur +' ('+window.pF[1].joueurId+')'+ ' au profil de ' + window.pF[0].nomJoueur+' ('+window.pF[0].joueurId+')'));
 				pAtt = document.createElement('P');
@@ -189,7 +189,7 @@
 				}
 				requete_ajax.open('GET', '/stats/statsJoueur2JSON.php?joueurId=' + window.joueurId, true);
 				requete_ajax.send();
-			}
+			};
 		}
 
 		function getProfilDeJoueurId(joueurId, gaucheDroite) {
@@ -243,7 +243,7 @@
 
 				}
 
-			}
+			};
 
 			requete_ajax.send(params);
 			//alert(requete_ajax.responseText);
@@ -257,7 +257,7 @@
 			profilJoueur = eval('(' + strProfilJoueur + ')');
 			userId = getCookie("userId");
 			//alert('uId :'+userId);
-			var strUser = getJSONdePerso(userId)
+			var strUser = getJSONdePerso(userId);
 			//alert(strUser);
 			usager = eval('(' + strUser + ')');
 
@@ -339,7 +339,7 @@
 			selLig = document.getElementById("selLig");
 			selLig.onchange = function() {
 				getStatsJSON(this.options[this.selectedIndex].value, "");
-			}
+			};
 			for (var J = 0; J < window.rJSON.Ligues.length; J++) {
 
 				opt = document.createElement('OPTION')

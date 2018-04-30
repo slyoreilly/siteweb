@@ -55,7 +55,7 @@ else{return -1;}
 }	
 
 $id = $_POST['id'];
-
+//echo  $id.", " ;
 if(!is_numeric($id))
 {$id=trouveIDParNomUser($id);}
 

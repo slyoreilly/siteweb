@@ -58,18 +58,6 @@ while($rangeeJoueur=mysql_fetch_array($resultJoueur))
 } 
 
 
-/////////////////////////////////////////////////////////////
-//
-//
-
-function parseMatchID($ID){
-	 
-$monMatch['date'] = substr($ID,0,stripos($ID,'_'));
-$longueur = strlen($monMatch['date']);
-$monMatch['dom'] = substr($ID,stripos($ID,'_')+1,stripos(substr($ID,$longueur+2),'_')+1);
-$monMatch['vis'] = substr($ID,strripos($ID,'_')+1);
-return $monMatch;
-} 
 
 
 /////////////////////////////////////////////////////
@@ -132,6 +120,7 @@ while($rangeeEv=mysql_fetch_array($resultEvent))
 				$JoueurSommeEvenement[$I0]['event_id']= $rangeeEv['event_id'];
 				$JoueurSommeEvenement[$I0]['joueur_event_ref']= $rangeeEv['joueur_event_ref'];
 				$JoueurSommeEvenement[$I0]['code']= $rangeeEv['code'];
+				$JoueurSommeEvenement[$I0]['souscode']= $rangeeEv['souscode'];
 				$I0++;
 			}
 	}
@@ -170,11 +159,23 @@ $NbEntre=count($JoueurSommeEvenement);
 ///////////////////////////
 //////  tests...
 
+$resultJoueur = mysql_query("SELECT * FROM TableJoueur WHERE joueur_id = '{$ligneEvent1}'")
+or die(mysql_error()."SELECT * FROM TableJoueur WHERE joueur_id = '{$ligneEvent1}'");  
+$rangeeJoueur=mysql_fetch_assoc($resultJoueur);
+//while($rangeeJoueur=mysql_fetch_array($resultJoueur))
+//	{if(strcmp($rangeeJoueur['NomJoueur'],"null"))
+//		  {return ($rangeeJoueur['NomJoueur']);}
+//	else { return ("Anonyme"); }}		   
+ //return ("Anonyme"); 
+//} 
+
 		
-		$rangeeStats[$Itrouve][0]=trouveNomJoueurParID($ligneEvent1);
+		$rangeeStats[$Itrouve][0]=$rangeeJoueur['NomJoueur'];
 		$rangeeStats[$Itrouve][1]=0;
 		$rangeeStats[$Itrouve][2]=0;
 		$rangeeStats[$Itrouve][3]=$ligneEvent1;
+		$rangeeStats[$Itrouve][4]=$rangeeJoueur['NumeroJoueur'];
+		$rangeeStats[$Itrouve][5]=0;
 		}
 		
 		$Ievent++;
@@ -199,7 +200,7 @@ $NbEntre=count($JoueurSommeEvenement);
     	case 0:
 			$indexJoueur=0;
 			while($indexJoueur<$NbRangeeStats)
-			{if(!strcmp($rangeeStats[$indexJoueur][0],trouveNomJoueurParID($JoueurSommeEvenement[$Ievent]['joueur_event_ref'])))
+			{if($rangeeStats[$indexJoueur][3]==$JoueurSommeEvenement[$Ievent]['joueur_event_ref'])
         	{$rangeeStats[$indexJoueur][1]++;}
 			$indexJoueur++;
 			}
@@ -207,13 +208,25 @@ $NbEntre=count($JoueurSommeEvenement);
     	case 1:
 			$indexJoueur=0;
 			while($indexJoueur<$NbRangeeStats)
-			{if(!strcmp($rangeeStats[$indexJoueur][0],trouveNomJoueurParID($JoueurSommeEvenement[$Ievent]['joueur_event_ref'])))
+			{if($rangeeStats[$indexJoueur][3]==$JoueurSommeEvenement[$Ievent]['joueur_event_ref'])
         	{$rangeeStats[$indexJoueur][2]++;}
 			$indexJoueur++;
 			}
     	    break;
     	case 2:
     	    break;
+		case 3:
+			$indexJoueur=0;
+			while($indexJoueur<$NbRangeeStats)
+			{if($rangeeStats[$indexJoueur][3]==$JoueurSommeEvenement[$Ievent]['joueur_event_ref']&&$JoueurSommeEvenement[$Ievent]['souscode']==5)
+        	{$rangeeStats[$indexJoueur][5]=5;} 
+        	else if($rangeeStats[$indexJoueur][3]==$JoueurSommeEvenement[$Ievent]['joueur_event_ref']&&$JoueurSommeEvenement[$Ievent]['souscode']==0){
+        		$rangeeStats[$indexJoueur][5]=1;
+        	}
+			$indexJoueur++;
+			}
+    	    break;
+			
 					}
 		$Ievent++;
 	}
@@ -224,7 +237,8 @@ $NbEntre=count($JoueurSommeEvenement);
 	$Ievent=0;
 $stats=array();
 $joueurs=array();
-
+$joueurs['gardiens']=array();
+$joueurs['joueurs']=$stats;
 	$JSONstring = "{\"joueurs\": [";
 
 	while($Ievent<$NbRangeeStats)
@@ -233,15 +247,26 @@ $stats[$Ievent]['nom'] = $rangeeStats[$Ievent][0];
 $stats[$Ievent]['nbButs'] = $rangeeStats[$Ievent][1];
 $stats[$Ievent]['nbPasses'] = $rangeeStats[$Ievent][2];
 $stats[$Ievent]['joueurId'] = $rangeeStats[$Ievent][3];
-
-				$JSONstring .= json_encode($stats[$Ievent]).",";
+$stats[$Ievent]['numero'] = $rangeeStats[$Ievent][4];
+switch($rangeeStats[$Ievent][5]){
+	case 0:
+		$stats[$Ievent]['pj'] = 0;
+		array_push($joueurs['joueurs'],$stats[$Ievent]);
+		break;
+	case 1:
+		$stats[$Ievent]['pj'] = 1;
+		array_push($joueurs['joueurs'],$stats[$Ievent]);
+		break;
+	case 5:
+		$stats[$Ievent]['pj'] = 1;
+		array_push($joueurs['gardiens'],$stats[$Ievent]);
+		break;
+}
 
 		$Ievent++;
 		}  
-		$joueurs['joueurs']=$stats;
-		
-			$JSONstring = substr($JSONstring, 0,-1);
-	$JSONstring .= "]}";
+		//$joueurs['joueurs']=$stats;
+
 	
 	
 echo json_encode($joueurs);

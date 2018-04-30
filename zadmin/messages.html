@@ -51,7 +51,7 @@
 						
 					}
 				}
-			}
+			};
 		}
 		function chercheMessage(messages)
 		{
@@ -88,7 +88,7 @@
 					lireMessage(no);
 
 				}
-			}
+			};
 		}
 
 
@@ -141,7 +141,7 @@
 					//				alert(requete_ajax.responseText);
 					window.location.reload(true);
 				}
-			}
+			};
 		}
 
 		
@@ -265,9 +265,9 @@
 
 				$(document).ready(function(){
 					$("#boiteContacts").append($('<div></div>').text(retCon[a].username).hover(function() {
-						$(this).css("background", "#AAAAAA")
+						$(this).css("background", "#AAAAAA");
 					}, function() {
-						$(this).css("background", "#FFFFFF")
+						$(this).css("background", "#FFFFFF");
 					}).click({
 						contact : retCon[a]
 					}, function(event) {
@@ -333,7 +333,7 @@
 					n++;
 					}
 
-						if (repErreur.succes != 1) {
+						if(repErreur.succes != 1) {
 							dDispoJS=document.createElement('DIV');
 							dDispoJS.id="dDispo";
 							dDispoJS.className="formDroite";
@@ -342,12 +342,11 @@
 							document.getElementById("divExped").appendChild(dDispoJS);
 								btnEUJS=document.getElementById("iOK");
 								btnEUJS.style.display="inline";
-								/*btnEUJS.onclick=function(){
-								sauvegardeUser();
-								};*/
+							
 				
 							
-						} else {
+						} 
+						else {
 							dDispoJS=document.createElement('DIV');
 							dDispoJS.id="dDispo";
 							dDispoJS.className="formDroite";
@@ -356,12 +355,11 @@
 							document.getElementById("divExped").appendChild(dDispoJS);
 							btnEUJS=document.getElementById("iOK");
 								btnEUJS.style.display="none";
-								/*btnEUJS.onclick=function(){
-								};*/
+								
 						}
 
 					}
-				}
+				};
 				requete_ajax.send(params);
 				return requete_ajax.responseText;
 

@@ -212,7 +212,7 @@
 						}
 
 					}
-				}
+				};
 
 				requete_ajax.send(params);
 
@@ -251,7 +251,7 @@
 						//creerListeMatchs(window.vecMAV, requete_ajax.responseText);
 						//window.location.reload(true);
 					}
-				}
+				};
 
 				requete_ajax.send(params);
 
@@ -277,7 +277,7 @@
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 						lesCriteres = eval('(' + requete_ajax.responseText + ')');
 					}
-				}
+				};
 				requete_ajax.send(params);
 				
 			}
@@ -310,7 +310,7 @@
 				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 					window.location.reload(true);
 				}
-			}
+			};
 			requete_ajax.send(params);
 
 	
@@ -340,7 +340,7 @@
 				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 					window.location.reload(true);
 				}
-			}
+			};
 			requete_ajax.send(params);
 
 	

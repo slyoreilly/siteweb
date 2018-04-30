@@ -1,11 +1,10 @@
 @charset "utf-8";
 
-
 /* CSS Document */
 html
 { height:100%; 
 	padding:0;
-min-width:480px;
+
 }
 
 body
@@ -16,34 +15,10 @@ body
 	font-size:10pt;
 	color:#000;
 	width:100%;
-/*	height:100%;*/
-/*	background-color:#f3f3f3;*/
-/*	background-color:#ccc;*/
-	
-	
-	        background: #F8F8F8;
-       /* background: -moz-linear-gradient(center right,#F0F0F0, #CFCFCF);
-        background: -webkit-gradient(linear,left top,right top,color-stop(0, #CFCFCF),color-stop(1, #F0F0F0));
-        background: -webkit-linear-gradient(#F0F0F0, #CFCFCF);
-        background: -o-linear-gradient(#F0F0F0, #CFCFCF);
-       background: -ms-linear-gradient(#F0F0F0, #CFCFCF);
- 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F0F0F0', endColorstr='#CFCFCF'); /* for IE */
-/*        background: linear-gradient(#F0F0F0, #000000);*/
 
-	
-/*
-        background: #DFDFDF;
-        background: -moz-linear-gradient(#F0F0F0,#DFDFDF);
-        background: -webkit-gradient(linear,left bottom,left top,color-stop(0, #DFDFDF),color-stop(1, #F0F0F0));
-        background: -webkit-linear-gradient(#F0F0F0, #DFDFDF);
-        background: -o-linear-gradient(#F0F0F0, #DFDFDF);
-       background: -ms-linear-gradient(#F0F0F0, #DFDFDF);
- 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F0F0F0', endColorstr='#DFDFDF'); /* for IE */
-  /*      background: linear-gradient(#F0F0F0, #DFDFDF);
-        border-style:solid;
-        border-width: 1px 0 1px 0;
-        border-color:#07799E;
-*/
+	        background: #F8F8F8;
+
+
 
 
 
@@ -51,7 +26,7 @@ body
 	padding:0;
 	margin:0;
 float:left;
-min-width:480px;
+
 }
 
 a{
@@ -111,7 +86,6 @@ p.texteSpinHorz{
 	margin-top:-15px;
 }
 div.optionHautDroit{
-	position:absolute;
 	color:#555;
 	margin-right:2px;
 	vertical-align:top;
@@ -206,7 +180,7 @@ h2.enVert
 
 
 
-body, td, th { font: 80% 045060, arial, helvetica, sans-serif }
+body, td, th { font: 80%, arial, helvetica, sans-serif }
 
 table,tbody {
 	float:none;
@@ -787,7 +761,7 @@ width:100%;
 }
 
 td .optionTableau
-{height:15px;}
+{/*height:15px;*/}
 
 .optionTableau
 {display:block;
@@ -1063,15 +1037,14 @@ color:#000;
 text-align:left;
 padding:0;
 margin:0;
-z-index:5;
-height:45px;
+height:100%;
 padding-left:2%;
 vertical-align:center;
-
+/*
 -moz-box-shadow: 0px 2px 0 0px #AAAAAAAA;
  	box-shadow: 0px 2px 0 0px #AAAAAAAA;	
 
-
+*/
  }
 div#divTitreDoc h1
 {
@@ -1115,6 +1088,13 @@ left:0;
 	padding:3px;
 	float:left;
 	display:inline;
+}
+
+.conteneurFlexHorizontal{
+    display:flex;
+    flex-direction:row;
+     justify-content: space-around;
+    
 }
 
  
@@ -1377,23 +1357,30 @@ min-height:60%;
 	
 }*/
 
+#divCentrale .mobile
+{
+    width:100%;
+}  
+
+
 #divMenuHaut
 {
 /*	position:absolute;*/
 /*float : left;
 width : 85%;
   margin: 0;*/
-/*  margin: 50px 0 0px 0;*/ }   /* top right bottom left*/
+/*  margin: 50px 0 0px 0;*/ 
+}   /* top right bottom left*/
 
 
 #barreTitreContexte
 {
 	vertical-align:bottom;
-	width:93%;
 	height:48px;
 	color:#fff;
-	padding-left:7%;
+	padding-left:0%;
 	margin-top:45px;
+	
 	
         background: #034050;
        /* background: -moz-linear-gradient(#04607B, #034E58);
@@ -1414,6 +1401,7 @@ width : 85%;
 {
 	line-height:48px;
 	vertical-align:bottom;
+	padding-left:7%;
 }
 
 #barreTitreContexte h1
@@ -1426,7 +1414,6 @@ width : 85%;
 
 #divBoiteID
 {
-	position:absolute;
 	padding:0 0;
 	margin:0;
 	right:1%;
@@ -1442,6 +1429,8 @@ list-style:none;
 text-align:center; 	
 	height:40px;
 	margin : 0;
+	float:right;
+	padding-inline-start: 0px;
 }
 #divBoiteID ul li
 {
@@ -2254,11 +2243,12 @@ color:#fff;
 #menuDivHaut
 {
 /*	display:block;*/
-	position:relative;
 	text-align:center;
  /* padding: 0% auto 0 30%;*/
   margin:auto 0;
   padding: auto 10px;
+  height:100%;
+  display:inline;
 
   
 /*  margin: 50px 0 0px 0;*/ }   /* top right bottom left*/
@@ -2542,7 +2532,7 @@ color:#034E58;
 #barreNav ul li{
 	display:inline;
 	float:left;
-	
+	padding-right:5%;
 }
 
 #divSelSaison{
@@ -2622,9 +2612,10 @@ div.titreOnglet.passif{
         display: block;  
         width: 100%;  
         z-index:1;
-        height:36px;
+/*        height:36px;*/
     }  
-    
+
+
     .titreOnglet.actif #dTitre_0 
     {  border-left-width: 0;
   }  
@@ -3117,14 +3108,14 @@ padding-bottom:5px;
 
 
 #contInfoLigue .petitLogo{
-	position:absolute;
+/*	position:absolute;*/
 	right:0;
 	top:5px;
 	max-width:30%;
 	max-height:80%;
 	display:inline;
 	height:auto;
-	float:left;
+	float:right;
 }
 #contInfoLigue #divInfo p
 {display:block;
@@ -3140,7 +3131,7 @@ font-family:"Arial black",arial;
 	position:relative;
 	float:left;
 
-	width:30%;
+	width:60%;
 	display:inline;
 	height:100%;
 	padding: 10px 10px 10px 0; 
@@ -3437,41 +3428,26 @@ max-width :32px;
 /*	font-weight:bold;*/
 }
 
-.tableEnveloppeMois .versGauche{
-	float:left;
-	position:absolute;
-	left:30%;
-	display :inline;
-	vertical-align:bottom;
-	height:15px;
-	color:#00A8DC;
+.tableEnveloppeMois .versGauche, .tableEnveloppeMois .versDroite{
+	display :inline-block;
+	color:#ccc;
 	font-weight:bolder;
+	font-size:16pt;
 	cursor:pointer;
-}
-.tableEnveloppeMois .versDroite{
-	float:left;
-	position:absolute;
-	left:70%;
-	display :inline;
-	vertical-align:bottom;
-	height:15px;
-	color:#00A8DC;
-	font-weight:bolder;
-	cursor:pointer;
-}
-
-.tableEnveloppeMois h2{
-	float:left;
-	width:100%;
-	display:block;
-	vertical-align:middle;
-	text-align:center;
-	line-height:15px;
-	margin-left:auto;
-	margin-right:auto;
 	margin-top:auto;
 	margin-bottom:auto;
-	padding:3px;
+    
+}
+
+
+.tableEnveloppeMois h2{
+	vertical-align:middle;
+	text-align:center;
+	line-height:45px;
+	margin-left:20px;
+	margin-right:20px;
+	margin-top:auto;
+	margin-bottom:auto;
 	color:#fff;
 }
 
@@ -3494,13 +3470,11 @@ max-width :32px;
         border-color:#07799E;
 
 	
-	display:block;
-	position:relative;
+	display:flex;
+justify-content:center;
 	text-align:center;
 	width:100%;
-	height:15px;
-	margin:3px 0;
-	padding:15px 0 3px 0 ;
+	height:45px;
 }
 #tableResultats_divOpt{
 	display:block;
@@ -3514,6 +3488,7 @@ max-width :32px;
 .repliable{
 	display: block;
 	float:none;
+	clear:both;
 }
 
 .repliable.plie{
@@ -4383,3 +4358,221 @@ section.choisi a{
     text-align:center;
     font-size:Large;
 }
+#divHaut .iconeFa {
+display:none;}
+
+
+#admin_title{
+    margin:10px;
+    display:inline;
+}
+#admin_match div{
+    margin:10px;
+    float:none;
+    clear:both;
+    color:#002DFF;
+    cursor:pointer;
+}
+
+
+@media only screen and (max-width: 500px) {
+ #divHaut .iconeFa {
+    width:32px;
+    height:32px;
+    padding:0 0;
+    margin:0;
+    right:1%;
+    padding-top:10px;
+    padding-bottom:10px;
+    padding-right:10px;
+    text-align:right;
+    display:inline;
+    height:40px;
+    float:right;
+    
+}
+
+#divFormulaire .formDroite {
+    position:static;
+}
+#divFormulaire .formGauche {
+    position:static;
+}
+
+            #barreNav a{
+color:#034E58;
+    text-decoration:none;
+    font-weight:bold;   
+    font-family:arial, Geneva, Arial, Helvetica, sans-serif;
+
+}
+
+div {
+        position:static;
+}
+#divHaut {
+        position:static;
+}
+#menuDivHaut li{
+        float:none;
+        clear:both;
+}
+
+
+
+#barreNav .actif {
+    color:#05A8BD;
+    font-weight: bold;
+    font-family:"Arial black" ,arial, Geneva, Arial, Helvetica, sans-serif;
+    
+    /*background-color:#04789D;*/
+}
+
+#barreNav ul{
+    list-style: none;
+    display:block;
+    float:none;
+    clear:both;
+    width:auto;
+}
+
+#barreNav ul li{
+    display:block;
+    padding: auto;
+    float:none;
+    clear:both;
+    padding-bottom:15px;
+    
+}
+
+#menuDivHaut {
+    display:none;
+    width:100%;
+    float:none;
+    clear:both;
+    
+}
+div#divTitreDoc #divBoiteID {
+    display:none;
+    float: none;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    top: 0;
+    vertical-align: middle;
+}
+ div#divTitreDoc #divLogo {
+    display: inline;
+    float: none;
+    left: 0;
+    
+    width: 100%;
+    text-align: center;
+    top: 0;
+    vertical-align: middle;
+    position:static;
+}
+#divLigue .bouton_2 {
+
+                display:block;
+        width:100%;
+        margin:0;
+    position:static;
+    text-transform:uppercase;
+    font-family:arial;
+    font-weight:bold;
+}
+#barreTitreContexte
+{
+    vertical-align:bottom;
+    height:100%;
+    color:#fff;
+    padding-left:0%;
+    margin-top:0px;
+    
+    
+        background: #fff;
+        border-style:solid;
+        border-width: 1px 0 1px 0;
+        border-color:#07799E;
+}
+ul#menu{
+    height:100%;
+}
+
+#barreTitreContexte div{
+    margin-top:0;
+    padding:0;
+}
+
+#divDialogue {
+    width:100%;
+    padding:5px;
+    left:0;
+    top:0;
+    
+}
+#divDialogue div{
+    display:block;
+    padding:5px;
+}
+#divCentrale {
+    width:100%;
+}
+
+#divGauche {
+    display:none;
+}
+#divDialogue #divFerme {
+    float:none;
+    text-align:center;
+    width:100%;
+}
+#divFerme #texteFerme{
+    float:none;
+    text-align:center;
+    vertical-align:center;
+    width:100%;
+}
+#divDialogue .btnFerme {
+    float:none;
+    text-align:center;
+
+}
+#ecranSombre {display:none;
+}
+#contInfoLigue {
+        float:none;
+    text-align:center;
+    vertical-align:center;
+    width:100%;
+}
+#contPhoto {
+        float:none;
+    text-align:center;
+    vertical-align:center;
+    width:100%;
+}
+#contBabillard {
+        float:none;
+    text-align:center;
+    vertical-align:center;
+    width:100%;
+}
+#contVideo {
+        float:none;
+    text-align:center;
+    vertical-align:center;
+    width:100%;
+}
+#contPhoto h1{
+    clear:both;
+    display:block;
+    
+    
+}
+
+}
+
+
+

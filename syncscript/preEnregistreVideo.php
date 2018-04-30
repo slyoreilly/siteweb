@@ -38,10 +38,10 @@ $rSServ=$params[$a]['video']['chrono']+$avanceServeur;
 	
 if(!empty($nomFic))
 	{
-		$monObj=array();
+		$monObj=array();   /// 11/12/2017 j'ai remplacé matchIdRef par match_id.
 	$qSel="SELECT * FROM Video 
 			JOIN TableMatch
-				ON (matchIdRef = nomMatch)
+				ON (match_id = nomMatch)  
 		WHERE nomMatch='{$params[$a]['video']['nomMatch']}' AND camId='{$camID}' AND nomFichier='{$nomFic}'";	
 	$retSel=mysql_query($qSel) or die("Erreur: "+$qSel+"\n"+mysql_error());
 		if(mysql_num_rows($retSel)>0){

@@ -43,7 +43,7 @@ $retour = mysql_query("SELECT *
 
 if(mysql_num_rows($retour)>0)
 {
-	$retour = mysql_query("UPDATE MatchAVenir SET arenaId={$arenaId},ligueId={$ligueId} ,debutAbon='{$dateDeb}',finAbon='{$dateFin}',ligueId='{$ligueId}'WHERE abonLiArId='{$abonId}'")or die(mysql_error()." UPDATE ");	
+	$retour = mysql_query("UPDATE MatchAVenir SET arenaId={$arenaId},ligueId={$ligueId} ,debutAbon='{$dateDeb}',finAbon='{$dateFin}',ligueId='{$ligueId}' WHERE abonLiArId='{$abonId}'")or die(mysql_error()." UPDATE ");	
 $retour=$abonId;
 }
 }

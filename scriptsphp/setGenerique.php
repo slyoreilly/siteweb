@@ -41,11 +41,11 @@ if(strcmp($table, "TableArbitre")==0)
 
 	//echo json_encode($valeur);
 }
-
+$critere = $_POST['critere'];
 if(strcmp($table, "EvaluationJoueurs")==0)
 {$critere = stripslashes(str_replace("'","",$_POST['critere']));}
 else {
-	if(strcmp($table, "RapportMatch")==0)
+	if(strcmp($table, "RapportMatch")==0||strcmp($table, "TableEvenement0")==0)
 	{
 		$critere = $_POST['critere'];
 		

@@ -19,30 +19,32 @@ function getCookie(c_name) {
 	}
 }
 
- function gereLangue(){
- langue = (getCookie("langue")==undefined)?"fr":getCookie("langue");
- document.write('<script type="text/javascript" charset="utf-8" src="/scripts/texte_'+langue+'.js"></script>');
- document.write('<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>');
- document.write('<link rel="stylesheet" href="/style/general.css" type="text/css">');
+function gereLangue() {
+	langue = (getCookie("langue") == undefined) ? "fr" : getCookie("langue");
+	document.write('<script type="text/javascript" charset="utf-8" src="/scripts/texte_' + langue + '.js"></script>');
+	document.write('<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>');
+	document.write('<link rel="stylesheet" href="/scripts/font-awesome-4.7.0/css/font-awesome.min.css">');
+	document.write('<link rel="stylesheet" href="/style/general.css" type="text/css">');
 
- //	langue = (getCookie("langue")==undefined)?"fr":getCookie("langue");
+	//	langue = (getCookie("langue")==undefined)?"fr":getCookie("langue");
 
- //	mS = document.createElement('SCRIPT');
- //	mS.src="/scripts/texte_"+langue+".js";
- //	mS.type="text/javascript";
- //	mS.charset="utf-8";
- //	document.getElementsByTagName('HEAD')[0].appendChild(mS);
- //	bidon =document.getElementsByTagName('HEAD')[0].innerHTML;
- //alert("sandwich");
- }
- function gereLangue_mob(){
- langue = (getCookie("langue")==undefined)?"fr":getCookie("langue");
- document.write('<script type="text/javascript" charset="utf-8" src="/scripts/texte_'+langue+'.js"></script>');
- document.write('<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>');
+	//	mS = document.createElement('SCRIPT');
+	//	mS.src="/scripts/texte_"+langue+".js";
+	//	mS.type="text/javascript";
+	//	mS.charset="utf-8";
+	//	document.getElementsByTagName('HEAD')[0].appendChild(mS);
+	//	bidon =document.getElementsByTagName('HEAD')[0].innerHTML;
+	//alert("sandwich");
+}
 
- }
+function gereLangue_mob() {
+	langue = (getCookie("langue") == undefined) ? "fr" : getCookie("langue");
+	document.write('<script type="text/javascript" charset="utf-8" src="/scripts/texte_' + langue + '.js"></script>');
+	document.write('<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>');
 
- function peupleDivHaut() {
+}
+
+function peupleDivHaut() {
 
 	usager1 = getCookie("userId");
 
@@ -71,49 +73,44 @@ function getCookie(c_name) {
 		divTitre.appendChild(divLogoJS);
 		//divTitre.appendChild(divLangueJS);
 		topDiv.appendChild(divTitre);
-//		alert(".");
+		//		alert(".");
 
 	}
 	/*
-	divLangueJS = $('<div/>').attr("id","divLangue").click(function(){
-		if (window.langue == "fr") {
-			$(this).innerHTML = "En";
+	 divLangueJS = $('<div/>').attr("id","divLangue").click(function(){
+	 if (window.langue == "fr") {
+	 $(this).innerHTML = "En";
+	 setCookie("langue", "en", 3000);
+	 window.location.reload(true);
+	 }
+	 if (window.langue == "en") {
+	 $(this).innerHTML = "Fr";
+	 setCookie("langue", "fr", 3000);
+	 window.location.reload(true);
+	 }
+
+	 });*/
+
+	divLangueSel = $('<select/>').attr("id", "divLangue").append($('<option/>').text("EN").attr('value', 'en'), $('<option/>').text("FR").attr('value', 'fr')).change(function() {
+		if ($(this).val() == 'en' && window.langue == "fr") {
 			setCookie("langue", "en", 3000);
 			window.location.reload(true);
-		}
-		if (window.langue == "en") {
-			$(this).innerHTML = "Fr";
+			// Do something for option "b"
+		} else if ($(this).val() == 'fr' && window.langue == "en") {
 			setCookie("langue", "fr", 3000);
 			window.location.reload(true);
 		}
-		
-	});*/
-	
+	});
 
-	divLangueSel = $('<select/>').attr("id","divLangue").append($('<option/>').text("EN").attr('value','en'),$('<option/>').text("FR").attr('value','fr'))
-				.change(
-					function() {
-    if ($(this).val() == 'en' && window.langue=="fr") {
-			setCookie("langue", "en", 3000);
-			window.location.reload(true);
-        // Do something for option "b"
-    } else if($(this).val() == 'fr' && window.langue=="en"){
-			setCookie("langue", "fr", 3000);
-			window.location.reload(true);
-    }
-}
-				);
-
-
-/*
-	if (window.langue == "en") {
-		divLangueJS.innerHTML = "FR </br> EN";
-	} else {
-		divLangueJS.innerHTML = "EN </br> FR";
-	}*/
+	/*
+	 if (window.langue == "en") {
+	 divLangueJS.innerHTML = "FR </br> EN";
+	 } else {
+	 divLangueJS.innerHTML = "EN </br> FR";
+	 }*/
 
 	divContact = document.createElement('DIV');
-	divContact.innerHTML = "Contact: <a href=\"mailto:info@syncstats.com\" class=\"lien\">info@syncstats.com</a>";
+	divContact.innerHTML = "Contact: <a href=\"mailto:info&#64syncstats.com\" class=\"lien\">info" + "@" + "syncstats.com</a>";
 
 	if (usager1 === undefined || usager1 === null) {
 
@@ -133,7 +130,7 @@ function getCookie(c_name) {
 		//		lien.onclick=function(){inscription();}
 		toLog.appendChild(lien);
 
-		var newText = document.createTextNode(' | ')
+		var newText = document.createTextNode(' | ');
 
 		toLog.appendChild(newText);
 
@@ -151,7 +148,7 @@ function getCookie(c_name) {
 		//lien2.href = menus[8].lien;
 		lien2.onclick = function() {
 			connexion();
-		}
+		};
 		toLog.appendChild(lien2);
 		affUserJS = document.createElement('div');
 		affUserJS.id = "affUser";
@@ -178,8 +175,8 @@ function getCookie(c_name) {
 		$(function() {
 			$('#editSearch').hide();
 			$('#iconeSearch').hover(function() {
-				$('#editSearch').show(400)
-				$('#iconeDelete').show(400)
+				$('#editSearch').show(400);
+				$('#iconeDelete').show(400);
 			});
 		});
 
@@ -235,40 +232,25 @@ function getCookie(c_name) {
 		//		divTitre.appendChild(mIF3);
 
 	} else {
+		$('#divTitreDoc').append($('<div></div>').attr('id', 'divBoiteID').addClass("optionHautDroit").append($('<ul></ul>').attr('id', 'menuBoiteID')));
+		
 
-		divBoiteIDJS = document.createElement('DIV');
-		divBoiteIDJS.id = 'divBoiteID';
-		menuBoiteIDJS = document.createElement('UL');
-		divBoiteIDJS.appendChild(menuBoiteIDJS);
-		affUserJS = document.createElement('div');
-		affUserJS.id = "affUser";
-		divBoiteIDJS.className = "optionHautDroit";
-		divTitre.appendChild(divBoiteIDJS);
-		affUserJS.innerHTML = window.tl_general_welcome + '<b>' + usager1 + '</b>' + '! </br>';
+		$('<i class="fa fa-bars iconeFa"><i>').attr("id", "iconeBars").appendTo($('#divTitreDoc')).on("click", function() {
+			$('#menuDivHaut').toggle();
+		});
+
+		$('<i class="fa fa-user iconeFa"><i>').attr("id", "iconeUser").appendTo($('#divTitreDoc')).on("click", function() {
+			$('#divBoiteID').toggle();
+		});
 		var strUser = getJSONdePerso(usager1);
 		//alert(strUser);
 		usager = eval('(' + strUser + ')');
-
-		// affUserJS.style.width='20%';
-
-		lien = document.createElement('A');
-		lien.innerHTML = window.tl_general_logout;
-		lien.style.cursor = "pointer";
-		lien.onclick = function() {
-			SimpleDeleteCookie("ligueId");
-			//alert(getCookie("ligueId"));
-			SimpleDeleteCookie("userId");
-			//alert(getCookie("userId"));
-			window.location.href = "/";
-		};
-
-		//divTitre.appendChild(mIF);
 
 		///////////////////////////////////////////
 		////  Courriel
 
 		lienCourrielJS = document.createElement('A');
-		lienCourrielJS.href = "/zadmin/messages.html"
+		lienCourrielJS.href = "/zadmin/messages.html";
 		lienCourrielJS.id = "lienCourriel";
 		imgCourrielJS = document.createElement('IMG');
 		imgCourrielJS.id = "imgCourriel";
@@ -278,17 +260,19 @@ function getCookie(c_name) {
 		lienCourrielJS.appendChild(imgCourrielJS);
 
 		//		divTitre.appendChild(mIF3);
-		affUserJS.appendChild(lien);
-		mLi = document.createElement('LI');
-		mLi.appendChild(lienCourrielJS);
-		$(menuBoiteIDJS).append($('<li></li>').append($('<div id="divSearch"></div>').append($('<img></img>').attr("src", "/images/icones/delete.png").attr("id", "iconeDelete").css({
+		$('#menuBoiteID').append($('<li></li>').append($('<div id="divSearch"></div>').append($('<img></img>').attr("src", "/images/icones/delete.png").attr("id", "iconeDelete").css({
 			"width" : "24px",
 			"height" : "24px"
 		}).hide(), $('<input></input>').attr("type", "text").attr("id", "editSearch"), $('<img></img>').attr("src", "/images/icones/search.png").attr("id", "iconeSearch"))));
-		menuBoiteIDJS.appendChild(mLi);
-		mLi = document.createElement('LI');
-		mLi.appendChild(affUserJS);
-		menuBoiteIDJS.appendChild(mLi);
+		$('#menuBoiteID').append($('<li></li>').append($(lienCourrielJS)), $('<li></li>').append(
+			$('<DIV></DIV>').attr('id','affUser').html(window.tl_general_welcome + '<b>' + usager1 + '</b>' + '! </br>').append(
+			$('<a></a>').text(window.tl_general_logout).on("click",function(){
+			SimpleDeleteCookie("ligueId");
+			SimpleDeleteCookie("userId");
+			window.location.href = "/";
+			})
+		)
+			));
 
 		try {
 			photoPortraitJS = document.createElement('IMG');
@@ -296,14 +280,13 @@ function getCookie(c_name) {
 			photoPortraitJS.src = "/admin/afficheImage.php?ficId=" + usager.ficIdPortrait;
 			photoPortraitJS.className = "tresPetitLogo";
 			photoPortraitJS.id = "photoConnexion";
-			
-			$(photoPortraitJS).click(function(){document.location.href="/zuser/monprofil.html";}).css("cursor","pointer");
-			mLi = document.createElement('LI');
-			mLi.appendChild(photoPortraitJS);
-			menuBoiteIDJS.appendChild(mLi);
+
+			$(photoPortraitJS).click(function() {
+				document.location.href = "/zuser/monprofil.html";
+			}).css("cursor", "pointer");
+			$('#menuBoiteID').append($('<li></li>').append($(photoPortraitJS)));
 		} catch(err) {
 		}
-
 
 		//////////////////////////////////////////
 		////  Boîte de recherche
@@ -311,8 +294,8 @@ function getCookie(c_name) {
 		$(function() {
 			$('#editSearch').hide();
 			$('#iconeSearch').hover(function() {
-				$('#editSearch').show(400)
-				$('#iconeDelete').show(400)
+				$('#editSearch').show(400);
+				$('#iconeDelete').show(400);
 			});
 		});
 
@@ -339,9 +322,9 @@ function getCookie(c_name) {
 				}
 				for (var a = 0; a < res.ligue.length; a++) {
 					$("#boiteResRecherche").append($('<div></div>').text(res.ligue[a].nom).hover(function() {
-						$(this).css("background", "#AAAAAA")
+						$(this).css("background", "#AAAAAA");
 					}, function() {
-						$(this).css("background", "#FFFFFF")
+						$(this).css("background", "#FFFFFF");
 					}).click({
 						id : res.ligue[a].id
 					}, function(event) {
@@ -353,9 +336,9 @@ function getCookie(c_name) {
 				}
 				for (var a = 0; a < res.joueur.length; a++) {
 					$("#boiteResRecherche").append($('<div></div>').text(res.joueur[a].nom).hover(function() {
-						$(this).css("background", "#AAAAAA")
+						$(this).css("background", "#AAAAAA");
 					}, function() {
-						$(this).css("background", "#FFFFFF")
+						$(this).css("background", "#FFFFFF");
 					}).click({
 						id : res.joueur[a].id
 					}, function(event) {
@@ -367,153 +350,148 @@ function getCookie(c_name) {
 
 		});
 
-
 		//				mLi=document.createElement('LI');
 		//				menuBoiteIDJS.appendChild(mLi);
-	$(menuBoiteIDJS).append($('<li/>').append($(divLangueSel)));
+		$('#menuBoiteID').append($('<li></li>').append($(divLangueSel)));
 
 	}// fin du else
 
 	genereMenu_dev();
 	//	barreTitreContexte();
-	}
+}
 
-function barreTitreContexte(i_menu)
-{
-	maBarre=document.createElement('DIV');
-	maBarre.id="barreTitreContexte";
-	x=document.getElementById('divGauche').parentNode;
-	x.insertBefore(maBarre,document.getElementById('divGauche'));
+function barreTitreContexte(i_menu) {
+//alert("0");
+	maBarre = $('<DIV></DIV>').attr('id', 'barreTitreContexte');
+	//maBarre.id="barreTitreContexte";
+	//	x=document.getElementById('divGauche').parentNode;
+	$('#divHaut').after($(maBarre));
+	//alert($("#divHaut").innerHTML);
+	//	x.insertBefore(maBarre,document.getElementById('divGauche'));
 	afficheLigueId();
-	if(window.Perm<10)
-	{//alert(window.matchMedia());
-		}
-	if(document.documentElement.clientWidth < 900)
-	{
+	if (window.Perm < 10) {//alert(window.matchMedia());
+	}
+	if (document.documentElement.clientWidth < 500) {
 		detruitNoeud("ligueBTC");
-		
-	selChLigue=document.createElement('SELECT');
-	selChLigue.className="bouton_2";
-	
-	selChLigue.value=window.ligueId;
-	selChLigue.innerHTML="Changer de ligue  >";
-	selChLigue.onchange=function() {
-		setCookie('ligueId', this.options[this.selectedIndex].value, 120);
-					window.location.reload(true);};
 
-	
-	
-	
-				var uneString = getJSONdeLigueID(null, null);
-			try {
-				rJSON = eval('(' + uneString + ')');
+		selChLigue = $('<SELECT></SELECT>').addClass("bouton_2").val("window.ligueId").text("...  >").on("change", function() {
 
-			} 
-			catch(err) {
-				alert('Le serveur éprouve quelques problêmes. Merci de réessayer plus tard.');
-			}
-			//  document.getElementById('format-date').innerHTML = formatDate(new Date());
+			setCookie('ligueId', this.options[this.selectedIndex].value, 120);
+			window.location.reload(true);
+		});
+//console.log("1");
+		var uneString = getJSONdeLigueID(null, null);
+		try {
+			rJSON = eval('(' + uneString + ')');
+//console.log("2");
 
+		} catch(err) {
+			alert('Le serveur éprouve quelques problêmes. Merci de réessayer plus tard.');
+		}
+		//  document.getElementById('format-date').innerHTML = formatDate(new Date());
+//console.log("3");
 
+		try {
 
-			try {
+			var affiche = true;
+			for (var J = 0; J <= window.rJSON.Ligues.length; J++) {
+				//					alert(window.rJSON.Ligues[J].cleValeur);
+				affiche = true;
+		//		console.log(JSON.stringify(window.rJSON.Ligues[J]));
+				if (window.rJSON.Ligues[J].cleValeur == null) {
+					affiche = true;
+				} else {
+					if (window.rJSON.Ligues[J].cleValeur.statut == "efface") {
+						affiche = false;
+					}
 
-				var affiche =true;
-				for ( var J = 0; J <= window.rJSON.Ligues.length; J++) {
-//					alert(window.rJSON.Ligues[J].cleValeur);
+				}
+	//			console.log(JSON.stringify(window.rJSON.Ligues[J].cleValeur));
+
+				if (affiche == true) {
+					opt = $('<option></option>').text(window.rJSON.Ligues[J].nomLigue).val(window.rJSON.Ligues[J].ligueId).addClass("lien");
+					$(selChLigue).append($(opt));
+					console.log($(opt).val());
+				//		console.log(window.ligueId == $(opt).val());
+					if (window.ligueId == $(opt).val()) {
+						$(selChLigue).val($(opt).val());
+					console.log($(opt).val());
+					}
+//				console.log(window.rJSON.Ligues[J].nomLigue);
+
 					
-					if(window.rJSON.Ligues[J].cleValeur==null)
-					{affiche=true;}
-					else{
-						if(window.rJSON.Ligues[J].cleValeur.statut=="efface")
-						{affiche=false;}
-			
-						}	
-							
-					if(affiche==true)
-					{
-						opt=document.createElement('OPTION');
-						opt.innerHTML=window.rJSON.Ligues[J].nomLigue;
-						opt.value= window.rJSON.Ligues[J].ligueId;
-						opt.className="lien";
-						if(window.ligueId==opt.value)
-						{opt.selected=true;
-							}
+				}//fin du if efface;
+			}//Fin du for
 
-					selChLigue.appendChild(opt);
-					}//fin du if efface;
-				}//Fin du for
+			//	document.body.rangee.cellule.innerHTML ='yo';
+		} catch(err) {
 
-				//	document.body.rangee.cellule.innerHTML ='yo';
-			} 
-			catch(err) {
-			}
-	
-		
-		maBarre.firstChild.appendChild(selChLigue);
+		}
+
+		$("#divLigue").append($(selChLigue));
+	} else {
+
+		boutChLigue = $('<div></div>').addClass("bouton_2").text("Changer de ligue  >").on("click", function() {
+			/*window.location.href = "/listeligues.html" + "?code=10";*/
+			forceSelectionLigue();
+		});
+		$("#divLigue").append($(boutChLigue));
 	}
-	else
-	{	
-	boutChLigue=document.createElement('DIV');
-	boutChLigue.className="bouton_2";
-	boutChLigue.innerHTML="Changer de ligue  >";
-	boutChLigue.onclick=function(){
-		/*window.location.href = "/listeligues.html" + "?code=10";*/
-		forceSelectionLigue();};
-	maBarre.firstChild.appendChild(boutChLigue);
-	}
-	
 
-	
-	barreNavJS=document.createElement('DIV');
-	barreNavJS.id="barreNav";
-	x=document.getElementById('divGauche').parentNode;
-	x.insertBefore(barreNavJS,document.getElementById('divGauche'));
+	barreNavJS = $('<DIV></DIV>').attr('id', 'barreNav');
+	//maBarre.id="barreTitreContexte";
+	//	x=document.getElementById('divGauche').parentNode;
+	$('#barreTitreContexte').after($(barreNavJS));
 
-	selSaisonJS =document.createElement('div');
-	selSaisonJS.id='divSelSaison';
+	//barreNavJS=document.createElement('DIV');
+	//barreNavJS.id="barreNav";
+	//x=document.getElementById('divGauche').parentNode;
+	//x.insertBefore(barreNavJS,document.getElementById('divGauche'));
+
+	selSaisonJS = document.createElement('div');
+	selSaisonJS.id = 'divSelSaison';
 
 	genereLiensContext(i_menu);
 	barreNavJS.firstChild.appendChild(selSaisonJS);
 
-	var frac=100/(window.liens.length+1);
-	for(var a=0; a<barreNavJS.firstChild.childNodes.length;a++)
-	{//barreNavJS.firstChild.childNodes[a].style.width=frac+'%';
-	barreNavJS.firstChild.childNodes[a].style.width=10+'%';
-	/*alert(barreNavJS.firstChild.childNodes[a].style.width);*/}
-	selSaisonJS.style.width=30+'%';
-	selSaisonJS.style.maxWidth=30+'%';
+	var frac = 100 / ($(barreNavJS).first().children().length + 1);
+	for (var a = 0; a < $(barreNavJS).first().children().length; a++) {//barreNavJS.firstChild.childNodes[a].style.width=frac+'%';
+		//barreNavJS.firstChild.childNodes[a].style.width=10+'%';
+		/*alert(barreNavJS.firstChild.childNodes[a].style.width);*/
+	}
+	selSaisonJS.style.width = 30 + '%';
+	selSaisonJS.style.maxWidth = 30 + '%';
 }
 
- function peupleDivBas() {
- 	
- 	
-divBasJS=document.getElementById('divBas');
-if(divBasJS==null)
-{divBasJS=document.createElement('DIV');
-divBasJS.id='divBas';
-document.getElementsByTagName('body')[0].appendChild(divBasJS);}
+function peupleDivBas() {
 
-menuAproposJS=document.createElement('div');
-menuAproposJS.id='menuApropos';
-tApropos=document.createElement('A');
-tContactez=document.createElement('A');
-tApropos.innerHTML="À propos de nous";
-tApropos.href="http://www.journaldestmichel.com/%C3%89conomie/Affaires/2013-04-24/article-3226532/strongstrongGrace-a-deux-Michelois-Larbitrage-au-hockey-simplifie-strongstrong/1";
-tContactez.innerHTML="Contactez-nous";
-tContactez.href="mailto:info@syncstats.com";
-menuAproposJS.appendChild(tApropos);
-menuAproposJS.appendChild(document.createTextNode('|'));
-menuAproposJS.appendChild(tContactez);
-divBasJS.appendChild(menuAproposJS);
+	divBasJS = document.getElementById('divBas');
+	if (divBasJS == null) {
+		divBasJS = document.createElement('DIV');
+		divBasJS.id = 'divBas';
+		document.getElementsByTagName('body')[0].appendChild(divBasJS);
+	}
 
-menuSuivezJS=document.createElement('div');
-menuSuivezJS.id='menuSuivez';
-tSuivez=document.createElement('A');
-tSuivez.innerHTML="Suivez-nous sur FB!";
-tSuivez.href="https://www.facebook.com/pages/SyncStats/236314676470964";
-menuSuivezJS.appendChild(tSuivez);
-divBasJS.appendChild(menuSuivezJS);
+	menuAproposJS = document.createElement('div');
+	menuAproposJS.id = 'menuApropos';
+	tApropos = document.createElement('A');
+	tContactez = document.createElement('A');
+	tApropos.innerHTML = "À propos de nous";
+	tApropos.href = "http://www.journaldestmichel.com/%C3%89conomie/Affaires/2013-04-24/article-3226532/strongstrongGrace-a-deux-Michelois-Larbitrage-au-hockey-simplifie-strongstrong/1";
+	tContactez.innerHTML = "Contactez-nous";
+	tContactez.href = "mailto:info" + "@" + "syncstats.com";
+	menuAproposJS.appendChild(tApropos);
+	menuAproposJS.appendChild(document.createTextNode('|'));
+	menuAproposJS.appendChild(tContactez);
+	divBasJS.appendChild(menuAproposJS);
+
+	menuSuivezJS = document.createElement('div');
+	menuSuivezJS.id = 'menuSuivez';
+	tSuivez = document.createElement('A');
+	tSuivez.innerHTML = "Suivez-nous sur FB!";
+	tSuivez.href = "https://www.facebook.com/pages/SyncStats/236314676470964";
+	menuSuivezJS.appendChild(tSuivez);
+	divBasJS.appendChild(menuSuivezJS);
 
 	mIF2 = document.createElement('DIV');
 	mIF2.id = "fb-root";
@@ -526,110 +504,113 @@ divBasJS.appendChild(menuSuivezJS);
 	mIF3.setAttribute('data-width', '55');
 	mIF3.setAttribute('data-show-faces', 'false');
 	mIF3.setAttribute('style', "position:absolute;top:30px;right:120px;width:60px;");
-	
-menuSuivezJS.appendChild(mIF3);
-//	document.getElementsByTagName('body')[0].insertBefore(mIF2, document.getElementsByTagName('body')[0].firstChild);
 
+	menuSuivezJS.appendChild(mIF3);
+	//	document.getElementsByTagName('body')[0].insertBefore(mIF2, document.getElementsByTagName('body')[0].firstChild);
 
+	menuDiscJS = document.createElement('div');
+	menuDiscJS.id = 'menuDisc';
+	imgDiscJS = document.createElement('IMG');
+	imgDiscJS.id = "imgDisc";
+	imgDiscJS.src = "/images/logoFondNoir.png";
+	menuDiscJS.appendChild(imgDiscJS);
+	if (document.documentElement.clientWidth >= 500) {
+		$('<script async></script>').attr("src", "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js").appendTo(divBasJS);
+		$('<ins></ins>').attr("class", "adsbygoogle").attr("style", "display:inline-block;width:728px;height:90px").attr("data-ad-client", "ca-pub-2263794877114969").attr("data-ad-slot", "8589452732").appendTo(divBasJS);
+		( adsbygoogle = window.adsbygoogle || []).push({});
+	}
 
-menuDiscJS=document.createElement('div');
-menuDiscJS.id='menuDisc';
-imgDiscJS=document.createElement('IMG');
-imgDiscJS.id="imgDisc";
-imgDiscJS.src="/images/logoFondNoir.png";
-menuDiscJS.appendChild(imgDiscJS);
+	divBasJS.appendChild(menuDiscJS);
 
-	$('<script async></script>').attr("src","//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js").appendTo(divBasJS);
-	$('<ins></ins>').attr("class","adsbygoogle").attr("style","display:inline-block;width:728px;height:90px").attr("data-ad-client","ca-pub-2263794877114969").attr("data-ad-slot","8589452732").appendTo(divBasJS);
-				( adsbygoogle = window.adsbygoogle || []).push({});
-
-divBasJS.appendChild(menuDiscJS);
-
+	$(divBasJS).append($('<a></a>').attr('href', '#').click(function() {
+		window.open('https://www.sitelock.com/verify.php?site=syncstats.com', 'SiteLock', 'width=600,height=600,left=160,top=170');
+	}).append($('<img></img>').addClass("img-responsive").attr('title', 'SiteLock').attr('src', '//shield.sitelock.com/shield/syncstats.com')));
 
 }
+
 /*
-function genereMenu(position) {
-	divMenu = document.createElement('DIV');
-	m2body = document.getElementsByTagName("body")[0];
-	//	m2body = document.getElementById("mbody");
-	m2body.appendChild(divMenu);
-	divMenu.style.width = '100%';
-	divMenu.style.height = '30px';
-	divMenu.style.cssFloat = 'left';
-	divMenu.id = 'divMenu';
-	divMenu.style.font = 'small-caps bold small/24px "Times New Roman", serif';
-	divMenu.style.letterSpacing = '1px';
-	divMenu.style.textAlign = 'center';
-	/*	divMenu.style.border='1px solid';*/
+ function genereMenu(position) {
+ divMenu = document.createElement('DIV');
+ m2body = document.getElementsByTagName("body")[0];
+ //	m2body = document.getElementById("mbody");
+ m2body.appendChild(divMenu);
+ divMenu.style.width = '100%';
+ divMenu.style.height = '30px';
+ divMenu.style.cssFloat = 'left';
+ divMenu.id = 'divMenu';
+ divMenu.style.font = 'small-caps bold small/24px "Times New Roman", serif';
+ divMenu.style.letterSpacing = '1px';
+ divMenu.style.textAlign = 'center';
+ /*	divMenu.style.border='1px solid';*/
 /*	divMenu.style.mozBorderRadius = '15px';
-	divMenu.style.borderRadius = '15px';
+ divMenu.style.borderRadius = '15px';
 
-	menu2_b = document.createElement('UL');
-	divMenu.appendChild(menu2_b);
-	menu2_b.id = 'menu2_b';
+ menu2_b = document.createElement('UL');
+ divMenu.appendChild(menu2_b);
+ menu2_b.id = 'menu2_b';
 
-	li1 = document.createElement('LI');
-	menu2_b.appendChild(li1);
-	a1 = document.createElement('A');
-	li1.appendChild(a1);
-	a1.setAttribute('href', '/index.html');
-	a1.innerHTML = 'Page d\'accueil';
+ li1 = document.createElement('LI');
+ menu2_b.appendChild(li1);
+ a1 = document.createElement('A');
+ li1.appendChild(a1);
+ a1.setAttribute('href', '/index.html');
+ a1.innerHTML = 'Page d\'accueil';
 
-	li4 = document.createElement('LI');
-	menu2_b.appendChild(li4);
-	a4 = document.createElement('A');
-	li4.appendChild(a4);
-	a4.setAttribute('href', '/login.html');
-	a4.innerHTML = 'Mon profil';
+ li4 = document.createElement('LI');
+ menu2_b.appendChild(li4);
+ a4 = document.createElement('A');
+ li4.appendChild(a4);
+ a4.setAttribute('href', '/login.html');
+ a4.innerHTML = 'Mon profil';
 
-	li2 = document.createElement('LI');
-	menu2_b.appendChild(li2);
-	a2 = document.createElement('A');
-	li2.appendChild(a2);
-	//	a2.setAttribute('href','/listeligues.html');
-	a2.href = '/statistiques.html';
-	a2.innerHTML = 'Statistiques';
+ li2 = document.createElement('LI');
+ menu2_b.appendChild(li2);
+ a2 = document.createElement('A');
+ li2.appendChild(a2);
+ //	a2.setAttribute('href','/listeligues.html');
+ a2.href = '/statistiques.html';
+ a2.innerHTML = 'Statistiques';
 
-	li3 = document.createElement('LI');
-	menu2_b.appendChild(li3);
-	a3 = document.createElement('A');
-	li3.appendChild(a3);
-	a3.setAttribute('href', '/faq.html');
-	a3.innerHTML = 'FAQ';
+ li3 = document.createElement('LI');
+ menu2_b.appendChild(li3);
+ a3 = document.createElement('A');
+ li3.appendChild(a3);
+ a3.setAttribute('href', '/faq.html');
+ a3.innerHTML = 'FAQ';
 
-	li5 = document.createElement('LI');
-	menu2_b.appendChild(li5);
-	a5 = document.createElement('A');
-	li5.appendChild(a5);
-	a5.setAttribute('href', '/zoneadmin.html');
-	a5.innerHTML = 'Zone Admin';
+ li5 = document.createElement('LI');
+ menu2_b.appendChild(li5);
+ a5 = document.createElement('A');
+ li5.appendChild(a5);
+ a5.setAttribute('href', '/zoneadmin.html');
+ a5.innerHTML = 'Zone Admin';
 
-	switch(position%10) {
-		case 1:
-			a1.className = 'actif_b';
-			break;
-		case 2:
-			a2.className = 'actif_b';
+ switch(position%10) {
+ case 1:
+ a1.className = 'actif_b';
+ break;
+ case 2:
+ a2.className = 'actif_b';
 
-			break;
-		case 3:
-			a3.className = 'actif_b';
-			break;
-		case 4:
-			a4.className = 'actif_b';
-			break;
-		case 5:
-			a5.className = 'actif_b';
-			break;
+ break;
+ case 3:
+ a3.className = 'actif_b';
+ break;
+ case 4:
+ a4.className = 'actif_b';
+ break;
+ case 5:
+ a5.className = 'actif_b';
+ break;
 
-		default:
-			break;
-	}
-	divDate = document.createElement('DIV');
-	menu2_b.appendChild(divDate);
-	divDate.innerHTML = formatDate(new Date());
-	divDate.className = 'date';
-}*/
+ default:
+ break;
+ }
+ divDate = document.createElement('DIV');
+ menu2_b.appendChild(divDate);
+ divDate.innerHTML = formatDate(new Date());
+ divDate.className = 'date';
+ }*/
 
 function trouveIndiceMenu(menu_id) {
 	var j = 0
@@ -642,53 +623,52 @@ function trouveIndiceMenu(menu_id) {
 }
 
 function genereMenu_dev() {
-	divHautJS =document.getElementById("divTitreDoc");
-	
-	if(document.getElementById("menuDivHaut")==null)
-	{
-	divMenuHautJS = document.createElement("DIV");
-	divMenuHautJS.id="menuDivHaut";
-	divHautJS.appendChild(divMenuHautJS);
-	//	m2body = document.getElementById("mbody");
-	//	divMenuHautJS.appendChild(divMenu);
-//	divMenuHautJS.insertBefore(divMenu, divMenuHautJS.firstChild.nextSibling);
+	divHautJS = document.getElementById("divTitreDoc");
 
-	menu_n1 = document.createElement('UL');
-	divMenuHautJS.appendChild(menu_n1);
-	menu_n1.id = 'menu';
+	if (document.getElementById("menuDivHaut") == null) {
+		divMenuHautJS = document.createElement("DIV");
+		divMenuHautJS.id = "menuDivHaut";
+		divHautJS.appendChild(divMenuHautJS);
+		//	m2body = document.getElementById("mbody");
+		//	divMenuHautJS.appendChild(divMenu);
+		//	divMenuHautJS.insertBefore(divMenu, divMenuHautJS.firstChild.nextSibling);
 
-	for (var k = 0; k < hierarchie.length; k++) {
-		i_n1 = document.createElement('LI');
-		menu_n1.appendChild(i_n1);
-		i_n1.id = menus[hierarchie[k][0]].id;
-		a_n1 = document.createElement('A');
-		a_n1.href = menus[hierarchie[k][0]].lien;
-		if (window.langue == "fr")
-			a_n1.innerHTML = menus[hierarchie[k][0]].iH_fr;
-		else
-			a_n1.innerHTML = menus[hierarchie[k][0]].iH_en;
+		menu_n1 = document.createElement('UL');
+		divMenuHautJS.appendChild(menu_n1);
+		menu_n1.id = 'menu';
 
-		i_n1.appendChild(a_n1);
-		if (hierarchie[k].length > 1) {
-			ul_n2 = document.createElement('UL');
-			i_n1.appendChild(ul_n2);
-			for (var l = 1; l < hierarchie[k].length; l++) {
-				i_n2 = document.createElement('LI');
-				ul_n2.appendChild(i_n2);
-				i_n2.id = menus[hierarchie[k][l]].id;
-				a_n2 = document.createElement('A');
-				a_n2.href = menus[hierarchie[k][l]].lien;
-				i_n2.appendChild(a_n2);
-				if (window.langue == "fr")
-					a_n2.innerHTML = menus[hierarchie[k][l]].iH_fr;
-				else
-					a_n2.innerHTML = menus[hierarchie[k][l]].iH_en;
+		for (var k = 0; k < hierarchie.length; k++) {
+			i_n1 = document.createElement('LI');
+			menu_n1.appendChild(i_n1);
+			i_n1.id = menus[hierarchie[k][0]].id;
+			a_n1 = document.createElement('A');
+			a_n1.href = menus[hierarchie[k][0]].lien;
+			if (window.langue == "fr")
+				a_n1.innerHTML = menus[hierarchie[k][0]].iH_fr;
+			else
+				a_n1.innerHTML = menus[hierarchie[k][0]].iH_en;
+
+			i_n1.appendChild(a_n1);
+			if (hierarchie[k].length > 1) {
+				ul_n2 = document.createElement('UL');
+				i_n1.appendChild(ul_n2);
+				for (var l = 1; l < hierarchie[k].length; l++) {
+					i_n2 = document.createElement('LI');
+					ul_n2.appendChild(i_n2);
+					i_n2.id = menus[hierarchie[k][l]].id;
+					a_n2 = document.createElement('A');
+					a_n2.href = menus[hierarchie[k][l]].lien;
+					i_n2.appendChild(a_n2);
+					if (window.langue == "fr")
+						a_n2.innerHTML = menus[hierarchie[k][l]].iH_fr;
+					else
+						a_n2.innerHTML = menus[hierarchie[k][l]].iH_en;
+
+				}
 
 			}
 
-		}
-
-	}// Fin du for hierarchie
+		}// Fin du for hierarchie
 	}
 }
 
@@ -727,23 +707,22 @@ function getLiensFreres(i_menu) {
 			}
 		}
 	}
-	if(menus[i_menu].liensContexte!=undefined)
-	{
-		return menus[i_menu].liensContexte;		
+	if (menus[i_menu].liensContexte != undefined) {
+		return menus[i_menu].liensContexte;
 	}
 	return [];
 }
 
 function genereLiensContext(i_menu) {
 	barreNavJS = document.getElementById("barreNav");
-/*
-	titreLC = document.createElement('H1');
-	if (window.langue == "fr")
-		titreLC.innerHTML = menus[getLienPere(i_menu)].iH_fr;
-	else
-		titreLC.innerHTML = menus[getLienPere(i_menu)].iH_en;
-	divGaucheJS.appendChild(titreLC);
-	*/
+	/*
+	 titreLC = document.createElement('H1');
+	 if (window.langue == "fr")
+	 titreLC.innerHTML = menus[getLienPere(i_menu)].iH_fr;
+	 else
+	 titreLC.innerHTML = menus[getLienPere(i_menu)].iH_en;
+	 divGaucheJS.appendChild(titreLC);
+	 */
 	liens = getLiensFreres(i_menu);
 	listeLien = document.createElement('UL');
 
@@ -757,8 +736,8 @@ function genereLiensContext(i_menu) {
 
 		a_lc.href = menus[liens[a]].lien;
 		if (liens[a] == i_menu) {
-			a_lc.className="actif";
-//			li_lc.parentNode.className="actif";
+			a_lc.className = "actif";
+			//			li_lc.parentNode.className="actif";
 
 			if (window.langue == "fr")
 				a_lc.innerHTML = menus[liens[a]].iH_fr;
@@ -768,19 +747,18 @@ function genereLiensContext(i_menu) {
 		li_lc.appendChild(a_lc);
 		listeLien.appendChild(li_lc);
 	}
-	if(barreNavJS!=null)
-		{barreNavJS.appendChild(listeLien);}
-	
+
+	if (barreNavJS != null) {
+		barreNavJS.appendChild(listeLien);
+	}
+
 	//strLien=window.location.href.split('?')[0].split('/')[3];//prévenir loop sur listeligue
 	//alert(strLien);
 	//if(strLien!="listeligues.html")
-//	afficheLigueId();
-//	genLiensAmis(i_menu);
+	//	afficheLigueId();
+	//	genLiensAmis(i_menu);
 
 }
-
-
-
 
 function genLiensAmis(i_menu) {
 	divGaucheJS = document.getElementById("divGauche");
@@ -815,8 +793,8 @@ function genTableau(jsObject) {
 	mParent = document.getElementById(jsObject.parentId);
 	tab = document.createElement('TABLE');
 	tab.id = jsObject.id;
-	tab.border="0";
-	tab.style.borderWidth="0";
+	tab.border = "0";
+	tab.style.borderWidth = "0";
 	tab.className = "c_tableau";
 	mParent.appendChild(tab);
 	tbody = document.createElement('TBODY');
@@ -833,10 +811,10 @@ function genTableau(jsObject) {
 	tbody.appendChild(rTitre);
 
 	rOpt = document.createElement('TR');
-//	rOpt.className = "optionTableau";
+	//	rOpt.className = "optionTableau";
 	tdOpt = document.createElement('TD')
 	tdOpt.id = jsObject.id + "_tdOpt";
-//	tdOpt.className = "optionTableau";
+	//	tdOpt.className = "optionTableau";
 	tdOpt.colSpan = "100";
 	divOpt = document.createElement('DIV');
 	divOpt.className = "optionTableau";
@@ -868,180 +846,185 @@ function genBoiteContexte(id) {
 }
 
 function genereBoites() {
-//	(ordre de boite, boiteId sur BD).
+	//	(ordre de boite, boiteId sur BD).
 	//for(a=0;a<4;a++)
 	genBoiteContexte(1);
 	genBoiteContexte(2);
 	genBoiteContexte(3);
 	genBoiteContexte(4);
 	genBoiteContexte(5);
-//	genBoiteContexte(3);
-//	genBoiteContexte(4);
+	if (getCookie('ligueId') == 86)
+		faireBoite(1, 10);
+	else
+		faireBoite(1, 9);
+	//	genBoiteContexte(3);
+	//	genBoiteContexte(4);
 	//genBoiteContexte(5);
 	//genBoiteContexte(6);
 
 	//faireBoite(1, 3);
-//	faireBoite(2, 2);
-	faireBoite(1, 9);
+	//	faireBoite(2, 2);
+	//if(window.ligueId==86){
+	//	faireBoite(1, 10);
+	//}
+	//else{
+	//	faireBoite(1, 9);
+	//}
 	faireBoite(2, 7);
-/*	if(getCookie('ligueId')!=null)
-		faireBoite(5,6);
-	else
-		faireBoite(5,1);	
-	if(getCookie('userId')==null)
-		faireBoite(1,7);
-	else
-		faireBoite(1,3);	
-	faireBoite(4, 5);*/
-	faireBoite(3,5);
-	faireBoite(4,1);
-	faireBoite(5,6);
+	/*	if(getCookie('ligueId')!=null)
+	 faireBoite(5,6);
+	 else
+	 faireBoite(5,1);
+	 if(getCookie('userId')==null)
+	 faireBoite(1,7);
+	 else
+	 faireBoite(1,3);
+	 faireBoite(4, 5);*/
+	faireBoite(3, 5);
+	faireBoite(4, 1);
+	faireBoite(5, 6);
 	//faireBoiteTest(1);
-	$('<script async></script>').attr("src","//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js").appendTo('#divDroite');
-	$('<ins></ins>').attr("class","adsbygoogle").attr("style","display:inline-block;width:300px;height:250px").attr("data-ad-client","ca-pub-2263794877114969").attr("data-ad-slot","9575808332").appendTo('#divDroite');
-				( adsbygoogle = window.adsbygoogle || []).push({});
+	$('<script async></script>').attr("src", "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js").appendTo('#divDroite');
+	$('<ins></ins>').attr("class", "adsbygoogle").attr("style", "display:inline-block;width:300px;height:250px").attr("data-ad-client", "ca-pub-2263794877114969").attr("data-ad-slot", "9575808332").appendTo('#divDroite');
+	( adsbygoogle = window.adsbygoogle || []).push({});
 
-	
 }
+
 /*
 function faireBoiteTest(a) {
 
+var requete_ajax = new XMLHttpRequest();
 
-		var requete_ajax = new XMLHttpRequest();
+var url = "/scriptsphp/infoMatch2JSON.php";
 
-		var url = "/scriptsphp/infoMatch2JSON.php";
+var strMatch = "match=" + 0;
+var strLigue = "ligueId=" + window.ligueId;
+params = strMatch + '&' + strLigue;
+url = url + "?" + params;
 
-		var strMatch = "match=" + 0;
-		var strLigue = "ligueId=" + window.ligueId;
-		params = strMatch + '&' + strLigue;
-		url = url + "?" + params;
+//		alert(url+'?'+param);
+//requete_ajax.send(null);
+//	return requete_ajax.responseText;
 
-		//		alert(url+'?'+param);
-		//requete_ajax.send(null);
-		//	return requete_ajax.responseText;
+requete_ajax.open('POST', url, true);
+//				requete_ajax.send(null);
 
-		requete_ajax.open('POST', url, true);
-		//				requete_ajax.send(null);
+requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+requete_ajax.setRequestHeader("Content-length", params.length);
+requete_ajax.setRequestHeader("Connection", "close");
 
-		requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		requete_ajax.setRequestHeader("Content-length", params.length);
-		requete_ajax.setRequestHeader("Connection", "close");
+requete_ajax.send(params);
 
-		requete_ajax.send(params);
+requete_ajax.onreadystatechange = (function(a) {//Call a function when the state changes.
 
-		requete_ajax.onreadystatechange = (function(a) {//Call a function when the state changes.
-			
-			return function(){
-			if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+return function(){
+if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 
-				infoMatch = eval('(' + requete_ajax.responseText + ')');
+infoMatch = eval('(' + requete_ajax.responseText + ')');
 
-				//
-				mParent = document.getElementById('dBC_' + a);
-				divLigne = document.createElement('DIV');
-	divLigne.id = "ligneCentrale2";
-	mParent.style.textAlign="center";
-	divBloc = document.createElement('DIV');
-	divBloc.style.display="block";
-	divBloc.style.textAlign="center";
+//
+mParent = document.getElementById('dBC_' + a);
+divLigne = document.createElement('DIV');
+divLigne.id = "ligneCentrale2";
+mParent.style.textAlign="center";
+divBloc = document.createElement('DIV');
+divBloc.style.display="block";
+divBloc.style.textAlign="center";
 
-	divLigne.style.textAlign="center";
-	divLigne.style.margin="auto";
-	divLigne.style.display="inline";
+divLigne.style.textAlign="center";
+divLigne.style.margin="auto";
+divLigne.style.display="inline";
 
-	pDernMatch = document.createElement('P');
-	pDernMatch.innerHTML=infoMatch.ligueNom;
-	pDernMatch.style.textAlign="center";
-	pDernMatch.style.display="block";
-	pDateMatch = document.createElement('P');
-	pDateMatch.innerHTML=infoMatch.date;
-	pDateMatch.style.textAlign="center";
-	pDateMatch.style.display="block";
+pDernMatch = document.createElement('P');
+pDernMatch.innerHTML=infoMatch.ligueNom;
+pDernMatch.style.textAlign="center";
+pDernMatch.style.display="block";
+pDateMatch = document.createElement('P');
+pDateMatch.innerHTML=infoMatch.date;
+pDateMatch.style.textAlign="center";
+pDateMatch.style.display="block";
 
+divLogoDom = document.createElement('DIV');
+//divLogoDom.id = "logoDom";
+//divLogoDom.className = "petitLogo";
 
+divLogoVis = document.createElement('DIV');
+//divLogoVis.id = "logoVis";
+//divLogoVis.className = "petitLogo";
+divLogoDom.style.display="inline";
+divLogoVis.style.display="inline";
 
-	divLogoDom = document.createElement('DIV');
-	//divLogoDom.id = "logoDom";
-	//divLogoDom.className = "petitLogo";
-	
-	divLogoVis = document.createElement('DIV');
-	//divLogoVis.id = "logoVis";
-	//divLogoVis.className = "petitLogo";
-	divLogoDom.style.display="inline";
-	divLogoVis.style.display="inline";
-	
-	lienImgDomJS = document.createElement('A');
-	lienImgDomJS.id = "lienImgDom";
-	lienImgDomJS.href = "/zstats/statsequipe.html?equipeId=" + infoMatch.equipeIdDom+"&ligueId="+infoMatch.ligueId;
-	divImgDom = document.createElement('IMG');
-	//divImgDom.id = "logoEquipeDom";
-	//divImgDom.className = "petitLogo";
+lienImgDomJS = document.createElement('A');
+lienImgDomJS.id = "lienImgDom";
+lienImgDomJS.href = "/zstats/statsequipe.html?equipeId=" + infoMatch.equipeIdDom+"&ligueId="+infoMatch.ligueId;
+divImgDom = document.createElement('IMG');
+//divImgDom.id = "logoEquipeDom";
+//divImgDom.className = "petitLogo";
 
-	divImgDom.style.height="48px";
-	divImgDom.style.width="auto";
-	divImgDom.style.maxHeight="48px";
-	divImgDom.style.maxWidth="48px";
-	lienImgVisJS = document.createElement('A');
-	lienImgVisJS.id = "lienImgVis";
-	lienImgVisJS.href = "/zstats/statsequipe.html?equipeId=" + infoMatch.equipeIdVis+"&ligueId="+infoMatch.ligueId;
-	divImgVis = document.createElement('IMG');
-	//divImgVis.id = "logoEquipeVis";
-	//divImgVis.className = "petitLogo";
+divImgDom.style.height="48px";
+divImgDom.style.width="auto";
+divImgDom.style.maxHeight="48px";
+divImgDom.style.maxWidth="48px";
+lienImgVisJS = document.createElement('A');
+lienImgVisJS.id = "lienImgVis";
+lienImgVisJS.href = "/zstats/statsequipe.html?equipeId=" + infoMatch.equipeIdVis+"&ligueId="+infoMatch.ligueId;
+divImgVis = document.createElement('IMG');
+//divImgVis.id = "logoEquipeVis";
+//divImgVis.className = "petitLogo";
 
-
-	divImgVis.style.height="48px";
-	divImgVis.style.width="auto";
-	divImgVis.style.maxHeight="48px";
-	divImgVis.style.maxWidth="48px";
-	divScore = document.createElement('DIV');
-	divScore.style.display="inline";
-	divScore.style.margin="auto";
-	divPDom = document.createElement('P');
-	divPDom.id = "tScoreDom";
-	divPDom.style.fontSize="large";
-	divPDom.style.fontWeight="bold";
-	//divPDom.className = "grosTexte";
-	divPDom.style.display="inline";
-	divPVis = document.createElement('P');
-	divPVis.id = "tScoreVis";
-	//divPVis.className = "grosTexte";
-		divPVis.style.display="inline";
-		divPVis.style.fontSize="large";
-	divPVis.style.fontWeight="bold";
-	pDash = document.createElement('P');
-	//pDash.className = "grosTexte";
-	pDash.innerHTML = "-";
-		pDash.style.display="inline";
-			pDash.style.fontSize="large";
-	pDash.style.fontWeight="bold";	
+divImgVis.style.height="48px";
+divImgVis.style.width="auto";
+divImgVis.style.maxHeight="48px";
+divImgVis.style.maxWidth="48px";
+divScore = document.createElement('DIV');
+divScore.style.display="inline";
+divScore.style.margin="auto";
+divPDom = document.createElement('P');
+divPDom.id = "tScoreDom";
+divPDom.style.fontSize="large";
+divPDom.style.fontWeight="bold";
+//divPDom.className = "grosTexte";
+divPDom.style.display="inline";
+divPVis = document.createElement('P');
+divPVis.id = "tScoreVis";
+//divPVis.className = "grosTexte";
+divPVis.style.display="inline";
+divPVis.style.fontSize="large";
+divPVis.style.fontWeight="bold";
+pDash = document.createElement('P');
+//pDash.className = "grosTexte";
+pDash.innerHTML = "-";
+pDash.style.display="inline";
+pDash.style.fontSize="large";
+pDash.style.fontWeight="bold";
 mParent.appendChild(pDernMatch);
 mParent.appendChild(pDateMatch);
-	mParent.appendChild(divBloc);
-	
-	divLogoDom.appendChild(lienImgDomJS);
-	lienImgDomJS.appendChild(divImgDom);
-	divLigne.appendChild(divLogoDom);
+mParent.appendChild(divBloc);
 
-	divScore.appendChild(divPDom);
-	divScore.appendChild(pDash);
-	divScore.appendChild(divPVis);
-	
-		divLigne.appendChild(divScore);
-	divLogoVis.appendChild(lienImgVisJS);
-	lienImgVisJS.appendChild(divImgVis);
-	divLigne.appendChild(divLogoVis);
-	//	lecorps = document.getElementById('mbody');
-	divImgDom.src = '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdDom;
-	divImgVis.src = '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdVis;
+divLogoDom.appendChild(lienImgDomJS);
+lienImgDomJS.appendChild(divImgDom);
+divLigne.appendChild(divLogoDom);
 
-	divPDom.innerHTML = infoMatch.equipeScoreDom;
-	divPVis.innerHTML = infoMatch.equipeScoreVis;
-	//	lecorps.appendChild(divLigne);
-	divBloc.appendChild(divLigne);
-	mParent.onclick=(function(match){return function(){window.location.href="/zstats/match.html?match="+match;};})(infoMatch.matchId);
-			}
-			};
-		})(a);
+divScore.appendChild(divPDom);
+divScore.appendChild(pDash);
+divScore.appendChild(divPVis);
+
+divLigne.appendChild(divScore);
+divLogoVis.appendChild(lienImgVisJS);
+lienImgVisJS.appendChild(divImgVis);
+divLigne.appendChild(divLogoVis);
+//	lecorps = document.getElementById('mbody');
+divImgDom.src = '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdDom;
+divImgVis.src = '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdVis;
+
+divPDom.innerHTML = infoMatch.equipeScoreDom;
+divPVis.innerHTML = infoMatch.equipeScoreVis;
+//	lecorps.appendChild(divLigne);
+divBloc.appendChild(divLigne);
+mParent.onclick=(function(match){return function(){window.location.href="/zstats/match.html?match="+match;};})(infoMatch.matchId);
+}
+};
+})(a);
 }*/
 /*
 
@@ -1054,16 +1037,16 @@ div1.style.cssFloat = "right";
 div1.style.width = "70%";
 div1.style.zIndex="10";
 
-							titre1 = document.createElement('IMG');
-							titre1.className = 'imgLogoSS';
-							divLogoJS = document.createElement('DIV');
-							divLogoJS.className="logoSS";
+titre1 = document.createElement('IMG');
+titre1.className = 'imgLogoSS';
+divLogoJS = document.createElement('DIV');
+divLogoJS.className="logoSS";
 //							div1.style.position="absolute";
 //							divLogoJS.style.position="absolute";
-							
+
 //							div1.style.top="-100px";
-							divLogoJS.appendChild(titre1);
-							titre1.src="/images/logoSeul.png";
+divLogoJS.appendChild(titre1);
+titre1.src="/images/logoSeul.png";
 divLogoJS.style.zIndex="1";
 divLogoJS.style.cssFloat="left";
 divLogoJS.style.width="30%";
@@ -1096,9 +1079,6 @@ a1.innerHTML = "Votre confiance, vos commentaires, ";
 mParent.appendChild(a1);
 a1.style.textAlign = "center";
 }*/
-
-
-
 
 /*
 function faireBoitePromo(a) {
@@ -1181,24 +1161,23 @@ mParent.appendChild(a1);*/
 /*
  function faireBoiteTest(a){
  mParent = document.getElementById('dBC_' + a);
-$(mParent).append($('<img/>').addClass('logoSS').css('height','50%').css('float','left').attr('src','/images/cellEtPucks.png'));
-	div1 = document.createElement('H2');
-	div1.innerHTML = window.tl_bc_votrePub;
-	div1.style.textAlign = "center";
-	div1.style.cssFloat = "none";
-	div2 = document.createElement('H1');
-	div2.innerHTML = window.tl_bc_ici;
-	div2.style.textAlign = "center";
-	div2.style.cssFloat = "none";
-	mParent.appendChild(div1);
-	mParent.appendChild(div2);
-	a1 = document.createElement('A');
-	a1.href = "mailto:info@syncstats.com?subject=Pub SyncStats";
-	a1.style.color = "#8DBB22";
-	a1.innerHTML = window.tl_general_contact;
-	mParent.appendChild(a1);
-	a1.style.textAlign = "center";
-
+ $(mParent).append($('<img/>').addClass('logoSS').css('height','50%').css('float','left').attr('src','/images/cellEtPucks.png'));
+ div1 = document.createElement('H2');
+ div1.innerHTML = window.tl_bc_votrePub;
+ div1.style.textAlign = "center";
+ div1.style.cssFloat = "none";
+ div2 = document.createElement('H1');
+ div2.innerHTML = window.tl_bc_ici;
+ div2.style.textAlign = "center";
+ div2.style.cssFloat = "none";
+ mParent.appendChild(div1);
+ mParent.appendChild(div2);
+ a1 = document.createElement('A');
+ a1.href = "mailto:info@syncstats.com?subject=Pub SyncStats";
+ a1.style.color = "#8DBB22";
+ a1.innerHTML = window.tl_general_contact;
+ mParent.appendChild(a1);
+ a1.style.textAlign = "center";
 
  }*/
 /*
@@ -1327,8 +1306,7 @@ function genereSousMenu(position) {
 	};
 	li5 = document.createElement('LI');
 	menu2_b.appendChild(li5);
-	
-	
+
 	b5 = document.createElement('A');
 	li5.appendChild(b5);
 	b5.innerHTML = 'Changer de ligue';
@@ -1337,23 +1315,22 @@ function genereSousMenu(position) {
 	};
 	//				b4.setAttribute('href', '/classement.html');
 	switch(position) {
-		case 1:
-			b1.className = 'actif_b';
-			break;
-		case 2:
-			b2.className = 'actif_b';
-			break;
-		case 3:
-			b3.className = 'actif_b';
-			break;
-		case 4:
-			b4.className = 'actif_b';
-			break;
-		default:
+	case 1:
+		b1.className = 'actif_b';
+		break;
+	case 2:
+		b2.className = 'actif_b';
+		break;
+	case 3:
+		b3.className = 'actif_b';
+		break;
+	case 4:
+		b4.className = 'actif_b';
+		break;
+	default:
 	}// Fin Switch
 
 }// Fin genereSousMenu
-
 
 function afficheLigueId() {
 	//	ligueId = null;
@@ -1373,15 +1350,14 @@ function afficheLigueId() {
 	 }
 	 }*/
 
-			divLigue = document.createElement('DIV');
-			m2body = document.getElementById('barreTitreContexte');
-			divLigue.id = 'divLigue';
-			texte1 = document.createElement('H1');
-			texte1.id="ligueBTC";
-			divLigue.appendChild(texte1);
-			m2body.appendChild(divLigue);
-			
-			
+	divLigue = document.createElement('DIV');
+	m2body = document.getElementById('barreTitreContexte');
+	divLigue.id = 'divLigue';
+	texte1 = document.createElement('H1');
+	texte1.id = "ligueBTC";
+	divLigue.appendChild(texte1);
+	m2body.appendChild(divLigue);
+
 	var requete_ajax = new XMLHttpRequest();
 
 	var url = "/stats2/Ligues2JSON.php";
@@ -1396,7 +1372,7 @@ function afficheLigueId() {
 
 	requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
 		if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-//					alert(requete_ajax.responseText);
+			//					alert(requete_ajax.responseText);
 			//			window.location.reload();
 			try {
 				var locJSON = eval('(' + requete_ajax.responseText + ')');
@@ -1405,21 +1381,68 @@ function afficheLigueId() {
 			}
 
 			maLigue = null;
+			monNomLigue = null;
 			for (var J = 0; J < locJSON.Ligues.length; J = J + 1) {
 				if (parseInt(locJSON.Ligues[J].ligueId) == window.ligueId) {
-					maLigue = locJSON.Ligues[J].nomLigue;
+					maLigue = locJSON.Ligues[J];
+
+					monNomLigue = locJSON.Ligues[J].nomLigue;
+					setMenusLigue(maLigue);
+
 				}
 			}
-
-			document.getElementById('ligueBTC').innerHTML = maLigue==null?"Ligue / Tournoi de Hockey":maLigue;
-			
+			if(document.getElementById('ligueBTC')!=null){
+			document.getElementById('ligueBTC').innerHTML = maLigue == null ? "Ligue / Tournoi de Hockey" : monNomLigue;}
 
 		}
 		//		else{alert("Petit problème de développement");}
-	}
+	};
 	requete_ajax.send(null);
 
 }// Fin genereNiveau2
+
+function setMenusLigue(maLigue) {
+	try {
+		//alert("Hey");
+		if (maLigue != undefined) {
+			strartIMenu = window.liens.length;
+
+			//alert(JSON.stringify(window.maLigue.cleValeur.siteWeb.menu));
+			menuSiteWeb = Array();
+			menuSiteWeb = maLigue.cleValeur.siteWeb.menu;
+			//alert("Hi");
+			for (var a = 0; a < menuSiteWeb.length; a++) {
+
+				li_lc = document.createElement('LI');
+				a_lc = document.createElement('A');
+
+				a_lc.innerHTML = menuSiteWeb[a].iH;
+
+				a_lc.href = menuSiteWeb[a].lien;
+				/*if (strartIMenu+a == i_menu) {
+				 a_lc.className="actif";
+				 //	alert("Ho");
+				 //			li_lc.parentNode.className="actif";
+				 a_lc.innerHTML = menuSiteWeb[a].iH;
+				 }*/
+				window.liens[window.liens.length] = window.menus.length;
+				window.menus[window.menus.length] = menuSiteWeb[a];
+
+				//alert(JSON.stringify(window.liens)+" "+JSON.stringify(window.menus[window.liens[window.liens.length-1]]));
+				$(listeLien).append($(li_lc).append($(a_lc)));
+				if (((window.location.href.split("syncstats.com"/*"host"*/)[1]).split("?")[0]).localeCompare(menuSiteWeb[a].lien) == 0) {
+					//alert($(li_lc).html());
+					$('#barreNav li a').removeClass("actif");
+					$(a_lc).addClass("actif");
+				}
+			}
+
+		}
+
+	} catch(err) {/*alert(err.message);*/
+	}
+
+}
 
 function afficheLigueIdAvecCode(code) {
 	//	ligueId = null;
@@ -1479,12 +1502,10 @@ function afficheLigueIdAvecCode(code) {
 	lien2.style.cssFloat = 'left';
 	lien2.style.marginLeft = '10px';
 
-
-
 	divLigue.appendChild(texte1);
 	texte2.appendChild(lien2);
 	divLigue.appendChild(texte2);
-	
+
 	divLigue.appendChild(lien1);
 
 	//				referenceNode=document.getElementById('divLigue');
@@ -1538,7 +1559,7 @@ function enveloppeTable(tableId, noPage, nbParPage) {
 	trans[2] = nbParPage;
 
 	aG = document.createElement('DIV');
-	
+
 	aG.innerHTML = '<< ';
 	aG.className = 'lien versGauche';
 
@@ -1570,24 +1591,25 @@ function enveloppeTable(tableId, noPage, nbParPage) {
 
 }
 
-function enveloppeTableMois(tableId, annee,mois, indCol) {
-//	alert(tableId);
+function enveloppeTableMois(tableId, annee, mois, indCol) {
+	//	alert(tableId);
 	mois = parseInt(mois);
-	var moisDAnnee = new Array("Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre");
+	var moisDAnnee = new Array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
 	maTable = document.getElementById(tableId);
-	maTable.className="tableEnveloppeMois";
+	maTable.className = "tableEnveloppeMois";
 	lesLignes = maTable.firstChild.childNodes;
 	cpt = 0;
 	for (var a = 0; a < lesLignes.length; a++) {
 		if (lesLignes[a].nodeName == 'TR' && (lesLignes[a].className == 'lignePaire' || lesLignes[a].className == 'ligneImpaire' || lesLignes[a].className == 'ligneCache')) {
-			try{
+			try {
 				//alert(lesLignes[a].childNodes[indCol].firstChild.innerHTML);
-			if (lesLignes[a].childNodes[indCol].firstChild.innerHTML.split('-')[0]==annee &&lesLignes[a].childNodes[indCol].firstChild.innerHTML.split('-')[1]==mois+1 ) {
-				cpt % 2 == 0 ? lesLignes[a].className = 'lignePaire' : lesLignes[a].className = 'ligneImpaire';
-			} else {
-				lesLignes[a].className = "ligneCache";
-			}}
-			catch(err){/*alert("Erreur dans enveloppeTableMois:"+a+" "+indCol+" "+lesLignes[a].childNodes[indCol].innerHTML);*/}
+				if (lesLignes[a].childNodes[indCol].firstChild.innerHTML.split('-')[0] == annee && lesLignes[a].childNodes[indCol].firstChild.innerHTML.split('-')[1] == mois + 1) {
+					cpt % 2 == 0 ? lesLignes[a].className = 'lignePaire' : lesLignes[a].className = 'ligneImpaire';
+				} else {
+					lesLignes[a].className = "ligneCache";
+				}
+			} catch(err) {/*alert("Erreur dans enveloppeTableMois:"+a+" "+indCol+" "+lesLignes[a].childNodes[indCol].innerHTML);*/
+			}
 			cpt++;
 		}
 
@@ -1595,7 +1617,7 @@ function enveloppeTableMois(tableId, annee,mois, indCol) {
 	videNoeud(tableId + "_divOpt");
 	divOpt = document.getElementById(tableId + "_divOpt");
 	divNav = document.createElement('DIV');
-	divNav.className="divNav";
+	divNav.className = "divNav";
 	divOpt.appendChild(divNav);
 	trans = new Array();
 	trans[0] = tableId;
@@ -1609,25 +1631,25 @@ function enveloppeTableMois(tableId, annee,mois, indCol) {
 
 	aG.onclick = (function(trans) {
 		return function() {
-			enveloppeTableMois(trans[0], trans[2]==0?trans[1]-1:trans[1],((trans[1]*12)+trans[2] - 1)%12, trans[3]);
+			enveloppeTableMois(trans[0], trans[2] == 0 ? trans[1] - 1 : trans[1], ((trans[1] * 12) + trans[2] - 1) % 12, trans[3]);
 		};
 	})(trans);
 
 	pOpt = document.createElement('h2');
-	pOpt.innerHTML = moisDAnnee[mois]+" "+annee;
+	pOpt.innerHTML = moisDAnnee[mois] + " " + annee;
 
 	aD = document.createElement('DIV');
 	aD.innerHTML = '>>';
 	aD.className = 'versDroite';
 	aD.onclick = (function(trans) {
 		return function() {
-			enveloppeTableMois(trans[0], trans[2]==11?trans[1]+1:trans[1],((trans[1]*12)+trans[2] + 1)%12, trans[3]);
+			enveloppeTableMois(trans[0], trans[2] == 11 ? trans[1] + 1 : trans[1], ((trans[1] * 12) + trans[2] + 1) % 12, trans[3]);
 		};
 	})(trans);
 
-		divNav.appendChild(aG);
-		divNav.appendChild(pOpt);
-		divNav.appendChild(aD);
+	divNav.appendChild(aG);
+	divNav.appendChild(pOpt);
+	divNav.appendChild(aD);
 
 }
 

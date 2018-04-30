@@ -45,6 +45,7 @@ mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 		while($rangSel = mysqli_fetch_assoc($resultSelCam)){
 		$cams[] = $rangSel;	
 			$cams[$cptCams]['memoire']=round($rangSel['memoire']/1000000);
+			$cams[$cptCams]['camId']=$rangSel['camId'];
 			if((time()-strtotime($rangSel['dernierMaJ']))>3600&&($rangSel['codeEtat']=='10')){
 				$cams[$cptCams]['codeEtat']='30';
 				

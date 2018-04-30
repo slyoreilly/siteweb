@@ -111,6 +111,7 @@ tl_bouton_Calendrier="Calendrier";
 tl_bouton_Annuler="Annuler";
 tl_bouton_OK="OK";
 tl_bouton_Abonner="Abonner";
+tl_bouton_Desabonner="Désabonner";
 tl_bouton_creerEq="Créer équipe";
 tl_bouton_creerSai="Créer saison";
 tl_bouton_creerJou="Créer joueur";
@@ -173,8 +174,14 @@ tl_match_Motif = "Motif";
 tl_match_titreTabPun = "Sommaire des punitions";
 tl_match_Resume ="Résumé";
 tl_match_Penalites ="Pénalités";
+tl_match_Reussi ="Réussi";
+tl_match_Manque ="Manqué";
 
 		tl_match_Fusillade ="Fusillade";
+		tl_match_corrigePresence = "Corriger les alignements";
+tl_match_ajouteBut = "Ajouter un but";
+tl_match_ajouteFusillade = "Ajouter un évènement de fusillade";
+tl_match_avertissementTrouvePasJoueur = "Vous ne trouvez pas votre joueur? Fermez cette fenêtre et aller dans Corriger les alignements";
 
 ///////////// Resultats.html
 
@@ -327,6 +334,7 @@ tl_ges_Regulier = "Régulier";
 tl_ges_Serie = "Série";
 tl_ges_listeEq = "Liste des équipes";
 tl_ges_abonEq= "Abonner cette équipe";
+tl_ges_desabonEq= "Désabonner cette équipe";
 tl_ges_typeSaison= "Type de saison: ";
 
 tl_ges_gesHoraire = "Gérer l'horaire";
@@ -346,7 +354,7 @@ tl_ges_desSaisons = "La saison actuelle se termine le ";
 
 tl_ges_gesEquipes  = "Gérer les équipes";
 tl_ges_noEquipeAbon =  "Il n'y a pas d'équipes abonnés à cette saison";
-tl_ges_noEquipeLigue = "Il n'y a pas d'équipes associées à cette ligue."
+tl_ges_noEquipeLigue = "Il n'y a pas d'équipes associées à cette ligue.";
 tl_ges_desEquipes = " équipes abonnées à cette saison.";
 tl_ges_desEquipesLigue = " équipes associées à cette ligue.";
 

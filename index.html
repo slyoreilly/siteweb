@@ -16,14 +16,34 @@
 		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<style>
-			a {
-				color: #8DBB22;
-			}
-		</style>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+		
 		<script type="text/javascript" charset="utf-8">
 			gereLangue();
+			</script>
+<style>
+            a {
+                color: #8DBB22;
+            }
+            @media only screen and (max-width: 500px) {
+                #divDroite {
+                    display:none;
+                }
+                #divCentrale {
+                   width: 100%;
+                }
+                #divIndex1 {
+                    width:100%;
+                }
+                #divIndex2 {
+                    width:100%;
+                }
+                
+                }
 
+            
+        </style>
+                <script type="text/javascript" charset="utf-8">
 			function faitDivIndex1() {
 				// ;
 				//
@@ -57,7 +77,7 @@ $( document ).ready(function() {
 				inBulle2.innerHTML = window.tl_indexBulle2;*/
 				
 				$('#divCentrale').css('display','table')
-				$('#divIndex1').css('width','40%');
+				//$('#divIndex1').css('width','40%');
 				$('#divIndex2').append($('<h3 id="rechercheRapide"></h3>').text("Recherche rapide"));
 				$('#divIndex2').append($('<div class="boiteRecherche" id="IDL"></div>').append($('<p></p>').attr("id","titreLigue").text('Ligue')).append($('<input></input>').attr("type", "text").attr('id', 'recherche-ligue')));
 				$('#divIndex2').append($('<div class="boiteRecherche" id="IDJ"></div>').append($('<p></p>').attr("id","titreJoueur").text('Joueur')).append($('<input></input>').attr("type", "text").attr('id', 'recherche-joueur')));

@@ -24,7 +24,9 @@ if (!mysql_select_db($database))
 $paramsJSON = $_POST['params'];
 $heure = $_POST['heure'];
 $params = json_decode($paramsJSON,true);
-$dossier=$params['telId'];
+$mydate=getdate(date("U"));
+//echo "$mydate[weekday], $mydate[month] $mydate[mday], $mydate[year]";
+$dossier=$params['telId'].'/'. $mydate[year].'_'.$mydate[mon].'_'.$mydate[mday];
 if($dossier==null){
 	$dossier = 'LostNfound';
 }
@@ -50,8 +52,8 @@ if(!get_magic_quotes_gpc())
  $options = array('ftp' => array('overwrite' => true));
  $stream = stream_context_create($options);
  
- if (!is_dir($dossier)) {
-    mkdir('../monitoring/'.$dossier,0777);         
+ if (!is_dir('../monitoring/'.$dossier)) {
+    mkdir('../monitoring/'.$dossier,0777,true);         
 }
  
  //file_put_contents('../monitoring/'.$dossier.'/'.$fileName,'+-+-+',0,$stream); 

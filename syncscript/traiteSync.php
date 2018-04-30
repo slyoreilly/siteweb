@@ -3,6 +3,12 @@ $db_host="localhost";
 $db_user="syncsta1_u01";
 $db_pwd="test";
 
+////////////////////////////////////////////////////////
+//  TraiteSync est la fonction principale appelée par l'app SyncStats
+//  pour à la fois télécharger les données des ligues et téléverser le contenu du téléphone.
+
+
+
 $database = 'syncsta1_900';
 $tableEq = 'TableEquipe';
 $tableLigue = 'Ligue';
@@ -12,7 +18,8 @@ $tableAbon = 'AbonnementLigue';
 $tableUser = 'TableUser';
 
 $username = $_POST['username'];
-
+$deviceId = $_POST['deviceId'];
+$versionCode = $_POST['versionCode'];
 $syncJ = $_POST['syncJ'];
 $syncMav = $_POST['syncMav'];
 $transE = $_POST['transE'];
@@ -320,7 +327,16 @@ $syncOK = array();
 $extra = array();
 $extra['info0']=$controlTemps;
 
+if(35>(int)$versionCode){
+		$extra['DM']=1;
 include 'dechargeMatchs.php';
+
+}
+else{
+	$extra['DM']=2;
+	include 'dechargeMatchs_2.php';
+$extra['DM']=$DMX;
+}
 array_push($controlTemps,time());
 //include('../scriptsphp/actualiseMatchs.php');			// ActualiseMAtch a emmener de gros problème de répétition des entrées...
 

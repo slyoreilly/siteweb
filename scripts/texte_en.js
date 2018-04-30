@@ -109,6 +109,7 @@ tl_bouton_Choisir="Choose";
 tl_bouton_Calendrier="Calendar";
 tl_bouton_Annuler="Cancel";
 tl_bouton_Abonner="Subscribe";
+tl_bouton_Desabonner="Unsubscribe";
 tl_bouton_creerEq="Create team";
 tl_bouton_creerSai="Create season";
 tl_bouton_creerJou="Create player";
@@ -164,7 +165,7 @@ tl_bc_l1e4 = "Free Professionnal Grade Web Site";
 //////////// Match.html
 
 tl_match_aucun = "None";
-tl_match_Aucune = "None"
+tl_match_Aucune = "None";
 tl_match_Equipe = "Team";
 tl_match_Marqueur = "Goal";
 tl_match_Passe1 = "1st Assist";
@@ -180,6 +181,14 @@ tl_match_titreTabPun = "Penalty Summary";
 		tl_match_Fusillade ="Shoot Out";
 		tl_match_Resume ="Summary";
 		tl_match_Penalites ="Penalties";
+tl_match_Reussi ="Succeed";
+tl_match_Manque ="Missed";
+
+tl_match_corrigePresence = "Fix Line-ups";
+tl_match_ajouteBut = "Add a goal";
+tl_match_ajouteFusillade = "Add a shootout event";
+tl_match_avertissementTrouvePasJoueur = "Don't see your player? Close this screen and go in Fix Line-ups";
+
 
 
 ///////////// Resultats.html
@@ -336,6 +345,7 @@ tl_ges_Regulier = "Regular";
 tl_ges_Serie = "Series";
 tl_ges_listeEq = "Team List";
 tl_ges_abonEq= "Subscribe this team";
+tl_ges_desabonEq= "Unsubscribe this team";
 tl_ges_typeSaison= "Season type: ";
 
 tl_ges_gesHoraire = "Manage Schedule";

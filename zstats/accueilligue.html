@@ -1,48 +1,62 @@
 <!DOCTYPE html>
-<?xml version="1.0" encoding="utf-8"?>
 <html>
-	<head>
-		<title>SyncStats</title>
-		<link rel="shortcut icon" href="/favicon.ico" />
-				<link rel='stylesheet' type='text/css' href='/style/visionneuse.css' />
-		<link rel='stylesheet' type='text/css' href='/style/jquery.raty.css' />
-		<link rel="stylesheet" type='text/css' href="/style/jquery.mCustomScrollbar.css">
+    <head>
+        <meta charset="utf-8">
+        <title>SyncStats</title>
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <!--link rel='stylesheet' type='text/css' href='/style/visionneuse.css' />
+        <link rel='stylesheet' type='text/css' href='/style/jquery.raty.css' />
+        <link rel="stylesheet" type='text/css' href="/style/jquery.mCustomScrollbar.css"-->
 
-		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
-		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
-		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
-		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
-		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
-		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
-		
-		<!--script src="/scripts/jquery.js"></script-->
+        <script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+        <script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+        <!--script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script-->
+        <script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
 
-		<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
-		
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<script type="text/javascript" charset="utf-8">
-			gereLangue();
-		</script>
-		<script src="/scripts/jquery.timeago.js" type="text/javascript" charset="utf-8"></script>
-				<script src="/scripts/jquery.mCustomScrollbar.js"></script>
-		<script src="/scripts/visionneuse.js"></script>
-		<script src="/scripts/jquery.raty.js"></script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+        <!--script src="/scripts/jquery.js"></script-->
 
-		<script type="text/javascript" charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+          <!--link href="/style/fontawesome-all.css" rel="stylesheet" type="text/css"-->
+          <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+        <link rel="stylesheet" href="/style/general_bootcompat.css" type="text/css">
+        <script type="text/javascript" charset="utf-8">
+		//	gereLangue();
+			          langue = (getCookie("langue")==undefined)?"fr":getCookie("langue");
+// document.write('<script type="text/javascript" charset="utf-8" src="/scripts/texte_' + langue + '.js"><!--/script>');
+
+        </script>
+        <script type="text/javascript" charset="utf-8" src="/scripts/texte_fr.js"></script>
+        <script src="/scripts/jquery.timeago.js" type="text/javascript" charset="utf-8"></script>
+        <!----script src="/scripts/jquery.mCustomScrollbar.js"></script>
+        <script src="/scripts/visionneuse.js"></script>
+        <script src="/scripts/jquery.raty.js"></script-->
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <style>
+        #divHaut {
+        position:relative;
+        }
+        </style>
+
+        <script type="text/javascript" charset="utf-8">
 			jQuery(document).ready(function() {
 				jQuery("abbr.timeago").timeago();
 			});
 
-		</script>
-		<script type="text/javascript" charset="utf-8">
-		function getInfoJoueurs(ligueId){
-				
-								var requete_ajax = new XMLHttpRequest();
+        </script>
+        <script type="text/javascript" charset="utf-8">
+			function getInfoJoueurs(ligueId) {
+
+				var requete_ajax = new XMLHttpRequest();
 
 				var url = "/stats2/joueursDansLigue2JSON.php";
-				//		alert(url);
+				//      alert(url);
 				requete_ajax.open('POST', url, true);
-				params="ligueId='"+ligueId+"'";
+				params = "ligueId='" + ligueId + "'";
 				//alert("Params a setMatchAVenir" + params);
 				//Send the proper header information along with the request
 				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
@@ -53,23 +67,21 @@
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 						lesJoueurs = eval('(' + requete_ajax.responseText + ')');
 						window.loadVidsCond++;
-							if(loadVidsCond>=nbVidsCond){
+						if (loadVidsCond >= nbVidsCond) {
 							afficheVideos(0, 0);
-							}
+						}
 					}
-				}
+				};
 				requete_ajax.send(params);
-				
-			}
-			
 
-		
+			}
+
 			function getInfoLigue(ligueId) {
-				//	return function(){
+				//  return function(){
 				var requete_ajax = new XMLHttpRequest();
 
 				var url = "/stats2/infoLigue2JSON.php";
-				//	alert(url);
+				//  alert(url);
 				var params = "ligueId=" + window.ligueId;
 				//alert(params);
 				requete_ajax.open('POST', url, true);
@@ -80,20 +92,20 @@
 
 				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-						//		alert(requete_ajax.responseText);
-						//			window.location.reload();
+						//      alert(requete_ajax.responseText);
+						//          window.location.reload();
 						var tmpStr = eval('(' + requete_ajax.responseText + ')');
 						remplirOuiJetInfoLigue(tmpStr);
 
 						return requete_ajax.responseText;
 					}
-					//		else{alert("Petit problème de développement");}
-				}
+					//      else{alert("Petit problème de développement");}
+				};
 				requete_ajax.send(params);
 				//alert(requete_ajax.responseText);
 				var pourMAJ = new Array();
 
-				//	}
+				//  }
 			}
 
 			function getSommaireMatchPourVideo(matchId, mStrV) {
@@ -107,11 +119,11 @@
 				url = url + "?" + params;
 				//alert(url);
 				requete_ajax.open('POST', url, true);
-				//				requete_ajax.send(null);
+				//              requete_ajax.send(null);
 
 				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				//				requete_ajax.setRequestHeader("Content-length", params.length);
-				//				requete_ajax.setRequestHeader("Connection", "close");
+				//              requete_ajax.setRequestHeader("Content-length", params.length);
+				//              requete_ajax.setRequestHeader("Connection", "close");
 
 				requete_ajax.send(params);
 
@@ -122,7 +134,7 @@
 						//alert(requete_ajax.responseText);
 
 						function surVideoChoisi() {
-							//							alert(strV);
+							//                          alert(strV);
 							videNoeud('ficheVid');
 							document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + strV.nomFichier
 							vidSVC = document.getElementById('vid1');
@@ -185,22 +197,22 @@
 
 							} else {
 								switch(parseInt(eval)) {
-									case 1:
-										$(".etoile1").css('color', '#0000FF');
-										break;
-									case 2:
-										$('.etoile1,.etoile2').css('color', '#0000FF');
+								case 1:
+									$(".etoile1").css('color', '#0000FF');
+									break;
+								case 2:
+									$('.etoile1,.etoile2').css('color', '#0000FF');
 
-										break;
-									case 3:
-										$('.etoile1,.etoile2,.etoile3').css('color', '#0000FF');
-										break;
-									case 4:
-										$(".etoile1,.etoile2,.etoile3,.etoile4").css('color', '#0000FF');
-										break;
-									case 5:
-										$('[class*=etoile]').css('color', '#0000FF');
-										break;
+									break;
+								case 3:
+									$('.etoile1,.etoile2,.etoile3').css('color', '#0000FF');
+									break;
+								case 4:
+									$(".etoile1,.etoile2,.etoile3,.etoile4").css('color', '#0000FF');
+									break;
+								case 5:
+									$('[class*=etoile]').css('color', '#0000FF');
+									break;
 
 								}
 							}
@@ -239,7 +251,7 @@
 						$(dial).prepend('<div id="divEnteteVid"></div>');
 
 						mVid = document.createElement('VIDEO');
-						//						alert(mVid);
+						//                      alert(mVid);
 						mVid.videoWidth = 320;
 						mVid.videoHeight = 240;
 						mVid.controls = "controls";
@@ -257,27 +269,27 @@
 
 						if (mVid.error) {
 							switch (mVid.error.code) {
-								case MEDIA_ERR_ABORTED:
-									alert("You stopped the video.");
-									break;
-								case MEDIA_ERR_NETWORK:
-									alert("Network error - please try again later.");
-									break;
-								case MEDIA_ERR_DECODE:
-									alert("Video is broken..");
-									break;
-								case MEDIA_ERR_SRC_NOT_SUPPORTED:
-									alert("Sorry, your browser can't play this video.");
-									break;
+							case MEDIA_ERR_ABORTED:
+								alert("You stopped the video.");
+								break;
+							case MEDIA_ERR_NETWORK:
+								alert("Network error - please try again later.");
+								break;
+							case MEDIA_ERR_DECODE:
+								alert("Video is broken..");
+								break;
+							case MEDIA_ERR_SRC_NOT_SUPPORTED:
+								alert("Sorry, your browser can't play this video.");
+								break;
 							}
 						}
 
 					}
-				}
+				};
 			}
 
 			function televerseFic() {
-				//	return function(){
+				//  return function(){
 				var requete_ajax = new XMLHttpRequest();
 
 				var url = "/admin/enregistreFichier.php";
@@ -293,7 +305,7 @@
 
 						return requete_ajax.responseText;
 					}
-				}
+				};
 				requete_ajax.send(formData);
 			}
 
@@ -315,10 +327,10 @@
 
 				params = strTable + '&' + strValeur + '&' + strMode;
 				//requete_ajax.send(null);
-				//	return requete_ajax.responseText;
+				//  return requete_ajax.responseText;
 
 				requete_ajax.open('POST', url, true);
-				//				requete_ajax.send(null);
+				//              requete_ajax.send(null);
 
 				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 				requete_ajax.setRequestHeader("Content-length", params.length);
@@ -327,7 +339,7 @@
 				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 
-						//									alert(requete_ajax.responseText);
+						//                                  alert(requete_ajax.responseText);
 						window.location.reload(true);
 						// requete_ajax.responseText;
 
@@ -343,9 +355,9 @@
 
 				var url = "/scriptsphp/getListeImage.php";
 
-				//	alert(url);
+				//  alert(url);
 				var params = "proprio=" + ligueId + "&typeProprio=ligue";
-				//		alert(params);
+				//      alert(params);
 				requete_ajax.open('POST', url, true);
 
 				//Send the proper header information along with the request
@@ -353,14 +365,14 @@
 				requete_ajax.setRequestHeader("Content-length", params.length);
 				requete_ajax.setRequestHeader("Connection", "close");
 
-				//		alert('yo');
+				//      alert('yo');
 				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-						//		alert(requete_ajax.responseText);
+						//      alert(requete_ajax.responseText);
 						listeImages = eval('(' + requete_ajax.responseText + ')');
 						defilePhotos();
 					}
-				}
+				};
 				requete_ajax.send(params);
 			}
 
@@ -381,14 +393,14 @@
 
 				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-						//	alert(requete_ajax.responseText);
+						//  alert(requete_ajax.responseText);
 						try {
 							messages = eval('(' + requete_ajax.responseText + ')');
 							rempliTableau(messages);
 						} catch(err) {
 						}
 					}
-				}
+				};
 			}
 
 			function getVideos() {
@@ -408,21 +420,22 @@
 
 				requete_ajax.onreadystatechange = /*(*/
 				function() {
-					//					return function() {
+					//                  return function() {
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-						//	alert(requete_ajax.responseText);
+						//  alert(requete_ajax.responseText);
 						try {
 							videos = eval('(' + requete_ajax.responseText + ')');
 							window.loadVidsCond++;
-							if(loadVidsCond>=nbVidsCond){
-							afficheVideos(0, 0);
+							if (loadVidsCond >= nbVidsCond) {
+								afficheVideos(0, 0);
 							}
 						} catch(err) {
 						}
 
 					}//fin if request_state...
-					//					};  // fin return function
-				}//);
+					//                  };  // fin return function
+				};
+				//);
 			}
 
 			function getVideosParBut() {
@@ -442,165 +455,156 @@
 
 				requete_ajax.onreadystatechange = /*(*/
 				function() {
-					//					return function() {
+					//                  return function() {
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-						//	alert(requete_ajax.responseText);
+						//  alert(requete_ajax.responseText);
 						try {
 							videos = eval('(' + requete_ajax.responseText + ')');
 							//alert(JSON.stringify(videos));
 							window.loadVidsCond++;
-							if(loadVidsCond>=nbVidsCond){
-							afficheVideos(0, 0);
-							//alert('premier afficheVideo');
+							if (loadVidsCond >= nbVidsCond) {
+								afficheVideos(0, 0);
+								//alert('premier afficheVideo');
 							}
 						} catch(err) {
 						}
 
 					}//fin if request_state...
-					//					};  // fin return function
-				}//);
+					//                  };  // fin return function
+				};
+				//);
 			}
 
-
 			function afficheVideos(type, mPage) {
-				page=mPage;
+				page = mPage;
 				limit = 15;
 				switch(type) {
-					case 0:
+				case 0:
 					$('#corpsTabVidsTop .rangee').remove();
-						for (var i = page * limit; i < window.videos.topVideos.length && i < limit * (page + 1); i++) {
-							mDate = new Date(parseInt(window.videos.topVideos[i].chrono));
-							mois = parseInt(mDate.getMonth()+1)<10?"0"+parseInt(mDate.getMonth()+1):parseInt(mDate.getMonth()+1);
-							jour = parseInt(mDate.getDate())<10?"0"+parseInt(mDate.getDate()):parseInt(mDate.getDate());
-							j1 =getJoueurDeJoueurId(window.videos.topVideos[i].tag1);
-							joueur = j1!=null? j1.nom:"";
-							
-							$('#corpsTabVidsTop').append($('<div></div').attr("class", "cliquable rangee").append($('<div></div').text(mDate.getFullYear()+"-"+mois+"-"+jour),$('<div></div').text(joueur),  $('<div></div').text(window.videos.topVideos[i].eval)).on("click", {
-								i : i
-							}, function(event) {
-							//	getSommaireMatchPourVideo(window.videos.topVideos[event.data.i].nomMatch, window.videos.topVideos[event.data.i]);
-							//	$(this).css("cursor", "progress");
+					for (var i = page * limit; i < window.videos.topVideos.length && i < limit * (page + 1); i++) {
+						mDate = new Date(parseInt(window.videos.topVideos[i].chrono));
+						mois = parseInt(mDate.getMonth() + 1) < 10 ? "0" + parseInt(mDate.getMonth() + 1) : parseInt(mDate.getMonth() + 1);
+						jour = parseInt(mDate.getDate()) < 10 ? "0" + parseInt(mDate.getDate()) : parseInt(mDate.getDate());
+						j1 = getJoueurDeJoueurId(window.videos.topVideos[i].tag1);
+						joueur = j1 != null ? j1.nom : "";
+
+						$('#corpsTabVidsTop').append($('<div></div').attr("class", "cliquable rangee").append($('<div></div').text(mDate.getFullYear() + "-" + mois + "-" + jour), $('<div></div').text(joueur), $('<div></div').text(window.videos.topVideos[i].eval)).on("click", {
+							i : i
+						}, function(event) {
+							//  getSommaireMatchPourVideo(window.videos.topVideos[event.data.i].nomMatch, window.videos.topVideos[event.data.i]);
+							//  $(this).css("cursor", "progress");
 							vidIndex = 0;
 
-									strV = window.videos.topVideos[event.data.i].video[0];
-									monOverlay = document.createElement('DIV');
-									monOverlay.id = "ecranSombre";
-									document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
-									$('.media-box').show();
-									//document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + strV.nomFichier;
-									$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
-										"opacity" : "1",
-										"position" : "fixed",
-										"left" : "100px",
-										"top" : "100px",
-										"z-index" : "2000"
-									}));
-									
-
-									getInfoVid(strV.fic, window.videos.topVideos[event.data.i]);
-
+							strV = window.videos.topVideos[event.data.i].video[0];
+							monOverlay = document.createElement('DIV');
+							monOverlay.id = "ecranSombre";
+							document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
+							$('.media-box').show();
+							//document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + strV.nomFichier;
+							$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
+								"opacity" : "1",
+								"position" : "fixed",
+								"left" : "100px",
+								"top" : "100px",
+								"z-index" : "2000"
 							}));
 
-						}
+							getInfoVid(strV.fic, window.videos.topVideos[event.data.i]);
 
-						break;
-					case 1:
+						}));
+
+					}
+
+					break;
+				case 1:
 					$('#corpsTabVidsPop .rangee').remove();
-						var jVidsOk = page * limit;
-						for (var i = page * limit; i < window.videos.popVideos.length && i < limit * (page + 1); i++) {
-							while (parseInt(window.videos.popVideos[jVidsOk].angleOk) < 0 && jVidsOk < window.videos.popVideos.length) {
-								jVidsOk++;
-							}
-							if (jVidsOk < window.videos.popVideos.length) {
-								mDate = new Date(parseInt(window.videos.popVideos[jVidsOk].chrono));
-							mois = parseInt(mDate.getMonth()+1)<10?"0"+parseInt(mDate.getMonth()+1):parseInt(mDate.getMonth()+1);
-							jour = parseInt(mDate.getDate())<10?"0"+parseInt(mDate.getDate()):parseInt(mDate.getDate());
-							j1 =getJoueurDeJoueurId(window.videos.popVideos[jVidsOk].tag1);
-							joueur = j1!=null? j1.nom:"";
-								$('#corpsTabVidsPop').append($('<div></div').attr("class", "cliquable rangee").append($('<div></div').text(mDate.getFullYear()+"-"+mois+"-"+jour),$('<div></div').text(joueur), $('<div></div').text(window.videos.popVideos[jVidsOk].nbVues)).on("click", {
-									i : jVidsOk
-								}, function(event) {
-									
-									
-									vidIndex = 0;
-
-									strV = window.videos.popVideos[event.data.i].video[0];
-									monOverlay = document.createElement('DIV');
-									monOverlay.id = "ecranSombre";
-									document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
-									$('.media-box').show();
-									//document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + strV.nomFichier;
-									$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
-										"opacity" : "1",
-										"position" : "fixed",
-										"left" : "100px",
-										"top" : "100px",
-										"z-index" : "2000"
-									}));
-									
-
-									getInfoVid(strV.fic, window.videos.popVideos[event.data.i]);
-
-								}));
-								jVidsOk++;
-							}
+					var jVidsOk = page * limit;
+					for (var i = page * limit; i < window.videos.popVideos.length && i < limit * (page + 1); i++) {
+						while (parseInt(window.videos.popVideos[jVidsOk].angleOk) < 0 && jVidsOk < window.videos.popVideos.length) {
+							jVidsOk++;
 						}
-
-						break;
-					case 2:
-										$('#corpsTabVidsNew .rangee').remove();
-
-						for (var i = page * limit; i < window.videos.recentsVideos.length && i < limit * (page + 1); i++) {
-							mDate = new Date(parseInt(window.videos.recentsVideos[i].chrono));
-							mois = parseInt(mDate.getMonth()+1)<10?"0"+parseInt(mDate.getMonth()+1):parseInt(mDate.getMonth()+1);
-							jour = parseInt(mDate.getDate())<10?"0"+parseInt(mDate.getDate()):parseInt(mDate.getDate());
-							j1 =getJoueurDeJoueurId(window.videos.recentsVideos[i].tag1);
-							joueur = j1!=null? j1.nom:"";
-							$('#corpsTabVidsNew').append($('<div></div').attr("class", "cliquable rangee").append($('<div></div').text(mDate.getFullYear()+"-"+mois+"-"+jour),$('<div></div').text(joueur),  $('<div></div').text(jQuery.timeago(mDate))).on("click", {
-								i : i
+						if (jVidsOk < window.videos.popVideos.length) {
+							mDate = new Date(parseInt(window.videos.popVideos[jVidsOk].chrono));
+							mois = parseInt(mDate.getMonth() + 1) < 10 ? "0" + parseInt(mDate.getMonth() + 1) : parseInt(mDate.getMonth() + 1);
+							jour = parseInt(mDate.getDate()) < 10 ? "0" + parseInt(mDate.getDate()) : parseInt(mDate.getDate());
+							j1 = getJoueurDeJoueurId(window.videos.popVideos[jVidsOk].tag1);
+							joueur = j1 != null ? j1.nom : "";
+							$('#corpsTabVidsPop').append($('<div></div').attr("class", "cliquable rangee").append($('<div></div').text(mDate.getFullYear() + "-" + mois + "-" + jour), $('<div></div').text(joueur), $('<div></div').text(window.videos.popVideos[jVidsOk].nbVues)).on("click", {
+								i : jVidsOk
 							}, function(event) {
+
 								vidIndex = 0;
 
-									strV = window.videos.recentsVideos[event.data.i].video[0];
-									monOverlay = document.createElement('DIV');
-									monOverlay.id = "ecranSombre";
-									document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
-									$('.media-box').show();
-									//document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + strV.nomFichier;
-									$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
-										"opacity" : "1",
-										"position" : "fixed",
-										"left" : "100px",
-										"top" : "100px",
-										"z-index" : "2000"
-									}));
-									
+								strV = window.videos.popVideos[event.data.i].video[0];
+								monOverlay = document.createElement('DIV');
+								monOverlay.id = "ecranSombre";
+								document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
+								$('.media-box').show();
+								//document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + strV.nomFichier;
+								$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
+									"opacity" : "1",
+									"position" : "fixed",
+									"left" : "100px",
+									"top" : "100px",
+									"z-index" : "2000"
+								}));
 
-									getInfoVid(strV.fic, window.videos.recentsVideos[event.data.i]);
-								
-								
-								
-								
-								
-								//getSommaireMatchPourVideo(window.videos.recentsVideos[event.data.i].nomMatch, window.videos.recentsVideos[event.data.i]);
-								//$(this).css("cursor", "progress");
+								getInfoVid(strV.fic, window.videos.popVideos[event.data.i]);
+
 							}));
+							jVidsOk++;
 						}
+					}
 
-						break;
+					break;
+				case 2:
+					$('#corpsTabVidsNew .rangee').remove();
+
+					for (var i = page * limit; i < window.videos.recentsVideos.length && i < limit * (page + 1); i++) {
+						mDate = new Date(parseInt(window.videos.recentsVideos[i].chrono));
+						mois = parseInt(mDate.getMonth() + 1) < 10 ? "0" + parseInt(mDate.getMonth() + 1) : parseInt(mDate.getMonth() + 1);
+						jour = parseInt(mDate.getDate()) < 10 ? "0" + parseInt(mDate.getDate()) : parseInt(mDate.getDate());
+						j1 = getJoueurDeJoueurId(window.videos.recentsVideos[i].tag1);
+						joueur = j1 != null ? j1.nom : "";
+						$('#corpsTabVidsNew').append($('<div></div').attr("class", "cliquable rangee").append($('<div></div').text(mDate.getFullYear() + "-" + mois + "-" + jour), $('<div></div').text(joueur), $('<div></div').text(jQuery.timeago(mDate))).on("click", {
+							i : i
+						}, function(event) {
+							vidIndex = 0;
+
+							strV = window.videos.recentsVideos[event.data.i].video[0];
+							monOverlay = document.createElement('DIV');
+							monOverlay.id = "ecranSombre";
+							document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
+							$('.media-box').show();
+							//document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + strV.nomFichier;
+							$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
+								"opacity" : "1",
+								"position" : "fixed",
+								"left" : "100px",
+								"top" : "100px",
+								"z-index" : "2000"
+							}));
+
+							getInfoVid(strV.fic, window.videos.recentsVideos[event.data.i]);
+
+							//getSommaireMatchPourVideo(window.videos.recentsVideos[event.data.i].nomMatch, window.videos.recentsVideos[event.data.i]);
+							//$(this).css("cursor", "progress");
+						}));
+					}
+
+					break;
 
 				}
 
 			}
-			
-			function getJoueurDeJoueurId(joueurId){
-				for(var a=0; a<lesJoueurs.joueurs.length;a++){
-					if(lesJoueurs.joueurs[a].id==joueurId)
+
+			function getJoueurDeJoueurId(joueurId) {
+				for (var a = 0; a < lesJoueurs.joueurs.length; a++) {
+					if (lesJoueurs.joueurs[a].id == joueurId)
 						return lesJoueurs.joueurs[a];
 				}
 				return null;
 			}
-
 
 			function actualiseFil(parentId) {
 				var requete_ajax = new XMLHttpRequest();
@@ -619,7 +623,7 @@
 				requete_ajax.onreadystatechange = (function(parentId) {
 					return function() {
 						if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-							//	alert(requete_ajax.responseText);
+							//  alert(requete_ajax.responseText);
 							//try{
 							vieuxMes = window.messages;
 							vieuPar = parentId;
@@ -662,7 +666,7 @@
 				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 
-						//					alert(requete_ajax.responseText);
+						//                  alert(requete_ajax.responseText);
 						document.getElementsByTagName("textarea")[0].value = "Message envoyé!";
 						document.getElementsByTagName("textarea")[0].readonly = true;
 
@@ -672,7 +676,7 @@
 						//getMessages();
 
 					}
-				}
+				};
 				requete_ajax.send(params);
 
 			}
@@ -700,11 +704,11 @@
 					return function() {
 						if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 
-							//					alert(requete_ajax.responseText);
+							//                  alert(requete_ajax.responseText);
 							document.getElementsByTagName("textarea")[0].value = "Message envoyé!";
 							document.getElementsByTagName("textarea")[0].readonly = true;
 
-							//				document.getElementById("boutonEnvoie").onclick=function(){};
+							//              document.getElementById("boutonEnvoie").onclick=function(){};
 							babillard();
 							actualiseFil(parentId);
 							//getMessages();
@@ -715,6 +719,7 @@
 				requete_ajax.send(params);
 
 			}
+			
 
 			function boiteMatch(a) {
 				var requete_ajax = new XMLHttpRequest();
@@ -726,54 +731,40 @@
 				params = strMatch + '&' + strLigue;
 				url = url + "?" + params;
 
-				//		alert(url+'?'+param);
+				//      alert(url+'?'+param);
 				//requete_ajax.send(null);
-				//	return requete_ajax.responseText;
+				//  return requete_ajax.responseText;
 
 				requete_ajax.open('POST', url, true);
-				//				requete_ajax.send(null);
+				//              requete_ajax.send(null);
 
 				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 				requete_ajax.setRequestHeader("Content-length", params.length);
 				requete_ajax.setRequestHeader("Connection", "close");
 
 				requete_ajax.send(params);
-
 				requete_ajax.onreadystatechange = (function(a) {
 					return function() {
 						if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 
 							infoMatch = eval('(' + requete_ajax.responseText + ')');
 							if (infoMatch.matchId != "") {
+								//divBoiteMatch =
+								//                              divBoiteMatch.className = 'boiteMatchHaut';
+								//                              divBoiteMatch.style.position = "absolute";
+								//                              calcW = a * 100 / window.nbMatchs;
+								//                              divBoiteMatch.style.left = calcW + "%";
 
-								//
-								divBoiteMatch = document.createElement('DIV');
-								divBoiteMatch.className = 'boiteMatchHaut';
-								divBoiteMatch.style.position = "absolute";
-								calcW = a * 100 / window.nbMatchs;
-								divBoiteMatch.style.left = calcW + "%";
-								document.getElementById('contMatchHaut').appendChild(divBoiteMatch);
-								divLigne = document.createElement('DIV');
-								divLigne.className = "ligneScore";
-
-								divBloc = document.createElement('DIV');
-								divBloc.className = "blocScore";
-
-								texte = str2humain(infoMatch.date.split(' ')[0]);
-								//pDateMatch= $('<p></p>').text("123").addClass('date');
-								pDateMatch= $('<p></p>').text(texte).addClass('date');
-								//pDateMatch.innerHTML = ;
-								//$(pDateMatch)
-								
+								$('#contMatchHaut').append($('<div></div>').attr('id', 'divBoiteMatch_'+a).addClass(classeCol+' boiteMatchHaut container-fluid'));
+								//                              document.getElementById('contMatchHaut').appendChild(divBoiteMatch);
+								divLigne = $('<div></div>').addClass("blocScore afficheScore");
+								strTexte2 = str2humain(infoMatch.date);
+								strTexte = strTexte2.split(' ');
+								texte = strTexte2;//[0];
 								divLogoDom = document.createElement('DIV');
-								
 
 								divLogoVis = document.createElement('DIV');
-								divLogoDom.className = "tiersGauche";
-								divLogoVis.className = "tiersDroite";
-								
-								divLogoDom.style.display = "inline";
-								divLogoVis.style.display = "inline";
+
 
 								lienImgDomJS = document.createElement('A');
 								lienImgDomJS.id = "lienImgDom";
@@ -793,770 +784,842 @@
 								divImgDom.alt = infoMatch.equipeNomDom;
 								divImgVis.alt = infoMatch.equipeNomVis;
 
-								divScore = document.createElement('DIV');
-								divScore.className = "chiffreScore tiersCentre";
-								divPDom = document.createElement('P');
-								divPVis = document.createElement('P');
-								pDash = document.createElement('P');
-								pDash.innerHTML = "-";
+								$('#divBoiteMatch_'+a).append($('<div></div>').attr("id", "divDateMatch").addClass("row").append(
+								     $('<nobr></nobr>').append($('<p></p>').text(texte).addClass('date')), $(divLigne)));
 
-								$(divBoiteMatch).append($(pDateMatch));
-								//divBoiteMatch.appendChild(pDateMatch);
-								divBoiteMatch.appendChild(divBloc);
-								divBloc.appendChild(divLigne);
-								divLigne.appendChild(divLogoDom);
+							}
+
+							if (infoMatch.statut.length > 0) {
+								divScore = $('<DIV></DIV>').addClass("chiffreScore").append($('<p></p>').text(infoMatch.equipeScoreDom), $('<p></p>').text("-"), $('<p></p>').text(infoMatch.equipeScoreVis));
+							} else {
+							    fullHeure=infoMatch.date.split(' ')[1];
+							    heure = fullHeure.split(":")[0]+":"+fullHeure.split(":")[1];
+								divScore = $('<DIV></DIV>').addClass(" ").append($('<p></p>').text(heure));
+								}
+								d1Cal = infoMatch.date.split(" ")[1];
+								d1 = d1Cal.split(":")[0] + ":" + d1Cal.split(":")[1];
+								$(divLigne).append($(divLogoDom));
 								divLogoDom.appendChild(lienImgDomJS);
 								lienImgDomJS.appendChild(divImgDom);
-								divLigne.appendChild(divScore);
-								divScore.appendChild(divPDom);
-								divScore.appendChild(pDash);
-								divScore.appendChild(divPVis);
+								$(divLigne).append($(divScore));
 
 								divLogoVis.appendChild(lienImgVisJS);
 								lienImgVisJS.appendChild(divImgVis);
-								divLigne.appendChild(divLogoVis);
-								//	lecorps = document.getElementById('mbody');
+								$(divLigne).append($(divLogoVis));
+								
+								
+								///// Emplacement de match
+								
+								$('#divBoiteMatch_'+a).append(
+								    $('<div></div>').addClass("row").append(
+								        $('<div></div>').addClass("col-sm-12 infoArena").append(
+								            $('<nobr></nobr>').append(
+								            $('<i class="fa fa-map-marker-alt"></i>'),
+								            $('<span></span>').text(" "+infoMatch.nomArena)
+								            ))
+								            ),
+								     $('<div></div>').addClass("row").append(
+                                        $('<div></div>').addClass("col-sm-12 infoArena").append(
+                                            $('<nobr></nobr>').append(
+                                            
+                                            $('<i class="fa fa-map-signs"></i>'),
+                                            $('<span></span>').text(" "+infoMatch.nomGlace)
+                                            )
+                                        ))
+								);
+								var mMatch = infoMatch.matchId;
+								//alert(mMatch);
+								$('#divBoiteMatch_'+a).on("click", function() {
+								   // alert("a");
+                                    //return function(infoMatch) {
+                                        window.location.href = "/zstats/match.html?match=" + mMatch;
+                                    //};
+                                });
+								//divBoiteMatch.onclick = ()(infoMatch.matchId);
+                               a++;
+                               if(a<maxBoitesMatchs){
+							boiteMatch(a);}
 
-								divPDom.innerHTML = infoMatch.equipeScoreDom;
-								divPVis.innerHTML = infoMatch.equipeScoreVis;
-								//	lecorps.appendChild(divLigne);
-								divBoiteMatch.onclick = (function(match) {
-									return function() {
-										window.location.href = "/zstats/match.html?match=" + match;
-									};
-								})(infoMatch.matchId);
-							}
 						}//fin du if 200
 					};
 				})(a);
 			}
 
-			function babillard() {
-				videNoeud('contBabillard');
-				parent2 = document.getElementById('contBabillard');
-				boiteEcritJS = document.createElement('TEXTAREA');
-				boiteEcritJS.rows = 2;
-				boiteEcritJS.cols = 40;
-				boiteEcritJS.value = "";
-				/*
-				 for(var a=0;a<document.getElementById('divCentrale').childNodes.length;a++)
-				 {
-				 alert(document.getElementById('divCentrale').childNodes[a].id);
-
-				 }*/
-
-				titreBab = document.createElement('H1');
-				//				titreBab.className = 'texteEmphase';
-				titreBab.innerHTML = "Mon Babillard";
-
-				parent2.appendChild(titreBab);
-
-				if (getCookie('userId') == null) {
-					parent2.appendChild(document.createTextNode('Vous devez être connecté pour pouvoir publier'));
-
-				} else {
-					parent2.appendChild(boiteEcritJS);
-					boutEnv = document.createElement('DIV');
-					boutEnv.className = "bouton_1";
-					boutEnv.id = "boutonEnvoie";
-					boutEnv.onclick = function() {
-						if (document.getElementsByTagName("textarea")[0].value.length > 0) {
-							envoieMessage();
-						}
-					};
-					boutEnv.innerHTML = "Publier";
-					parent2.appendChild(boutEnv);
-				}
-				getMessages();
-
-			}
-
-			function videos() {
-				videNoeud('contVideo');
-				parent2 = document.getElementById('contVideo');
-
-				photo = document.createElement('IMG');
-
-				$('<h1></h1>').attr("class", "texteEmphase").appendTo('#contVideo').text("Videos");
-				$('<div></div>').attr("class", "bouton_2").appendTo('#contVideo').text("Top" + String.fromCharCode(160) + "rated" + String.fromCharCode(160) + "Vids").click(function() {
-
-					$("#corpsTabVidsTop").show();
-					$("#corpsTabVidsPop").hide();
-					$("#corpsTabVidsNew").hide();
-					afficheVideos(0,0);
-
-				});
-
-				$('<div></div>').attr("class", "bouton_2").appendTo('#contVideo').text("Most" + String.fromCharCode(160) + "view" + String.fromCharCode(160) + "vids").click(function() {
-
-					$("#corpsTabVidsTop").hide();
-					$("#corpsTabVidsPop").show();
-					$("#corpsTabVidsNew").hide();
-					afficheVideos(1,0);
-					
-
-				});
-				$('<div></div>').attr("class", "bouton_2").appendTo('#contVideo').text("Newest" + String.fromCharCode(160) + "Vids").click(function() {
-
-					$("#corpsTabVidsTop").hide();
-					$("#corpsTabVidsPop").hide();
-					$("#corpsTabVidsNew").show();
-					afficheVideos(2,0);
-					
-
-				});
-				$('<div></div>').attr("id", "corpsTabVidsTop").appendTo('#contVideo').show()
-										.append($('<div></div>').attr("id", "gaucheTabVidsTop").attr("class", "spinneur").text("<").click(function() {
-											var nouvPage = window.page>0?window.page-1:0;
-											var affPage=nouvPage+1;
-											$("#pageVidTop").text("Page "+affPage);
-											afficheVideos(0,nouvPage);})).append($('<div id="pageVidTop"></div>').css("display","inline").text("Page 1"))
-										.append($('<div></div>').attr("id", "droiteTabVidsTop").attr("class", "spinneur").text(">").click(function() {
-											var nouvPage = window.page+1+1;
-											$("#pageVidTop").text("Page "+nouvPage);
-											afficheVideos(0,window.page+1);}));
-				$('<div></div>').attr("id", "corpsTabVidsPop").appendTo('#contVideo').hide()
-										.append($('<div></div>').attr("id", "gaucheTabVidsPop").attr("class", "spinneur").text("<").click(function() {
-											var nouvPage = window.page>0?window.page-1:0;
-											var affPage=nouvPage+1;
-											$("#pageVidPop").text("Page "+affPage);
-											afficheVideos(1,nouvPage);})).append($('<div id="pageVidPop"></div>').css("display","inline").text("Page 1"))
-										.append($('<div></div>').attr("id", "droiteTabVidsPop").attr("class", "spinneur").text(">").click(function() {
-											var nouvPage = window.page+1+1;
-											$("#pageVidPop").text("Page "+nouvPage);
-											afficheVideos(1,window.page+1);}));
-
-				$('<div></div>').attr("id", "corpsTabVidsNew").appendTo('#contVideo').hide()
-										.append($('<div></div>').attr("id", "gaucheTabVidsNew").attr("class", "spinneur").text("<").click(function() {
-											var nouvPage = window.page>0?window.page-1:0;
-											var affPage=nouvPage+1;
-											$("#pageVidNew").text("Page "+affPage);
-											afficheVideos(2,nouvPage);})).append($('<div id="pageVidNew"></div>').css("display","inline").text("Page 1"))
-										.append($('<div></div>').attr("id", "droiteTabVidsNew").attr("class", "spinneur").text(">").click(function() {
-											var nouvPage = window.page+1+1;
-											$("#pageVidNew").text("Page "+nouvPage);
-											afficheVideos(2,window.page+1);}));
-
-				$("#corpsTabVidsTop").append($('<div></div>').attr("class", "rangeeTitre").append($('<div></div>').text("Date"),$('<div></div>').text("Player"), $('<div></div>').text("Evaluation"))).css("margin-top", "15px");
-				$("#corpsTabVidsPop").append($('<div></div>').attr("class", "rangeeTitre").append($('<div></div>').text("Date"),$('<div></div>').text("Player"), $('<div></div>').text("# Views"))).css("margin-top", "15px");
-				$("#corpsTabVidsNew").append($('<div></div>').attr("class", "rangeeTitre").append($('<div></div>').text("Date"),$('<div></div>').text("Player"), $('<div></div>').text("Since"))).css("margin-top", "15px");
-
-				getVideosParBut();
-
-			}
-
-			function rempliTableau(messages) {
-				//videNoeud('contBabillard');
-				J0 = 0;
-				Jf = messages.length;
-
-				messages.sort(function(a, b) {
-
-					d1Cal = a.dateEmission;
-
-					var d1 = new Date(d1Cal.split("-")[0], d1Cal.split("-")[1], d1Cal.split("-")[2]);
-					d2Cal = b.dateEmission;
-
-					var d2 = new Date(d2Cal.split("-")[0], d2Cal.split("-")[1], d2Cal.split("-")[2]);
-
-					//							var d1 = new Date(a.date);
-					//							var d2 = new Date(b.date);
-					return (d2 - d1)
-				});
-
-				nbMessageMax = 4;
-				cptNbMesMax = 0;
-				J = J0;
-				while (J < Jf && cptNbMesMax < nbMessageMax) {
-
-					//	if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
-					rangee = document.createElement('DIV');
-					amettre = document.getElementById('contBabillard');
-					amettre.appendChild(rangee);
-
-					if (messages[J].parent == null) {
-						monMes = document.createElement('div');
-						monMes.className = "simpleMessage";
-						monDate = document.createElement('div');
-						monDate.className = "date";
-						monDate.innerHTML = str2humain(messages[J].dateEmission);
-						monNom = document.createElement('div');
-						monNom.className = "nom";
-						monNom.innerHTML = messages[J].expediteur;
-						monCorps = document.createElement('div');
-						monCorps.className = "corps";
-						monCorps.innerHTML = messages[J].corps;
-						var cpt = 0;
-						for (var c = 0; c < messages.length; c++) {
-							if (messages[c].parent == messages[J].messageId) {
-								cpt++;
-							}
-						}
-						nbCommentaire = document.createElement('div');
-						nbCommentaire.className = 'option cliquable';
-						nbCommentaire.innerHTML = (cpt > 1) ? cpt + ' commentaires' : cpt + ' commentaire';
-
-						mCommentaire = document.createElement('div');
-						mCommentaire.className = "lien";
-						mCommentaire.innerHTML = 'Commenter';
-						nbCommentaire.onclick = (function(J) {
-							return function() {
-								afficheFil(J);
-							};
-						})(J);
-
-						/*				monMes.appendChild(document.createTextNode(' par: '));*/
-						monMes.appendChild(monNom);
-						monMes.appendChild(monCorps);
-						monMes.appendChild(monDate);
-						monMes.appendChild(nbCommentaire);
-
-						//monMes.appendChild(mCommentaire);
-						amettre.insertBefore(monMes, document.getElementsByTagName('textarea')[0]);
-						cptNbMesMax++;
-					}// fin du if est un post et non un comment.
-
-					J++;
-				}//Fin des rangées;
-
-			}
-
-			function afficheFil(J) {
-				construitDialogue();
-
-				amettre = document.getElementById('divDialogue');
-
-				monMes = document.createElement('div');
-				monMes.className = "simpleMessage";
-				monDate = document.createElement('div');
-				monDate.className = "date";
-				monDate.innerHTML = window.messages[J].dateEmission;
-				monNom = document.createElement('div');
-				monNom.className = "Nom";
-				monNom.innerHTML = window.messages[J].expediteur;
-				monCorps = document.createElement('div');
-				monCorps.className = "corps";
-				monCorps.innerHTML = window.messages[J].corps;
-
-				monMes.appendChild(monDate);
-				monMes.appendChild(document.createTextNode(' par: '));
-				monMes.appendChild(monNom);
-				monMes.appendChild(monCorps);
-				amettre.appendChild(monMes);
-
-				for (var d = 0; d < window.messages.length; d++) { {
-						if (messages[d].parent == messages[J].messageId) {
-							monMes = document.createElement('div');
-							monMes.className = "simpleMessage";
-							monDate = document.createElement('div');
-							monDate.className = "date";
-							monDate.innerHTML = window.messages[d].dateEmission;
-							monNom = document.createElement('div');
-							monNom.className = "Nom";
-							monNom.innerHTML = window.messages[d].expediteur;
-							monCorps = document.createElement('div');
-							monCorps.className = "corps";
-							monCorps.innerHTML = window.messages[d].corps;
-
-							monMes.appendChild(monDate);
-							monMes.appendChild(document.createTextNode(' par: '));
-							monMes.appendChild(monNom);
-							monMes.appendChild(monCorps);
-							amettre.appendChild(monMes);
-
-						}
-					}
-
-				}
-
-				boiteEcritJS = document.createElement('TEXTAREA');
-				boiteEcritJS.id = "boiteCommentaire";
-				boiteEcritJS.rows = 2;
-				boiteEcritJS.cols = 40;
-				boiteEcritJS.value = "";
-
-				if (getCookie('userId') == null) {
-					amettre.appendChild(document.createTextNode('Vous devez être connecté pour pouvoir publier'));
-
-				} else {
-					amettre.appendChild(boiteEcritJS);
-					boutEnv = document.createElement('DIV');
-					boutEnv.className = "bouton_2";
-					boutEnv.id = "boutonEnvoie";
-					boutEnv.onclick = (function(J) {
-						return function() {
-							envoieCommentaire(window.messages[J].messageId);
-						};
-					})(J);
-					boutEnv.innerHTML = "Commenter";
-					amettre.appendChild(boutEnv);
-				}
-
-			}
-
-			function galerie() {
-				parent2 = document.getElementById('contPhoto');
-				photo = document.createElement('IMG');
-				photo.id = "imgPhotoGalerie";
-
-				titreGal = document.createElement('H1');
-				titreGal.innerHTML = "Galerie";
-				titreGal.className = 'texteEmphase';
-				lienGal = document.createElement('A');
-				lienGal.href = "/zstats/galerie.html";
-				lienGal.innerHTML = "plus de photo...";
-
-				lienPlus = document.createElement('A');
-				lienPlus.onclick = function() {
-					nouvellePhoto();
-				};
-				lienPlus.innerHTML = "nouvelle photo";
-				lienPlus.className = 'cliquable';
-				parent2.appendChild(titreGal);
-				parent2.appendChild(lienGal);
-				parent2.appendChild(lienPlus);
-				parent2.appendChild(photo);
-				chargeListeImage(window.ligueId);
-
-			}
-
-			function remplirOuiJetInfoLigue(lesInfos) {
-				logoLigueJS = document.createElement('img');
-				logoLigueJS.className = 'petitLogo';
-				window.contInfoLigueJS.appendChild(logoLigueJS);
-				try {
-					//logoLigue.setAttribute('src','images/ligues/logo/'+getValue('ligueId')+'.jpg');
-					window.logoLigueJS.src = '/admin/afficheImage.php?ficId=' + lesInfos.Ligue.ficId;
-
-					//				var preload = "/admin/afficheImage.php?ficId=" + window.statsJSON.joueurs[a].ficIdPortrait;
-				} catch(err) {
-				}
-				divInfoJS = document.createElement('div');
-				divInfoJS.id = 'divInfo';
-				window.contInfoLigueJS.appendChild(divInfoJS);
-
-				pNom = document.createElement('p');
-				pNom.innerHTML = lesInfos.Ligue.nom;
-				pNom.className = 'texteEmphase';
-				divInfoJS.appendChild(pNom);
-				pLieu = document.createElement('P');
-				pLieu.innerHTML = lesInfos.Ligue.lieu;
-				divInfoJS.appendChild(pLieu);
-				pHoraire = document.createElement('P');
-				pHoraire.innerHTML = lesInfos.Ligue.horaire;
-				divInfoJS.appendChild(pHoraire);
-				/*
-				 divLienJS=document.createElement('div');
-				 divLienJS.id='divLiens';
-				 window.contInfoLigueJS.appendChild(divLienJS);
-
-				 pLiens=document.createElement('p');
-				 pLiens.innerHTML="Liens rapides";
-				 divLienJS.appendChild(pLiens);*/
-
-			}
-
-			function defilePhotos() {
-				//				alert("1");
-				clearInterval();
-				setInterval(function() {
-					rempliPhoto((window.rang++) % window.listeImages.length);
-				}, 6000);
-
-			}
-
-			function rempliPhoto(a) {
-
-				try {
-					//				alert('/admin/afficheImage.php?ficId=' + window.listeImages[a].ficId);
-					//logoLigue.setAttribute('src','images/ligues/logo/'+getValue('ligueId')+'.jpg');
-					$('#imgPhotoGalerie').attr("src", '/admin/afficheImage.php?ficId=' + window.listeImages[a].ficId);
-
-					//				var preload = "/admin/afficheImage.php?ficId=" + window.statsJSON.joueurs[a].ficIdPortrait;
-				} catch(err) {
-					//							alert("3");
-				}
-
-			}
-
-			function nouvellePhoto() {
-				construitDialogue();
-				divDial = document.getElementById('divDialogue');
-				divParentImg = document.createElement('div');
-				divParentImg.id = "divFormulaire";
-				divDial.appendChild(divParentImg);
-				dLIs = document.createElement('div');
-				dLIs.id = 'divLesInputs';
-				dLI = document.createElement('div');
-				dLI.className = 'divLigneInput';
-
-				/*				divImg = document.createElement('DIV');
-				 divImg.id = "divImg";
-				 divImg.innerHTML = window.tl_equipes_ficImage;
-				 divImg.className = "formGauche";*/
-				divInImg = document.createElement('DIV');
-				divInImg.className = "formDroite";
-				//dLI.appendChild(divImg);
-				dLI.appendChild(divInImg);
-
-				nouvH1 = document.createElement('H1');
-				nouvH1.innerHTML = window.tl_titreNouvPhoto;
-
-				divST = document.createElement('div');
-				divST.id = 'divSousTitre';
-				sousTitre = document.createElement('h2');
-				sousTitre.innerHTML = window.tl_sousTitreNouvPhoto;
-				divST.appendChild(sousTitre);
-
-				lh = document.createElement('div');
-				lh.id = 'ligneH';
-
-				nouvImg = document.createElement('img');
-				nouvImg.id = "imgNouv";
-
-				inImgLE = document.createElement('INPUT');
-				inImgLE.name = "userfile";
-				inImgLE.type = "file";
-				inImgLE.onchange = function() {
-					if (this.value) {
-						televerseFic();
-					}
-				};
-				inImgLE.id = "idLogo";
-
-				dLI0 = document.createElement('div');
-				dLI0.className = 'divLigneInput';
-				dLI0.appendChild(inImgLE);
-
-				maForme = document.createElement('FORM');
-				maForme.name = "nomFormeEdit";
-				maForme.id = "idFormeEdit";
-				maForme.action = "/admin/enregistreFichier.php";
-				maForme.enctype = "multipart/form-data";
-				maForme.method = "POST";
-
-				inHiMFS = document.createElement('INPUT');
-				inHiMFS.type = 'hidden';
-				inHiMFS.id = 'maxFileSize';
-				inHiMFS.name = 'MAX_FILE_SIZE';
-				inHiMFS.value = '2000000';
-
-				inHiCon = document.createElement('INPUT');
-				inHiCon.type = 'hidden';
-				inHiCon.id = 'idContexte';
-				inHiCon.name = 'contexte';
-				inHiCon.value = 'equipe';
-
-				dLI1 = document.createElement('div');
-				dLI1.className = 'divLigneInput';
-				dLI2 = document.createElement('div');
-				dLI2.className = 'divLigneInput';
-
-				btnImgLE = document.createElement('INPUT');
-				btnImgLE.name = "nomBtnLogo";
-				btnImgLE.type = "BUTTON";
-				btnImgLE.id = "idBtnLogo";
-				btnImgLE.style.display = 'none';
-				btnImgLE.value = window.tl_bouton_save;
-				btnImgLE.onclick = function() {
-					sauvegardeGalerie(window.ligueId, window.nouveauFicId);
-
-				}
-				btnImgLE2 = document.createElement('INPUT');
-				btnImgLE2.name = "nomBtnLogo2";
-				btnImgLE2.type = "BUTTON";
-				btnImgLE2.id = "idBtnLogo2";
-				btnImgLE2.style.display = 'none';
-				btnImgLE2.value = window.tl_bouton_save;
-				btnImgLE2.onclick = function() {
-					sauvegardeGalerie(window.ligueId, window.nouveauFicId);
-
-				}
-
-				maForme.appendChild(inHiMFS);
-				maForme.appendChild(dLI0);
-
-				divParentImg.appendChild(nouvH1);
-
-				divParentImg.appendChild(divST);
-				divParentImg.appendChild(lh);
-
-				divParentImg.appendChild(dLIs);
-				dLIs.appendChild(dLI);
-				dLIs.appendChild(dLI1);
-				dLI1.appendChild(btnImgLE);
-				dLIs.appendChild(maForme);
-				dLIs.appendChild(nouvImg);
-				dLIs.appendChild(dLI2);
-				dLI2.appendChild(btnImgLE2);
-			}
-
-			function structurePage() {
-				detruitDivGauche();
-
-				contMatchHautJS = document.createElement('DIV');
-				contMatchHautJS.id = 'contMatchHaut';
-				contMatchHautJS.className = 'contOuiJet';
-				document.getElementById('divCentrale').appendChild(contMatchHautJS);
-
-				contInfoLigueJS = document.createElement('DIV');
-				contInfoLigueJS.id = 'contInfoLigue';
-				contInfoLigueJS.className = 'contOuiJet';
-				document.getElementById('divCentrale').appendChild(contInfoLigueJS);
-
-				contPhotoJS = document.createElement('DIV');
-				contPhotoJS.id = 'contPhoto';
-				contPhotoJS.className = 'contOuiJet';
-				document.getElementById('divCentrale').appendChild(contPhotoJS);
-
-				contBabillardJS = document.createElement('DIV');
-				contBabillardJS.id = 'contBabillard';
-				contBabillardJS.className = 'contOuiJet';
-				document.getElementById('divCentrale').appendChild(contBabillardJS);
-
-				contVideoJS = document.createElement('DIV');
-				contVideoJS.id = 'contVideo';
-				contVideoJS.className = 'contOuiJet';
-				document.getElementById('divCentrale').appendChild(contVideoJS);
-
-			}
-			
-			
-			function getInfoVid(videofile, mBut) {
-				//alert("getInfoVid "+videofile);
-				$('#parent-erreur').remove();	
-				$('#contVids').show();
-				$('#media-video').videoPlayer({
-					'playerWidth' : 1,
-					'videoClass' : 'video'
-				});
-				mediaPlayer = document.getElementById('media-video');
-				if(mediaPlayer!=null){
-				$('.close-btn').click(function(){
-					$('#ecranSombre').remove();
-					
-						
-					    mediaPlayer.pause();
-					    try{
-    					mediaPlayer.currentTime = 0;}
-    					catch(err){}
-						$('.media-box').hide();
-						$( ".play-btn" ).show();
-						$('.play-pause').addClass('play').removeClass('pause');
-						
-				});
-				}
-
-				var requete_ajax = new XMLHttpRequest();
-				var url = "/scriptsphp/getVideoUnique.php";
-				var pVF = String(videofile);
-
-				var sVF = pVF.split(".");
-				var strVid = "videofile=" + sVF[0];
-				params = strVid;
-				url = url + "?" + params;
-				requete_ajax.open('POST', url, true);
-				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-				requete_ajax.send(params);
-				if(mBut!=undefined&&mBut!=""){
-				chargeListeCote(videofile, mBut);}
-				requete_ajax.onreadystatechange = function() {
-					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-
-						infoVid = eval('(' + requete_ajax.responseText + ')');
-						$('#rateSpan').text("RATING: " + infoVid.eval + " / 5");
-						$('#nbVuesSpan').text("Vue " + infoVid.nbVues + " fois");
-						$('.video-info p').text("Marqueur: " + infoVid.NomJoueur);
-						evalBut = getCookie('videoId_eval_' + infoVid.videoId);
-						if (evalBut != null) {
-							$('#rating-star').raty({
-								score : evalBut
-							});
-						} else {
-							$('#rating-star').raty({
-								click : function(score, evt) {
-									$.post('/scriptsphp/evalueVid.php', {
-										videoId : infoVid.videoId,
-										evalBut : score
-									});
-									setCookie('videoId_eval_' + infoVid.videoId, score, 1000);
-								}
-							});
-							
-
-						}
-						vidSuite(videofile, mBut);
-							$.post('/scriptsphp/incrementeVidNbVues.php', {
-								videoId : infoVid.videoId
-							});
-							$('#drapeauVert').click(function() {
-								$.post('/scriptsphp/changeAngleOk.php', {
-									changeAngle : 1,
-									videoId : infoVid.videoId
-								});
-							});
-							$('#drapeauRouge').click(function() {
-								$.post('/scriptsphp/changeAngleOk.php', {
-									changeAngle : -1,
-									videoId : infoVid.videoId
-								});
-							});
-
-
-					}
-				}
-			}
-
-			function chargeListeCote(videofile, mBut) {
-
-				vidsAlt = mBut;
-				//alert("mBut.video.length :"+mBut.video.length);
-				if (mBut.video.length > 0) {
-					//$(laliste)=$('#media-play-list');
-					videNoeud('media-play-list');
-
-					$('#media-play-list').append($('<ul id="play-list"></ul>'));
-					for (var a = 0; a < mBut.video.length; a++) {
-						//alert(vidsAlt.video[a].fic);
-						$('#media-play-list').append($('<li></li>').append(
-
-						// $('<video></video>').addClass('play-item').attr('src',vidsAlt.video[a].fic),
-						$('<div></div>').addClass('thumbnail-wrap').append(/*$('<span></span>').addClass('thumbnail-title').text(vidsAlt.video[a].cam),*/
-						$('<br />'), $('<span></span>').addClass('thumbnail-content').text("Cam " + vidsAlt.video[a].cam), $('<img></img>').addClass('thumbnail-content').attr("src", "/images/icones/movie.png").attr("alt", "Video"))).click({
-							vids : vidsAlt.video[a].fic,
-							but : mBut
-						}, function(event) {
-							getInfoVid(event.data.vids, event.data.but);
-						})
-						//.click(loadVideo(vidsAlt.video[a].fic))
-						);
-					}
-					$('#media-play-list').show();
-
-				}
-
-			}
-
-			function vidSuite(videofile, mBut) {
-
-				vidSVC = document.getElementById('media-video');
-				vidSVC.style.display = "block";
-				vidSVC.load();
-
-				rang = 0;
-
-		$('video').attr('preload', 'auto');
-		
-
-				$('.media-box > img, .erreur').remove();
-				$('.erreur').parent().css('background','#000');
-				mVid = "/lookatthis/" + videofile;
-					$('#vidPrincId').attr("src", mVid);
-					$('#parent-erreur').remove();
-
-				
-				document.getElementById('vidPrincId').addEventListener('error', function(event) { 
-					if($('.erreur').length<2){
-					$( this ).parent().before($('<div id="parent-erreur"></div>').append($('<p class="erreur"></p>').text("There is an error with this video, please go to the next one (and sorry, btw...)"))
-					.append($('<img ></img>').attr("src", "/images/icones/warning.png" ).css("width","50px").css("width","50px")));
-					//$( this ).unbind("error");
-					$('.play-pause').addClass('play').removeClass('pause');
-					}
-					//alert("There's an error with this video, please go to the next one (and sorry, btw...)")
-					}, true);
-
-		//////////////////////
-		// FB Override
-
-		logoOverride=true;
-		logoOverrideLoc=document.location.href+"&videofile="+encodeURIComponent(videofile);//+"&but="+encodeURIComponent(mBut);
-		logoOverrideT="Vidéo";
-
-
-
-
-
-			};
-			
-			
-			
-		</script>
-	</head>
-	<body id="mbody">
-
-		<div id="divHaut"></div>
-		<div id="divGauche"></div>
-		<div id="divMenuHaut"></div>
-		<div id="divCentrale">
-			<div class="container" id="contVids" style="display:none">
-
-				<!--h1 align="center">video-player</h1-->
-				<!-- video wrap box -->
-				<div class="media-box">
-
-					<span class="close-btn"></span>
-					<!-- Video listing -->
-					<div id='media-play-list' class="content mCustomScrollbar"></div>
-					<!-- ends Video listing -->
-
-					<!-- Main video -->
-					<video id="media-video" width="480" height="320" preload="metadata">
-						<source id="vidPrincId" type="video/mp4">
-					</video>
-					<!-- end Main video -->
-
-					<!-- video info -->
-					<div class="video-info">
-						<div style="float:left; padding:0 0 5px 0; border-bottom:1px solid #CCC; width:100%;">
-							<img style="float:left; margin-right:10px;" src="/images/info-img.png"><span class="title">Video Info</span>
-						</div>
-						<p class="video-content">
-							Aimez-vous cette nouvelle interface?
-						</p>
-						<div class="share">
-							<img src="/images/fb.png" style="margin-bottom:10px;">
-							<img src="/images/tweet.png" style="float:right; margin-bottom:10px;">
-							<img src="/images/google.png" style="margin-bottom:15px;">
-							<img src="/images/youtube.png" style="float:right; margin-bottom:15px;">
-						</div>
-						<span id="rateSpan" style="width:100%; float:left; margin-bottom:10px; font-size: 15px;">RATING : 3.5 / 5 </span>
-						<span id="nbVuesSpan" style="width:100%; float:left; margin-bottom:10px; font-size: 15px;">Vue 0 fois</span>
-						<button type="button" class="btn-style">
-							<span class="comment"></span>Write a Comment
-						</button>
-					</div>
-					<!-- end video info -->
-
-					<span class="play-btn"><img src="/images/main-play.png"></span>
-
-				</div>
-				<!-- end video wrap box -->
-			</div>
-
-		</div>
-		<div id="divDroite"></div>
-		<div id="divBas"></div>
-
-		<script type="text/javascript" charset="utf-8">
-			developper(0);
-			rang = 0;
-			
+            function babillard() {
+                videNoeud('contBabillard');
+                parent2 = document.getElementById('contBabillard');
+                boiteEcritJS = document.createElement('TEXTAREA');
+                boiteEcritJS.rows = 2;
+                boiteEcritJS.cols = 40;
+                boiteEcritJS.value = "";
+                /*
+                 for(var a=0;a<document.getElementById('divCentrale').childNodes.length;a++)
+                 {
+                 alert(document.getElementById('divCentrale').childNodes[a].id);
+
+                 }*/
+
+                titreBab = document.createElement('H1');
+                //              titreBab.className = 'texteEmphase';
+                titreBab.innerHTML = "Mon Babillard";
+
+                parent2.appendChild(titreBab);
+
+                if (getCookie('userId') == null) {
+                    parent2.appendChild(document.createTextNode('Vous devez être connecté pour pouvoir publier'));
+
+                } else {
+                    parent2.appendChild(boiteEcritJS);
+                    boutEnv = document.createElement('DIV');
+                    boutEnv.className = "bouton_1";
+                    boutEnv.id = "boutonEnvoie";
+                    boutEnv.onclick = function() {
+                        if (document.getElementsByTagName("textarea")[0].value.length > 0) {
+                            envoieMessage();
+                        }
+                    };
+                    boutEnv.innerHTML = "Publier";
+                    parent2.appendChild(boutEnv);
+                }
+                getMessages();
+
+            }
+
+            function videos() {
+                videNoeud('contVideo');
+                parent2 = document.getElementById('contVideo');
+
+                photo = document.createElement('IMG');
+
+                $('<h1></h1>').attr("class", "texteEmphase").appendTo('#contVideo').text("Videos");
+                $('<div></div>').attr("class", "bouton_2").appendTo('#contVideo').text("Top" + String.fromCharCode(160) + "rated" + String.fromCharCode(160) + "Vids").click(function() {
+
+                    $("#corpsTabVidsTop").show();
+                    $("#corpsTabVidsPop").hide();
+                    $("#corpsTabVidsNew").hide();
+                    afficheVideos(0,0);
+
+                });
+
+                $('<div></div>').attr("class", "bouton_2").appendTo('#contVideo').text("Most" + String.fromCharCode(160) + "view" + String.fromCharCode(160) + "vids").click(function() {
+
+                    $("#corpsTabVidsTop").hide();
+                    $("#corpsTabVidsPop").show();
+                    $("#corpsTabVidsNew").hide();
+                    afficheVideos(1,0);
+                    
+
+                });
+                $('<div></div>').attr("class", "bouton_2").appendTo('#contVideo').text("Newest" + String.fromCharCode(160) + "Vids").click(function() {
+
+                    $("#corpsTabVidsTop").hide();
+                    $("#corpsTabVidsPop").hide();
+                    $("#corpsTabVidsNew").show();
+                    afficheVideos(2,0);
+                    
+
+                });
+                $('<div></div>').attr("id", "corpsTabVidsTop").appendTo('#contVideo').show()
+                                        .append($('<div></div>').attr("id", "gaucheTabVidsTop").attr("class", "spinneur").text("<").click(function() {
+                                            var nouvPage = window.page>0?window.page-1:0;
+                                            var affPage=nouvPage+1;
+                                            $("#pageVidTop").text("Page "+affPage);
+                                            afficheVideos(0,nouvPage);})).append($('<div id="pageVidTop"></div>').css("display","inline").text("Page 1"))
+                                        .append($('<div></div>').attr("id", "droiteTabVidsTop").attr("class", "spinneur").text(">").click(function() {
+                                            var nouvPage = window.page+1+1;
+                                            $("#pageVidTop").text("Page "+nouvPage);
+                                            afficheVideos(0,window.page+1);}));
+                $('<div></div>').attr("id", "corpsTabVidsPop").appendTo('#contVideo').hide()
+                                        .append($('<div></div>').attr("id", "gaucheTabVidsPop").attr("class", "spinneur").text("<").click(function() {
+                                            var nouvPage = window.page>0?window.page-1:0;
+                                            var affPage=nouvPage+1;
+                                            $("#pageVidPop").text("Page "+affPage);
+                                            afficheVideos(1,nouvPage);})).append($('<div id="pageVidPop"></div>').css("display","inline").text("Page 1"))
+                                        .append($('<div></div>').attr("id", "droiteTabVidsPop").attr("class", "spinneur").text(">").click(function() {
+                                            var nouvPage = window.page+1+1;
+                                            $("#pageVidPop").text("Page "+nouvPage);
+                                            afficheVideos(1,window.page+1);}));
+
+                $('<div></div>').attr("id", "corpsTabVidsNew").appendTo('#contVideo').hide()
+                                        .append($('<div></div>').attr("id", "gaucheTabVidsNew").attr("class", "spinneur").text("<").click(function() {
+                                            var nouvPage = window.page>0?window.page-1:0;
+                                            var affPage=nouvPage+1;
+                                            $("#pageVidNew").text("Page "+affPage);
+                                            afficheVideos(2,nouvPage);})).append($('<div id="pageVidNew"></div>').css("display","inline").text("Page 1"))
+                                        .append($('<div></div>').attr("id", "droiteTabVidsNew").attr("class", "spinneur").text(">").click(function() {
+                                            var nouvPage = window.page+1+1;
+                                            $("#pageVidNew").text("Page "+nouvPage);
+                                            afficheVideos(2,window.page+1);}));
+
+                $("#corpsTabVidsTop").append($('<div></div>').attr("class", "rangeeTitre").append($('<div></div>').text("Date"),$('<div></div>').text("Player"), $('<div></div>').text("Evaluation"))).css("margin-top", "15px");
+                $("#corpsTabVidsPop").append($('<div></div>').attr("class", "rangeeTitre").append($('<div></div>').text("Date"),$('<div></div>').text("Player"), $('<div></div>').text("# Views"))).css("margin-top", "15px");
+                $("#corpsTabVidsNew").append($('<div></div>').attr("class", "rangeeTitre").append($('<div></div>').text("Date"),$('<div></div>').text("Player"), $('<div></div>').text("Since"))).css("margin-top", "15px");
+
+                getVideosParBut();
+
+            }
+
+            function rempliTableau(messages) {
+                //videNoeud('contBabillard');
+                J0 = 0;
+                Jf = messages.length;
+
+                messages.sort(function(a, b) {
+
+                    d1Cal = a.dateEmission;
+
+                    var d1 = new Date(d1Cal.split("-")[0], d1Cal.split("-")[1], d1Cal.split("-")[2]);
+                    d2Cal = b.dateEmission;
+
+                    var d2 = new Date(d2Cal.split("-")[0], d2Cal.split("-")[1], d2Cal.split("-")[2]);
+
+                    //                          var d1 = new Date(a.date);
+                    //                          var d2 = new Date(b.date);
+                    return (d2 - d1)
+                });
+
+                nbMessageMax = 4;
+                cptNbMesMax = 0;
+                J = J0;
+                while (J < Jf && cptNbMesMax < nbMessageMax) {
+
+                    //  if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
+                    rangee = document.createElement('DIV');
+                    amettre = document.getElementById('contBabillard');
+                    amettre.appendChild(rangee);
+
+                    if (messages[J].parent == null) {
+                        monMes = document.createElement('div');
+                        monMes.className = "simpleMessage";
+                        monDate = document.createElement('div');
+                        monDate.className = "date";
+                        monDate.innerHTML = str2humain(messages[J].dateEmission);
+                        monNom = document.createElement('div');
+                        monNom.className = "nom";
+                        monNom.innerHTML = messages[J].expediteur;
+                        monCorps = document.createElement('div');
+                        monCorps.className = "corps";
+                        monCorps.innerHTML = messages[J].corps;
+                        var cpt = 0;
+                        for (var c = 0; c < messages.length; c++) {
+                            if (messages[c].parent == messages[J].messageId) {
+                                cpt++;
+                            }
+                        }
+                        nbCommentaire = document.createElement('div');
+                        nbCommentaire.className = 'option cliquable';
+                        nbCommentaire.innerHTML = (cpt > 1) ? cpt + ' commentaires' : cpt + ' commentaire';
+
+                        mCommentaire = document.createElement('div');
+                        mCommentaire.className = "lien";
+                        mCommentaire.innerHTML = 'Commenter';
+                        nbCommentaire.onclick = (function(J) {
+                            return function() {
+                                afficheFil(J);
+                            };
+                        })(J);
+
+                        /*              monMes.appendChild(document.createTextNode(' par: '));*/
+                        monMes.appendChild(monNom);
+                        monMes.appendChild(monCorps);
+                        monMes.appendChild(monDate);
+                        monMes.appendChild(nbCommentaire);
+
+                        //monMes.appendChild(mCommentaire);
+                        amettre.insertBefore(monMes, document.getElementsByTagName('textarea')[0]);
+                        cptNbMesMax++;
+                    }// fin du if est un post et non un comment.
+
+                    J++;
+                }//Fin des rangées;
+
+            }
+
+            function afficheFil(J) {
+                construitDialogue();
+
+                amettre = document.getElementById('divDialogue');
+
+                monMes = document.createElement('div');
+                monMes.className = "simpleMessage";
+                monDate = document.createElement('div');
+                monDate.className = "date";
+                monDate.innerHTML = window.messages[J].dateEmission;
+                monNom = document.createElement('div');
+                monNom.className = "Nom";
+                monNom.innerHTML = window.messages[J].expediteur;
+                monCorps = document.createElement('div');
+                monCorps.className = "corps";
+                monCorps.innerHTML = window.messages[J].corps;
+
+                monMes.appendChild(monDate);
+                monMes.appendChild(document.createTextNode(' par: '));
+                monMes.appendChild(monNom);
+                monMes.appendChild(monCorps);
+                amettre.appendChild(monMes);
+
+                for (var d = 0; d < window.messages.length; d++) { {
+                        if (messages[d].parent == messages[J].messageId) {
+                            monMes = document.createElement('div');
+                            monMes.className = "simpleMessage";
+                            monDate = document.createElement('div');
+                            monDate.className = "date";
+                            monDate.innerHTML = window.messages[d].dateEmission;
+                            monNom = document.createElement('div');
+                            monNom.className = "Nom";
+                            monNom.innerHTML = window.messages[d].expediteur;
+                            monCorps = document.createElement('div');
+                            monCorps.className = "corps";
+                            monCorps.innerHTML = window.messages[d].corps;
+
+                            monMes.appendChild(monDate);
+                            monMes.appendChild(document.createTextNode(' par: '));
+                            monMes.appendChild(monNom);
+                            monMes.appendChild(monCorps);
+                            amettre.appendChild(monMes);
+
+                        }
+                    }
+
+                }
+
+                boiteEcritJS = document.createElement('TEXTAREA');
+                boiteEcritJS.id = "boiteCommentaire";
+                boiteEcritJS.rows = 2;
+                boiteEcritJS.cols = 40;
+                boiteEcritJS.value = "";
+
+                if (getCookie('userId') == null) {
+                    amettre.appendChild(document.createTextNode('Vous devez être connecté pour pouvoir publier'));
+
+                } else {
+                    amettre.appendChild(boiteEcritJS);
+                    boutEnv = document.createElement('DIV');
+                    boutEnv.className = "bouton_2";
+                    boutEnv.id = "boutonEnvoie";
+                    boutEnv.onclick = (function(J) {
+                        return function() {
+                            envoieCommentaire(window.messages[J].messageId);
+                        };
+                    })(J);
+                    boutEnv.innerHTML = "Commenter";
+                    amettre.appendChild(boutEnv);
+                }
+
+            }
+
+            function galerie() {
+                parent2 = document.getElementById('contPhoto');
+                photo = document.createElement('IMG');
+                photo.id = "imgPhotoGalerie";
+
+                titreGal = document.createElement('H1');
+                titreGal.innerHTML = "Galerie";
+                titreGal.className = 'texteEmphase';
+                lienGal = document.createElement('A');
+                lienGal.href = "/zstats/galerie.html";
+                lienGal.innerHTML = "plus de photo...";
+
+                lienPlus = document.createElement('A');
+                lienPlus.onclick = function() {
+                    nouvellePhoto();
+                };
+                lienPlus.innerHTML = "nouvelle photo";
+                lienPlus.className = 'cliquable';
+                parent2.appendChild(titreGal);
+                parent2.appendChild(lienGal);
+                parent2.appendChild(lienPlus);
+                parent2.appendChild(photo);
+                chargeListeImage(window.ligueId);
+
+            }
+
+            function remplirOuiJetInfoLigue(lesInfos) {
+                logoLigueJS = document.createElement('img');
+                logoLigueJS.className = 'petitLogo';
+                
+                try {
+                    //logoLigue.setAttribute('src','images/ligues/logo/'+getValue('ligueId')+'.jpg');
+                    window.logoLigueJS.src = '/admin/afficheImage.php?ficId=' + lesInfos.Ligue.ficId;
+
+                    //              var preload = "/admin/afficheImage.php?ficId=" + window.statsJSON.joueurs[a].ficIdPortrait;
+                } catch(err) {
+                }
+                divInfoJS = document.createElement('div');
+                divInfoJS.id = 'divInfo';
+                $('#contInfoLigue').append($(divInfoJS));
+                $('#contInfoLigue').append($(logoLigueJS));
+                //window.contInfoLigueJS.appendChild(divInfoJS);
+                //window.contInfoLigueJS.appendChild(logoLigueJS);
+                
+                pNom = document.createElement('p');
+                pNom.innerHTML = lesInfos.Ligue.nom;
+                pNom.className = 'texteEmphase';
+                divInfoJS.appendChild(pNom);
+                pLieu = document.createElement('P');
+                pLieu.innerHTML = lesInfos.Ligue.lieu;
+                divInfoJS.appendChild(pLieu);
+                pHoraire = document.createElement('P');
+                pHoraire.innerHTML = lesInfos.Ligue.horaire;
+                divInfoJS.appendChild(pHoraire);
+                /*
+                 divLienJS=document.createElement('div');
+                 divLienJS.id='divLiens';
+                 window.contInfoLigueJS.appendChild(divLienJS);
+
+                 pLiens=document.createElement('p');
+                 pLiens.innerHTML="Liens rapides";
+                 divLienJS.appendChild(pLiens);*/
+
+            }
+
+            function defilePhotos() {
+                //              alert("1");
+                clearInterval();
+                setInterval(function() {
+                    rempliPhoto((window.rang++) % window.listeImages.length);
+                }, 6000);
+
+            }
+
+            function rempliPhoto(a) {
+
+                try {
+                    //              alert('/admin/afficheImage.php?ficId=' + window.listeImages[a].ficId);
+                    //logoLigue.setAttribute('src','images/ligues/logo/'+getValue('ligueId')+'.jpg');
+                    $('#imgPhotoGalerie').attr("src", '/admin/afficheImage.php?ficId=' + window.listeImages[a].ficId);
+
+                    //              var preload = "/admin/afficheImage.php?ficId=" + window.statsJSON.joueurs[a].ficIdPortrait;
+                } catch(err) {
+                    //                          alert("3");
+                }
+
+            }
+
+            function nouvellePhoto() {
+                construitDialogue();
+                divDial = document.getElementById('divDialogue');
+                divParentImg = document.createElement('div');
+                divParentImg.id = "divFormulaire";
+                divDial.appendChild(divParentImg);
+                dLIs = document.createElement('div');
+                dLIs.id = 'divLesInputs';
+                dLI = document.createElement('div');
+                dLI.className = 'divLigneInput';
+
+                /*              divImg = document.createElement('DIV');
+                 divImg.id = "divImg";
+                 divImg.innerHTML = window.tl_equipes_ficImage;
+                 divImg.className = "formGauche";*/
+                divInImg = document.createElement('DIV');
+                divInImg.className = "formDroite";
+                //dLI.appendChild(divImg);
+                dLI.appendChild(divInImg);
+
+                nouvH1 = document.createElement('H1');
+                nouvH1.innerHTML = window.tl_titreNouvPhoto;
+
+                divST = document.createElement('div');
+                divST.id = 'divSousTitre';
+                sousTitre = document.createElement('h2');
+                sousTitre.innerHTML = window.tl_sousTitreNouvPhoto;
+                divST.appendChild(sousTitre);
+
+                lh = document.createElement('div');
+                lh.id = 'ligneH';
+
+                nouvImg = document.createElement('img');
+                nouvImg.id = "imgNouv";
+
+                inImgLE = document.createElement('INPUT');
+                inImgLE.name = "userfile";
+                inImgLE.type = "file";
+                inImgLE.onchange = function() {
+                    if (this.value) {
+                        televerseFic();
+                    }
+                };
+                inImgLE.id = "idLogo";
+
+                dLI0 = document.createElement('div');
+                dLI0.className = 'divLigneInput';
+                dLI0.appendChild(inImgLE);
+
+                maForme = document.createElement('FORM');
+                maForme.name = "nomFormeEdit";
+                maForme.id = "idFormeEdit";
+                maForme.action = "/admin/enregistreFichier.php";
+                maForme.enctype = "multipart/form-data";
+                maForme.method = "POST";
+
+                inHiMFS = document.createElement('INPUT');
+                inHiMFS.type = 'hidden';
+                inHiMFS.id = 'maxFileSize';
+                inHiMFS.name = 'MAX_FILE_SIZE';
+                inHiMFS.value = '2000000';
+
+                inHiCon = document.createElement('INPUT');
+                inHiCon.type = 'hidden';
+                inHiCon.id = 'idContexte';
+                inHiCon.name = 'contexte';
+                inHiCon.value = 'equipe';
+
+                dLI1 = document.createElement('div');
+                dLI1.className = 'divLigneInput';
+                dLI2 = document.createElement('div');
+                dLI2.className = 'divLigneInput';
+
+                btnImgLE = document.createElement('INPUT');
+                btnImgLE.name = "nomBtnLogo";
+                btnImgLE.type = "BUTTON";
+                btnImgLE.id = "idBtnLogo";
+                btnImgLE.style.display = 'none';
+                btnImgLE.value = window.tl_bouton_save;
+                btnImgLE.onclick = function() {
+                    sauvegardeGalerie(window.ligueId, window.nouveauFicId);
+
+                }
+                btnImgLE2 = document.createElement('INPUT');
+                btnImgLE2.name = "nomBtnLogo2";
+                btnImgLE2.type = "BUTTON";
+                btnImgLE2.id = "idBtnLogo2";
+                btnImgLE2.style.display = 'none';
+                btnImgLE2.value = window.tl_bouton_save;
+                btnImgLE2.onclick = function() {
+                    sauvegardeGalerie(window.ligueId, window.nouveauFicId);
+
+                }
+
+                maForme.appendChild(inHiMFS);
+                maForme.appendChild(dLI0);
+
+                divParentImg.appendChild(nouvH1);
+
+                divParentImg.appendChild(divST);
+                divParentImg.appendChild(lh);
+
+                divParentImg.appendChild(dLIs);
+                dLIs.appendChild(dLI);
+                dLIs.appendChild(dLI1);
+                dLI1.appendChild(btnImgLE);
+                dLIs.appendChild(maForme);
+                dLIs.appendChild(nouvImg);
+                dLIs.appendChild(dLI2);
+                dLI2.appendChild(btnImgLE2);
+            }
+
+            function structurePage() {
+             if(document.documentElement.clientWidth >= 500){
+                //detruitDivGauche();
+                }
+
+                $('#divCentrale').append($('<div></div>').attr('id','contMatchHaut').addClass('contOuiJet row')); 
+                $('#divCentrale').append($('<div></div>').attr('id','contInfoLigue').addClass('contOuiJet')); 
+                $('#divCentrale').append($('<div></div>').attr('id','contPhoto').addClass('contOuiJet')); 
+                $('#divCentrale').append($('<div></div>').attr('id','contBabillard').addClass('contOuiJet')); 
+                $('#divCentrale').append($('<div></div>').attr('id','contVideo').addClass('contOuiJet')); 
+
+            }
+            
+            /*
+            function getInfoVid(videofile, mBut) {
+                //alert("getInfoVid "+videofile);
+                $('#parent-erreur').remove();   
+                $('#contVids').show();
+                $('#media-video').videoPlayer({
+                    'playerWidth' : 1,
+                    'videoClass' : 'video'
+                });
+                mediaPlayer = document.getElementById('media-video');
+                if(mediaPlayer!=null){
+                $('.close-btn').click(function(){
+                    $('#ecranSombre').remove();
+                    
+                        
+                        mediaPlayer.pause();
+                        try{
+                        mediaPlayer.currentTime = 0;}
+                        catch(err){}
+                        $('.media-box').hide();
+                        $( ".play-btn" ).show();
+                        $('.play-pause').addClass('play').removeClass('pause');
+                        
+                });
+                }
+
+                var requete_ajax = new XMLHttpRequest();
+                var url = "/scriptsphp/getVideoUnique.php";
+                var pVF = String(videofile);
+
+                var sVF = pVF.split(".");
+                var strVid = "videofile=" + sVF[0];
+                params = strVid;
+                url = url + "?" + params;
+                requete_ajax.open('POST', url, true);
+                requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+                requete_ajax.send(params);
+                if(mBut!=undefined&&mBut!=""){
+                chargeListeCote(videofile, mBut);}
+                requete_ajax.onreadystatechange = function() {
+                    if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+                        infoVid = eval('(' + requete_ajax.responseText + ')');
+                        $('#rateSpan').text("RATING: " + infoVid.eval + " / 5");
+                        $('#nbVuesSpan').text("Vue " + infoVid.nbVues + " fois");
+                        $('.video-info p').text("Marqueur: " + infoVid.NomJoueur);
+                        evalBut = getCookie('videoId_eval_' + infoVid.videoId);
+                        if (evalBut != null) {
+                            $('#rating-star').raty({
+                                score : evalBut
+                            });
+                        } else {
+                            $('#rating-star').raty({
+                                click : function(score, evt) {
+                                    $.post('/scriptsphp/evalueVid.php', {
+                                        videoId : infoVid.videoId,
+                                        evalBut : score
+                                    });
+                                    setCookie('videoId_eval_' + infoVid.videoId, score, 1000);
+                                }
+                            });
+                            
+
+                        }
+                        vidSuite(videofile, mBut);
+                            $.post('/scriptsphp/incrementeVidNbVues.php', {
+                                videoId : infoVid.videoId
+                            });
+                            $('#drapeauVert').click(function() {
+                                $.post('/scriptsphp/changeAngleOk.php', {
+                                    changeAngle : 1,
+                                    videoId : infoVid.videoId
+                                });
+                            });
+                            $('#drapeauRouge').click(function() {
+                                $.post('/scriptsphp/changeAngleOk.php', {
+                                    changeAngle : -1,
+                                    videoId : infoVid.videoId
+                                });
+                            });
+
+
+                    }
+                }
+            }
+
+            function chargeListeCote(videofile, mBut) {
+
+                vidsAlt = mBut;
+                //alert("mBut.video.length :"+mBut.video.length);
+                if (mBut.video.length > 0) {
+                    //$(laliste)=$('#media-play-list');
+                    videNoeud('media-play-list');
+
+                    $('#media-play-list').append($('<ul id="play-list"></ul>'));
+                    for (var a = 0; a < mBut.video.length; a++) {
+                        //alert(vidsAlt.video[a].fic);
+                        $('#media-play-list').append($('<li></li>').append(
+
+                        // $('<video></video>').addClass('play-item').attr('src',vidsAlt.video[a].fic),
+                        $('<div></div>').addClass('thumbnail-wrap').append(/*$('<span></span>').addClass('thumbnail-title').text(vidsAlt.video[a].cam),*//*
+                        $('<br />'), $('<span></span>').addClass('thumbnail-content').text("Cam " + vidsAlt.video[a].cam), $('<img></img>').addClass('thumbnail-content').attr("src", "/images/icones/movie.png").attr("alt", "Video"))).click({
+                            vids : vidsAlt.video[a].fic,
+                            but : mBut
+                        }, function(event) {
+                            getInfoVid(event.data.vids, event.data.but);
+                        })
+                        //.click(loadVideo(vidsAlt.video[a].fic))
+                        );
+                    }
+                    $('#media-play-list').show();
+
+                }
+
+            }
+
+            function vidSuite(videofile, mBut) {
+
+                vidSVC = document.getElementById('media-video');
+                vidSVC.style.display = "block";
+                vidSVC.load();
+
+                rang = 0;
+
+        $('video').attr('preload', 'auto');
+        
+
+                $('.media-box > img, .erreur').remove();
+                $('.erreur').parent().css('background','#000');
+                mVid = "/lookatthis/" + videofile;
+                    $('#vidPrincId').attr("src", mVid);
+                    $('#parent-erreur').remove();
+
+                
+                document.getElementById('vidPrincId').addEventListener('error', function(event) { 
+                    if($('.erreur').length<2){
+                    $( this ).parent().before($('<div id="parent-erreur"></div>').append($('<p class="erreur"></p>').text("There is an error with this video, please go to the next one (and sorry, btw...)"))
+                    .append($('<img ></img>').attr("src", "/images/icones/warning.png" ).css("width","50px").css("width","50px")));
+                    //$( this ).unbind("error");
+                    $('.play-pause').addClass('play').removeClass('pause');
+                    }
+                    //alert("There's an error with this video, please go to the next one (and sorry, btw...)")
+                    }, true);
+
+        //////////////////////
+        // FB Override
+
+        logoOverride=true;
+        logoOverrideLoc=document.location.href+"&videofile="+encodeURIComponent(videofile);//+"&but="+encodeURIComponent(mBut);
+        logoOverrideT="Vidéo";
+
+
+
+
+
+            };
+            }*/
+            function developperBootstrap(){
+                        pageId=0;
+                        if(window.menus[pageId].ingredients!=undefined)
+                            {cuisinier(window.menus[pageId].ingredients);}
+                    //  alert($('#divCentrale').css('width'));
+                        if(window.m!=1)
+                        {
+                            try{
+                            gestionBackEnd();
+                            peupleDivHaut();
+                            peupleDivBas();
+                            //genereLiensContext(pageId);
+                            barreTitreContexte(pageId);
+                            if(window.innerWidth>=500)
+                                    {
+                                        
+                                        genereBoites();}
+                                }
+                                catch(err){
+                                    if(window.Perm<10){
+                                        alert(err.message+" - Erreur dans developper()");    
+                                        }
+                                };
+                        }
+                        
+                        else
+                        {
+                            detruitNoeud('divGauche');
+                            detruitNoeud('divDroite');
+                            if(document.documentElement.clientWidth < 500)
+                            {
+                                $('#divCentrale').addClass('mobile');
+                            }else{
+                              //  $('#divCentrale').css('width','100%');
+                            }
+                        
+                        }
+                        //  alert($('#divCentrale').css('width'));
+                    }
+
+        </script>
+    </head>
+    <body id="mbody">
+        <div class="container-fluid">
+            <div class="row">
+                <div id="divHaut" class="col-sm-12"></div>
+                <div id="divMenuHaut" class="col-sm-12"></div>
+
+            </div>
+
+            <div class="row">
+                <div id="divCentrale" class="col-sm-9 container">
+                    <div class="container" id="contVids" style="display:none">
+
+                        <!--h1 align="center">video-player</h1-->
+                        <!-- video wrap box -->
+                        <div class="media-box">
+
+                            <span class="close-btn"></span>
+                            <!-- Video listing -->
+                            <div id='media-play-list' class="content mCustomScrollbar"></div>
+                            <!-- ends Video listing -->
+
+                            <!-- Main video -->
+                            <video id="media-video" width="480" height="320" preload="metadata">
+                                <source id="vidPrincId" type="video/mp4">
+                            </video>
+                            <!-- end Main video -->
+
+                            <!-- video info -->
+                            <div class="video-info">
+                                <div style="float:left; padding:0 0 5px 0; border-bottom:1px solid #CCC; width:100%;">
+                                    <img style="float:left; margin-right:10px;" src="/images/info-img.png"><span class="title">Video Info</span>
+                                </div>
+                                <p class="video-content">
+                                    Aimez-vous cette nouvelle interface?
+                                </p>
+                                <div class="share">
+                                    <img src="/images/fb.png" style="margin-bottom:10px;">
+                                    <img src="/images/tweet.png" style="float:right; margin-bottom:10px;">
+                                    <img src="/images/google.png" style="margin-bottom:15px;">
+                                    <img src="/images/youtube.png" style="float:right; margin-bottom:15px;">
+                                </div>
+                                <span id="rateSpan" style="width:100%; float:left; margin-bottom:10px; font-size: 15px;">RATING : 3.5 / 5 </span>
+                                <span id="nbVuesSpan" style="width:100%; float:left; margin-bottom:10px; font-size: 15px;">Vue 0 fois</span>
+                                <button type="button" class="btn-style">
+                                    <span class="comment"></span>Write a Comment
+                                </button>
+                            </div>
+                            <!-- end video info -->
+
+                            <span class="play-btn"><img src="/images/main-play.png"></span>
+
+                        </div>
+                        <!-- end video wrap box -->
+                    </div>
+
+                </div>
+                <div id="divDroite"  class="col-sm-3"></div>
+            </div>
+            <div class="row">
+                <div id="divBas"  class="col-sm-12"></div>
+            </div>
+
+        </div>
+        <script type="text/javascript" charset="utf-8">
+//                                console.log("A");
+
 			jQuery(document).ready(function() {
-			structurePage();
-			nbMatchs = 6;
-			loadVidsCond=0;
-			nbVidsCond=2;  
-
-			for (var a = 0; a < nbMatchs; a++) {
-				boiteMatch(a);
-			}
-			babillard();
-			galerie();
-			//videos();
-			getInfoLigue(window.ligueId);
-			getInfoJoueurs(window.ligueId);
+				developperBootstrap();
+				rang = 0;
+				structurePage();
+				nbMatchs = 6;
+				loadVidsCond = 0;
+				nbVidsCond = 2;
+				if(document.documentElement.clientWidth >= 768){
+                   maxBoitesMatchs=6;
+                   classeCol="col-sm-2";
+				    
+				}
+				else {
+				  if(document.documentElement.clientWidth >= 500){
+                   maxBoitesMatchs=4;
+                   classeCol="col-sm-3";
+                  
+                } else
+                    {
+                         maxBoitesMatchs=1;
+                         classeCol="col-sm-12";
+                    }
+                
+                  
+				}
+				//for (var a = 0; a < nbMatchs; a++) {
+					boiteMatch(0);
+				//}
+				babillard();
+				galerie();
+				//videos();
+				getInfoLigue(window.ligueId);
+				getInfoJoueurs(window.ligueId);
 			});
-		</script>
-
-	</body>
+        </script>
+    </body>
 </html>

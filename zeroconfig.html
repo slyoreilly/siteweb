@@ -62,7 +62,7 @@
 							break;
 						default:
 					}
-				}
+				};
 			}
 
 			function setMatchAVenir() {
@@ -96,13 +96,13 @@
 							//		alert(requete_ajax.responseText);
 							window.location.reload(true);
 						}
-					}
+					};
 					requete_ajax.send(params);
 					var pourMAV = new Array();
 					//requete_ajax.send(null);
 					//	return requete_ajax.responseText;
 
-				}
+				};
 			}
 
 			function getMatchAVenir() {
@@ -206,7 +206,7 @@
 				var n = 0;
 				dansAlign = false;
 				while (n < vM[k].alignementDom.length) {
-					m = 0
+					m = 0;
 					dansAlign = false;
 					while (m < jsonEqDom.joueur.length && dansAlign == false) {
 						if (vM[k].alignementDom[n] == jsonEqDom.joueur[m].joueurId) {
@@ -323,7 +323,7 @@
 					// On vient de grandir le vecteur...
 					boiteDomVis(boiteIn);
 					boiteDomVis(boiteOut);
-				}
+				};
 			}
 
 			function classeJoueursNom(vecJoueurs) {
@@ -339,10 +339,10 @@
 					if (presence == 'remplace') {
 						switch(boiteOut) {
 							case 1:
-								window.jsonEqDom.joueur.splice(joueurOut, 1)
+								window.jsonEqDom.joueur.splice(joueurOut, 1);
 								break;
 							case 2:
-								window.jsonEqVis.joueur.splice(joueurOut, 1)
+								window.jsonEqVis.joueur.splice(joueurOut, 1);
 								break;
 
 						}
@@ -370,7 +370,7 @@
 					boiteDomVis(boiteOut);
 
 					//	alert(joueurIn);
-				}
+				};
 			}
 
 			function RotateSpinner(spinnerId, up) {
@@ -617,7 +617,7 @@
 							}
 
 							if (strValBut != '') {
-								bRet = document.createElement('INPUT')
+								bRet = document.createElement('INPUT');
 								bRet.value = strValBut;
 								bRet.type = "button";
 								bRet.onclick = toggleJoueur(K, window.jsonEqVis.joueur[K].presence, 2);
@@ -663,7 +663,7 @@
 							}
 							rangee = document.createElement('TR');
 							cellFlecheGauche = document.createElement('TD');
-							aFG = document.createElement('INPUT')
+							aFG = document.createElement('INPUT');
 							aFG.value = '<<';
 							aFG.type = "button";
 							//			aFG.href='#';
@@ -678,7 +678,7 @@
 							rangee.appendChild(cellule);
 							cellFlecheDroite = document.createElement('TD');
 							flecheDroite = document.createTextNode('>>');
-							aFD = document.createElement('INPUT')
+							aFD = document.createElement('INPUT');
 							aFD.value = '>>';
 							aFD.type = "button";
 							var strJ = JSON.stringify(window.cJSON.equipe[indiceEquipe].joueur[K]);

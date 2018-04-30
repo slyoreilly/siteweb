@@ -64,7 +64,7 @@ function afficheSommairePunitions(rJSON) {
 		for (var J = 0; J < rJSON.punitions.length; J = J + 1) {
 
 			try {
-				if (rJSON.periodes.length > 0) {
+				if (rJSON.periodes.length > Iper) {
 					if (parseInt(rJSON.periodes[Iper].chrono) < parseInt(rJSON.punitions[J].chrono)) {
 						//					maPer = rJSON.periodes.shift();
 						maPer = rJSON.periodes[Iper];
@@ -83,7 +83,10 @@ function afficheSommairePunitions(rJSON) {
 					}
 				}
 			} catch(err) {
-				alert(err);
+				if(vPerm<10){
+					alert(err);
+				alert(err.message+" Erreur dans sommaire punition");
+			}
 			}
 
 			//	if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
@@ -666,7 +669,7 @@ function afficheStatsDom(statsJoueurs, code) {
 
 		for ( J = 0; J < statsJoueurs.joueurs.length; J = J + 1) {
 			//	if(!statsJoueurs.joueurs[J].nom.isNull&&statsJoueurs.joueurs[J].nom!='Anonyme')
-			if (!statsJoueurs.joueurs[J].nom.isNull) {
+			if (statsJoueurs.joueurs[J].nom!=null) {
 				rangee = document.createElement('TR');
 				amettre = document.getElementById('rangeeTitreHome_' + code);
 				amettre.parentNode.appendChild(rangee);

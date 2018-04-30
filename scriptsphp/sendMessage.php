@@ -95,7 +95,7 @@ $IR++;
 }
 
 if(count($arrRecept)==0){
-	echo "Erreur, count(arrRecpet)=0), arrRecept = ".$arrRecept;
+	echo "Erreur, count(arrRecpet)=0), arrRecept = ".$arrRecept."orig: ".$_POST['JSON'];
 	
 }
 

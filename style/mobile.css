@@ -29,16 +29,12 @@ img.logoEquipe {
 }
 	
 
-#contResume > div{
-	display:inline-block;
-	float:left;
-	margin:2em;
-}
+
 	
 #listeArrets img.logoEquipe,#listeButs img.logoEquipe {
 	float:left;
 	clear:left;
-	height:3em;
+	height:auto;
 	max-width:3em;
 	
 }
@@ -60,7 +56,7 @@ img.logoEquipe {
 }
 	
 #listeArrets.divButs,#listeButs .divButs {
-margin-left:48px;
+margin-left:1em;
 float:left;
 }
 
@@ -68,10 +64,107 @@ float:left;
 	padding: 5px 10px 5px 10px;
 	min-height:4em;
 width:100%;
+
+
+    border-bottom:1px #ccc solid;
 	
 }
 
-  #listeButs  li select{
-float:right;
+  #listeButs  li select,  #listeArrets  li select{
+position:absolute;
+right:1em;
 }
 
+#main_sommaire{
+    padding:0;
+}
+
+#main_sommaire >div{
+    margin-top:0;
+    margin-bottom:0;
+}
+
+#col_sommaire >div{
+    padding:0;
+}
+
+
+#contResume {
+    display:flex;
+    flex-direction:row;
+    justify:space-between;
+}
+
+#contResume .contEquipe{
+    display:flex;
+    flex-direction:row;
+    text-align:center;
+}
+#contResume .contEquipe p{
+    margin:0.2em;
+    margin:0.2em;
+    text-shadow: 0 2px 0 #ddd;
+font-weight: 700;
+
+}
+
+#contResume a{
+    max-width:50%;
+    margin:auto;
+}
+#contResume a img{
+    max-width:100%;
+    height:auto;
+}
+
+#contResume .contEquipe >div{
+    display:flex;
+    flex-direction:column;
+}
+
+#contDom {
+  
+    border-right:2px #bbb solid;
+
+}
+
+#main_sommaire h1 a {
+background-color: #737a84;
+color: #fff;
+text-shadow: 0 1px 0 #222;}
+
+li[data-role="list-divider"]{
+    text-align:center;
+    margin:auto;
+    font-weight:400;
+}
+
+#divTete {
+background-color: #2c4b7c;
+color: #fff;
+text-shadow: 0 2px 0 #222;
+font-weight: 700;
+font-size: 1.5em;
+}
+
+
+#divTete h1 {
+text-align:center;
+vertical-align:middle;
+margin:0 2em;   
+padding: 0.2em 0;
+}
+#divTete img {
+    height:2em;
+    width:auto;
+    display:inline;
+    
+    margin:auto;
+    
+}
+
+.grosTexte{
+    text-shadow: 0 2px 0 #ddd;
+font-weight: 700;
+font-size: 2em;
+}

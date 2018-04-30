@@ -11,6 +11,7 @@
 		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		        <meta name="viewport" content="width=device-width,initial-scale=1">
 		<style>
 		</style>
 		<script type="text/javascript" charset="utf-8">
@@ -310,12 +311,31 @@
 
 			function afficheClassement(saison) {
 				videNoeud('divCentrale');
+				                        var defP = false;
+                        try {
+                            if (window.vecLigue.Ligue.cleValeur.reglements.classement == "lnh2013") {
+                                defP = true;
+                            }
+                        } catch(err) {
+                        }
+                        var ptsDisc = false;
+                        try {
+                            if (window.vecLigue.Ligue.cleValeur.reglements.ptsDisc == "true") {
+                                ptsDisc = true;
+                            }
+                        } catch(err) {
+                        }
+
 				equipes = saison.equipe;
 							equipes.sort(function(a, b) {
 								if (parseInt(window.ligueId) == 49 || parseInt(window.ligueId) == 50 || parseInt(window.ligueId) == 51) {
 									compPoints = b.points - a.points;
 								} else {
-									compPoints = (parseInt(2 * b.vicDom) + 2 * parseInt(b.vicVis) + parseInt(b.nulDom) + parseInt(b.nulVis)) - (parseInt(2 * a.vicDom) + 2 * parseInt(a.vicVis) + parseInt(a.nulDom) + parseInt(a.nulVis));
+									compPoints = (parseInt(2 * b.vicDom) + 2 * parseInt(b.vicVis) + parseInt(b.nulDom) + parseInt(b.nulVis)+ parseInt(b.defPDom) + parseInt(b.defPVis)) - (parseInt(2 * a.vicDom) + 2 * parseInt(a.vicVis) + parseInt(a.nulDom) + parseInt(a.nulVis) + parseInt(a.defPDom) + parseInt(a.defPVis));
+								    if(ptsDisc){
+								        tmpDisc = b.ptsDisc -a.ptsDisc;
+								        compPoints += tmpDisc;
+								    }
 								}
 
 								if (compPoints == 0) {
@@ -323,6 +343,9 @@
 									retour = discrVic(a, b);
 									if (retour == 0) {
 										retour = discrFiche(a, b);
+										if(parseInt(window.ligueId) == 79 || parseInt(window.ligueId) == 80 || parseInt(window.ligueId) == 81 || parseInt(window.ligueId) == 83){
+										    retour = 0;
+										}
 										if (retour == 0) {
 											retour = discrDiff(a, b);
 										}
@@ -340,26 +363,37 @@
 						//	if(verifiePermission()<9)
 						//		alert(string2);
 						//var cJSON = eval('(' + string2 + ')');
-						var defP = false;
-						try {
-							if (window.vecLigue.Ligue.cleValeur.reglements.classement == "lnh2013") {
-								defP = true;
-							}
-						} catch(err) {
-						}
+                        
 
 						var titreClassement = new Array();
-						titreClassement[0] = window.tl_match_Equipe;
-						titreClassement[1] = window.tl_class_PJ;
-						titreClassement[2] = window.tl_class_Vic;
-						titreClassement[3] = window.tl_class_Def;
-						titreClassement[4] = window.tl_class_Nul;
-						titreClassement[5] = "OT Loss";
-
-						titreClassement[6] = window.tl_class_Points;
-						titreClassement[7] = window.tl_class_BP;
-						titreClassement[8] = window.tl_class_BC;
-						titreClassement[9] = window.tl_class_Diff;
+						var n=0;
+						titreClassement[n] = window.tl_match_Equipe;
+						n++;
+						titreClassement[n] = window.tl_class_PJ;
+						n++;
+						titreClassement[n] = window.tl_class_Vic;
+						n++;
+						titreClassement[n] = window.tl_class_Def;
+						n++;
+						titreClassement[n] = window.tl_class_Nul;
+						n++;
+						if(defP){
+                        titreClassement[n] = "OT Loss";
+                        n++;						    
+						}
+						if(ptsDisc){
+                        titreClassement[n] = "Discipline";
+                        n++;                            
+                        }
+						titreClassement[n] = window.tl_class_Points;
+						n++;
+						titreClassement[n] = window.tl_class_BP;
+						n++;
+						titreClassement[n] = window.tl_class_BC;
+						n++;
+						titreClassement[n] = window.tl_class_Diff;
+						n++;
+						
 						div1 = document.getElementById('divCentrale');
 						table1 = document.createElement('TABLE');
 						table1.id = "tableClassement";
@@ -404,7 +438,47 @@
 								amettre.parentNode.appendChild(rangee);
 
 								var lesCols = new Array();
-								lesCols[0] = equipes[J].nom;
+								for(var c=0;c<titreClassement.length;c++){
+								    if(titreClassement[c].localeCompare(window.tl_match_Equipe)==0){
+								        lesCols[c] = equipes[J].nom;
+								    } else if(titreClassement[c].localeCompare(window.tl_class_PJ)==0){
+								        lesCols[c] = parseInt(equipes[J].vicDom) + parseInt(equipes[J].vicVis)
+                                                        + parseInt(equipes[J].defDom) + parseInt(equipes[J].defVis)
+                                                        + parseInt(equipes[J].nulDom) + parseInt(equipes[J].nulVis)
+                                                        + parseInt(equipes[J].defPDom) + parseInt(equipes[J].defPVis);
+								    }else if(titreClassement[c].localeCompare(window.tl_class_Vic)==0){
+								        lesCols[c] = parseInt(equipes[J].vicDom) + parseInt(equipes[J].vicVis);
+                                        
+                                    }else if(titreClassement[c].localeCompare(window.tl_class_Def)==0){
+                                        lesCols[c] = parseInt(equipes[J].defDom) + parseInt(equipes[J].defVis);
+                                        
+                                    }else if(titreClassement[c].localeCompare(window.tl_class_Nul)==0){
+                                        lesCols[c] = parseInt(equipes[J].nulDom) + parseInt(equipes[J].nulVis);
+                                        
+                                    }else if(titreClassement[c].localeCompare("OT Loss")==0){
+                                        lesCols[c] = parseInt(equipes[J].defPDom) + parseInt(equipes[J].defPVis);
+                                        
+                                    }else if(titreClassement[c].localeCompare(window.tl_class_Points)==0){
+                                         basePoints = parseInt(2 * equipes[J].vicDom) + 2 * parseInt(equipes[J].vicVis) + parseInt(equipes[J].nulDom) + parseInt(equipes[J].nulVis);
+                                         basePoints = defP ? basePoints + parseInt(equipes[J].defPDom) + parseInt(equipes[J].defPVis) : basePoints;
+                                          lesCols[c] = ptsDisc ? basePoints + parseInt(equipes[J].ptsDisc) : basePoints;
+                                            if (parseInt(window.ligueId) == 49 || parseInt(window.ligueId) == 50 || parseInt(window.ligueId) == 51) {
+                                                    lesCols[c] = equipes[J].points;
+                                             }
+                                
+                                    }else if(titreClassement[c].localeCompare(window.tl_class_BP)==0){
+                                       lesCols[c] =  equipes[J].bp;
+                                        
+                                    }else if(titreClassement[c].localeCompare(window.tl_class_BC)==0){
+                                        lesCols[c] = equipes[J].bc;
+                                    }else if(titreClassement[c].localeCompare(window.tl_class_Diff)==0){
+                                        lesCols[c] = parseInt(equipes[J].bp) - parseInt(equipes[J].bc);
+                                    }else if(titreClassement[c].localeCompare("Discipline")==0){
+                                         lesCols[c] =  equipes[J].ptsDisc;
+                                    }
+								    
+								}
+								/*
 								lesCols[2] = parseInt(equipes[J].vicDom) + parseInt(equipes[J].vicVis);
 								lesCols[3] = parseInt(equipes[J].defDom) + parseInt(equipes[J].defVis);
 								lesCols[4] = parseInt(equipes[J].nulDom) + parseInt(equipes[J].nulVis);
@@ -415,22 +489,19 @@
 								lesCols[7] = equipes[J].bp;
 								lesCols[8] = equipes[J].bc;
 								lesCols[9] = parseInt(equipes[J].bp) - parseInt(equipes[J].bc);
-
-								if (parseInt(window.ligueId) == 49 || parseInt(window.ligueId) == 50 || parseInt(window.ligueId) == 51) {
-									lesCols[6] = equipes[J].points;
-								}
+*/
+								
 
 								var lesLiens = new Array();
-								lesLiens[0] = '/zstats/statsequipe.html?equipeId=' + equipes[J].id + '&m=' + window.m;
-								lesLiens[1] = null;
-								lesLiens[2] = null;
-								lesLiens[3] = null;
-								lesLiens[4] = null;
-								lesLiens[5] = null;
-								lesLiens[6] = null;
-								lesLiens[7] = null;
-								lesLiens[8] = null;
-								lesLiens[9] = null;
+								for(var c=0;c<titreClassement.length;c++){
+                                    if(titreClassement[c].localeCompare(window.tl_match_Equipe)==0){
+                                        lesLiens[c] = '/zstats/statsequipe.html?equipeId=' + equipes[J].id + '&m=' + window.m;
+                                    } else{
+                                        lesLiens[c] = null;
+                                    }
+                                }
+								
+								
 
 								for ( K = 0; K < lesCols.length; K++) {
 									cellule = document.createElement('TD');
@@ -452,11 +523,11 @@
 							//	document.body.rangee.cellule.innerHTML ='yo';
 						} catch(err) {
 						}
-						if (!defP) {
+						/*if (!defP) {
 							$(document).ready(function() {
 								$('td:nth-child(6)').hide();
 							});
-						}
+						}*/
 
 						break;
 

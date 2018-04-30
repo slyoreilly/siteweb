@@ -28,7 +28,7 @@ $qString="SELECT abonEquipeLigue.*, TableMatch.*	FROM TableMatch
 							
 							AND abonEquipeLigue.finAbon>NOW()
 							AND TableMatch.date>(NOW()-INTERVAL 1 DAY)
-							AND TableMatch.date<(NOW()+INTERVAL 2 WEEK)
+							AND TableMatch.date<(NOW()+INTERVAL 7 DAY)
 							AND (TableMatch.eq_dom=abonEquipeLigue.equipeId OR TableMatch.eq_vis=abonEquipeLigue.equipeId)
 						GROUP BY mavId";
 						

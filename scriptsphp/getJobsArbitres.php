@@ -28,9 +28,9 @@ mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 
 
 $reqSel = "SELECT *
-						FROM JobArbitre		
-						 WHERE 1";
-$retour=  mysqli_query($conn,$reqSel) or die("Erreur: "+$reqSel+"\n"+mysqli_error());
+						FROM Job	
+						 WHERE contexte='arbitre'";
+$retour=  mysqli_query($conn,$reqSel) or die("Erreur: ".$reqSel."\n".mysqli_error($conn));
 
 
 $vecMatch = array();
@@ -40,7 +40,7 @@ while ($r = mysqli_fetch_assoc($retour)) {
 $reqReq = "SELECT *
 						FROM Requis				
 						 WHERE 1";
-$retour2=  mysqli_query($conn,$reqReq) or die("Erreur: "+$reqReq+"\n"+mysqli_error());
+$retour2=  mysqli_query($conn,$reqReq) or die("Erreur: ".$reqReq."\n".mysqli_error($conn));
 
 
 $vecMatch2 = array();

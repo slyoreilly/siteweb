@@ -1,6 +1,12 @@
 <?php
 
+////////////////////////////
+//	LOG
 
+							$message = "Execution de scriptsphp/calculeMatch.";
+							$log  = $message.' - '.date("F j, Y, g:i:s a").PHP_EOL.
+	        				"-------------------------".PHP_EOL;
+							file_put_contents('../test/logTest.txt', $log, FILE_APPEND);
 /////////////////////////////////////////////////////////////
 //
 //  Définitions des variables
@@ -38,21 +44,13 @@ mysql_query("SET NAMES 'utf8'");
 mysql_query("SET CHARACTER SET 'utf8'");
 
 
-function ismidv4()//is MatchId version 4 variables
-{$i1=stripos($ID,'_');
-$i2=stripos($ID,'_',$i1+1);
-$i3=stripos($ID,'_',$i2+1);
-if($i3==false)
-{return false;}
-else 
-	{return true;}
-}
+
 
 /////////////////////////////////////////////////////////////
 //
 //
 
-function parseMatchID($ID){
+function parseMatchID_CM($ID){
 	 
 //$monMatch['date'] = str_replace('/', '-', substr($ID,0,stripos($ID,'_')));
 $i1=stripos($ID,'_');
@@ -132,9 +130,9 @@ return 0;
 	///////////////////////////////////
 	$monGet = $_POST["ligueId"];	
 	$saisonId="null";
-	
-	if(!isset($deSyncMatch))
-		{$ligueId = $monGet;}
+		$DMX=4;
+	//if(!isset($deSyncMatch))
+	//	{$ligueId = $monGet;}
 //	if(!isset($ligueId))
 //	$ligueId=3;
 //	$ligueId = trouveIDParNomLigue($monGet);
@@ -162,13 +160,9 @@ $dernierMatch=mysql_result($drSaison, 0);
 
 
 */
-////////////////////////////
-//	LOG
 
-							$message = "Éexcution de scriptsphp/calculeMatch.";
-							$log  = $message.' - '.date("F j, Y, g:i:s a").PHP_EOL.
-	        				"-------------------------".PHP_EOL;
-							file_put_contents('../test/logTest.txt', $log, FILE_APPEND);	
+
+
 
 ///////////////////////
 
@@ -256,7 +250,7 @@ while($rangeeVE=mysql_fetch_array($sqlVerifEvent))				// Vérification: Est-ce q
 //	echo count($aEnr);
 while($Iae<count($aEnr)) // Tous les matchs a être recalculés pour enregistrement.
 	{
-	$matchAEnr = parseMatchID($aEnr[$Iae]);
+	$matchAEnr = parseMatchID_CM($aEnr[$Iae]);
 	if(isset($matchAEnr['ligueId']))
 		{$ligueId=$matchAEnr['ligueId'];}
 	else {

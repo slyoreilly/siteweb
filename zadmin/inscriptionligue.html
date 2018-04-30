@@ -1,0 +1,614 @@
+<html>
+	<HEAD> 
+	<title>Formulaire d'inscription</title>
+		<link rel="stylesheet" href="/style/general_v4.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+				<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+				<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+
+</HEAD>
+
+
+<body id="body">
+	
+	<script type="text/javascript">
+			function traiteForme(maForme)
+	{
+ uneString = verifForme(maForme);	
+	var rJSON = eval('(' +uneString+')');
+
+
+if(rJSON.idCheck=="true")
+	{	
+		
+	amettre2 = document.getElementById('lienInscription');
+		document.getElementById('texteErreur').innerHTML='ID valide';
+	setCookie("userId",rJSON.id,7);
+	var person={id:rJSON.id};
+//postwith("pageperso.php",person);
+postwith("/index.html",person);
+	}
+	else
+	{
+	amettre2 = document.getElementById('lienInscription');
+		document.getElementById('texteErreur').innerHTML='Identification invalide';
+	}
+
+
+	}
+			function verifUser(mUser) {
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/admin/verifinscription.php";
+				var params = "usager=" + mUser + "&code=30";
+				requete_ajax.open("POST", url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						strRepErreur = requete_ajax.responseText;
+						//alert(strRepErreur);
+						var repErreur = eval('(' + strRepErreur + ')');
+					boule=true;
+					n=0;
+					while(boule&&n<10)
+					{
+					try{detruitNoeud("dDispo");}
+					catch(err){boule=false;}
+					n++;
+					}
+
+						if (repErreur.succes == 1&&repErreur.usager.length>0) {
+							dDispoJS=document.createElement('DIV');
+							dDispoJS.id="dDispo";
+							dDispoJS.className="formDroite";
+							dDispoJS.innerHTML=window.tl_profil_userDispoP1+mUser+window.tl_profil_userDispoP2;
+							dDispoJS.style.color="#8DDB42";
+							document.getElementById("contUser").appendChild(dDispoJS);
+							window.saveOk=true;
+	
+						} else {
+							dDispoJS=document.createElement('DIV');
+							dDispoJS.id="dDispo";
+							dDispoJS.className="formDroite";
+							dDispoJS.innerHTML=tl_profil_userDispoP1+mUser+tl_profil_userDispoP3;
+							dDispoJS.style.color="#8D2222";
+							document.getElementById("contUser").appendChild(dDispoJS);
+							window.saveOk=false;
+
+
+						}
+						btnEUJS=document.getElementById("iOK2");
+						if(window.saveOk&&window.passOk)
+						{			
+								
+								btnEUJS.style.color="#000";					
+								btnEUJS.onclick=function(){
+											try{verifForme(this.form);}catch(err){alert("échec");}
+							};
+						}else
+								{	btnEUJS.style.color="#444";
+								btnEUJS.onclick=function(){
+								};	
+								}				
+						
+
+					}
+				};
+				requete_ajax.send(params);
+				return requete_ajax.responseText;
+
+				//	alert(requete_ajax.responseText);
+
+			}
+			
+			function getInfoLigue(ligueId) {
+                //  return function(){
+                var requete_ajax = new XMLHttpRequest();
+
+                var url = "/stats2/infoLigue2JSON.php";
+                //  alert(url);
+                var params = "ligueId=" + window.ligueId;
+                //alert(params);
+                requete_ajax.open('POST', url, true);
+
+                requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                requete_ajax.setRequestHeader("Content-length", params.length);
+                requete_ajax.setRequestHeader("Connection", "close");
+
+                requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+                    if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+                        //      alert(requete_ajax.responseText);
+                        //          window.location.reload();
+                        var tmpStr = eval('(' + requete_ajax.responseText + ')');
+                        
+
+                        //return requete_ajax.responseText;
+                    }
+                    //      else{alert("Petit problème de développement");}
+                };
+                requete_ajax.send(params);
+                //alert(requete_ajax.responseText);
+              
+                //  }
+            }
+
+			function getAbonnements(ligueId) {
+                //  return function(){
+                var requete_ajax = new XMLHttpRequest();
+
+                var url = "/stats2/abonnements2JSONPOST.php";
+                //  alert(url);
+                var params = "ligueId=" + window.ligueId;
+                //alert(params);
+                requete_ajax.open('POST', url, true);
+
+                requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                requete_ajax.setRequestHeader("Content-length", params.length);
+                requete_ajax.setRequestHeader("Connection", "close");
+
+                requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+                    if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+                        //      alert(requete_ajax.responseText);
+                        //          window.location.reload();
+                        var tmpStr = eval('(' + requete_ajax.responseText + ')');
+                        cptPerso=0;
+                        totalPerso=0;
+                        for(var a=0;a<tmpStr.length;a++){
+                           // alert(tmpStr[a].type);
+                            if(tmpStr[a].type<20){
+                                totalPerso++;
+                                getPerso(tmpStr[a].userId);
+                            }
+                        }
+                       
+
+                        //return requete_ajax.responseText;
+                    }
+                    //      else{alert("Petit problème de développement");}
+                };
+                requete_ajax.send(params);
+                //alert(requete_ajax.responseText);
+              
+                //  }
+            }
+            function getPerso(userId) {
+                //  return function(){
+                var requete_ajax = new XMLHttpRequest();
+
+                var url = "/stats2/perso2JSON.php";
+                //  alert(url);
+                var params = "id=" +userId;
+                //alert(params);
+                requete_ajax.open('POST', url, true);
+
+                requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                requete_ajax.setRequestHeader("Content-length", params.length);
+                requete_ajax.setRequestHeader("Connection", "close");
+
+                requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+                    if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+                        //      alert(requete_ajax.responseText);
+                        //          window.location.reload();
+                         var tmpStr = eval('(' + requete_ajax.responseText + ')');
+                        vecPersos.push(tmpStr);
+                        window.cptPerso++;
+                        if(window.cptPerso==window.totalPerso){
+                            //alert("a");
+                             $('#divCentrale').on("click",'#btnCompleter',function(){
+                            //alert("b");
+                                     envoieMessage(vecPersos);
+                                
+                                 
+                             });
+                        }
+                        //alert(JSON.stringify(vecPersos));
+
+                        //return requete_ajax.responseText;
+                    }
+                    //      else{alert("Petit problème de développement");}
+                };
+                requete_ajax.send(params);
+                //alert(requete_ajax.responseText);
+              
+                //  }
+            }
+            
+            
+			function envoieMessage(vecPersos) {
+
+            var requete_ajax = new XMLHttpRequest();
+
+            var url = "/scriptsphp/sendMessage.php";
+            arrPersos = [];
+            for(var a=0;a<vecPersos.length;a++){
+                arrPersos.push(vecPersos[a].id);
+            }
+
+
+            var strExp = "expediteur=" + "Anonyme";
+            var strRec = "recepteur=" + JSON.stringify(arrPersos);
+            var strCorps = "corps=" + texteCorpsMessage();
+            var strTitre = "titre=" + "Nouvelle Inscription";
+            params = strExp + '&' + strRec + '&' + strCorps + '&' + strTitre;
+//          alert(params);
+            requete_ajax.open('POST', url, true);
+            requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            requete_ajax.setRequestHeader("Content-length", params.length);
+            requete_ajax.setRequestHeader("Connection", "close");
+
+            requete_ajax.send(params);
+
+            requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+                if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+                    //              alert(requete_ajax.responseText);
+                    window.location.href = "/zstats/accueilligue.html";
+                }
+            };
+        }
+
+			
+			function verifPass(s1,s2){
+				try{detruitNoeud("dConc");}
+				catch(err){}
+				dConcJS =document.createElement('div');
+				dConcJS.id="dConc";
+				retBoule=false;
+				if(s1==s2&&s1.length>0)
+				{
+					dConcJS.style.color="8DDB42";
+					dConcJS.innerHTML=window.tl_profil_passMatch;
+					retBoule=true;
+					window.passOk=true;
+
+				}
+				else
+									{
+					dConcJS.style.color="#8D2222";
+					dConcJS.innerHTML=window.tl_profil_passNoMatch;
+					retBoule=false;
+					window.passOk=false;
+
+				}
+				btnEUJS=document.getElementById("iOK2");			
+				if(window.saveOk&&window.passOk)
+						{			
+								
+								btnEUJS.style.color="#000";					
+								btnEUJS.onclick=function(){
+											try{verifForme(this.form);}catch(err){alert("échec");}
+							};
+						}else
+								{	
+									btnEUJS.style.color="#444";
+									btnEUJS.onclick=function(){};	
+								}				
+						
+				
+				
+				document.getElementById("contPass").appendChild(dConcJS);
+				return retBoule;
+			}
+
+		function verifForme(maForme)
+	{
+		
+		var requete_ajax = new XMLHttpRequest();
+		
+		var url = "/admin/verifinscription.php";
+		var params = "usager="+maForme.usager.value+"&prenom="+maForme.prenom.value+"&nom="+maForme.nom.value+"&pass="+maForme.pass.value+"&pass2="+maForme.pass2.value+"&codePostal="+maForme.codePostal.value+"&courriel="+maForme.courriel.value+"&code=1";
+		requete_ajax.open("POST", url, true);
+
+		//Send the proper header information along with the request
+		requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		requete_ajax.setRequestHeader("Content-length", params.length);
+		requete_ajax.setRequestHeader("Connection", "close");
+
+	
+		requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+			if(requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+				strRepErreur = requete_ajax.responseText;
+				//alert(strRepErreur);
+				var repErreur = eval('(' +strRepErreur+')');
+				
+				if(repErreur.succes==1)
+					{
+					setCookie("userId",repErreur.usager,120);
+					var person={id:repErreur.usager};
+					//postwith("pageperso.php",person);
+					//postwith("/zuser/login.html",person);
+					//window.location.href="/zuser/bienvenueetmerci.html"
+					window.location.href=window.menus[1].lien;
+					}
+					else
+					{
+//				alert("Echec");
+						if(repErreur.erreurExist==1)
+						{
+							amettre2 = document.getElementById('pHaut');
+							amettre2.innerHTML='Choisissez un autre identifiant!';
+//				alert("id Exist");
+						}
+						if(repErreur.erreurPass==1)
+						{	
+							amettre2 = document.getElementById('pHaut');
+							amettre2.innerHTML='Les mots de passes ne concordent pas!';
+//				alert("mot de passe");
+						}
+					}
+				
+				
+				}
+		};
+			requete_ajax.send(params);
+	return requete_ajax.responseText;
+
+//	alert(requete_ajax.responseText);
+
+
+	}
+	
+	function texteCorpsMessage(){
+	    corps="";
+	    
+	    corps = corps + $("#fgPrenom").text() + $('#idPrenom').val()+"\n ";
+	    corps = corps + $("#fgNom").text() + $('#idNomFamille').val()+"\n ";
+        corps = corps + $("#fgDDN").text() + $('#idDDN').val()+"\n "; 
+        corps = corps + $("#fgCourriel").text() + $('#idCourriel').val()+"\n "; 
+        corps = corps + $("#fgNumTel").text() + $('#idNumTel').val()+"\n "; 
+        corps = corps + $("#fgCat").text() + $("#idCat option:selected").val()+"\n "; 
+        corps = corps + $("#fgInscr").text() +  $("#idInscription option:selected").val()+"\n "; 
+        corps = corps + $("#fgNiveau").text() + $("#idNiveau option:selected").val()+"\n "; 
+        corps = corps + $("#fgPos").text() +  $("#idPosition option:selected").val()+"\n "; 
+        corps = corps + $("#fgComm").text() + $('#idCommentaires').val()+"\n "; 
+  
+	    return corps;
+	}
+	
+	function genBoitesAide()	
+	{
+		hDiv=document.createElement('div');
+		hDiv.className="boiteQM";
+		hDiv.innerHTML="?";
+		
+		document.getElementById('contUser').appendChild(hDiv);
+		
+		hMessage=document.createElement('div');
+		hMessage.id="hMes1";
+		hMessage.className="boiteAide cache";
+		hMessage.innerHTML="Votre nom d'utilisateur qui vous servira pour vous connecter tant sur le site web que sur l'application mobile.";		
+		document.getElementById('contUser').appendChild(hMessage);
+		hDiv.onmouseover=function(){document.getElementById('hMes1').className="boiteAide visible";};
+		hDiv.onmouseout=function(){document.getElementById('hMes1').className="boiteAide cache";};
+
+		hDiv2=document.createElement('div');
+		hDiv2.className="boiteQM";
+		hDiv2.innerHTML="?";		
+		
+		document.getElementById('contPrenom').appendChild(hDiv2);
+		
+		hMess2JS=document.createElement('div');
+		hMess2JS.id="hMes2";
+		hMess2JS.className="boiteAide cache";
+		hMess2JS.innerHTML="Votre prénom usuel";		
+		document.getElementById('contPrenom').appendChild(hMess2JS);
+		hDiv2.onmouseover=function(){document.getElementById('hMes2').className="boiteAide visible";};
+		hDiv2.onmouseout=function(){document.getElementById('hMes2').className="boiteAide cache";};
+		
+		
+				hDiv3=document.createElement('div');
+		hDiv3.className="boiteQM";
+		hDiv3.innerHTML="?";		
+		
+		document.getElementById('contNom').appendChild(hDiv3);
+		
+		hMess3JS=document.createElement('div');
+		hMess3JS.id="hMes3";
+		hMess3JS.className="boiteAide cache";
+		hMess3JS.innerHTML="Votre nom usuel";		
+		document.getElementById('contNom').appendChild(hMess3JS);
+		hDiv3.onmouseover=function(){document.getElementById('hMes3').className="boiteAide visible";};
+		hDiv3.onmouseout=function(){document.getElementById('hMes3').className="boiteAide cache";};
+		
+		
+						hDiv4=document.createElement('div');
+		hDiv4.className="boiteQM";
+		hDiv4.innerHTML="?";		
+		
+		document.getElementById('contPass1').appendChild(hDiv4);
+		
+		hMess4JS=document.createElement('div');
+		hMess4JS.id="hMes4";
+		hMess4JS.className="boiteAide cache";
+		hMess4JS.innerHTML="Votre mot de passe, aucune restriction. Doit être le même que dans l'application mobile.";		
+		document.getElementById('contPass1').appendChild(hMess4JS);
+		hDiv4.onmouseover=function(){document.getElementById('hMes4').className="boiteAide visible";};
+		hDiv4.onmouseout=function(){document.getElementById('hMes4').className="boiteAide cache";};
+		
+								hDiv5=document.createElement('div');
+		hDiv5.className="boiteQM";
+		hDiv5.innerHTML="?";		
+		
+		document.getElementById('contCP').appendChild(hDiv5);
+		
+		hMess5JS=document.createElement('div');
+		hMess5JS.id="hMes5";
+		hMess5JS.className="boiteAide cache";
+		
+		hpCP=document.createElement('p');
+		hpCP.innerHTML=	"Votre code postal. Sert à déterminer votre position approximative pour les recherches de joueurs/ligues/arbitres...";
+		hMess5JS.appendChild(hpCP);
+		document.getElementById('contCP').appendChild(hMess5JS);
+		hDiv5.onmouseover=function(){document.getElementById('hMes5').className="boiteAide visible";};
+		hDiv5.onmouseout=function(){document.getElementById('hMes5').className="boiteAide cache";};
+		
+				
+								hDiv6=document.createElement('div');
+		hDiv6.className="boiteQM";
+		hDiv6.innerHTML="?";		
+		
+		document.getElementById('contCourriel').appendChild(hDiv6);
+		
+		hMess6JS=document.createElement('div');
+		hMess6JS.id="hMes6";
+		hMess6JS.className="boiteAide cache";
+		hMess6JS.innerHTML="Sert à communiquer avec vous. N'est jamais visible par personne sauf vous.";		
+		document.getElementById('contCourriel').appendChild(hMess6JS);
+		hDiv6.onmouseover=function(){document.getElementById('hMes6').className="boiteAide visible";}
+		hDiv6.onmouseout=function(){document.getElementById('hMes6').className="boiteAide cache";}
+	}
+	
+	
+	
+	</script>
+
+	
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+		<div id="divMenuHaut"></div>
+		<div id="divCentrale">
+	
+<form name="myForm" id="maForme">
+
+
+
+</form>
+		</div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+		
+		
+
+			developper(3);
+			vecPersos = [];
+
+			getAbonnements(window.ligueId);
+			saveOk=false;
+			passOk=false;
+	
+			
+			$('#maForme').append($('<div></div>').css("margin-top","25px").append(
+			 /*   $('<div></div>').addClass("ligneBloc").attr("id","contUser").append($("<div></div>").addClass("formGauche").attr("id","fgUsager").text("Nom d'usager:"),$("<div></div>").addClass("formDroite").append($("<input></input>").attr("type","text").attr("id","idUser").attr("name","usager")) ),*/
+                $('<div></div>').addClass("ligneBloc").attr("id","contPrenom").append($("<div></div>").addClass("formGauche").attr("id","fgPrenom").text("Prénom :"),$("<div></div>").addClass("formDroite").append($("<input></input>").attr("type","text").attr("id","idPrenom").attr("name","prenom")) ),
+                $('<div></div>').addClass("ligneBloc").attr("id","contNom").append($("<div></div>").addClass("formGauche").attr("id","fgNom").text("Nom :"),$("<div></div>").addClass("formDroite").append($("<input></input>").attr("type","text").attr("id","idNomFamille").attr("name","nom")) ),
+              /*  $('<div></div>').addClass("ligneBloc").attr("id","contPass1").append($("<div></div>").addClass("formGauche").attr("id","fgPass").text("Mot de passe :"),$("<div></div>").addClass("formDroite").append($("<input></input>").attr("type","password").attr("id","iPass").attr("name","pass")) ),
+                $('<div></div>').addClass("ligneBloc").attr("id","contPass").append($("<div></div>").addClass("formGauche").attr("id","fgConf").text("Confirmer le mot de passe :"),$("<div></div>").addClass("formDroite").append($("<input></input>").attr("type","password").attr("id","iConf").attr("name","pass2")) ),*/
+                $('<div></div>').addClass("ligneBloc").attr("id","contDDN").append($("<div></div>").addClass("formGauche").attr("id","fgDDN").text("Date de naissance :"),$("<div></div>").addClass("formDroite").append($("<input></input>").attr("type","text").attr("id","idDDN").attr("name","ddn")) ),
+                $('<div></div>').addClass("ligneBloc").attr("id","contCourriel").append($("<div></div>").addClass("formGauche").attr("id","fgCourriel").text("Courriel :"),$("<div></div>").addClass("formDroite").append($("<input></input>").attr("type","text").attr("id","idCourriel").attr("name","courriel")) ),
+                $('<div></div>').addClass("ligneBloc").attr("id","contNumTel").append($("<div></div>").addClass("formGauche").attr("id","fgNumTel").text("Numéro de téléphone :"),$("<div></div>").addClass("formDroite").append($("<input></input>").attr("type","text").attr("id","idNumTel").attr("name","numTel")) ),
+                $('<div></div>').addClass("ligneBloc").attr("id","contCat").append($("<div></div>").addClass("formGauche").attr("id","fgCat").text("Catégorie :"),$("<div></div>").addClass("formDroite").append($("<select></select>").attr("id","idCat").attr("name","categorie").append(
+                    $('<option></option>').val("amical").text("Amical"),    
+                    $('<option></option>').val("amical").text("Compétitif")
+                )
+                
+                ) ),
+                $('<div></div>').addClass("ligneBloc").attr("id","contInscription").append($("<div></div>").addClass("formGauche").attr("id","fgInscr").text("Inscription :"),$("<div></div>").addClass("formDroite").append($("<select></select>").attr("id","idInscription").attr("name","inscription").append(
+                    $('<option></option>').val("individuel").text("Individuel"),    
+                    $('<option></option>').val("equipe").text("Équipe")
+                )
+                ) ),
+                $('<div></div>').addClass("ligneBloc").attr("id","contNiveau").append($("<div></div>").addClass("formGauche").attr("id","fgNiveau").text("Niveau :"),$("<div></div>").addClass("formDroite").append($("<select></select>").attr("id","idNiveau").attr("name","niveau").append(
+                    $('<option></option>').val("jamais").text("Jamais Joué"),    
+                    $('<option></option>').val("debutant").text("Débutant"),
+                    $('<option></option>').val("moyen").text("Moyen"),
+                    $('<option></option>').val("fort").text("Fort"),
+                    $('<option></option>').val("tresfort").text("Très fort")
+                )
+                ) ),
+                $('<div></div>').addClass("ligneBloc").attr("id","contPosition").append($("<div></div>").addClass("formGauche").attr("id","fgPos").text("Position :"),$("<div></div>").addClass("formDroite").append($("<select></select>").attr("id","idPosition").attr("name","position").append(
+                    $('<option></option>').val("Att").text("Attaquant"),    
+                    $('<option></option>').val("Def").text("Défenseur"),
+                    $('<option></option>').val("Gard").text("Gardien"),
+                    $('<option></option>').val("AttDef").text("Att ou Def"),
+                    $('<option></option>').val("AttGard").text("Att ou gardien"),
+                     $('<option></option>').val("DefGard").text("Def ou gardien"),
+                      $('<option></option>').val("AttDefGard").text("Att ou Def ou gardien")
+                ) )),
+                $('<div></div>').addClass("ligneBloc").attr("id","contCommentaires").append($("<div></div>").addClass("formGauche").attr("id","fgComm").text("Commentaires :"),$("<div></div>").addClass("formDroite").append($("<textarea></textarea>").attr("rows","5").attr("id","idCommentaires").attr("name","commentaires")) ),
+			     $('input').attr("type","hidden").attr("name","code").val(1)
+			)
+			
+			);
+	
+    
+			//$("#fgUsager").text(window.tl_login_nomUsager+": ");
+           /* $("#fgPass").text(window.tl_login_motPasse+": ");
+            $("#fgConf").text(window.tl_profil_confirmePass+": ");*/
+            $("#fgPrenom").text(window.tl_profil_prenom+": ");
+            $("#fgNom").text(window.tl_profil_nom+": ");
+            $("#fgCP").text(window.tl_profil_CodePostal+": ");
+            $("#fgCourriel").text(window.tl_profil_Courriel+": ");
+            
+			$('#divCentrale').append($('<div></div>').attr("id","btnCompleter").addClass("bouton_2").text("Compléter"));
+			/*
+			document.getElementById("idUser").onkeyup=function(){
+					boule=true;
+					n=0;
+					while(boule&&n<10)
+					{
+					try{detruitNoeud("dDispo");}
+					catch(err){boule=false}
+					n++;
+					}
+						verifUser(this.value);
+					};
+				
+						document.getElementById("iPass").onkeyup=function(){
+							verifPass(this.value,document.getElementById("iConf").value);
+						};
+
+
+						document.getElementById("iConf").onkeyup=function(){
+							verifPass(this.value,document.getElementById("iPass").value);
+						};
+
+				
+			
+			btnEPJS=document.createElement('INPUT');
+				btnEPJS.type="BUTTON";
+				btnEPJS.id="iOK2";
+				if(window.passOk&&window.saveOk)
+					{btnEPJS.style.color="#000";
+						btnEPJS.onclick=function(){
+						try{verifForme(this.form);}catch(err){alert("échec");}
+						};
+						
+					}
+					else
+					{btnEPJS.style.color="#444";
+						btnEPJS.onclick=function(){
+							};
+					}
+				btnEPJS.value=window.tl_bouton_save;
+				$('#maForme').append($(btnEPJS));
+				
+				genBoitesAide();*/
+/*
+
+nom
+prenom
+ddn
+courriel
+num tel
+categorie
+inscription
+niveau de jeu
+position de jeu
+commentaires
+
+*/
+		</script>
+
+</body></html>

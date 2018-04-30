@@ -38,7 +38,7 @@
 		}
 
 		function btnOkCreeSaison() {
-			//return function() {
+
 			var requete_ajax = new XMLHttpRequest();
 
 			var url = "/admin/modifiersaison.php";
@@ -54,7 +54,7 @@
 			requete_ajax.setRequestHeader("Content-length", params.length);
 			requete_ajax.setRequestHeader("Connection", "close");
 
-			//		alert('yo');
+
 			requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
 				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 					//			alert(requete_ajax.responseText);
@@ -64,13 +64,9 @@
 				}
 				//else
 				//alert("Problème de communcation, "+requete_ajax.readyState+", "+requete_ajax.status == 200);
-			}
+			};
 			requete_ajax.send(params);
-			//		alert(requete_ajax.responseText);
-			//requete_ajax.send(null);
-			//	return requete_ajax.responseText;
 
-			//}
 		}
 
 		function getInfoLigue(ligueId) {
@@ -158,7 +154,7 @@
 
 				}
 
-			}
+			};
 			requete_ajax.send(params);
 
 		}
@@ -199,7 +195,7 @@
 						ajouteArena();
 					}
 				}
-			}
+			};
 			//				alert(JSON.stringify(listeMatch));
 			//	return vecMAV;
 			//}
@@ -311,7 +307,7 @@
 					//	mesActions(liguesJSON);
 
 				}
-			}
+			};
 			//				alert(JSON.stringify(listeMatch));
 			//	return vecMAV;
 			//}
@@ -504,7 +500,7 @@
 			profilJoueur = eval('(' + strProfilJoueur + ')');
 			username = getCookie("userId");
 			//alert('uId :'+userId);
-			var strUser = getJSONdePerso(username)
+			var strUser = getJSONdePerso(username);
 			//alert(strUser);
 			usager = eval('(' + strUser + ')');
 
@@ -597,7 +593,7 @@
 					// requete_ajax.responseText;
 
 				}
-			}
+			};
 			requete_ajax.send(params);
 
 		}
@@ -608,7 +604,7 @@
 			//alert(stringStatsHome);
 			var statsJSONHome = eval('(' + stringStatsHome + ')');
 
-			afficheStatsCarriere(statsJSONHome, 3)
+			afficheStatsCarriere(statsJSONHome, 3);
 
 		}
 
@@ -696,7 +692,7 @@
 				monIF = document.createElement('IFRAME');
 				dial.appendChild(monIF);
 				monIF.src = "/zuser/editmembre.html?userId=" + username + '&m=1';
-			}
+			};
 			/*						<div id="divProfilMembre">
 			 <h2 class="titreSection" id="h2ProfMembre">Profil du membre</h2>
 			 <img id="imgEditMembre" src="/images/icones/edit.png" style="position:absolute;right:32px;width:32px;height:32px;"/>
@@ -750,7 +746,7 @@
 				monIF = document.createElement('IFRAME');
 				dial.appendChild(monIF);
 				monIF.src = "/admin/entreprofil.html?joueurId=" + joueurId + '&m=1';
-			}
+			};
 		}
 
 		function faitOnglet_1() {
@@ -775,7 +771,7 @@
 			selLigueJS.onchange = function() {
 				window.ligueId = this.options[this.selectedIndex].value;
 				ongletAdmin();
-			}
+			};
 			divPAdmin.appendChild(divSelLigue);
 			vecSujet = [window.tl_ges_Saisons, window.tl_ges_Equipes, window.tl_ges_Arenas, window.tl_ges_Joueurs, window.tl_ges_Arbitres];
 
@@ -843,7 +839,7 @@
 		function surSelection(ligueId) {
 			return function() {
 				setCookie('ligueId', ligueId, 120);
-			}
+			};
 			//						setCookie('ligueId',ligueId,120);
 			//window.location.href='statistiques.html?ligueId='+ligueId;
 		}
@@ -874,7 +870,7 @@
 					getProfilArbitre(window.username);
 
 				}
-			}
+			};
 			requete_ajax.send(params);
 
 		}
@@ -903,7 +899,7 @@
 					getProfilArbitre(window.username);
 					//					window.location.reload(true);
 				}
-			}
+			};
 			requete_ajax.send(params);
 
 		}
@@ -939,7 +935,7 @@
 					parent.appendChild(divArb);
 					for (var a = 0; a < listeArbitres.length; a++) {
 
-						opt = document.createElement('div')
+						opt = document.createElement('div');
 						opt.value = listeArbitres[a].arbitreId;
 						opt.innerHTML = listeArbitres[a].prenom + " " + listeArbitres[a].nom;
 						divArb.appendChild(opt);
@@ -960,9 +956,9 @@
 						monIF = document.createElement('IFRAME');
 						dial.appendChild(monIF);
 						monIF.src = "/zarbitre/listeArbitres.html?m=1&ligueId=" + window.ligueId;
-					}
+					};
 				}
-			}
+			};
 
 			requete_ajax.send(params);
 
@@ -1008,7 +1004,7 @@
 						}
 
 					} else {
-						mParent = document.getElementById('divProfilArbitre')
+						mParent = document.getElementById('divProfilArbitre');
 						divArb = document.createElement('DIV');
 						pArb = document.createElement('P');
 
@@ -1027,7 +1023,7 @@
 						mParent.appendChild(divArb);
 					}
 				}
-			}
+			};
 			requete_ajax.send(params);
 
 		}
@@ -1246,7 +1242,7 @@
 						"estDispo" : estDispo
 					};
 					setDispo(baseDispo);
-				}
+				};
 				cell5.appendChild(lienOK);
 
 				ligneAjout.appendChild(cell1);
@@ -1533,7 +1529,7 @@
 
 					baseRegion[baseRegion.length] = window.nouvRegion.value;
 					setRegion(baseRegion);
-				}
+				};
 				cell5.appendChild(lienOK);
 
 				ligneAjout.appendChild(cell2);
@@ -1630,7 +1626,7 @@
 					// requete_ajax.responseText;
 
 				}
-			}
+			};
 			requete_ajax.send(params);
 
 		}
@@ -1671,7 +1667,7 @@
 					// requete_ajax.responseText;
 
 				}
-			}
+			};
 			requete_ajax.send(params);
 
 		}
@@ -1817,10 +1813,7 @@
 		// Arenas
 
 		}
-		function afficheTableauSaison() {
-			return function() {
-			}
-		}
+
 
 		function creeSaison() {
 			return function() {
@@ -1936,7 +1929,7 @@
 				d8.className = 'formDroite';
 
 				selSaisonType = document.createElement('SELECT');
-				selSaisonType.id = "selSaisonType"
+				selSaisonType.id = "selSaisonType";
 
 				opt = document.createElement('OPTION');
 				opt.innerHTML = window.tl_ges_Regulier;
@@ -1975,7 +1968,7 @@
 
 				////////////////////////////////////////////////////////////////////////////
 
-			}
+			};
 		}
 
 		function remplirTabArena(vecArena) {
@@ -2128,7 +2121,7 @@
 					// requete_ajax.responseText;
 
 				}
-			}
+			};
 			requete_ajax.send(params);
 
 		}
@@ -2160,7 +2153,7 @@
 					//							window.location.reload(true);
 
 				}
-			}
+			};
 			//				alert(JSON.stringify(listeMatch));
 			//	return vecMAV;
 			//}
@@ -2322,12 +2315,88 @@
 					}
 				};
 				requete_ajax.send(params);
-			}
+			};
 			//}
 
 			divAjoutEq.appendChild(btnAjEq);
 
 			doc.appendChild(divAjoutEq);
+
+
+            ///////////////////////
+            // Retirer équipe
+            ///////////////////////
+            divRetireEq = document.createElement('DIV');
+            divRetireEq.innerHTML = window.tl_ges_desabonEq + ": ";
+            selRetEquipes = document.createElement('SELECT');
+            strIn = "";
+            for ( a = 0; a < window.lJSON.equipes.length; a++) {
+                opt = document.createElement('OPTION');
+                opt.innerHTML = window.lJSON.equipes[a].nom;
+                opt.value = window.lJSON.equipes[a].equipeId;
+                selRetEquipes.appendChild(opt);
+                strIn += "indice: " + a + ", valeur: " + opt.value + "\n ";
+            }
+
+            divRetireEq.appendChild(selRetEquipes);
+            //alert(strIn);
+            btnRetEq = document.createElement('input');
+            btnRetEq.type = "button";
+            btnRetEq.value = window.tl_bouton_Desabonner;
+
+            //  var poste = "<?=$_POST['id']; ?>";
+            var moncode = 2;
+
+            //              btnAjEq.onclick = postwith("/admin/abonequipeligue.php", abon);
+            btnRetEq.onclick = function() {
+                //      return function(){
+                var requete_ajax = new XMLHttpRequest();
+                abon = {
+                    equipeId : selRetEquipes.options[selRetEquipes.selectedIndex].value,
+                    ligueId : window.lJSON.Ligue.ligueId,
+//                    premierMatch : window.lJSON.Ligue.saisons[saison].pm,
+                    dernierMatch : window.lJSON.Ligue.saisons[saison].pm,
+                    code : 2
+                };
+
+                var url = "/admin/abonequipeligue.php";
+                //  alert(url);
+                var params = "";
+                for (var k in abon) {
+                    params += k + "=" + abon[k] + "&";
+                }
+
+                //      alert(params);
+                requete_ajax.open('POST', url, true);
+                requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                requete_ajax.setRequestHeader("Content-length", params.length);
+                requete_ajax.setRequestHeader("Connection", "close");
+
+                requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+                    if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+                        //      alert(requete_ajax.responseText);
+                        //          window.location.reload();
+
+                        detruitDialogue();
+                        var string2 = getInfoLigue(window.ligueId);
+                        videNoeud('corpsSujet_0');
+                        //remplirTableauLigue(string2);
+                        //                          alert('hep');
+                    }
+                };
+                requete_ajax.send(params);
+            };
+            //}
+
+            divRetireEq.appendChild(btnRetEq);
+
+            doc.appendChild(divRetireEq);
+
+
+
+
+
+
 
 			rangeePlus = document.createElement('TR');
 			cellPlus = document.createElement('TD');
@@ -2460,9 +2529,15 @@
 			//alert(strIn);
 			btnModSaison = document.createElement('input');
 			btnModSaison.type = "button";
-			btnModSaison.value = window.tl_bouton_modifier;
+			btnModSaison.value = window.tl_bouton_save;
 
 			parent.appendChild(btnModSaison);
+            $(parent).append($('<input></input>').attr("type","button").val(window.tl_bouton_Calendrier).on("click",function(){
+                window.location.href="/test/genereHoraire.html?saisonId="+window.lJSON.Ligue.saisons[saison].saisonId+"&ligueId="+window.lJSON.Ligue.ligueId;
+            }));
+			$(parent).append($('<input></input>').attr("type","button").val(window.tl_bouton_Fermer).on("click",function(){
+                detruitDialogue();
+            }));
 
 			//	var poste = "<?=$_POST['id']; ?>";
 
@@ -2497,7 +2572,7 @@
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 						//	alert(requete_ajax.responseText);
 						//			window.location.reload();
-						detruitDialogue();
+						
 						var string2 = getInfoLigue(window.ligueId);
 						//alert(string2);
 						videNoeud('corpsSujet_0');
@@ -2505,9 +2580,9 @@
 						//window.lJSON = eval('(' + string2 + ')');
 
 					}
-				}
+				};
 				requete_ajax.send(params);
-			}
+			};
 			//}
 
 			//				doc.body.appendChild(inputPm);

@@ -52,7 +52,7 @@ if ($butMAJ -> nouveaubut) {
 		}
 		if ($butMAJ -> passeur2Id != null) {
 	$ajouteBut = mysql_query("INSERT INTO TableEvenement0 (`match_event_id`, `equipe_event_id`, `joueur_event_ref`, `code`, `souscode`, `chrono`, `noSequence`) 
-	VALUES ('{$butMAJ->matchId}','{$butMAJ->equipeId}','{$butMAJ->passeur2Id}',1,0,'{$butMAJ->chrono}','{$cRow}')");
+	VALUES ('{$butMAJ->matchId}','{$butMAJ->equipeId}','{$butMAJ->passeur2Id}',1,0,'{$butMAJ->chrono}','{$cRow}')");  	
 		}
 
 
@@ -78,6 +78,8 @@ if ($butMAJ -> nouveaubut) {
 														AND code='1'");
 
 	$cPas = 0;
+	
+	
 
 	if ($butMAJ -> passeur1Id != null) {$passeurs[$cPas] = $butMAJ -> passeur1Id;
 		$cPas++;
@@ -95,6 +97,7 @@ if ($butMAJ -> nouveaubut) {
 														LIMIT 1");
 
 		}
+		
 		if ($cPas == 2 && $sPas == 1) {
 			mysql_query("UPDATE TableEvenement0 SET joueur_event_ref='{$passeurs[$sPas]}' WHERE match_event_id='{$butMAJ->matchId}'
 														AND code=1 
@@ -113,15 +116,24 @@ if ($butMAJ -> nouveaubut) {
 
 		$sPas--;
 	}
-	echo "cpas: " . $cPas . "  sPas: " . $sPas . "  " . $butMAJ -> passeur1Id . "  " . $butMAJ -> passeur2Id . " noSeq: " . $butMAJ -> noSeq;
+	//echo "cpas: " . $cPas . "  sPas: " . $sPas . "  " . $butMAJ -> passeur1Id . "  " . $butMAJ -> passeur2Id . " noSeq: " . $butMAJ -> noSeq;
 
 	while ($sPas < $cPas) {
-		$retour = mysql_query("INSERT INTO TableEvenement0 (match_event_id,equipe_event_id,joueur_event_ref,code, souscode,chrono,tempChrono) 
-			VALUES ('{$butMAJ->matchId}', '{$tabButs['equipe_event_id']}','{$passeurs[$sPas]}',1,{$tabButs['souscode']},'{$tabButs['chrono']}',{$tabButs['chrono']})");
+		$retour = mysql_query("INSERT INTO TableEvenement0 (match_event_id,equipe_event_id,joueur_event_ref,code, souscode,chrono,noSequence) 
+			VALUES ('{$butMAJ->matchId}', '{$butMAJ->equipeId}','{$passeurs[$sPas]}',1,{$tabButs['souscode']},'{$tabButs['chrono']}',{$butMAJ -> noSeq })") or die(mysql_error()." erreur Insert Passeurs");
 		$sPas++;
 	}
-	echo "cpas: " . $cPas . "  sPas: " . $sPas . "  " . $butMAJ -> passeur1Id . "  " . $butMAJ -> passeur2Id;
-	echo mysql_num_rows($retour);
+	
+	if($butMAJ -> marqueurId == null){
+				mysql_query("DELETE FROM TableEvenement0 WHERE match_event_id='{$butMAJ->matchId}'
+														AND (code=0 OR code=1)
+														AND chrono='{$tabButs['chrono']}'
+														");
+		
+	}
+	
+	//echo "cpas: " . $cPas . "  sPas: " . $sPas . "  " . $butMAJ -> passeur1Id . "  " . $butMAJ -> passeur2Id;
+	//echo " / rep insert Passeurs ".mysql_num_rows($retour);
 }
 echo 1;
 //echo $tabButs[$butMAJ->noSeq]->chrono;

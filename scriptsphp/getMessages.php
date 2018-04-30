@@ -63,7 +63,7 @@ $reqMes = "SELECT *
 			JOIN TableMessage
 				ON (ReceptionMessage.messageId = TableMessage.messageId)
 			JOIN TableUser
-				ON (TableMessage.expediteur=TableUser.noCompte)
+				ON (TableMessage.recepteur=TableUser.noCompte)
 			WHERE receveur={$userId}";
 $rMes = mysql_query($reqMes)
 or die(mysql_error());  

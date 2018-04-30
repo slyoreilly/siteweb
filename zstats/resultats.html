@@ -11,6 +11,7 @@
 
         <script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+                <meta name="viewport" content="width=device-width,initial-scale=1">
         <style>
         </style>
         <script type="text/javascript" charset="utf-8">
@@ -150,22 +151,25 @@
                                         $('<input></input>').attr('type','checkbox').attr('checked',role),
                                         $('<input></input>').attr('type','hidden').val(a),
                                         $('<select></select>').append($('<option value="101">Général</option>'),$('<option value="111">Gardien domicile</option>'),$('<option value="112">Gardien visiteur</option>'))
+                                        
                                         )
                                     );
+                                    $("#divAppareils select").val(vecAbonApp.cams[a].role);
                                     
                                 }
                             }
                             $('#divDialogue').append($('<h3></h3>').text('Télécommandes').attr('id','titreTel')).append($('<div></div>').attr('id','divAppareils2'));
                             if(vecAbonApp.remotes!=null){
                                 for(var a=0; a<vecAbonApp.remotes.length;a++){
+                                    role=parseInt(vecAbonApp.remotes[a].role)!=0?true:false;
                                     $('#divAppareils2').append($('<div></div>').addClass('ligneAppareil remote').append(
                                         $('<div></div>').text(vecAbonApp.remotes[a].remoteId),
-                                        $('<input></input>').attr('type','checkbox').attr('checked',false),
+                                        $('<input></input>').attr('type','checkbox').attr('checked',role),
                                         $('<input></input>').attr('type','hidden').val(a),
                                         $('<select></select>'). append($('<option value="1">Maître</option>'),$('<option value="3">Arbitre</option>'),$('<option value="11">Équipe domicile</option>'),$('<option value="12">Équipe visiteur</option>'),$('<option value="13">Équipe à spécifier</option>'))
                                         )
                                     );
-                                    
+                                    $("#divAppareils2 select").val(vecAbonApp.remotes[a].role);
                                 }
                             }
                             }
@@ -769,14 +773,21 @@
 
 				inArena = document.createElement('SELECT');
 				inArena.className = "formDroite";
+				//alert(window.matchsDsSaison[no].arenaId );
 				strIn = "";
+//				alert(window.vecArena.length);
 				for ( a = 0; a < window.vecArena.length; a++) {
 					opt = document.createElement('OPTION');
-					opt.innerHTML = window.vecArena[a].nomArena;
+					
 					opt.value = window.vecArena[a].arenaId;
+//					alert(opt.value);
+ //                   alert(no);
+                    opt.innerHTML = window.vecArena[a].nomArena + " - "+window.vecArena[a].nomGlace;
 					if (no != 1000000) {
-						if (window.matchsDsSaison[no].arenaId == window.vecArena[a].nomArena)
-							opt.selected = "selected";
+						if (window.matchsDsSaison[no].arenaId == window.vecArena[a].arenaId)
+							{opt.selected = "selected";}
+							
+	//						alert(window.vecArena[a].nomArena + " - "+window.vecArena[a].nomGlace);
 							getAppareilsAbonne(window.matchsDsSaison[no].arenaId, window.matchsDsSaison[no].mavId);
 					}
 					inArena.appendChild(opt);
@@ -874,7 +885,14 @@
                 };
                 lc2 = 0;
                  if (no != 1000000) {  
-                lc2Max = 2+window.matchsDsSaison[no].alDom.length+window.matchsDsSaison[no].alVis.length;
+                lc2Max = 2;
+                if(window.matchsDsSaison[no].alDom!=null){
+                    lc2Max=lc2Max+window.matchsDsSaison[no].alDom.length;
+                }
+                if(window.matchsDsSaison[no].alVis!=null){
+                    lc2Max=lc2Max+window.matchsDsSaison[no].alVis.length;
+                }
+                
                 }
                 
                 $('#div_dem').append(
@@ -1039,9 +1057,29 @@
 				mEqVis = window.selEqVis.options[window.selEqVis.selectedIndex].value;}
 
     //var url = "/stats2/setMatchAVenir.php";
+    var rienDom = false;
+    var rienVis = false;
+                
+                
+                if (no != 1000000) {  
+                if(window.matchsDsSaison[no].alDom==null){
+                    rienDom=true;
+                }else{
+                     if(window.matchsDsSaison[no].alDom.length==0){
+                          rienDom=true;
+                     }
+                }
+                if(window.matchsDsSaison[no].alVis==null){
+                    rienVis=true;
+                }else{
+                     if(window.matchsDsSaison[no].alVis.length==0){
+                          rienVis=true;
+                     }
+                }
+                }
     
-                var strJDom = (no == 1000000 || window.matchsDsSaison[no].alDom.length == 0) ? undefined :  JSON.stringify(window.matchsDsSaison[no].alDom);
-                var strJVis = (no == 1000000 || window.matchsDsSaison[no].alVis.length == 0) ? undefined :  JSON.stringify(window.matchsDsSaison[no].alVis);
+                var strJDom = (no == 1000000 || rienDom) ? undefined :  JSON.stringify(window.matchsDsSaison[no].alDom);
+                var strJVis = (no == 1000000 || rienVis) ? undefined :  JSON.stringify(window.matchsDsSaison[no].alVis);
                 var strGDom = (no == 1000000) ? undefined : window.matchsDsSaison[no].gardienDom;
                 var strGVis = (no == 1000000) ? undefined : window.matchsDsSaison[no].gardienVis;
                 var strDateDeb = mDate + " " + mHeure;
@@ -1104,7 +1142,7 @@
                               ligueId : window.ligueId , mavId : strMAVId, arbitreId : strArbId, arenaId : mArena, appareils: JSON.stringify(appareils) }) ,
                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                        success: function (response) {
-                      //  alert(response);
+                       //alert(response);
                               window.location.reload(true);
                      },
                         error: function () {
@@ -1267,7 +1305,7 @@
 
 						//							var d1 = new Date(a.date);
 						//							var d2 = new Date(b.date);
-						return (d2 - d1)
+						return (d1 - d2);
 					});
 				} catch(err) {
 				          if(window.Perm<9)
@@ -1324,11 +1362,12 @@
 					mJS.rangeeTitre = new Array();
 					mJS.rangeeTitre[0] = window.tl_resultats_Date;
                     mJS.rangeeTitre[1] = window.tl_resultats_Visiteur;
-					mJS.rangeeTitre[2] = window.tl_resultats_Domicile;
+                    mJS.rangeeTitre[2] ="";
+					mJS.rangeeTitre[3] = window.tl_resultats_Domicile;
 
-					mJS.rangeeTitre[3] = "Actions";
+					mJS.rangeeTitre[4] = "Actions";
 					genTableau(mJS);
-					document.getElementById('cellTitre_1').colSpan = 2;
+					document.getElementById('cellTitre_0').colSpan = 2;
 					document.getElementById('cellTitre_2').colSpan = 2;
 					document.getElementById('cellTitre_1').style.textAlign = "center";
 					document.getElementById('cellTitre_2').style.textAlign = "center";
@@ -1336,6 +1375,18 @@
 					for ( J = 0; J < matchsDsSaison.length; J = J + 1) {
 
 						if (matchsDsSaison[J].etat == "termine") {
+						    $('#rangeeTitre').parent().append(
+                                $('<TR></TR>').attr('id','rangeeMatch' + J).append(
+                                    $('<TD></TD>').append(
+                                        $('<P></P>').html(matchsDsSaison[J].date.split(" ")[0])/*.addClass("cache").css("display","none")*/     
+                                    ),
+                                    $('<TD></TD>').append(
+                                        $('<P></P>').html((matchsDsSaison[J].date.split(" ")[1]).substring(0, 5)/*str2humain(matchsDsSaison[J].date)*/)     
+                                    )                               
+                                )                               
+                            );
+                           // rangee = 
+                            /*
 							rangee = document.createElement('TR');
 							rangee.id = "rangeeMatch_" + J;
 							amettre = document.getElementById('rangeeTitre');
@@ -1358,8 +1409,8 @@
 							//							texteNom = document.createTextNode(matchsDsSaison[J].date.split(" ")[0]);
 							celluleNom.appendChild(cellContDate);
 							rangee.appendChild(celluleNom);
-
-							cellEqVis = document.createElement('TD')
+*/
+							cellEqVis = document.createElement('TD');
 							cellEqVis.style.textAlign = "right";
 							tmpImg = document.createElement('IMG');
 							tmpImg.src = "/admin/afficheImage.php?ficId=" + matchsDsSaison[J].ficIdVis;
@@ -1369,23 +1420,23 @@
 							tmpTxt = document.createElement('P');
 							tmpTxt.innerHTML = matchsDsSaison[J].eqVis;
 							(matchsDsSaison[J].ficIdVis != 0) ? cellEqVis.appendChild(tmpImg) : cellEqVis.appendChild(tmpTxt);
-							rangee.appendChild(cellEqVis);
+							$('#rangeeMatch' + J).append($(cellEqVis));//rangee.appendChild(cellEqVis);
 
 							celluleScoreVis = document.createElement('TD');
 							celluleScoreVis.style.textAlign = "center";
 							texteScoreVis = document.createTextNode(matchsDsSaison[J].equipeScoreVis);
 							celluleScoreVis.style.fontSize = "18px";
 							celluleScoreVis.appendChild(texteScoreVis);
-							rangee.appendChild(celluleScoreVis);
-
+							//rangee.appendChild(celluleScoreVis);
+$('#rangeeMatch' + J).append($(celluleScoreVis));
 							celluleScoreDom = document.createElement('TD');
 							celluleScoreDom.style.textAlign = "center";
 							texteScoreDom = document.createTextNode(matchsDsSaison[J].equipeScoreDom);
 							celluleScoreDom.style.fontSize = "18px";
 							celluleScoreDom.appendChild(texteScoreDom);
-							rangee.appendChild(celluleScoreDom);
-
-							cellEqDom = document.createElement('TD')
+							//rangee.appendChild(celluleScoreDom);
+$('#rangeeMatch' + J).append($(celluleScoreDom));
+							cellEqDom = document.createElement('TD');
 							cellEqDom.style.textAlign = "left";
 							tmpImg = document.createElement('IMG');
 							tmpImg.src = "/admin/afficheImage.php?ficId=" + matchsDsSaison[J].ficIdDom;
@@ -1395,22 +1446,25 @@
 							tmpTxt = document.createElement('P');
 							tmpTxt.innerHTML = matchsDsSaison[J].eqDom;
 							(matchsDsSaison[J].ficIdDom != 0) ? cellEqDom.appendChild(tmpImg) : cellEqDom.appendChild(tmpTxt);
-							rangee.appendChild(cellEqDom);
-
+							//rangee.appendChild(cellEqDom);
+$('#rangeeMatch' + J).append($(cellEqDom));
 							celluleEq = document.createElement('TD');
 							lien = document.createElement('A');
 							lien.innerHTML = window.tl_resultats_Sommaire;
 							lien.setAttribute('href', 'match.html?match=' + encodeURIComponent(matchsDsSaison[J].matchID) + '&m=' + window.m);
-							$(rangee).on("click", {
+							$('#rangeeMatch' + J).on("click", {
 						match : encodeURIComponent(matchsDsSaison[J].matchID)
 					}, function(event) {document.location.href= 'match.html?match=' + event.data.match+ '&m=' + window.m;}) ;
 								
 							if (J % 2 == 0)
-								rangee.setAttribute('class', 'lignePaire');
+    							$('#rangeeMatch' + J).addClass('lignePaire');
+//								rangee.setAttribute('class', 'lignePaire');
 							else
-								rangee.setAttribute('class', 'ligneImpaire');
+                                $('#rangeeMatch' + J).addClass('ligneImpaire');
+//								rangee.setAttribute('class', 'ligneImpaire');
 							celluleEq.appendChild(lien);
-							rangee.appendChild(celluleEq);
+							$('#rangeeMatch' + J).append($(celluleEq));
+							//rangee.appendChild(celluleEq);
 
 							if (window.Perm < 10) {
 								tiret = document.createTextNode(" | ");
@@ -1436,26 +1490,33 @@
 							$('#rangeeTitre').parent().append(
 								$('<TR></TR>').attr('id','rangeeMatch' + J).append(
 									$('<TD></TD>').append(
-										$('<P></P>').html(matchsDsSaison[J].date.split(" ")[0]).addClass("cache").css("display","none")		
+										$('<P></P>').html(matchsDsSaison[J].date.split(" ")[0])/*.addClass("cache").css("display","none")*/		
 									),
 									$('<TD></TD>').append(
-										$('<P></P>').html(str2humain(matchsDsSaison[J].date))		
+										$('<P></P>').html((matchsDsSaison[J].date.split(" ")[1]).substring(0, 5)/*str2humain(matchsDsSaison[J].date)*/)		
 									)								
 								)								
 							);
-							if(window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqVisId)].ficId != 0){
+							var domEqAff = window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqDomId)].ficId != 0 ?
+							 $('<IMG></IMG>').attr("src","/admin/afficheImage.php?ficId=" + window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqDomId)].ficId).attr("alt",window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqDomId)].nom).css("width","32px").css("height","32 px")  : $('<P></P>').text(window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqDomId)].nom);
+
+                            var visEqAff = window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqVisId)].ficId != 0 ?
+                             $('<IMG></IMG>').attr("src","/admin/afficheImage.php?ficId=" + window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqVisId)].ficId).attr("alt",window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqVisId)].nom).css("width","32px").css("height","32 px")  : $('<P></P>').text(window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqVisId)].nom);
+
+							
+                             /*  //if(window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqVisId)].ficId != 0){*/
 								$('#rangeeMatch' + J).append(
 									$('<TD></TD>').css("text-align","right").append(
-										$('<IMG></IMG>').attr("src","/admin/afficheImage.php?ficId=" + window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqVisId)].ficId).attr("alt",window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqVisId)].nom).css("width","32px").css("height","32 px")									
+			                                 visEqAff																
 									),
 									$('<TD></TD>').css("text-align","center").attr("colspan","2").text("VS")
 									,
 									$('<TD></TD>').css("text-align","left").append(
-										$('<IMG></IMG>').attr("src","/admin/afficheImage.php?ficId=" + window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqDomId)].ficId).attr("alt",window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqDomId)].nom).css("width","32px").css("height","32 px")
+                                            domEqAff	
 									)
 									
 								);
-							}else{
+	/*						}else{
 								$('#rangeeMatch' + J).append(
 									$('<TD></TD>').css("text-align","right").append(
 									$('<P></P>').text(window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqVisId)].nom)
@@ -1467,7 +1528,7 @@
 									)
 								);
 							}
-							
+		*/					
 							
 							
 
@@ -1485,10 +1546,12 @@
 							lien = document.createElement('A');
 							lien.innerHTML = window.tl_zc_Alignements + " | ";
 							lien.className = "lien";
-							celluleEq.appendChild(lien);
+//							celluleEq.appendChild(lien);
+//							alert(JSON.stringify(match));
 							lien.onclick = (function(match) {
 								return function() {
 									construitDialogue();
+//									                           alert(JSON.stringify(match));
 									parent = document.getElementById('divDialogue');
 
 									btnAnal = document.createElement('INPUT');
@@ -1569,7 +1632,7 @@
 								};
 							})(matchsDsSaison[J]);
 
-							rangee.appendChild(celluleEq);
+							$('#rangeeMatch' + J).append($(celluleEq));
 							//alert(window.Perm);
 							if (window.Perm < 19) {
 
@@ -1616,11 +1679,14 @@
 
 						}// Fin du Si a venir
 						if (window.m != 1) {
-							rangee.onmouseover = (function(a) {
-								return function() {
-									afficheFiches(a);
-								};
-							})(J);
+						    $('#rangeeMatch' + J).mouseover({fiche:J},function(event) {
+						        //return function() {
+                                    afficheFiches(event.data.fiche);
+                                //};
+						    });
+							//rangee.onmouseover = (function(a) {
+								
+							//})(J);
 						}
 
 					}//Fin des rangées
@@ -2054,8 +2120,19 @@
 				}
 				} catch (err) {}
 
-				window.divAlignDom.innerHTML = '# ATK: ' + aDom + ' <br/>' + '# DEF: ' + dDom + ' <br/>' + 'G: ' + window.matchsDsSaison[a].gDom.NomJoueur;
-				window.divAlignVis.innerHTML = '# ATK: ' + aVis + ' <br/>' + '# DEF: ' + dVis + ' <br/>' + 'G: ' + window.matchsDsSaison[a].gVis.NomJoueur;
+    if(window.matchsDsSaison[a].gDom!=null){
+        nomGardienDom=window.matchsDsSaison[a].gDom.NomJoueur;
+    }else{
+        nomGardienDom="Non défini";
+    }
+    if(window.matchsDsSaison[a].gVis!=null){
+        nomGardienVis=window.matchsDsSaison[a].gVis.NomJoueur;
+    }else{
+        nomGardienVis="Non défini";
+    }
+    
+				window.divAlignDom.innerHTML = '# ATK: ' + aDom + ' <br/>' + '# DEF: ' + dDom + ' <br/>' + 'G: ' + nomGardienDom;
+				window.divAlignVis.innerHTML = '# ATK: ' + aVis + ' <br/>' + '# DEF: ' + dVis + ' <br/>' + 'G: ' + nomGardienVis;
 				if (window.rang > 0) {
 					var rangAff = (window.rang) % window.matchsDsSaison.length;
 					rangTr = 0;
