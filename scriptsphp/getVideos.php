@@ -35,7 +35,7 @@ mysql_query("SET CHARACTER SET 'utf8'");
 
 //////////////////////////////////////////////////////
 //
-//  	Section "Matchs"
+//  	Section "Recents Videos"
 //
 //////////////////////////////////////////////////////
 	
@@ -45,14 +45,21 @@ $joueurId = $_POST["joueurId"];
 
 if(strcmp($joueurId,""))
 {$reqChrono = "SELECT * 
-			FROM Video
-			WHERE tagPrincipal={$joueurId} ORDER BY chrono DESC";}
+from TableEvenement0 
+INNER JOIN Video 
+on
+(TableEvenement0.event_id=Video.reference)
+where 
+(code=0 or code=5) AND 
+joueur_event_ref={$joueurId} 
+order by tableEvenement0.chrono DESC";
+}
 if(strcmp($ligueId,""))
 {$reqChrono = "SELECT * 
 			FROM Video
 			JOIN TableMatch
 				ON (Video.nomMatch = TableMatch.match_id)
-			WHERE ligueRef={$ligueId} ORDER BY chrono DESC";}
+			WHERE ligueRef={$ligueId} ORDER BY chrono DESC, eval DESC";}
 //Anciennement TableMatch.matchIdRef
 
 
@@ -61,24 +68,60 @@ or die(mysql_error());
 
 $IM=0;
 $recentsVideos = Array();
+$iRef=0;
 while ($rangChrono = mysql_fetch_array($rChrono))
 {
 		if($rangChrono['angleOk']>=0){
+			if($iRef!=$rangChrono['reference']){
+				$iVid=0;
+				if(isset($monEv)){
+				array_push($recentsVideos,$monEv);
+					
+				}	
+				
+				$monEv=Array();
+				$monEv['videos']=Array();
+				$monEv['videos'][$iVid]=Array();	
+				$monEv['reference']=$rangChrono['reference'];
+				
 	
-	$maLigne = Array();
 	
-	$maLigne['eval']=$rangChrono['eval'];
-	$maLigne['nbVues']=$rangChrono['nbVues'];
-	$maLigne['chrono']=$rangChrono['chrono'];
-	$maLigne['nomMatch']=$rangChrono['nomMatch'];
-	$maLigne['nomFichier']=$rangChrono['nomFichier'];
-	$maLigne['videoId']=$rangChrono['videoId'];
-	if($rangChrono['tagPrincipal']!=null)
-		$maLigne['tag1']=$rangChrono['tagPrincipal'];
-	
-	array_push($recentsVideos,$maLigne);
+				
+					$monEv['videos'][$iVid]['eval']=$rangChrono['eval'];
+					$monEv['videos'][$iVid]['nbVues']=$rangChrono['nbVues'];
+					$monEv['videos'][$iVid]['chrono']=$rangChrono['chrono'];
+					$monEv['videos'][$iVid]['nomMatch']=$rangChrono['nomMatch'];
+					$monEv['videos'][$iVid]['nomFichier']=$rangChrono['nomFichier'];
+					$monEv['videos'][$iVid]['videoId']=$rangChrono['videoId'];
+					$iRef=$rangChrono['reference'];
+			}else{
+					$iVid++;
+								$monEv['videos'][$iVid]=Array();	
+					$monEv['videos'][$iVid]['eval']=$rangChrono['eval'];
+					$monEv['videos'][$iVid]['nbVues']=$rangChrono['nbVues'];
+					$monEv['videos'][$iVid]['chrono']=$rangChrono['chrono'];
+					$monEv['videos'][$iVid]['nomMatch']=$rangChrono['nomMatch'];
+					$monEv['videos'][$iVid]['nomFichier']=$rangChrono['nomFichier'];
+					$monEv['videos'][$iVid]['videoId']=$rangChrono['videoId'];
+				
+				
+				
+			}
+
 		}
 }
+if(isset($monEv)){
+				array_push($recentsVideos,$monEv);
+					
+				}	
+
+
+//////////////////////////////////////////////////////
+//
+//  	Section "Populaire Videos"
+//
+//////////////////////////////////////////////////////
+	
 
 if(strcmp($joueurId,""))
 {$reqPop = "SELECT * 
@@ -115,6 +158,13 @@ while ($rangPop = mysql_fetch_array($rPop))
 	array_push($plusVuesVideos,$maLigne);
 	}
 }
+//////////////////////////////////////////////////////
+//
+//  	Section "Top Rated Videos"
+//
+//////////////////////////////////////////////////////
+	
+
 if(strcmp($joueurId,""))
 {$reqTop = "SELECT * 
 			FROM Video

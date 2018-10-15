@@ -40,4 +40,6 @@ mysql_query("SET CHARACTER SET 'utf8'");
 	
 	if(json_encode($retour)==False)
 	{echo "erreur, count(syncOK:): ".count($retour)."- count($retour): ".count($retour);}
+mysql_close();
+
 ?>

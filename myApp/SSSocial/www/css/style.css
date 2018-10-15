@@ -1,0 +1,100 @@
+/* Empty. Add your own CSS if you like */
+
+#recherche
+{
+	width: 500px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#recherche input
+{
+	padding: 10px;
+}
+
+.bar.bar-positive
+{
+	background-color: #F4F3F2;
+	border: 1px solid #dcd9d6;
+	background-image: none;
+	height: 60px;
+}
+
+.bar.bar-positive .title
+{
+	color: #4A4B4B;
+	text-align: center;
+	font-size: 210%;
+	height: 100%;
+	padding-top: 10px;
+}
+
+.tabs
+{
+	background-color: #F4F3F2;
+	border: 1px solid #dcd9d6;
+}
+
+.list .categorie
+{
+	float: right;
+	color: white;
+	padding: 5px 15px 5px 15px;
+	border-radius: 3px;
+}
+
+.list .cat-fruit
+{
+	background-color: #00A6F3;
+}
+.list .cat-legume
+{
+	background-color: #7FBA00;
+}
+
+.list h1
+{
+	color: grey;
+	font-size: 170%;
+}
+
+#detail
+{
+	padding: 10px;
+}
+
+#detail h1
+{
+	font-size: 170%;
+	padding-top: 5px;
+	padding-bottom: 3px;
+	padding-left: 10px;
+	border-radius: 3px;
+}
+
+#detail .produit-fruit
+{
+	background-color: #00A6F3;
+}
+
+#detail .produit-legume
+{
+	background-color: #7FBA00;
+}
+
+#detail img
+{
+	width: 200px;
+	float: left;
+	margin-right: 100px;
+}
+
+.pane
+{
+	padding: 20px;
+}
+
+h1
+{
+	font-size: 130%;
+}

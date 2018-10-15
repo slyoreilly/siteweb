@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<HTML>
+    <HEAD>
+        <title>Résultats des matchs</title>
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+        <script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+        <script type="text/javascript" charset="utf-8">
+            gereLangue();
+        </script>
+        <script type="text/javascript" charset="utf-8">
+
+
+            function chargeSurface(arenaId) {
+
+                $.ajax({
+                    url : "/scriptsphp/getAppareilsSurSurface.php",
+                    type : "POST",
+
+                    data : jQuery.param({
+                        matchId : "",
+                        userId : getCookie("userId"),
+                        arenaId : arenaId
+                    }),
+                    contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+                    success : function(response) {
+                        var laTable = eval("(" + response + ")");
+                        // alert(laTable.cams);
+                        // alert(laTable.remotes);
+                        if (laTable.cams != null) {
+                            var table = $.makeTable(laTable.cams);
+                            $("#Systeme").append($('<h2></h2>').text("Surface: "+arenaId),$(table)) ;
+                            for(var a=0;a<laTable.cams.length;a++){
+                                $('#rangeeVids').append($('<video></video>').append($('<source></source>').attr("src",laTable.cams[a].vidLoade.split('\'')[1])).addClass('col-12 col-lg-6'));
+                            }
+                            
+                        }
+                        if (laTable.remotes != null) {
+                            var table2 = $.makeTable(laTable.remotes);
+                            $(table2).appendTo($("#Systeme"));
+                            
+                        }
+                    },
+                    error : function(xhr, status, error) {
+                        var err = eval("(" + xhr.responseText + ")");
+                        alert(err.Message + "  --  ereur gardMax");
+                    }
+                });
+
+            }
+
+
+            $.makeTable = function(mydata) {
+                var table = $('<table border=1>');
+                var tblHeader = "<tr>";
+                for (var k in mydata[0])
+                tblHeader += "<th>" + k + "</th>";
+                tblHeader += "</tr>";
+                $(tblHeader).appendTo(table);
+                $.each(mydata, function(index, value) {
+                    var TableRow = $("<tr></tr>");
+                    $.each(value, function(key, val) {
+
+                        $(TableRow).append($("<td></td>").html(val));
+                        if (key == "telId") {
+
+                            if (index % 2 == 0) {
+                                $(TableRow).addClass("lignePaire");
+                            } else {
+                                $(TableRow).addClass("ligneImpaire");
+                            }
+
+                        }
+                    });
+                    $(table).append(TableRow);
+
+                });
+                return ($(table));
+            };
+
+        </script>
+
+    </HEAD>
+    <body id="mbody">
+
+        <div id="divHaut"></div>
+        <div id="divGauche"></div>
+        <div id="divMenuHaut"></div>
+
+        <div id="divCentrale" class="container-fluid">
+            <div class="row">
+            <div class="col">
+            <div id="Systeme">
+            </div>
+            </div>
+            </div>
+            
+                        <div class="row" id="rangeeVids">
+            </div>
+
+            </div>
+
+        </div>
+        <div id="divDroite"></div>
+        <script type="text/javascript" charset="utf-8">
+            //                      alert(JSON.stringify(document.getElementById("divCentrale").all));
+            //      alert(document.getElementsByTagName("A")[0].href);
+            jQuery(document).ready(function() {
+
+                developper(22);
+                detruitDivGauche();
+                surfString = getValue('surfaces');
+                var surfaces = surfString.split(",");
+                
+                for(var a=0;a<surfaces.length;a++){
+                    chargeSurface(surfaces[a]);
+                }
+               
+            });
+        </script>
+
+    </body>
+</html>

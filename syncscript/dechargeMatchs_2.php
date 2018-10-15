@@ -1,7 +1,8 @@
 <?php
 
 include_once ($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR . "syncstatsconfig.php");
-require("../scriptsphp/calculeMatch2.php");
+require("../scriptsphp/calculeMatch2.php");  /// N'appelle rien, défini seulement la fonction
+											 /// CalculeMatch(ligueId);
 
 function parseMatchID($ID) {
 
@@ -47,7 +48,29 @@ if (strcmp(TYPE_TERMINAL, 'syncboard') == 0) {
 
 
 	$extra['DM']=3;
+	$memNoMatchId=0;
+	$noMatchId=0;
 foreach ($leMatch as $evenement) {
+	
+	
+	// Regarder si on a un nouveau match. Si oui (et que ce n'est pas le premier), calculer l'ancien.
+	if($memNoMatchId!=$noMatchId){
+					$url = 'http://syncstats.com/scriptsphp/calculeUnMatch.php';
+					$data = array('noMatchId' => $memNoMatchId);
+
+					// use key 'http' even if you send the request to https://...
+					$options = array(
+    					'http' => array(
+        				'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        				'method'  => 'POST',
+        				'content' => http_build_query($data)
+    					)
+					);
+					$context  = stream_context_create($options);
+					$result = file_get_contents($url, false, $context);
+					if ($result === FALSE) { /* Handle error */ }
+					$memNoMatchId=$noMatchId;
+	}
 //$message = "Seq evenement: ".$evenement['type'].PHP_EOL;
 	//$log  = $message;
 		//					file_put_contents('../test/logTest.txt', $log, FILE_APPEND);	
@@ -112,7 +135,7 @@ foreach ($leMatch as $evenement) {
 		$qSelButs = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND code=0 AND equipe_event_id='{$evenement['eqId']}'";
 		$resButs = mysql_query($qSelButs) or die(mysql_error() . $qSelButs);
 		$score = mysql_num_rows($resButs);
-		$qSelEq = "SELECT eq_dom, eq_vis FROM TableMatch WHERE matchIdRef='{$evenement['match_id']}'";
+		$qSelEq = "SELECT eq_dom, eq_vis, match_id FROM TableMatch WHERE matchIdRef='{$evenement['match_id']}'";
 		$resEq = mysql_query($qSelEq) or die(mysql_error() . $qSelEq);
 		$vecEq = mysql_fetch_row($resEq);
 		$qUpMatch = "";
@@ -122,6 +145,7 @@ foreach ($leMatch as $evenement) {
 		}
 		if (strcmp($qUpMatch, "") != 0) {mysql_query($qUpMatch) or die(mysql_error() . $qUpMatch);
 		}
+		$noMatchId=$vecEq[2];
 		//	$syncOK= "/".$evenement['eqId'];
 
 	}
@@ -154,9 +178,35 @@ foreach ($leMatch as $evenement) {
 				mysql_query($qInsM) or die(mysql_error() . $qInsM);
 				}
 				
+				/////   Pour DB Syncboard
+			$db_host="localhost";
+			$db_user="syncsta1_u01";
+			$db_pwd="test";
+
+			$database = 'syncsta1_910';
+
+			$connSB = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+			// Check connection/
+			if (!$connSB) {
+				   die("Connection failed: " . mysqli_connect_error());
+			}
+			
+//			$maDate=date('Y-m-d H:i:s', $evenement['chrono']/1000);
+
+			mysqli_query($connSB,"SET NAMES 'utf8'");
+			mysqli_query($connSB,"SET CHARACTER SET 'utf8'");
+			$qInsSB = "INSERT INTO punitions (matchId,motif, joueurId,equipeId,chrono,duree,active) VALUES ('{$evenement['match_id']}','{$evenement['sc']}','{$evenement['joueur']}','{$evenement['eqId']}','{$evenement['chrono']}','3','1')";
+
+				mysqli_query($connSB,$qInsSB) or die(mysql_error($connSB) . $qInsSB);
+				
+				
+				
 				array_push($syncOK, $evenement['chrono']);
 				break;
 		}
+				
+
+
 
 	}
 	if (!strcmp($evenement['type'],'clip')) {
@@ -178,10 +228,10 @@ foreach ($leMatch as $evenement) {
 				$qDel = "DELETE FROM Clips WHERE chrono='{$evenement['chrono']}' AND matchId='{$evenement['match_id']}'";
 				mysql_query($qDel) or die(mysql_error() . $qDel);
 			//	break;		 NO BREAK!!!!!!!
-			//case 15 :
-			//	$qSelClip = "SELECT * FROM Clips WHERE matchId='{$evenement['match_id']}' noSequence={$evenement['noseq']}";
-			//	$resClip = mysql_query($qSelClip) or die(mysql_error() . $qSelClip);
-			//	$trouveClip = mysql_num_rows($resClip);
+			case 15 :
+				//$qSelClip = "SELECT * FROM Clips WHERE matchId='{$evenement['match_id']}' noSequence={$evenement['noseq']}";
+				//$resClip = mysql_query($qSelClip) or die(mysql_error() . $qSelClip);
+				//$trouveClip = mysql_num_rows($resClip);
 
 			//	break;		 NO BREAK!!!!!!!
 			case 12 :
@@ -219,6 +269,57 @@ foreach ($leMatch as $evenement) {
 
 	}
 
+	if (!strcmp($evenement['type'],'board')) {
+		$matchAEnr = parseMatchID($evenement['match_id']);
+		if (isset($matchAEnr['ligueId'])) {$ligueId = $matchAEnr['ligueId'];
+		}
+		if (isset($heure)) {
+			$retClip = $evenement['chrono'];
+			// retourner le but, sans correction de chrono.
+			$evenement['chrono'] = $evenement['chrono'] + $heureServeur - $heure;
+		}
+		if (isset($evenement['noseq'])) {$noseq = $evenement['noseq'];
+		}else{$noseq=0;}
+		
+		$trouveClip=0;
+		switch(f_es($evenement['es'])) {
+
+			case 10 :
+			case 12 :
+				/////   Pour DB Syncboard
+			$db_host="localhost";
+			$db_user="syncsta1_u01";
+			$db_pwd="test";
+
+			$database = 'syncsta1_910';
+
+			$connSB = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+			// Check connection/
+			if (!$connSB) {
+				   die("Connection failed: " . mysqli_connect_error());
+			}
+			
+//			$maDate=date('Y-m-d H:i:s', $evenement['chrono']/1000);
+
+			mysqli_query($connSB,"SET NAMES 'utf8'");
+			mysqli_query($connSB,"SET CHARACTER SET 'utf8'");
+			$qSelSB = "SELECT * FROM  commandeboard WHERE matchId='{$evenement['match_id']}' AND remoteDbId='{$evenement['db_id']}'";
+			$retSel =mysqli_query($connSB,$qSelSB) or die(mysqli_error($connSB) . $qSelSB);
+			if(mysqli_num_rows($retSel)==0){
+				$qInsSB = "INSERT INTO commandeboard (matchId,cle,valeur,chrono,remoteDbId) VALUES ('{$evenement['match_id']}','toggleBoard','{$evenement['sc']}','{$evenement['chrono']}','{$evenement['db_id']}')";
+
+				mysqli_query($connSB,$qInsSB) or die(mysqli_error($connSB) . $qInsSB);				
+			}
+				
+				
+				
+				array_push($syncOK, $evenement['chrono']);
+				break;
+		}
+
+	}
+
+
 	if (!strcmp($evenement['type'],'periode')) {
 		$matchAEnr = parseMatchID($evenement['match_id']);
 		if (isset($matchAEnr['ligueId'])) {$ligueId = $matchAEnr['ligueId'];
@@ -248,6 +349,8 @@ foreach ($leMatch as $evenement) {
 				$qInsM = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$evenement['match_id']}',0,0,'{$evenement['chrono']}','{$evenement['sc']}',11)";
 
 				mysql_query($qInsM) or die(mysql_error() . $qInsM);
+				mysql_query("UPDATE TableMatch SET statut='{$evenement['sc']}' WHERE matchIdRef = '{$evenement['match_id']}'") or die(mysql_error());	
+				
 				}
 				array_push($syncOK, $retPer);
 				break;
@@ -259,10 +362,10 @@ foreach ($leMatch as $evenement) {
 		
 
 		
-		$matchAEnr = parseMatchID($evenement['match_id']);
-		if (isset($matchAEnr['ligueId'])) {$ligueId = $matchAEnr['ligueId'];
+		//$matchAEnr = parseMatchID($evenement['match_id']);
+		//if (isset($matchAEnr['ligueId'])) {$ligueId = $matchAEnr['ligueId'];
 		
-		}
+		//}
 	$trouveDM=0;
 		switch(f_es($evenement['es'])) {
 
@@ -318,29 +421,41 @@ foreach ($leMatch as $evenement) {
 		}
 		//$_POST["ligueId"] =$ligueId;
 		$deSyncMatch = 1;
-		$DMX=$_SERVER['DOCUMENT_ROOT'].'/scriptsphp/calculeMatch.php';
-//		include($_SERVER['DOCUMENT_ROOT'].'/scriptsphp/calculeMatch.php');
-	//		$message = "Execution de syncscript/dechargeMatch_2.";
-	//						$log  = $message.' - '.date("F j, Y, g:i:s a").PHP_EOL.
-	 //       				"------------------ position 1".PHP_EOL;
-	//						file_put_contents('../test/logTest.txt', $log, FILE_APPEND);	
-
 		
-		CalculeMatch($ligueId);
+			$qSelMatch="SELECT * from TableMatch
+					WHERE matchIdRef='{$evenement['match_id']}'
+					";
+					
+					$resSelMatch = mysql_query($qSelMatch) or die(mysql_error() . $qSelMatch);
+					
+					if(mysql_num_rows($resSelMatch)==0){
+						$qAlDef = "INSERT INTO TableMatch (ligueRef,eq_dom,score_dom,eq_vis,score_vis,matchIdRef, date,statut) 
+						VALUES ({$evenement['ligueId']}, {$evenement['eqDom']}, 0, {$evenement['eqVis']}, 0,
+						'{$evenement['match_id']}', '{$evenement['date']}' ,0)";
+					mysql_query($qAlDef) or die(mysql_error() . $qAlDef);
+					
+					} else{
+									mysql_query("UPDATE TableMatch SET statut='0' WHERE matchIdRef = '{$evenement['match_id']}'") or die(mysql_error());	
+									
+					}
+					//CalculeMatch($ligueId);
+					
+		if(isset($evenement['arenaId'])){
+			if($evenement['arenaId']!=""){
+							mysql_query("UPDATE TableMatch SET arenaId='{$evenement['arenaId']}' WHERE matchIdRef = '{$evenement['match_id']}'") or die(mysql_error());
+				
+			}
+			
+				
+			
+		}
 		
 		/////  Abonnement Appareil Match
 		if($deviceId!="null"&&$deviceId!="undefined"){
 				
     	if (!in_array($evenement['match_id'], $arrMatchs))
 			{
-			$qSelMatch="SELECT match_id from TableMatch
-					WHERE matchIdRef='{$evenement['match_id']}'
-					";
-					$resSelMatch = mysql_query($qSelMatch) or die(mysql_error() . $qSelMatch);
 					if(mysql_num_rows($resSelMatch)==0){
-						$qInsMatch="SELECT match_id from TableMatch
-					WHERE matchIdRef='{$evenement['match_id']}'
-					";
 					$resSelMatch = mysql_query($qSelMatch) or die(mysql_error() . $qSelMatch);
 					}
 				$arrMatchId = mysql_fetch_row($resSelMatch);
@@ -362,9 +477,9 @@ foreach ($leMatch as $evenement) {
 	}
 
 	if (!strcmp($evenement['type'],'finMatch')) {
-		$matchAEnr = parseMatchID($evenement['match_id']);
-		if (isset($matchAEnr['ligueId'])) {$ligueId = $matchAEnr['ligueId'];
-		}
+		//$matchAEnr = parseMatchID($evenement['match_id']);
+		//if (isset($matchAEnr['ligueId'])) {$ligueId = $matchAEnr['ligueId'];
+		//}
 		$trouveFM=0;
 
 		switch(f_es($evenement['es'])) {
@@ -388,7 +503,7 @@ foreach ($leMatch as $evenement) {
 				/*?><?php*/
 				//include('/public_html/scriptsphp/calculeMatch.php');
 				/*?><?php*/
-				$qMatch = "SELECT cleValeur FROM TableMatch WHERE matchIdRef = '{$evenement['match_id']}'";
+				$qMatch = "SELECT cleValeur, match_id FROM TableMatch WHERE matchIdRef = '{$evenement['match_id']}'";
 				$testmatch = mysql_query($qMatch) or die(mysql_error() . " Select " . $evenement['db_id']);
 				//echo "2";
 				if (mysql_num_rows($testmatch) == 0) {
@@ -406,20 +521,23 @@ foreach ($leMatch as $evenement) {
 					//							$jMerge = $leMatch['cleValeur'];
 					$jMerge = json_encode($evenement['cv']);
 				}
+				$noMatchId=$rMatch[1];
 				//echo "5";
 				mysql_query("UPDATE TableMatch SET cleValeur='{$jMerge}' WHERE matchIdRef = '{$evenement['match_id']}'") or die(mysql_error());
 				//$monCV = json_decode($evenement['cv']);
 				//											echo $monCV['scoreFinal']." ".isset($monCV['scoreFinal'])." ".$evenement['cv'];
 				//echo "6";
-				if (isset($evenement['cv']['scoreFinal'])) {
+				
+				// Section enlevée pour accepter les cas d'utilisation de score entré par chacun des capitaines.
+				/*if (isset($evenement['cv']['scoreFinal'])) {
 
 					$i1 = stripos($evenement['cv']['scoreFinal'], '-');
 					$i2 = stripos($evenement['cv']['scoreFinal'], '-', $i1 + 1);
 
 					$sD = substr($evenement['cv']['scoreFinal'], 0, $i1);
 					$sV = substr($evenement['cv']['scoreFinal'], $i1 + 1);
-					mysql_query("UPDATE TableMatch SET score_dom='{$sD}',score_vis='{$sV}' WHERE matchIdRef = '{$evenement['match_id']}'") or die(mysql_error());
-				}
+					mysql_query("UPDATE TableMatch SET score_dom='{$sD}',score_vis='{$sV}', statut='F' WHERE matchIdRef = '{$evenement['match_id']}'") or die(mysql_error());
+				}*/
 				array_push($syncOK, $evenement['chrono']);
 		}
 	}
@@ -427,6 +545,26 @@ foreach ($leMatch as $evenement) {
 	$IJ++;
 	//echo json_encode($syncOK);
 }
+
+/// Voir explications début du foreach
+	if($noMatchId!=0){
+					$url = 'http://syncstats.com/scriptsphp/calculeUnMatch.php';
+					$data = array('noMatchId' => $noMatchId);
+
+					// use key 'http' even if you send the request to https://...
+					$options = array(
+    					'http' => array(
+        				'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        				'method'  => 'POST',
+        				'content' => http_build_query($data)
+    					)
+					);
+					$context  = stream_context_create($options);
+					$result = file_get_contents($url, false, $context);
+					if ($result === FALSE) { /* Handle error */ }
+					$memNoMatchId=$noMatchId;
+	}
+
 //echo json_encode($syncOK);
 /*
  $qFin="SELECT * FROM TableEvenement0 WHERE event_id>{$vRef[0]} ORDER BY event_id DESC";
@@ -474,4 +612,5 @@ $deSyncMatch = 1;
 //include ($_SERVER['DOCUMENT_ROOT'] . '/scriptsphp/calculeMatch.php');
 
 //header("HTTP/1.1 200 OK");
+
 ?>

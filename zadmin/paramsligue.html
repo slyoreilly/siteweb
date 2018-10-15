@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<HTML>
+    <HEAD>
+        <title>Paramètres de la ligue</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <!--script src="/scripts/jquery.js"></script-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+        <!-- All style sheets -->
+
+        <!--meta http-equiv="refresh" content="10" -->
+
+        <script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+			gereLangue();
+        </script>
+        <script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+        <script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+
+        <script type="text/javascript" charset="utf-8">
+			registre = [{
+				nom : "dureeMineur",
+				type : "int",
+				titre : "Durée mineur"
+			}, {
+				nom : "3etoiles",
+				type : "select",
+				options : ["aucun", "vote"],
+				titre : "Choix des 3 étoiles"
+			}, {
+				nom : "tempsArrete",
+				type : "bool",
+				titre : "Temps arrêté"
+			}, {
+				nom : "arriereplan",
+				type : "image",
+				titre : "Image d'arrière plan"
+			}, {
+				nom : "couleurmenu1",
+				type : "couleur",
+				titre : "Couleur 1"
+			}, {
+				nom : "couleurmenu2",
+				type : "couleur",
+				titre : "Couleur 2"
+			}, {
+				nom : "banniere",
+				type : "bool",
+				titre : "Bannière personnalisée"
+			}, {
+				nom : "banniereImage",
+				type : "image",
+				titre : "Image de la bannière"
+			}, {
+				nom : "divDroite",
+				type : "bool",
+				titre : "Présence du panneau droit"
+			}]
+
+			function getInfoLigue(ligueId)//  Fonction similaire utilisée dans zeroconfig.html
+			{
+
+				$.ajax({
+					url : "/stats2/infoLigue2JSON.php",
+					type : "POST",
+					data : {
+						ligueId : ligueId
+					},
+					contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+					success : function(response) {
+						rempliPage(response);
+					},
+
+					error : function(xhr, status, error) {
+						var err = eval("(" + xhr.responseText + ")");
+						alert(err.Message + "  --  ereur joueurEquipeLigue");
+					}
+				});
+
+			}
+
+			function faitCheckBox(nomParam, titre, checked, divAttacheId) {
+				$('#' + divAttacheId).append($('<div></div>').addClass("form-check").append($('<input/>').attr("id", "id" + nomParam).prop('checked', checked).attr("type", "checkbox"), $('<label></label>').attr("for", "id" + nomParam).text(titre)));
+			}
+
+			function faitCouleur(nomParam, titre, couleur, divAttacheId) {
+				$('#' + divAttacheId).append($('<div></div>').addClass("form-group").append(
+				/*  $('<div></div>').css("width","50px").css("height","20px").css("background-color",couleur),*/
+				$('<input/>').attr("id", "id" + nomParam).attr("type", "color").val(couleur).on("change", function() {
+					console.log($(this).val() + " est la couleur");
+				}), $('<label></label>').attr("for", "id" + nomParam).text(titre)));
+			}
+
+			function faitImage(nomParam, titre, source, divAttacheId) {
+
+				$('#' + divAttacheId).append($('<form></form>').addClass("form-group").attr("id", "formImageVerse").append($('<div></div>').css("width", "120px").css("height", "120px").css("background-image", "url('" + source + "')").css("background-size", "120px 120px"), $('<input/>').attr("id", "inChemin").attr("type", "hidden").attr("name", "chemin").val(source), $('<input/>').attr("id", "id" + nomParam).attr("type", "file").attr("name", "fichier").on("change", function() {
+					console.log($(this).val() + " source?");
+					// $("form#formImageVerse").submit(function(e) {
+					// e.preventDefault();
+					var nomFic = $(this).val().split(/(\\|\/)/g).pop()
+					$('#inChemin').val('/style/ligues/' + window.ligueId + '/' + nomFic);
+
+					source = $('#inChemin').val();
+					var formData = new FormData($("form#formImageVerse").get(0));
+
+					$.ajax({
+						url : "/scriptsphp/enregistreFichierLocal.php",
+						type : 'POST',
+						data : formData,
+						success : function(data) {
+							//alert(data)
+						},
+						cache : false,
+						contentType : false,
+						processData : false
+					});
+					//});
+
+				}), $('<label></label>').attr("for", "id" + nomParam).text(titre)));
+			}
+
+        </script>
+
+        <script type='text/javascript'>
+			//jQuery(document).ready(function() {
+			//		});
+
+			function rempliPage(lesParams) {
+				try {
+				inLigue = eval("(" + lesParams + ")");
+				paramsLigue = inLigue.Ligue.cleValeur;
+				try {
+				paramsLigue.parametres;
+				} catch(err) {
+				}
+				try {
+				faitCheckBox("tempsArrete", "Temps arrêté", paramsLigue.reglements.tempsArrete, "divReglements");
+				$('#divReglements').append($("<h3></h3>").text("Classement"));
+				faitCheckBox("separeDomVis", "Séparer fiche Domicile-Visiteur", paramsLigue.reglements.separeDomVis, "divReglements");
+                faitCheckBox("otl", "Défaites en prolongation", paramsLigue.reglements.otl, "divReglements");
+                faitCheckBox("otw", "Victoires en prolongation", paramsLigue.reglements.otw, "divReglements");
+                faitCheckBox("afficheNulle", "Permettre les nulles", paramsLigue.reglements.afficheNulle, "divReglements");
+                faitCheckBox("affichePunitions", "Afficher les punitions totales", paramsLigue.reglements.affichePunitions, "divReglements");
+                
+				} catch(err) {
+				}
+				//try{
+				if( paramsLigue.style!=undefined){
+				faitCouleur("couleurmenu1", "Couleur 1", paramsLigue.style.couleurmenu1, "divSiteWeb");
+				faitCouleur("couleurmenu2", "Couleur 2", paramsLigue.style.couleurmenu2, "divSiteWeb");
+				faitImage("arriereplan", "Image d'arrière plan", paramsLigue.style.arriereplan, "divSiteWeb");}
+				else{
+				faitCouleur("couleurmenu1", "Couleur 1", "#aaaaaa", "divSiteWeb");
+				faitCouleur("couleurmenu2", "Couleur 2", "#000000", "divSiteWeb");
+				faitImage("arriereplan", "Image d'arrière plan", "", "divSiteWeb");
+				}
+				//}catch(err){}
+				try {
+					faitCheckBox("banniere", "Bannière personnalisée", paramsLigue.siteWeb.banniere, "divMenus");
+				} catch(err) {
+				}
+
+			} catch(err) {
+			}
+
+			$('#divCentrale').append($('<button></button>').attr("type", "submit").attr("id", "btnEnregistre").addClass("btn btn-primary").text("Enregistrer"));
+			$('#divCentrale').append($('<button></button>').attr("type", "submit").attr("id", "btnEnregistreApplique").addClass("btn btn-primary").text("Enregistrer et Appliquer"));
+
+			$('#btnEnregistre').on("click", function() {
+				enregistrePEapplique(false)
+			});
+			$('#btnEnregistreApplique').on("click", function() {
+				enregistrePEapplique(true)
+			});
+
+			}
+
+			function enregistrePEapplique(applique) {
+				aDomper = JSON.stringify({
+					parametres : {
+						"3etoiles" : "vote"
+					},
+					reglements : {
+						dureeMineur : 4,
+						tempsArrete : $('#idtempsArrete').is(':checked'),
+                        separeDomVis : $('#idsepareDomVis').is(':checked'),
+                        otl : $('#idotl').is(':checked'),
+                        otw : $('#idotw').is(':checked'),
+                        afficheNulle : $('#idafficheNulle').is(':checked'),
+                        affichePunitions : $('#idaffichePunitions').is(':checked')
+					},
+					style : {
+						arriereplan : $('#inChemin').val(),
+						couleurmenu2 : $('#idcouleurmenu2').val(),
+						couleurmenu1 : $('#idcouleurmenu1').val()
+					},
+					siteWeb : {
+						menu : [{
+							lien : "/zadmin/inscriptionligue.html",
+							iH : "Inscriptions"
+						}],
+						structurePage : {
+							"divDroite" : "false",
+							"banniere" : "auto"
+						}
+					}
+				});
+
+				sauvegardeParams(window.ligueId, aDomper, applique);
+			}
+
+			function faitOngletSysteme(noMatchId, arenaId) {
+
+				$.ajax({
+					url : "/scriptsphp/getAppareilsAbonne.php",
+					type : "POST",
+
+					data : jQuery.param({
+						matchId : noMatchId,
+						userId : window.userId,
+						arenaId : arenaId
+					}),
+					contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+					success : function(response) {
+						var laTable = eval("(" + response + ")");
+						// alert(laTable.cams);
+						// alert(laTable.remotes);
+						if (laTable.cams != null) {
+							var table = $.makeTable(laTable.cams);
+							(table).appendTo("#Systeme");
+						}
+						if (laTable.remotes != null) {
+							var table2 = $.makeTable(laTable.remotes);
+							(table2).appendTo("#Systeme");
+						}
+					},
+					error : function(xhr, status, error) {
+						var err = eval("(" + xhr.responseText + ")");
+						alert(err.Message + "  --  ereur gardMax");
+					}
+				});
+
+			}
+
+			function sauvegardeParams(ligue, aDomper, applique) {
+
+				$.ajax({
+					url : "/scriptsphp/setGenerique.php",
+					type : "POST",
+
+					data : jQuery.param({
+						table : "Ligue",
+						mode : "modif",
+						valeur : {
+							cleValeur : aDomper
+						},
+						critere : "ID_Ligue=" + window.ligueId
+					}),
+					contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+					success : function(response) {
+						//var laTable = eval("(" + response + ")");
+						if (applique) {
+							$.ajax({
+								url : "/scriptsphp/appliqueStyle.php",
+								type : "POST",
+
+								data : jQuery.param({
+
+									ligueId : window.ligueId
+								}),
+								contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+								success : function(response) {
+									//var laTable = eval("(" + response + ")");
+
+									console.log("repApplique: " + response);
+
+								},
+								error : function(xhr, status, error) {
+									var err = eval("(" + xhr.responseText + ")");
+									alert(err.Message + "  --  ereur gardMax");
+								}
+							});
+
+						}
+						console.log("repSauvParams: " + response);
+
+					},
+					error : function(xhr, status, error) {
+						var err = eval("(" + xhr.responseText + ")");
+						alert(err.Message + "  --  ereur gardMax");
+					}
+				});
+
+			}
+
+
+			$.makeTable = function(mydata) {
+				var table = $('<table border=1>');
+				var tblHeader = "<tr>";
+				for (var k in mydata[0])
+				tblHeader += "<th>" + k + "</th>";
+				tblHeader += "</tr>";
+				$(tblHeader).appendTo(table);
+				$.each(mydata, function(index, value) {
+					var TableRow = $("<tr></tr>");
+					$.each(value, function(key, val) {
+
+						$(TableRow).append($("<td></td>").text(val));
+						if (key == "telId") {
+
+							if (index % 2 == 0) {
+								$(TableRow).addClass("lignePaire");
+							} else {
+								$(TableRow).addClass("ligneImpaire");
+							}
+
+						}
+					});
+					$(table).append(TableRow);
+
+				});
+				return ($(table));
+			};
+
+        </script>
+
+    </HEAD>
+    <body id="mbody">
+
+        <div id="divHaut"></div>
+        <div id="divGauche"></div>
+        <div id="divMenuHaut"></div>
+
+        <div id="divCentrale">
+            <div id="divReglements">
+                <h1>Règlements</h1>
+            </div>
+            <div id="divSiteWeb">
+                <h1>Style du site web</h1>
+            </div>
+            <div id="divMenus">
+                <h1>Menus</h1>
+            </div>
+            <div id="divParametres">
+                <h1>Paramètres</h1>
+            </div>
+
+        </div>
+        <div id="divDroite"></div>
+        <script type="text/javascript" charset="utf-8">
+			//						alert(JSON.stringify(document.getElementById("divCentrale").all));
+			//		alert(document.getElementsByTagName("A")[0].href);
+			jQuery(document).ready(function() {
+
+				developper(22);
+				detruitDivGauche();
+				$('#divTitreDoc').prepend($('<a></a>').attr("href", "/zstats/accueilligue.html").append($('<i class="fas fa-home"></i>'), $('<h3></h3>').text(" " + window.tl_index_accueil + " / ").css("display", "inline")), );
+
+				matchID = getValue('match');
+
+				//	alert(document.getElementById("tabResume").id);
+
+				etoileConditions = 0;
+				//			alert('de');
+
+				//	alert('calis');
+
+				//		alert(document.getElementById("tabResume").href);
+				ligueId = getValue("ligueId");
+				getInfoLigue(ligueId);
+
+			});
+        </script>
+
+        <!-- list hover effect -->
+        <script type="text/javascript" charset="utf-8">
+			//	alert($('#vidPrincId').attr("src"));
+
+        </script>
+
+    </body>
+</html>

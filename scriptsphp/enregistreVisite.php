@@ -60,5 +60,5 @@ $fakeId=$tmpMax[0]+1;
 		mysql_query($query) or die("Erreur: "+$query+"\n"+mysql_error());
 		
 		echo $fakeId;
-	
+	mysql_close();
 ?>

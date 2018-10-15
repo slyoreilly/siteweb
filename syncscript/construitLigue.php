@@ -107,7 +107,8 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 						$ligue['equipe'][$IEq]['nomEquipe']=$rangeeEquipe['nom_equipe'];
 						$ligue['equipe'][$IEq]['equipeId']=$rangeeEquipe['equipe_id'];
 						$ligue['equipe'][$IEq]['logo']=$rangeeEquipe['logo'];
-						$ligue['equipe'][$IEq]['joueur']=array();
+						$ligue['equipe'][$IEq]['cleValeur']=$rangeeEquipe['cleValeur'];
+						$ligue['equipe'][$IEq]['joueur']=array();	
 						
 						$resultJoueur = mysql_query("SELECT TableJoueur.*, abonJoueurEquipe.* 
 													FROM abonJoueurEquipe
@@ -150,6 +151,7 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 						$ligue['equipe'][$IEq]['nomEquipe']=$rangeeLigue['Nom_Ligue']." - Libres ";
 						$ligue['equipe'][$IEq]['equipeId']=0;
 						$ligue['equipe'][$IEq]['logo']="rien";
+						$ligue['equipe'][$IEq]['cleValeur']="";
 						$ligue['equipe'][$IEq]['joueur']=array();
 				
 						$IJ=0;

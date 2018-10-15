@@ -89,28 +89,43 @@ if ($eqVis != 'undefined') {$strTMEqVis = "eq_vis='{$eqVis}', ";
 	$eqVis = 0;
 }
 
+//echo "A ";
+
 //$jDom = json_decode($jDomJSON, true);
 //$jVis = json_decode($jVisJSON, true);
 
 //mysqli_query("SET time_zone='-4:00'")or die(mysqli_error());
+	$mUpdate=false;
 
+if(isset($mavId)&&$mavId!=""){
 $retour = mysqli_query($conn, "SELECT * 
 						FROM MatchAVenir 
-						WHERE mavId='{$mavId}'") or die(mysqli_error());
+						WHERE mavId='{$mavId}'") or die(mysqli_error($conn));
+if (mysqli_num_rows($retour) > 0){
+	$mUpdate=true;
+	
+}
 
-if (mysqli_num_rows($retour) > 0) {
+}//						echo "B ";
+
+if ($mUpdate) {
+	
 	$qUpMAV = "UPDATE MatchAVenir SET matchId='{$matchId}',arenaId={$arenaId}, " . $strEqDom . $strEqVis . $strGDom . $strGVis . $strJDom . $strJVis . $strArb . "
 	date='{$dateDeb}',dateFin='{$dateFin}',ligueId='{$ligueId}', dernierMAJ=NOW() WHERE mavId='{$mavId}'";
-	$retour = mysqli_query($conn, $qUpMAV) or die(mysqli_error() . $qUpMAV);
+	//echo $qUpMAV;
+	$retour = mysqli_query($conn, $qUpMAV) or die(mysqli_error($conn) . $qUpMAV);
 	$retour = $mavId;
+
 } else {
+	//echo "D ";
+	
 	$resultJoueur = mysqli_query($conn, "SELECT joueur_id
 													FROM TableJoueur
 													JOIN abonJoueurEquipe
 														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
 														WHERE equipeId='{$eqDom}'
 														AND debutAbon<=DATE(NOW())
-														AND finAbon>DATE(NOW())") or die(mysqli_error());
+														AND finAbon>DATE(NOW())") or die(mysqli_error($conn));
 	$jDom = "[";
 	while ($rangeeJoueur = mysqli_fetch_array($resultJoueur)) {
 
@@ -123,34 +138,37 @@ if (mysqli_num_rows($retour) > 0) {
 	}
 	$jDom .= "]";
 	//fin des joueurs d'une �quipe
-
+//echo "E ";
+	
 	$rJVis = mysqli_query($conn, "SELECT joueur_id
 													FROM TableJoueur
 													JOIN abonJoueurEquipe
 														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
 														WHERE equipeId='{$eqVis}'
 														AND debutAbon<=DATE(NOW())
-														AND finAbon>DATE(NOW())") or die(mysqli_error());
+														AND finAbon>DATE(NOW())") or die(mysqli_error($conn));
 	$jVis = "[";
 	while ($rangeeJVis = mysqli_fetch_array($rJVis)) {
 
 		$jVis .= $rangeeJVis['joueur_id'] . ",";
 	}//Fin du scan des joueurs
-
+//echo "F ";
+	
 	if (!strcmp(",", substr($jVis, -1)))// Pour �viter les vides;
 	{
 		$jVis = substr($jVis, 0, -1);
 	}
 	$jVis .= "]";
 	//fin des joueurs d'une �quipe
-
-	$retour = mysqli_query($conn, "INSERT INTO MatchAVenir (matchId, alignementDom, alignementVis, gardienDom, gardienVis, eqDom, eqVis, date, dateFin, ligueId,dernierMAJ,arenaId,arbitreId) 
-VALUES ('{$matchId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$arenaId}','{$arbitreId}')") or die(mysqli_error() . " INSERT INTO MatchAVenir");
+$qIns= "INSERT INTO MatchAVenir (matchId, alignementDom, alignementVis, gardienDom, gardienVis, eqDom, eqVis, date, dateFin, ligueId,dernierMAJ,arenaId,arbitreId) 
+VALUES ('{$matchId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$arenaId}','{$arbitreId}')";
+	//echo $qIns;
+	$retour = mysqli_query($conn,$qIns) or die(mysqli_error($conn) . " INSERT INTO MatchAVenir");
 
 	$ret = mysqli_query($conn, "SELECT mavId 
 						FROM MatchAVenir 
 						WHERE 1 
-						ORDER BY mavId DESC") or die(mysqli_error());
+						ORDER BY mavId DESC") or die(mysqli_error($conn));
 	$tmp = mysqli_fetch_row($ret);
 	$retour = $tmp[0];
 	$mavId = $retour;
@@ -165,14 +183,14 @@ VALUES ('{$matchId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVi
 $ret = mysqli_query($conn, "SELECT nom_equipe
 						FROM TableEquipe 
 						WHERE equipe_id='{$eqDom}'
-						") or die(mysqli_error());
+						") or die(mysqli_error($conn));
 $tmp = mysqli_fetch_row($ret);
 $strNomEqDom = $tmp[0];
 
 $ret = mysqli_query($conn, "SELECT nom_equipe
 						FROM TableEquipe 
 						WHERE equipe_id='{$eqVis}'
-						") or die(mysqli_error());
+						") or die(mysqli_error($conn));
 $tmp = mysqli_fetch_row($ret);
 $strNomEqVis = $tmp[0];
 
@@ -180,7 +198,7 @@ $matchId = substr($dateDeb, 0, 4) . "/" . substr($dateDeb, 5, 2) . "/" . substr(
 
 $rTM = mysqli_query($conn, "SELECT match_id 
 						FROM TableMatch 
-						WHERE mavId='{$mavId}'") or die(mysqli_error());
+						WHERE mavId='{$mavId}'") or die(mysqli_error($conn));
 
 if (mysqli_num_rows($rTM) > 0) {
 	$match_id_vec = mysqli_fetch_row($rTM);
@@ -188,11 +206,11 @@ if (mysqli_num_rows($rTM) > 0) {
 	$qTMEUp = "UPDATE TableMatch SET matchId='{$matchId}', matchIdRef='{$matchId}',arenaId={$arenaId},
 	 " . $strTMEqDom . $strTMEqVis . $strGDom . $strGVis . $strJDom . $strJVis . $strArb . "
 	date='{$dateDeb}',dateFin='{$dateFin}',ligueRef='{$ligueId}', dernierMAJ=NOW() WHERE mavId='{$mavId}'";
-	$rTM = mysqli_query($conn, $qTMEUp) or die(mysqli_error() . $qTMEUp);
+	$rTM = mysqli_query($conn, $qTMEUp) or die(mysqli_error($conn) . $qTMEUp);
 	$retour = $mavId;
 } else {
 	$rTM = mysqli_query($conn, "INSERT INTO TableMatch (matchId, matchIdRef, mavId, alignementDom, alignementVis, gardienDom, gardienVis, eq_dom, eq_vis, date, dateFin, ligueRef,dernierMAJ,arenaId,arbitreId) 
-VALUES ('{$matchId}','{$matchId}','{$mavId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$arenaId}','{$arbitreId}')") or die(mysqli_error() . " INSERT INTO TableMatch");
+VALUES ('{$matchId}','{$matchId}','{$mavId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$arenaId}','{$arbitreId}')") or die(mysqli_error($conn) . " INSERT INTO TableMatch");
 	$match_id = mysqli_insert_id($conn);
 }
 
@@ -203,26 +221,26 @@ if ($appareils != null) {
 		$qMatch = "SELECT matchId 
 						FROM abonAppareilMatch 
 						WHERE matchId='{$match_id}' and telId = '{$appareils['cams'][$a]['telId']}'";
-		$rAAM = mysqli_query($conn, $qMatch) or die(mysqli_error() . $qMatch);
+		$rAAM = mysqli_query($conn, $qMatch) or die(mysqli_error($conn) . $qMatch);
 		//$retour=$rAAM;
 		//$retour =$appareils['cams'][$a]['abon'];
 
 		if (mysqli_num_rows($rAAM) == 0) {
 			if ($appareils['cams'][$a]['abon'] == 1) {
 				mysqli_query($conn, "INSERT INTO abonAppareilMatch (matchId, surfaceId, gabaritId, posGabId, telId, role) 
-					VALUES ('{$match_id}','{$appareils['cams'][$a]['surfaceId']}','{$appareils['cams'][$a]['gabaritId']}','{$appareils['cams'][$a]['posGabId']}', '{$appareils['cams'][$a]['telId']}','{$appareils['cams'][$a]['role']}')") or die(mysqli_error() . " INSERT INTO abonAppareilMatch");
-				$retour = mysqli_error();
+					VALUES ('{$match_id}','{$appareils['cams'][$a]['surfaceId']}','{$appareils['cams'][$a]['gabaritId']}','{$appareils['cams'][$a]['posGabId']}', '{$appareils['cams'][$a]['telId']}','{$appareils['cams'][$a]['role']}')") or die(mysqli_error($conn) . " INSERT INTO abonAppareilMatch");
+				$retour = mysqli_error($conn);
 			}
 			else{
 				mysqli_query($conn, "INSERT INTO abonAppareilMatch (matchId, surfaceId, gabaritId, posGabId, telId, role) 
-					VALUES ('{$match_id}','{$appareils['cams'][$a]['surfaceId']}','{$appareils['cams'][$a]['gabaritId']}','{$appareils['cams'][$a]['posGabId']}', '{$appareils['cams'][$a]['telId']}','0')") or die(mysqli_error() . " INSERT INTO abonAppareilMatch");
-				$retour = mysqli_error();
+					VALUES ('{$match_id}','{$appareils['cams'][$a]['surfaceId']}','{$appareils['cams'][$a]['gabaritId']}','{$appareils['cams'][$a]['posGabId']}', '{$appareils['cams'][$a]['telId']}','0')") or die(mysqli_error($conn) . " INSERT INTO abonAppareilMatch");
+				$retour = mysqli_error($conn);
 			}
 		} else {
 			if ($appareils['cams'][$a]['abon'] == 1) {
-				mysqli_query($conn, "UPDATE abonAppareilMatch SET surfaceId='{$appareils['cams'][$a]['surfaceId']}',gabaritId='{$appareils['cams'][$a]['gabaritId']}',posGabId='{$appareils['cams'][$a]['posGabId']}', role='{$appareils['cams'][$a]['role']}' WHERE matchId='{$match_id}' and telId = '{$appareils['cams'][$a]['telId']}'") or die(mysqli_error() . " UPDATE INTO abonAppareilMatch");
+				mysqli_query($conn, "UPDATE abonAppareilMatch SET surfaceId='{$appareils['cams'][$a]['surfaceId']}',gabaritId='{$appareils['cams'][$a]['gabaritId']}',posGabId='{$appareils['cams'][$a]['posGabId']}', role='{$appareils['cams'][$a]['role']}' WHERE matchId='{$match_id}' and telId = '{$appareils['cams'][$a]['telId']}'") or die(mysqli_error($conn) . " UPDATE INTO abonAppareilMatch");
 			} else {
-				mysqli_query($conn, "UPDATE abonAppareilMatch SET surfaceId='{$appareils['cams'][$a]['surfaceId']}',gabaritId='{$appareils['cams'][$a]['gabaritId']}',posGabId='{$appareils['cams'][$a]['posGabId']}', role='0' WHERE matchId='{$match_id}' and telId = '{$appareils['cams'][$a]['telId']}'") or die(mysqli_error() . " UPDATE INTO abonAppareilMatch");
+				mysqli_query($conn, "UPDATE abonAppareilMatch SET surfaceId='{$appareils['cams'][$a]['surfaceId']}',gabaritId='{$appareils['cams'][$a]['gabaritId']}',posGabId='{$appareils['cams'][$a]['posGabId']}', role='0' WHERE matchId='{$match_id}' and telId = '{$appareils['cams'][$a]['telId']}'") or die(mysqli_error($conn) . " UPDATE INTO abonAppareilMatch");
 			//	mysqli_query($conn, "DELETE FROM abonAppareilMatch WHERE matchId='{$match_id}' and telId = '{$appareils['cams'][$a]['telId']}'") or die(mysqli_error() . " DELETE INTO abonAppareilMatch");
 			}
 		}
@@ -233,7 +251,7 @@ if ($appareils != null) {
 		$qMatch = "SELECT matchId 
 						FROM abonAppareilMatch 
 						WHERE matchId='{$match_id}' and telId = '{$appareils['remotes'][$a]['telId']}'";
-		$rAAM = mysqli_query($conn, $qMatch) or die(mysqli_error() . $qMatch);
+		$rAAM = mysqli_query($conn, $qMatch) or die(mysqli_error($conn) . $qMatch);
 		//$retour=$rAAM;
 		//$retour =$appareils['remotes'][$a]['abon'];
 
@@ -245,29 +263,29 @@ if ($appareils != null) {
 					VALUES ('{$match_id}','{$appareils['remotes'][$a]['surfaceId']}','{$appareils['remotes'][$a]['gabaritId']}',
 					'{$appareils['remotes'][$a]['posGabId']}', '{$appareils['remotes'][$a]['telId']}',
 					'{$appareils['remotes'][$a]['role']}')") or die(mysqli_error() . " INSERT INTO abonAppareilMatch");
-				$retour = mysqli_error();
+				$retour = mysqli_error($conn);
 				echo 5;
 			}
 			else{
 					mysqli_query($conn, "INSERT INTO abonAppareilMatch (matchId, surfaceId, gabaritId, posGabId, telId, role) 
 					VALUES ('{$match_id}','{$appareils['remotes'][$a]['surfaceId']}','{$appareils['remotes'][$a]['gabaritId']}',
 					'{$appareils['remotes'][$a]['posGabId']}', '{$appareils['remotes'][$a]['telId']}',
-					'0')") or die(mysqli_error() . " INSERT INTO abonAppareilMatch");
-				$retour = mysqli_error();
+					'0')") or die(mysqli_error($conn) . " INSERT INTO abonAppareilMatch");
+				$retour = mysqli_error($conn);
 				
 			}
 		} else {
 			//	echo 5;
 			if ($appareils['remotes'][$a]['abon'] == true) {
-				mysqli_query($conn, "UPDATE abonAppareilMatch SET surfaceId='{$appareils['remotes'][$a]['surfaceId']}',gabaritId='{$appareils['remotes'][$a]['gabaritId']}',posGabId='{$appareils['remotes'][$a]['posGabId']}', role='{$appareils['remotes'][$a]['role']}' WHERE matchId='{$match_id}' and telId = '{$appareils['remotes'][$a]['telId']}'") or die(mysqli_error() . " UPDATE INTO abonAppareilMatch");
+				mysqli_query($conn, "UPDATE abonAppareilMatch SET surfaceId='{$appareils['remotes'][$a]['surfaceId']}',gabaritId='{$appareils['remotes'][$a]['gabaritId']}',posGabId='{$appareils['remotes'][$a]['posGabId']}', role='{$appareils['remotes'][$a]['role']}' WHERE matchId='{$match_id}' and telId = '{$appareils['remotes'][$a]['telId']}'") or die(mysqli_error($conn) . " UPDATE INTO abonAppareilMatch");
 			} else {
-				mysqli_query($conn, "UPDATE abonAppareilMatch SET surfaceId='{$appareils['remotes'][$a]['surfaceId']}',gabaritId='{$appareils['remotes'][$a]['gabaritId']}',posGabId='{$appareils['remotes'][$a]['posGabId']}', role='0' WHERE matchId='{$match_id}' and telId = '{$appareils['remotes'][$a]['telId']}'") or die(mysqli_error() . " UPDATE INTO abonAppareilMatch");
+				mysqli_query($conn, "UPDATE abonAppareilMatch SET surfaceId='{$appareils['remotes'][$a]['surfaceId']}',gabaritId='{$appareils['remotes'][$a]['gabaritId']}',posGabId='{$appareils['remotes'][$a]['posGabId']}', role='0' WHERE matchId='{$match_id}' and telId = '{$appareils['remotes'][$a]['telId']}'") or die(mysqli_error($conn) . " UPDATE INTO abonAppareilMatch");
 			//	mysqli_query($conn, "DELETE FROM abonAppareilMatch WHERE matchId='{$match_id}' and telId = '{$appareils['remotes'][$a]['telId']}'") or die(mysqli_error() . " DELETE INTO abonAppareilMatch");
 			}
 		}
 	}
 
 }
-
+mysqli_close($conn);
 echo $retour;
 ?>

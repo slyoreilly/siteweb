@@ -50,7 +50,7 @@ $resultEvent = mysqli_query($con,"SELECT Ligue.*,TableSaison.* FROM Ligue
 										JOIN TableSaison
 										ON (Ligue.ID_Ligue=TableSaison.ligueRef)
 										WHERE ID_Ligue = '{$ligueId}'")
-or die(mysql_error());  
+	or die(mysqli_error($con));
 }
 else 
 {
@@ -62,7 +62,7 @@ else
 											JOIN TableSaison
 												ON (Ligue.ID_Ligue=TableSaison.ligueRef)
 											WHERE equipeId = '{$equipeId}'")
-	or die(mysql_error());  
+	or die(mysqli_error($con));  
 	}
 	else
 	{
@@ -71,7 +71,7 @@ else
 										ON (Ligue.ID_Ligue=TableSaison.ligueRef)
 										WHERE 1
 										GROUP BY Ligue.ID_Ligue")
-	or die(mysql_error());  	
+		or die(mysqli_error($con));
 	}
 	}
 $Ieq =0;
@@ -112,6 +112,6 @@ $JSONstring = "{\"Ligues\":".json_encode($Ligues)."}" ;
 
 echo $JSONstring;
 	
-
+mysqli_close($con);
 
 ?>

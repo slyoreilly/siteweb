@@ -32,12 +32,12 @@ $retour1 = mysqli_query($conn,"SELECT * FROM TacheShell
 		{while($rangee = mysqli_fetch_assoc($retour1)){
 			$ret = shell_exec($rangee['commande']);
 			$nouvEssai= intval($ret['essais'])+1;
-			mysqli_query($conn,"UPDATE TacheShell SET statut=1, retour='{$ret}', essais='{$nouvEssai}'  WHERE id = '{$rangee['id']}'");
+			mysqli_query($conn,"UPDATE TacheShell SET statut=1, retour='{$ret}', essais='{$nouvEssai}'  WHERE commande = '{$rangee['commande']}'");
 		}
 		
 		}
 
-
+mysqli_close($conn);
 //include 'library/closedb.php';
 	
 ?>

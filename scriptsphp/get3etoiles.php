@@ -144,6 +144,8 @@ $Ine = 0;
 
 unset($resultEvent);
 unset($rangeeEv);
+mysql_query("SET SQL_BIG_SELECTS=1"); 
+  
 ////  Sélectionne tous les débuts de matchs dans une saison.
 $qGros = "SELECT TableEquipe.*, Ligue.*, TableMatch.*,TableEvenement0.* 
 								FROM TableMatch 

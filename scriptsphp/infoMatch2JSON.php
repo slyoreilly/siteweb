@@ -17,7 +17,19 @@ $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
 $tableEquipe = 'TableEquipe';
 
+
 $matchId = $_GET['matchId'];
+if($matchId=="" OR $matchId==NULL OR $matchId==undefined ){
+$matchId = $_POST['matchId'];
+	
+}
+$refParString=true;
+if(is_numeric($matchId)){
+	if($matchId<1000000){
+		$refParString=false;
+	}
+}
+
 
 $match = $_POST['match'];
 $ligueId = $_POST['ligueId'];
@@ -69,7 +81,7 @@ if(is_numeric($match)&&is_numeric($ligueId))
 	
 }
 
-else if(!is_numeric($matchId)){
+else if(!is_numeric($matchId)OR $refParString){
 
 	$rEquipeDom = mysql_query("SELECT TableEquipe.*, Ligue.*, TableMatch.*, TableArena.nomArena,TableArena.nomGlace, TableEquipe.ficId AS eqFic
 								FROM TableMatch 
@@ -163,5 +175,6 @@ else {
 	
 echo $JSONstring;
 	
+mysql_close();
 
 ?>

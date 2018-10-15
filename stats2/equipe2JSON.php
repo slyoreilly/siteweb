@@ -72,6 +72,7 @@ while ($rangeeLiEq = mysql_fetch_array($rLiEq))//  Pour chacun des abonnements d
 	{
 		//$vecStats[$IV]['stats']=Array();
 		$stats = Array();
+		mysql_query("SET SQL_BIG_SELECTS=1");
 		$reqMatchs = "SELECT TableMatch.*, TableEvenement0.*, TableJoueur.* 
 		 		FROM TableEvenement0
 		 		JOIN TableMatch

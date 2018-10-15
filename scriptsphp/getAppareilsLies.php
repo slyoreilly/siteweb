@@ -128,6 +128,6 @@ mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 	$adomper = str_replace('"[', '[', $adomper);
 	$adomper = str_replace(']"', ']', $adomper);
 	echo utf8_encode($adomper);
-		
+	mysqli_close($conn);
 	
 ?>

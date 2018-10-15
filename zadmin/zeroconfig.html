@@ -2244,6 +2244,12 @@ function trouveEval(critereId){
 			//			document.getElementById('divCentrale').style.marginRight="2%";
 			document.getElementById('divCentrale').style.right = "0%";
 
+                $('#divTitreDoc').prepend(
+                    $('<a></a>').attr("href","/zstats/accueilligue.html").append($('<i class="fas fa-home"></i>'),$('<h3></h3>').text( " "+window.tl_index_accueil+" / ").css("display","inline")),
+                    $('<a></a>').attr("href","/zstats/resultats.html").append($('<i class="far fa-calendar-alt"></i>'),$('<h3></h3>').text( " "+window.tl_profil_Horaire).css("display","inline"))
+                    );
+
+
 			jMAV = new Array();
 			gardien = new Array();
 			eq = new Array();

@@ -70,5 +70,5 @@ echo "dossier: ".$dossier;
 
 
 //include 'library/closedb.php';
-	
+mysql_close();	
 ?>

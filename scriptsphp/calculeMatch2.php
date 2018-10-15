@@ -253,12 +253,12 @@ while($rangeeVE=mysql_fetch_array($sqlVerifEvent))				// Vérification: Est-ce q
 //	echo count($aEnr);
 while($Iae<count($aEnr)) // Tous les matchs a être recalculés pour enregistrement.
 	{
-	$matchAEnr = parseMatchID_CM($aEnr[$Iae]);
+	/*$matchAEnr = parseMatchID_CM($aEnr[$Iae]);
 	if(isset($matchAEnr['ligueId']))
 		{$ligueId=$matchAEnr['ligueId'];}
 	else {
 		$ligueId=devineLigueId($matchAEnr['dom'],$matchAEnr['vis']);
-	}
+	}*/
 //	$eDom = trouveIDParNomEquipe($matchAEnr['dom']);
 //	$eVis = trouveIDParNomEquipe($matchAEnr['vis']);
 	$eDom = trouveIDParNomEqEtLigue($matchAEnr['dom'],$ligueId);

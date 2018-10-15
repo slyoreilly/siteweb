@@ -145,6 +145,7 @@ tl_index_rechercheMatch="Game (YYYY/MM/DD)";
 tl_index_hintLigue="League's Name";
 tl_index_hintJoueur="Player's Name";
 tl_index_hintAAAMMJJ="YYYY/MM/DD";
+tl_index_accueil="Home";
 
 
 ///////////  Boites Contextuelles
@@ -183,6 +184,10 @@ tl_match_titreTabPun = "Penalty Summary";
 		tl_match_Penalites ="Penalties";
 tl_match_Reussi ="Succeed";
 tl_match_Manque ="Missed";
+tl_match_TirPenalite ="Penalty Shot";
+tl_match_FiletDesert ="Empty Net";
+
+
 
 tl_match_corrigePresence = "Fix Line-ups";
 tl_match_ajouteBut = "Add a goal";
@@ -205,16 +210,35 @@ tl_resultats_ButsVis = "Score - Away";
 ///////////// Classement.html
 
 
-	tl_class_Vic = "Won";
-	tl_class_Def  = "Lost";
-	tl_class_Nul  = "Tie";
-	tl_class_Points  = "Points";
-	tl_class_BP  = "Goal For";
-	tl_class_BC  = "Goal Against";
-	tl_class_PJ  = "Game Played";
-	tl_class_Diff  = "Difference";
-	tl_class_abr_PJ  = "GP";
+	tl_class_Vic = "W";
+	tl_class_Def  = "L";
+	tl_class_Nul  = "T";
+	tl_class_VProl = "OTW";
+	tl_class_DProl  = "OTL";
+	tl_class_Pts  = "Pts";
+	tl_class_BP  = "GF";
+	tl_class_BC  = "GA";
+	tl_class_PJ  = "GP";
+	tl_class_Diff  = "Diff";
+		tl_class_Disc  = "FP";
+	tl_class_Dern10  = "L10";
+	tl_class_Seq  = "STRK";
+	tl_class_PUN  = "PIM";
 
+	tl_class_Victoires = "Won";
+	tl_class_Defaites  = "Lost";
+	tl_class_VictoiresProl = "OT Win";
+	tl_class_DefaitesProl  = "OT Loss";
+	tl_class_Nulles  = "Tie";
+	tl_class_Points  = "Points";
+	tl_class_ButsPour  = "Goal For";
+	tl_class_ButsContre  = "Goal Against";
+	tl_class_PartiesJouees  = "Game Played";
+	tl_class_Difference  = "Difference";
+		tl_class_Discipline  = "Fair Play";
+	tl_class_Dernier10  = "Last 10";
+	tl_class_Sequence  = "Streak";
+tl_class_MinutesPunitions  = "Penalty Minutes";
 	tl_class_Classement = "Standings";
 	
 
@@ -223,6 +247,8 @@ tl_resultats_ButsVis = "Score - Away";
 
 	tl_stats_Statistiques = "Statistics" ;
 		tl_stats_Buts = "Goals" ;
+			tl_stats_But = "Goal" ;
+
 	tl_stats_Passes = "Assists" ;
 		tl_stats_saisonDeb = "Season Starts:";
 	tl_stats_saisonFin = "Season Ends";
@@ -310,11 +336,21 @@ tl_statseq_Saison="Season";
 tl_statseq_Ligue="League";
 tl_statseq_nomEq="Team name";
 tl_statseq_ficheVDN="Record (W-L-T): ";
+tl_statseq_ville = "City";
+
 
 /////////////  equipes.html
 
 tl_equipes_couleur="Jersey Color ";
 tl_equipes_ficImage="Image File ";
+
+tl_equipes_blanc="White";
+tl_equipes_rouge="Red";
+tl_equipes_orange="Orange";
+tl_equipes_bleu="Blue";
+tl_equipes_vert="Green";
+tl_equipes_noir="Black";
+
 
 /////////////// horaire.html
 
@@ -338,6 +374,7 @@ tl_login_nomUsager = "User Name";
 tl_login_motPasse = "Password";
 tl_login_idInvalide = 'Wrong ID';
 tl_login_idValide = 'ID OK';
+tl_login_composeMessage="Write your mail";
 
 
 /////////////////  gestionligue.html
@@ -346,7 +383,7 @@ tl_ges_Serie = "Series";
 tl_ges_listeEq = "Team List";
 tl_ges_abonEq= "Subscribe this team";
 tl_ges_desabonEq= "Unsubscribe this team";
-tl_ges_typeSaison= "Season type: ";
+tl_ges_typeSaison= "Season type";
 
 tl_ges_gesHoraire = "Manage Schedule";
 tl_ges_noMatch = "No game is schedule for this season.";

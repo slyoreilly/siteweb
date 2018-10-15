@@ -15,11 +15,11 @@
 
         <script src="/scripts/moment-with-locales.js" type="text/javascript" charset="utf-8"></script>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
-        <meta name="viewport" content="width=device-width,initial-scale=1">
 
         <script type="text/javascript" charset="utf-8">
 			gereLangue();
         </script>
+         <meta name="viewport" content="width=device-width,initial-scale=1"/>
         <style>
             #divMatchsProches {
                 width: 100%;
@@ -90,42 +90,72 @@
 			//  alert(requete_ajax.responseText);
 			return requete_ajax.responseText;
 		}
+            function getInfoLigue(ligueId) {
+                //  return function(){
+                var requete_ajax = new XMLHttpRequest();
+
+                var url = "/stats2/infoLigue2JSON.php";
+                //  alert(url);
+                var params = "ligueId=" + window.ligueId;
+                //alert(params);
+                requete_ajax.open('POST', url, true);
+
+                requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                requete_ajax.setRequestHeader("Content-length", params.length);
+                requete_ajax.setRequestHeader("Connection", "close");
+
+                requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+                    if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+                        //      alert(requete_ajax.responseText);
+                        //          window.location.reload();
+                        var tmpStr = eval('(' + requete_ajax.responseText + ')');
+                        appliqueStyleLigue(tmpStr);
+                        
+
+                        return requete_ajax.responseText;
+                    }
+                    //      else{alert("Petit problème de développement");}
+                };
+                requete_ajax.send(params);
+                //alert(requete_ajax.responseText);
+                var pourMAJ = new Array();
+
+                //  }
+            }
+
+
+
 
 		function getMatchsDeLigueID(saisonId) {
-			var requete_ajax = new XMLHttpRequest();
-
-			var url = "/scriptsphp/matchsDsSaison.php";
-
-			var strLigueId = "ligueId=" + window.ligueId;
-			var strSaisonId = "saisonId=" + saisonId;
-			params = strLigueId + '&' + strSaisonId;
-			url = url + "?" + params;
-
-			//requete_ajax.send(null);
-			//  return requete_ajax.responseText;
-
-			requete_ajax.open('POST', url, true);
-			//              requete_ajax.send(null);
-
-			requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			requete_ajax.setRequestHeader("Content-length", params.length);
-			requete_ajax.setRequestHeader("Connection", "close");
-
-			requete_ajax.send(params);
-
-			requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
-				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-
-					lesMatchs = eval('(' + requete_ajax.responseText + ')');
-					setMatchs();
-					if (dernierMatch != null) {
-						faitBoiteDernier();
-					}
-					if (prochainMatch != null) {
-						faitBoiteProchain();
-					}
-				}
-			};
+		    
+		    
+		       $.ajax({
+                        url : "/scriptsphp/matchsDsSaison.php"/*"http://syncstats.com/scriptsphp/listeEquipes.php"*/,
+                        datatype : 'json',
+                        contentType: "application/json",
+                        type : 'POST',
+                        data : JSON.stringify({
+                            saisonId : saisonId,
+                            ligueId : window.ligueId
+                        }),
+                        contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+                        success : function(response) {
+                      lesMatchs = eval('(' + response+ ')');
+                    setMatchs();
+                    if (dernierMatch != null) {
+                        faitBoiteDernier();
+                    }
+                    if (prochainMatch != null) {
+                        faitBoiteProchain();
+                    }
+                         
+                        },
+                        error : function(xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            alert(err.Message + "  --  ereur lc2MS");
+                        }
+                    });
+    
 		}
 
 		function setPosition(joueurId, pos) {
@@ -548,15 +578,90 @@
 			}
 
 		}
+		
+		
+		
+function appliqueStyleLigue(lesInfos){
+                    try{
+                $('.bg').css("background-image","url('"+lesInfos.Ligue.cleValeur.style.arriereplan+"')");
+                
+                }catch(err){
+                    console.log("Pas trouvé image arrière plan");
+                    
+                }
+                try{
+                    couleurmenu1 = lesInfos.Ligue.cleValeur.style.couleurmenu1;
+                    couleurmenu2 = lesInfos.Ligue.cleValeur.style.couleurmenu2;
+                    
+                $('#divTitreDoc').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                $('.bouton_1').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                $('#barreNav a').css("color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                $('#barreNav >ul >div:hover').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                 $('#barreNav >ul >div').hover(function(){
+                 $(this).css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                 $(this).find( 'a' ).css("color",lesInfos.Ligue.cleValeur.style.couleurmenu2);
+                 }, function(){
+                    $(this).css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu2);
+                     $(this).find( 'a' ).css("color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                });
+                
+                //$('.titreOnglet.actif').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1).css("color",lesInfos.Ligue.cleValeur.style.couleurmenu2);
+                //$('.titreOnglet.passif').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu2).css("color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+            
+                
+                }catch(err){
+                    console.log("Pas de couleur de menu1");
+                    
+                }
+                try{
+                $('#barreNav ul').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu2);
+                
+                }catch(err){
+                    console.log("Pas de couleur de menu");
+                    
+                }
+                
+                try{
+                   if (getValue('m')=='1'){
+                 $('#divDroite').remove();
+                 $('#divGauche').remove();
+                 $('#divCentrale').removeClass (function (index, className) {
+    return (className.match (/(^|\s)col-\S+/g) || []).join(' ');
+}).addClass('col-sm-12');
+                      
+                      
+                  }else{
+                if("false".localeCompare(lesInfos.Ligue.cleValeur.siteWeb.structurePage.divDroite)==0){
+                   
+                 $('#divDroite').remove();
+                 $('#divGauche').before($('<div></div>').addClass("col-sm-1 espaceur"));
+                 $('#divCentrale').removeClass('col-sm-6').addClass('col-sm-8');
+                    }
+                      
+                      
+                  }
+                  
+                }catch(err){
+                    console.log("Erreur try catch structurePage");
+                    
+                }
+ 
+                
+            }
+
 
     </script>
 
     <body id="body">
-        <div id="divHaut"></div>
-        <div id="divGauche"></div>
-        <div id="divMenuHaut"></div>
+  <div class="container-fluid bg">
+            <div class="row">
+                <div id="divHaut" class="col-sm-12"></div>
+                <div id="divMenuHaut" class="col-sm-12"></div>
 
-        <div id="divCentrale">
+            </div>
+
+            <div class="row ">
+                <div id="divCentrale" class="col-sm-6 container contOuiJet">
 
             <DIV id="divSelSaison">
 
@@ -581,11 +686,17 @@
             </DIV>
             <DIV ID="divStats"></DIV>
 
-        </div>
-        <div id="divDroite"></div>
+       
+    </div>
+                <div id="divDroite"  class="col-sm-3"></div>
+            </div>
+            <div class="row">
+                <div id="divBas"  class="col-sm-12"></div>
+            </div>
+         
         <script type="text/javascript" charset="utf-8">
 			developper(9);
-
+            getInfoLigue(getCookie('ligueId'));
 			detruitDivGauche();
 
 			dSS = document.getElementById('divSelSaison');
@@ -727,7 +838,7 @@
 
 							var lesLiens = new Array();
 							lesLiens[0] = null;
-							lesLiens[1] = '/zstats/statsjoueur.html?joueurId=' + statsJoueurs.joueurs[J].joueurId;
+							lesLiens[1] = '/zstats/statsjoueur.html?joueurId=' + statsJoueurs.joueurs[J].joueurId+'&m='+getValue('m');
 							lesLiens[2] = null;
 							lesLiens[3] = null;
 							lesLiens[4] = null;

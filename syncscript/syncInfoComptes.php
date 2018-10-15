@@ -97,4 +97,5 @@ $repSite['heure'] = time();
 
 //echo json_encode($Sommaire);
 echo json_encode($repSite);
+mysql_close();
 ?>

@@ -109,8 +109,11 @@
 						(table).appendTo("#abonAppareilSurface");
 	//					alert('hep');
 						$("#abonAppareilSurface").append($('<input></input>').attr("type", "button").addClass('bouton_2').val("Ajouter").on("click", function() {
-							construitDialogue();
-							$("#divDialogue").append($('<h2></h2>').text('Arena'), $('<div></div').append($('<select></select>').attr('id', 'selArena')), $('<h2></h2>').text('Rôle'), $('<div></div').append($('<select></select>').attr('id', 'selRole').append($('<option></option>').val('1').text('Télécommande: Maître. Toutes les options sont débloquées.'), $('<option></option>').val('3').text('Télécommande: Arbitre'), $('<option></option>').val('11').text('Télécommande: Appareil contrôlant les buts de l\'équipe domicile'), $('<option></option>').val('12').text('Télécommande: Appareil contrôlant les buts de l\'équipe visiteur'), $('<option></option>').val('13').text('Télécommande: Appareil ne contrôlant qu\'un côté; à spécifier par utilisateur.'), $('<option></option>').val('101').text('Caméra: Générique'), $('<option></option>').val('111').text('Caméra: Appareil filmant les buts du côté du gardien domicile'), $('<option></option>').val('112').text('Caméra: Appareil filmant les buts du côté du gardien visiteur'))), $('<input></input>').attr("type", "button").addClass("bouton_2").attr("value", "Enregistrer").on("click", function() {
+							         $('#modalAbonneArena').modal("show");
+                $('#modalAbonneArena .modal-title').text("Ajouter un arena");
+                $('#modalAbonneArena .modal-body').empty();
+                $('#modalAbonneArena .modal-footer').empty();
+							$("#modalAbonneArena .modal-body").append($('<h2></h2>').text('Arena'), $('<div></div').append($('<select></select>').attr('id', 'selArena')), $('<h2></h2>').text('Rôle'), $('<div></div').append($('<select></select>').attr('id', 'selRole').append($('<option></option>').val('1').text('Télécommande: Maître. Toutes les options sont débloquées.'), $('<option></option>').val('3').text('Télécommande: Arbitre'), $('<option></option>').val('11').text('Télécommande: Appareil contrôlant les buts de l\'équipe domicile'), $('<option></option>').val('12').text('Télécommande: Appareil contrôlant les buts de l\'équipe visiteur'), $('<option></option>').val('13').text('Télécommande: Appareil ne contrôlant qu\'un côté; à spécifier par utilisateur.'), $('<option></option>').val('101').text('Caméra: Générique'), $('<option></option>').val('111').text('Caméra: Appareil filmant les buts du côté du gardien domicile'), $('<option></option>').val('112').text('Caméra: Appareil filmant les buts du côté du gardien visiteur'))), $('<input></input>').attr("type", "button").addClass("bouton_2").attr("value", "Enregistrer").on("click", function() {
 								         valeur = {
 								         telId : window.telId,
                                        surfaceId : $('#selArena').val(),
@@ -249,6 +252,8 @@ $.makeTable = function(mydata) {
 			$('#divCentrale').css("margin-left", "20px");
 			//		alert(document.getElementById("tabResume").id);
 			telId = getValue('telId');
+			  construitDialogue("modalAbonneArena");
+
 			finiLaPage();
 			//alert(window.ligueId);
 

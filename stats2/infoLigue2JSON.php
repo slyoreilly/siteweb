@@ -114,6 +114,7 @@ while ($aSaison = mysql_fetch_assoc($rSaison)) {
 			$JSONEquipes .= "\"ville\": \"" . $aEquipe['ville'] . "\",";
 			$JSONEquipes .= "\"logo\": \"" . $aEquipe['logo'] . "\",";
 			$JSONEquipes .= "\"ficId\": \"" . $aEquipe['ficId'] . "\",";
+			$JSONEquipes .= "\"couleur1\": \"" . $aEquipe['couleur1'] . "\",";
 			$JSONEquipes .= "\"dernierMAJ\": \"" . $aEquipe['dernierMAJ'] . "\"},";
 
 		}
@@ -184,8 +185,8 @@ while ($aArena = mysql_fetch_assoc($rArena))
 
 echo ", \"Arenas\":".json_encode($arenas);
 
-echo "}"
-
+echo "}";
+mysql_close();
 
 ?>
 	

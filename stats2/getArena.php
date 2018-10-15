@@ -37,11 +37,12 @@ function utf8ize($mixed) {
     }
     return $mixed;
 }
-
 //$jDom = json_decode($jDomJSON, true);
 //$jVis = json_decode($jVisJSON, true);
 $strRetour .= $mavId;
-if ($username != 0 && $username != undefined) {
+//echo ($username != 0)."Blip". ($username != undefined);
+if (($username !== 0) && ($username != undefined) && ($username != null)) {
+
 
 	$retour = mysqli_query($conn, "SELECT *	
 						FROM TableUser
@@ -51,7 +52,7 @@ if ($username != 0 && $username != undefined) {
 							ON (AbonnementLigue.ligueid=abonLigueArena.ligueId)
 						LEFT JOIN TableArena
 							ON (abonLigueArena.arenaId=TableArena.arenaId)
-						WHERE username='{$username}'
+						WHERE username='{$username}' group by TableArena.arenaId
 						 	") or die(mysqli_error());
 							
 	$strRetour .= mysqli_num_rows($retour);
@@ -96,7 +97,7 @@ if ($username != 0 && $username != undefined) {
 	//$adomper = str_replace(']"', ']', $adomper);
 	echo utf8_encode($adomper);
 }
-
+mysqli_close($conn);
 		//header("HTTP/1.1 200 OK");
 ?>
 

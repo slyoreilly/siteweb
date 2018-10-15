@@ -58,7 +58,7 @@ if(!empty($nomFic))
 				if(is_null($emplacement)){
 					$emplacement="www.syncstats.com";
 				}
-				$cv= json_decode($params[$a]['video']['cv'],true);
+				$cv= json_decode(stripslashes($params[$a]['video']['cv']),true);
 			
 				if(isset($cv['type'])){
 					$type=$cv['type'];
@@ -67,9 +67,14 @@ if(!empty($nomFic))
 					$reference=$cv['reference'];
 				}
 			}
+			$esSimple=$params[$a]['video']['esSimple'];
 			if(file_exists('http://'.$emplacement.'/lookatthis/'.$nomFic))
 			{
-				$monObj['etat']='deja';
+				if($esSimple!=12){
+				$monObj['etat']='insert';					
+				}else{
+				$monObj['etat']='deja';					
+				}
 			}
 			else
 			{
@@ -85,7 +90,14 @@ if(!empty($nomFic))
 		
 			else {
 				
-							
+					$cv= json_decode(stripslashes($params[$a]['video']['cv']),true);
+			
+				if(isset($cv['type'])){
+					$type=$cv['type'];
+				}	
+				if(isset($cv['reference'])){
+					$reference=$cv['reference'];
+				}		
 		$query = "INSERT INTO Video (nomFichier,nomMatch,chrono,camId,type,reference,emplacement) ".
 		"VALUES ('{$nomFic}','{$params[$a]['video']['nomMatch']}','{$rSServ}','{$camID}','{$type}','{$reference}','{$emplacement}')";
 		mysql_query($query) or die("Erreur: "+$query+"\n"+mysql_error());
@@ -137,4 +149,5 @@ if(!empty($nomFic))
 	
 	if(json_encode($syncOK)==False)
 	{echo "erreur, count(syncOK:): ".count($syncOK)."- count($params): ".count($params);}
+	mysql_close();
 ?>

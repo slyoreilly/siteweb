@@ -7,6 +7,92 @@ html
 
 }
 
+#menuBarsTitre {
+    font-size:1.5em;
+    margin-right:0.4em;
+    margin-top:0.3em;
+    color:#888;
+    display:inline;
+    float:left;
+}
+
+#menuBoiteID li .fas {
+text-color:#bbb;
+font-size:1.5em;
+vertical-align:middle;
+}
+#divLigue{
+    color:#bbb;
+    display:inline-block;
+    padding:0.5em;
+}
+#ligueBTC{
+    margin-top:0;
+    margin-bottom:0;
+    }
+
+#divLigue i{
+    position:absolute;
+    
+}
+#divLigue h2{
+    margin : auto 1.5em;
+    display:inline;
+    
+}
+.blocScoreH .score{
+    display:inline;
+    text-align:right;
+    float:right;
+    margin-right:0.3em;
+    font-weight:900;
+}
+.blocScoreH .nomEquipe{
+    display:inline;
+    text-align:left;
+    float:left;
+    margin-left:0.3em;
+}
+
+.blocScoreH .ligneScore{
+    padding:0.2em;
+    display:table;
+    width:100%;
+}
+
+#optionsMenuBars{
+    max-width:15em;
+    list-style:none;
+    position:absolute;
+    top:2.5em;
+    left:-2em;
+    z-index:1000;
+    border-width:1px;
+border-color:#ddd9;
+border-style:solid;
+background-color:#888;
+}
+
+#optionsMenuBars li{
+    padding:1em;
+        max-width:12em;
+}
+
+
+.bg {
+    /* The image used */
+    background-color:#222;
+    background-image: url("../images/testbg.png");
+ background-repeat: no-repeat;
+    background-attachment: fixed;    /* Full height */
+    height: 100%; 
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 body
 {
 
@@ -64,7 +150,7 @@ p
 {
 font-family:arial;
 /*font-family:045060,arial, fantasy;*/
-	color:#000000;
+/*	color:#000000;*/
 font-size:small;
 }
 
@@ -86,15 +172,15 @@ p.texteSpinHorz{
 	margin-top:-15px;
 }
 div.optionHautDroit{
-	color:#555;
-	margin-right:2px;
+	color:#bbb;
+	margin-right:0.1em;
 	vertical-align:top;
 	padding-top:0;
 	right:0;
 }
 
 .optionHautDroit a{
-	color:#034d57;
+	color:#05A8BD;
 }
 .optionHautDroit a:hover{
 	color:#00A5DC;
@@ -178,6 +264,11 @@ h2.enVert
 	
 }
 
+.contOuiJet.noborder{
+    border:0;   
+}
+
+
 
 
 body, td, th { font: 80%, arial, helvetica, sans-serif }
@@ -187,6 +278,7 @@ table,tbody {
 	border-collapse:collapse;
 	border: 0px none white;
 	width: 100%;
+	/*display:inline-table;*/
 /*	height: 120px;*/
 	text-align: left;
 	/*margin: 20px;*/
@@ -342,14 +434,15 @@ table.c_tableau{
 
 td.titreTableau{
 
-	text-align: center;
-font-family:"Arial black",arial,"Times New Roman",serif;
-	font-size: 12px;
+	text-align: left;
+font-family:'IBM Plex Sans','Krona One',"Arial black",arial,"Times New Roman",serif;
+	font-size: 1.5em;
 	font-weight: bolder;
-	color: #034D57;
+	color: #222;
 	line-height: 22px;
 	text-transform: uppercase;
 	letter-spacing: 1px;
+	padding:0.7em;
 	}
 
 tr.periode{
@@ -500,14 +593,14 @@ background-color:#666;
 }
 
 tr.ligneImpaire:hover, tr.lignePaire:hover {
-        background: #04789D;
-        background: -moz-linear-gradient(#0694C1,#04789D);
+        background: #222;
+        /*background: -moz-linear-gradient(#0694C1,#04789D);
         background: -webkit-gradient(linear,left bottom,left top,color-stop(0, #04789D),color-stop(1, #0694C1));
         background: -webkit-linear-gradient(#0694C1, #04789D);
         background: -o-linear-gradient(#0694C1, #04789D);
        background: -ms-linear-gradient(#0694C1, #04789D);
- 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0694C1', endColorstr='#04789D'); /* for IE */
-        background: linear-gradient(#0694C1, #04789D);
+ 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0694C1', endColorstr='#04789D'); 
+        background: linear-gradient(#0694C1, #04789D);*/
         border-style:solid;
         border-width: 1px 0 1px 0;
         border-color:#07799E;
@@ -533,6 +626,7 @@ font-family:Arial,Tahoma, Geneva, sans-serif;
 }
 td,tr{
 	margin:0;
+	padding:0.2em;
 }
 tbody,table{
 	border-width:10px 0 0 0;
@@ -541,7 +635,8 @@ tbody,table{
 
 tr.surligne 
 {
-background-color:#bbb;
+filter:invert(0.8);
+filter:grayscale(70%);
 }
 
 tr.ligneImpaire, div.ligneImpaire{
@@ -915,17 +1010,19 @@ div.bandeH
 }
 div.divBoiteContexte
 {
-	color:#555;
+        transform: scale(0.95);
+
+	color:#ccc;
 font-family:arial, fantasy;
 font-size:smaller;
 float : left;
-width : 85%;
-height : 100px;
+width : 100%;
+height : 150px;
 /*	border: 1px dotted #ddd;*/
 
         margin: 10px 00;
-        padding: 5px 0 0 0;
-        background: #f3f3f3;
+        padding: 5px;
+        background: #77777788;
         overflow:hidden;
 /*        background: -moz-linear-gradient(#444, #111);
         background: -webkit-gradient(linear,left bottom,left top,color-stop(0, #111),color-stop(1, #444));
@@ -987,6 +1084,7 @@ div.divBoiteContexte:hover
 {
 	position:relative;
 	left:-10%;
+	transform: scale(1);
 width : 110%;
 height : 150px;
 	border: 1px dotted black;
@@ -994,6 +1092,7 @@ z-index:5;
         background: #ddd;
         margin:0;
         border-radius:10px;
+        color:#444;
    }
 
 div.texteEtOption
@@ -1035,11 +1134,15 @@ div#divTitreDoc
 {
 color:#000;
 text-align:left;
-padding:0;
+padding-top:0.5em;
 margin:0;
-height:100%;
+/*height:100%;*/
 padding-left:2%;
 vertical-align:center;
+background: #000/*#0c333d*/;
+   min-height:4em;
+   max-height:6em;
+   
 /*
 -moz-box-shadow: 0px 2px 0 0px #AAAAAAAA;
  	box-shadow: 0px 2px 0 0px #AAAAAAAA;	
@@ -1088,6 +1191,8 @@ left:0;
 	padding:3px;
 	float:left;
 	display:inline;
+	z-index:50;
+	color:#222;
 }
 
  
@@ -1198,8 +1303,8 @@ div.divSpinInfo p{
 {width : 100%;
 padding:0;
 margin:0;
-position:fixed;
-  background:#EEEEEEEE;
+position:static;
+  text-color:#EEEEEE;
   z-index:100;
 
 display:block;
@@ -1222,7 +1327,7 @@ height:250px;
 	position:static;
 
 color:#fff;
-background-color:#152022;
+background-color:#222;
 clear:both;
 float:none;
 }
@@ -1242,7 +1347,7 @@ position:relative;
 left:0;
 width : 18%;
 overflow:hidden;
-        margin-left: 2%;
+/*        margin-left: 2%;*/
         padding: 0px 0 0 0;
 /*background-color:#fff;*/
 /*        background: -moz-linear-gradient(#444, #111);
@@ -1326,11 +1431,18 @@ overflow:hidden;
   
 #divDroite
 {
+border-width:1px;
+border-color:#ddd;
+border-style:solid;
+background-color:#888c;
+    float:right;
  }
 
 
 #divCentrale
 {
+    float:left;
+    min-height:80%;
  }   /* top right bottom left*/
 /*
 #divCentrale div{
@@ -1402,6 +1514,8 @@ width : 85%;
 	text-align:right;
 	display:inline;
 	height:40px;
+	float:right;
+	text-color:#bbb;
 	
 }
 #divBoiteID ul
@@ -1418,6 +1532,7 @@ text-align:center;
 	
 	vertical-align: middle;
         float: left;
+        margin-right:1em;
 /*        padding: 1px 10px 1px 1px;*/
         position: relative;
 /*            border-style: solid;*/
@@ -1440,7 +1555,17 @@ float:left;}
 #divBoiteID img
 {
 margin: 0 15px 0 15px;
+text-color:#bbb;
 }
+#menuBoiteID {
+text-color:#bbb;
+    padding-right:0.3em;
+}
+#menuBoiteID li {
+text-color:#bbb;
+    
+}
+
 
 #contFicheMeneur{
 margin-left:15px;	
@@ -1449,6 +1574,7 @@ padding:10px 5px;
 border-width:1px;
 border-color:#ddd;
 border-style:solid;
+background-color:#888c;
 	
 
 }
@@ -1525,19 +1651,30 @@ top:0;
 }
 
 #contFicheClasse{
-padding-left:20px;	
+border-width:1px;
+border-color:#ddd;
+border-style:solid;
+background-color:#888c;
+
+}
+#contFicheMembre{
+border-width:1px;
+border-color:#ddd;
+border-style:solid;
+background-color:#888c;
+
 }
 
-#contFicheClasse img{
-	float:none;
-	display:block;
-	margin-left:-20px;
-}
 
 
 #contFicheMatch{
 	text-align:center;
 	padding-top:15px;
+border-width:1px;
+border-color:#ddd;
+border-style:solid;
+background-color:#888c;
+
 }
 #contFicheMatch h1{
 }
@@ -1643,10 +1780,17 @@ border-color:#aaa;
 
 
 #contFicheMAV {
+    display:table-cell;
+    width:inherit;
 	padding-top:15px;
 	padding-left:10px;
 	padding-right:10px;
 	position:relative;
+	border-width:1px;
+border-color:#ddd;
+border-style:solid;
+background-color:#888c;
+
 }
 
 #contFicheMAV p.date{
@@ -1799,7 +1943,6 @@ padding: 15px 24px 15px 24px;
 
 #contResumeMatch #boiteCentre{
 padding: 2% 4%;
-   margin: 2% 4%;       
        border-color:#aaa;
    border-width:1px;
    border-left-style:solid;
@@ -1842,6 +1985,11 @@ background-color:#eee;
     border-bottom-color: #555;
     border-width: 0px;
     border-bottom-width:1px;
+
+}
+table {
+      /*   background-color:#ffffffdd;*/
+
 
 }
 
@@ -2459,23 +2607,25 @@ vertical-align:middle;
 #barreNav {
 	font-size:small;
 	display:block;
+	width:97%;
 	text-align:center;
+	font-family: 'IBM Plex Sans','Krona One', sans-serif;
 /*	background-color:#ccc;*/
-border-bottom-width:1px;
+/*border-bottom-width:1px;
 border-bottom-color:#ddd;
 border-bottom-style:solid;
 border-top-width:1px;
 border-top-color:#ddd;
 border-top-style:solid;
+*/
          	-moz-box-shadow: 0px 0px 1px 0px #ddd inset;
  	box-shadow: 0px 0px 1px 0px #ddd inset; 	
-	text-transform:uppercase;
-
+	
+text-transform:uppercase;
 	margin-top:15px;
 	margin-bottom:15px;
 	margin-left:2%;
 	margin-right:1%;
-	padding:10px 0;
 	
 	
 }
@@ -2483,43 +2633,54 @@ border-top-style:solid;
 margin:10px 0 10px 0; 	
 }*/
 
-#barreNav a:hover{
-	color:#05A8BD;
+#barreNav div:hover a{
+    color:#06B5D0;	
 }
 #barreNav a{
 color:#034E58;
 	text-decoration:none;
-	font-weight:bold;	
-	font-family:arial, Geneva, Arial, Helvetica, sans-serif;
+    font-family:'IBM Plex Sans', 'Krona One', sans-serif;
 
+}
+
+#barreNav div{
+    padding:1em;
+}
+#barreNav div:hover{
+    background-color:#224444;
+    color:#05A8BD;
+    
 }
 
 #barreNav .actif {
 	color:#05A8BD;
-	font-weight: bold;
-	font-family:"Arial black" ,arial, Geneva, Arial, Helvetica, sans-serif;
+    font-family: 'IBM Plex Sans','Krona One', sans-serif;
 	
 	/*background-color:#04789D;*/
 }
 
 #barreNav ul{
 	list-style: none;
-	display:inline;
+	display:flex;
+	margin:0;
+	padding:0;
 	width:100%;
 	float:none;
 	clear:both;
+	background-color:#778888;
 }
-
+/*
 #barreNav ul li{
 	display:inline;
 	float:left;
 	padding-right:5%;
 }
-
+*/
 #divSelSaison{
 	position:relative;
 	text-align:right;
 	display:inline;
+	margin-left:auto;
 	right:0;	
 	float:none;
 	clear:both;
@@ -2569,6 +2730,7 @@ background-color:#010120;
 	height:100%;
 	text-align:center;
 	padding:0;
+	font-size:1.2em;
 	color:#fff;
 }
 
@@ -2586,7 +2748,10 @@ div.titreOnglet.actif{
 }
 div.titreOnglet.passif{
 }
-
+div.titreOnglet :hover{
+     -webkit-filter: brightness(0%);
+  filter: brightness(0%);
+}
 
     div.tabs  
     {  
@@ -2689,9 +2854,7 @@ div.titreOnglet.passif{
 
 #divDialogue
 {
-	position :absolute;
-	width :60%;
-	height :80%;
+
 	position :fixed;
 	left :20%;
 	top :10%;
@@ -2792,7 +2955,7 @@ margin:0 0 0 20px;
 {
 margin:0;
 }
-
+/*
 #divDialogue .btnFerme
 {
 	cursor:pointer;
@@ -2816,7 +2979,7 @@ right:0;
 	display:inline;
 float:left;
 }
-
+*/
 #divDialogue #blocGauche
 {
 	width:45%;
@@ -2880,10 +3043,10 @@ float:left;
 #divFerme
 {
 cursor : pointer;
-position :absolute;
+/*position :absolute;
 right : 50px;
 top :0;
-
+*/
 	
 }
 #divSave
@@ -2902,6 +3065,12 @@ bottom :0;
 {
 	padding:0.5%;
 	display:block;
+border-width:0px;
+border-color:#ddd9;
+border-style:solid;
+background-color:#888c;
+    margin-top:1em;
+    margin-bottom:1em;
 
 }
 
@@ -2909,7 +3078,6 @@ bottom :0;
 #contPhoto  
 {
 	width:38%;
-	
 	display:block;
 	float:right;
 	text-align:center;
@@ -3063,7 +3231,7 @@ div.share:nth-child(4){
 	text-align:left;
 	display:inline;
 	float:left;
-	width:58%;
+	width:60%;
 	border-bottom-style:groove;
 border-bottom-width:2px;
 border-bottom-color:rgba(225,225,225,0.5);
@@ -3072,7 +3240,7 @@ padding-bottom:5px;
 }
 /*#contInfoLigue*/ .texteEmphase{
 	text-align:left;
-		color:#04789D;
+		color:#222;
 	text-decoration:none;
 	font-family:Arial, Helvetica, sans-serif;
 
@@ -3120,28 +3288,27 @@ font-family:"Arial black",arial;
 
 #contBabillard
 {
-	padding:0;
-	margin:0;
+	
 	display:block;
 	text-align:left;
 	float:left;
 	width:60%;
 	min-height:240px;
 	/*border: solid 1px #fff;*/
-	background-color:#034D57;
+	background-color:#222;
 	
-	        background: #034E58;
-        background: -moz-linear-gradient(#047090, #034E58);
-        background: -webkit-gradient(linear,left bottom,left top,color-stop(0, #034E58),color-stop(1, #047090));
-        background: -webkit-linear-gradient(#047090, #034E58);
-        background: -o-linear-gradient(#047090, #034E58);
-       background: -ms-linear-gradient(#047090, #034E58);
- 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#047090', endColorstr='#034E58'); /* for IE */
-        background: linear-gradient(#047090, #034E58);
+	        background: #222;
+        background: -moz-linear-gradient(#333, #222);
+        background: -webkit-gradient(linear,left bottom,left top,color-stop(0, #222),color-stop(1, #333));
+        background: -webkit-linear-gradient(#333, #222);
+        background: -o-linear-gradient(#333, #222);
+       background: -ms-linear-gradient(#333, #222);
+ 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#333', endColorstr='#222'); /* for IE */
+        background: linear-gradient(#333, #222);
 
 	
 /*	border:dotted 1px white;*/
-box-shadow: -10px 10px 5px #555;
+/*box-shadow: -10px 10px 5px #555;*/
 }
 #contBabillard h1
 { text-align:center;
@@ -3164,28 +3331,78 @@ width:100%;
 cursor:pointer;
 }
 
+#poigneeGauche 
+{
+    display:inherit;
+        vertical-align:middle;
+
+    text-align:center;
+/*  background-color:#bbb;*/
+    overflow:hidden;
+    border-radius:0px;
+    margin:0;
+    width:4%;
+    float:left;
+    font-size:3em;
+    position:absolute;
+    top:0;
+    bottom:0;
+height:100%;
+}
+
+#poigneeDroite 
+{
+    display:inherit;
+    vertical-align:middle;
+    text-align:center;
+/*  background-color:#bbb;*/
+    overflow:hidden;
+    border-radius:0px;
+    margin:0;
+    width:4%;
+        float:right;
+height:100%;
+    font-size:3em;
+    position:absolute;
+    top:0;
+    right:0;
+    
+}
+#contContMatch{
+    width:100%;
+    display:table;¸
+    position:relative;
+}
+
+
 #contMatchHaut 
 {
-    display:block;
+    display:inherit;
     text-align:center;
 /*  background-color:#bbb;*/
     margin-right:2%;
     overflow:hidden;
     border-radius:0px;
+    margin:0;
+   padding:0;
+   width:92%;
+    position:relative;
+    left:4%;
+    height:100%
 }
 
 .boiteMatchHaut
 {
 	display:inline;
 	background-color:#eee;
-	margin:1px;
+	margin:auto;
 	cursor:pointer;
 /*	border-width:1px;*/
 	border-style:none;
 	border-radius:0px;
 	float:left;
 	padding:0 0px;
-	box-shadow: 1px 1px 3px #888888;
+/*	box-shadow: 1px 1px 3px #888888;*/
 	background: #DDD;
 }
 
@@ -3208,20 +3425,38 @@ justify-content: space-around;
 {
    font-size:small;
    font-weight:300;
-    background-color:#aaa;
-    color:#fff;
     text-align:left;
     overflow: hidden;
+    display:inline;
+    padding-left:0.1em;
+    padding-right:0.1em;
+    height:2em;
+    color:#222;
+
+}
+.infoArena >nobr{
+    width:100%;
     display:block;
 }
-.boiteMatchHaut .infoArena
-{
-       overflow: hidden;
-    display:block; 
+
+.infoArena > nobr > div:first-child{
+    text-algign:center;
+    display:inline-block;
+    overflow:hidden;
 }
-.boiteMatchHaut i
+
+
+.boiteMatchHaut i:first-child
 {
-    color:#ddd;
+    float:left;
+    margin:0.2em;
+}
+.boiteMatchHaut span
+{
+    display:inline;
+    overflow: hidden;
+    max-width:100%;
+
 }
 
 .boiteMatchHaut 
@@ -3237,7 +3472,7 @@ margin:auto;
    border-style:solid;
     border-bottom-width:1px;
     border-bottom-color:#555;
-    
+    height:100%;
         background: #ccc;
     background: -moz-linear-gradient(#eee, #ccc);
     background: -webkit-gradient(linear,left bottom,left top,color-stop(0, #ccc),color-stop(1, #eee));
@@ -3245,9 +3480,9 @@ margin:auto;
     background: -o-linear-gradient(#eee, #ccc);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eee', endColorstr='#ccc'); /* for IE */
 
-                -moz-box-shadow: 0px 0px 0.5px 0px #ddd inset;
+       /*         -moz-box-shadow: 0px 0px 0.5px 0px #ddd inset;
     box-shadow: -2px 2px 1px #bbb ;     
-    
+    */
 }
 
 .boiteMatchHaut .chiffreScore
@@ -3290,8 +3525,9 @@ margin:auto;
 	display:block;
 	text-align:center;
 	padding:2px;
-	background:#101030;
-	color:#ffffff;
+/*	background:#666;
+	color:#ffffff;*/
+	font-weight:600;
 }
 
 .boiteMatchHaut img
@@ -3324,17 +3560,20 @@ max-width :32px;
 	text-align:center;
 	padding: 10px 0;
 	width:90%;
-	        background: #04789D;
+	    /*    background: #04789D;
         background: -moz-linear-gradient(#0EAFDD, #04789D);
         background: -webkit-gradient(linear,left bottom,left top,color-stop(0, #04789D),color-stop(1, #0EAFDD));
         background: -webkit-linear-gradient(#0EAFDD, #04789D);
         background: -o-linear-gradient(#0EAFDD, #04789D);
        background: -ms-linear-gradient(#0EAFDD, #04789D);
- 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0EAFDD', endColorstr='#04789D'); /* for IE */
+ 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0EAFDD', endColorstr='#04789D'); 
         background: linear-gradient(#0EAFDD, #04789D);
         border-style:solid;
         border-width: 1px 0 1px 0;
-        border-color:#07799E;	
+        border-color:#07799E;	*/
+        border-style:solid;
+        border-width: 1px 0 1px 0;
+        border-color:#333;
 }
 
 #divLigue .bouton_2
@@ -3468,19 +3707,36 @@ max-width :32px;
 /*	font-weight:bold;*/
 }
 
-.tableEnveloppeMois .versGauche, .tableEnveloppeMois .versDroite{
+.tableEnveloppeMois .versGauche{
 	display :inline-block;
 	color:#ccc;
 	font-weight:bolder;
-	font-size:16pt;
+	font-size:2em;
 	cursor:pointer;
 	margin-top:auto;
 	margin-bottom:auto;
+
     
+}
+ .tableEnveloppeMois tbody{
+     width:100%;
+     display:inline-table;
+ }
+
+ .tableEnveloppeMois .versDroite{
+    display :inline-block;
+    color:#ccc;
+    font-weight:bolder;
+    font-size:2em;
+    cursor:pointer;
+    margin-top:auto;
+    margin-bottom:auto;
+
 }
 
 
-.tableEnveloppeMois h2{
+
+.tableEnveloppeMois .titreNav{
 	vertical-align:middle;
 	text-align:center;
 	line-height:45px;
@@ -3489,6 +3745,7 @@ max-width :32px;
 	margin-top:auto;
 	margin-bottom:auto;
 	color:#fff;
+	display:inline;
 }
 
 .tableEnveloppeMois .divNav{
@@ -3497,17 +3754,17 @@ max-width :32px;
 	color:#fff;
 	
 	
-        background: #034E58;
-        background: -moz-linear-gradient(#04789D,#034E58);
+        background: #222;
+       /* background: -moz-linear-gradient(#04789D,#034E58);
         background: -webkit-gradient(linear,left bottom,left top,color-stop(0, #034E58),color-stop(1, #04789D));
         background: -webkit-linear-gradient(#04789D, #034E58);
         background: -o-linear-gradient(#04789D, #034E58);
-       background: -ms-linear-gradient(#04789D, #034E58);
- 		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#04789D', endColorstr='#034E58'); /* for IE */
-        background: linear-gradient(#04789D, #034E58);
+       background: -ms-linear-gradient(#04789D, #034E58);*/
+ 	/*	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#04789D', endColorstr='#034E58'); /* for IE */
+    /*    background: linear-gradient(#04789D, #034E58);*/
         border-style:solid;
         border-width: 1px 0 1px 0;
-        border-color:#07799E;
+        border-color:#bbb;
 
 	
 	display:flex;
@@ -3587,7 +3844,6 @@ justify-content:center;
 	color:#fff;
 	padding: 10px 0px;
 	cursor: pointer;
-	background-color:#046680;
 	border-radius: 0px 0px 0 0;  
 	border-style:ridge;
 	border-width:1%;
@@ -4398,6 +4654,7 @@ section.choisi a{
     text-align:center;
     font-size:Large;
 }
+
 #divHaut .iconeFa {
 display:none;}
 
@@ -4481,7 +4738,6 @@ div {
     padding: auto;
     float:none;
     clear:both;
-    padding-bottom:15px;
     
 }
 
@@ -4500,6 +4756,7 @@ div#divTitreDoc #divBoiteID {
     text-align: center;
     top: 0;
     vertical-align: middle;
+ 
 }
  div#divTitreDoc #divLogo {
     display: inline;
@@ -4522,6 +4779,16 @@ div#divTitreDoc #divBoiteID {
     font-family:arial;
     font-weight:bold;
 }
+
+
+
+#divLigue > h2{
+    float:left;
+    display:inline;
+    
+}
+
+
 #barreTitreContexte
 {
     vertical-align:bottom;
@@ -4544,7 +4811,7 @@ ul#menu{
     margin-top:0;
     padding:0;
 }
-
+/*
 #divDialogue {
     width:100%;
     padding:5px;
@@ -4558,12 +4825,13 @@ ul#menu{
 }
 #divCentrale {
  
-}
+}*/
 
 #divGauche {
     display:none;
 }
-#divDialogue #divFerme {
+
+/*#divDialogue #divFerme {
     float:none;
     text-align:center;
     width:100%;
@@ -4578,7 +4846,7 @@ ul#menu{
     float:none;
     text-align:center;
 
-}
+}*/
 #ecranSombre {display:none;
 }
 #contInfoLigue {
@@ -4612,6 +4880,14 @@ ul#menu{
     
 }
 
+}
+.modal-dialog{
+    overflow-y: initial !important
+}
+
+.modal-body{
+    height: 400px;
+    overflow-y: auto;
 }
 
 

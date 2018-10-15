@@ -1,6 +1,18 @@
 <?php
 
 
+
+/////////////////////////////////////
+//
+//
+//
+//		OBSOLET: On ne veut plus faire de vérification récurrente.
+//				Juste se fier sur les signaux des apps.
+//
+//
+
+
+
 /////////////////////////////////////////////////////////////
 //
 //  Définitions des variables
@@ -208,6 +220,10 @@ return 0;
 	
 	
 }
+////////////////////////////////////////////////////
+//
+//
+//
 
 	$nomEq = array();
 $resultEquipe = mysql_query("SELECT * FROM TableEquipe WHERE 1")

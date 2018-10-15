@@ -292,12 +292,15 @@ for (i=0;i<ARRcookies.length;i++)
   x=x.replace(/^\s+|\s+$/g,"");
   if (x==c_name)
     {
+    	if(unescape(y)==undefined){
+    		return null;
+    	}
     return unescape(y);
     }
   }
+
   return null;
-}/*
-  * */
+}
 
 
 function checkCookie()
@@ -345,7 +348,7 @@ function getValue(varname)
   var qparts = url.split("?");
   if (qparts.length <= 1)
   {
-    return "";
+    return getCookie(varname);
   }
   var query = qparts[1];
   var vars = query.split("&");
@@ -356,14 +359,46 @@ function getValue(varname)
     if (parts[0] == varname)
     {
       value = parts[1];
-      break;
-    }
-  }
-  value = decodeURIComponent(value);
+       value = decodeURIComponent(value);
   //value = unescape(value);
   value.replace(/\+/g," ");
 
   return value;
+      break;
+    }
+  }
+   return getCookie(varname);
+ 
+}
+
+	
+function getValueNoCookie(varname)
+{
+  var url = window.location.href;
+  var qparts = url.split("?");
+  if (qparts.length <= 1)
+  {
+    return null;
+  }
+  var query = qparts[1];
+  var vars = query.split("&");
+  var value = "";
+  for (i=0;i<vars.length;i++)
+  {
+    var parts = vars[i].split("=");
+    if (parts[0] == varname)
+    {
+      value = parts[1];
+       value = decodeURIComponent(value);
+  //value = unescape(value);
+  value.replace(/\+/g," ");
+
+  return value;
+      break;
+    }
+  }
+   return null;
+ 
 }
 
 	var triPar = function(field, reverse, primer){
@@ -512,21 +547,31 @@ function verifiePermission() {
 						{
 							if(ingredients[a]=="ligueId")
 								{
-//									alert(window.ligueId);
+									console.log(" A ligueId "+ window.ligueId);
 									
 								ligueId = null;
 								if(getValue('ligueId')!="")
 									{ligueId=getValue('ligueId');
-									setCookie('ligueId', ligueId, 120);}
+									if(ligueId!=null&&ligueId!="null"){
+										setCookie('ligueId', ligueId, 120);
+										console.log(" B ligueId "+ window.ligueId);
+										}else{
+											console.log(" D ligueId "+ window.ligueId);
+											forceSelectionLigue();
+										}
+									}
 									
 									
 				 				else 
 				 					{	
 				 						if(getCookie('ligueId')!=null)
 											{ligueId=getCookie('ligueId');
+											console.log(" C ligueId "+ window.ligueId);
+											}
 	//																			alert(window.ligueId);
-	}
+	
 										else{
+											console.log(" D ligueId "+ window.ligueId);
 											forceSelectionLigue();
 											/*
 											moncode  = (getValue("code")=="" )? 50: getValue("code");  // 50 frame, window.close() 
@@ -582,7 +627,8 @@ function verifiePermission() {
 							if(window.innerWidth>=500)
 									{
 										
-										genereBoites();}
+										genereBoites();
+										}
 								}
 								catch(err){
 									if(window.Perm<10){
@@ -610,8 +656,12 @@ function verifiePermission() {
 
 						var month = d.getMonth()+1;		
 						var day = d.getDate();
+						var heure = d.getHours();
+						var minutes = d.getMinutes();
+						var secondes = d.getSeconds();
 
-						var output = d.getFullYear() + '-' + (month<10 ? '0' : '') + month + '-' + (day<10 ? '0' : '') + day;
+						var output = d.getFullYear() + '-' + (month<10 ? '0' : '') + month + '-' + (day<10 ? '0' : '') + day
+						+" "+(heure<10 ? '0' : '')+heure+":"+(minutes<10 ? '0' : '')+minutes+":"+(secondes<10 ? '0' : '')+secondes;
 						mFakeId =   getCookie("fakeId")==null ? "":getCookie("fakeId");
 						mLigueId =   getCookie("ligueId")==null ? "":getCookie("ligueId");
 						
@@ -623,40 +673,60 @@ function verifiePermission() {
 					
 									
 
-function construitDialogue (){
-		monOverlay=document.createElement('DIV');
-		monOverlay.id="ecranSombre";
-		document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
-		monDial=document.createElement('DIV');
-		monDial.id="divDialogue";
-		monDial.className="divDialogue visible";
-		dFerme=document.createElement('DIV');
-		dFerme.id="divFerme";
-		tFerme=document.createElement('DIV');
-		tFerme.id="texteFerme";
-		tFerme.innerHTML=window.tl_bouton_Fermer;
-		bFerme=document.createElement('DIV');
-		bFerme.id="btnFermeDial";
-		bFerme.className="btnFerme";
-		bFerme.innerHTML="[X]";
-		bFerme.onclick=function(){detruitNoeud('divDialogue'); detruitNoeud('ecranSombre');}
-		monDial.appendChild(dFerme);
-			dFerme.appendChild(tFerme);
-			dFerme.appendChild(bFerme);
-
-		document.getElementById('divCentrale').appendChild(monDial);
+function construitDialogue (id){
+	//$('body').addClass('container-fluid').append($('<div></div>').attr('id',"ecranSombre"));
+	if(id==undefined){
+		mId = "monModal";
+	}else{mId=id;}
+	
+	$('#divCentrale').append(
+	$('<div></div>').attr("id",mId).addClass('modal').append(
+		
+			$('<div></div>')/*.attr('id','divDialogue')*/.addClass("divDialogue visible modal-dialog modal-lg").append(
+				$('<div></div>').addClass('modal-content').append(
+				$('<div></div>').addClass('modal-header').append(
+					$('<h2></h2>').addClass('modal-title').attr('id','titreDialogue'+mId).text(" "),
+					
+					$('<button type="button" class="close text-danger" data-dismiss="modal"></button>').text("[X]").on("click",function(){
+						
+						detruitDialogue(mId);
+						//	detruitNoeud('divDialogue'); 
+							//detruitNoeud('ecranSombre');
+					})
+					
+				),
+				$('<div></div>').addClass('modal-body'),
+				$('<div></div>').addClass('modal-footer')
+				
+		
+		
+			)
+		)
+		)
+	);
+	
+//		
 		
 		 window.onkeyup = function (event) {
   			if (event.keyCode == 27) {
+  				
    			detruitDialogue();
   		}		
- 		}
+ 		};
 	
 	
 	
 }
-function detruitDialogue (){
-detruitNoeud('divDialogue'); detruitNoeud('ecranSombre');
+
+
+function detruitDialogue (id){
+	//$('body').addClass('container-fluid').append($('<div></div>').attr('id',"ecranSombre"));
+	if(id==undefined){
+		mId = "monModal";
+	}else{mId=id;}
+	
+$('#'+mId).modal("hide");
+// detruitNoeud('ecranSombre');
 	 window.onkeyup = function (event) {
   			if (event.keyCode == 27) {
   		}		
@@ -672,14 +742,17 @@ function forceSelectionLigue(){
 				function surSelection(ligueId) {
 				return function() {
 					setCookie('ligueId', ligueId, 120);
-					window.location.reload(true);
+					window.location.href='http://www.syncstats.com/zstats/accueilligue.html?ligueId='+ligueId;
+					//window.location.reload(true);
 				}
 				//						setCookie('ligueId',ligueId,120);
 				//window.location.href='statistiques.html?ligueId='+ligueId;
 			}
 
+	construitDialogue("modalChangeLigue");
 	
-	construitDialogue ();
+	
+	$('#modalChangeLigue').modal("show");
 	
 	 window.onkeyup = function (event) {
   			if (event.keyCode == 27) {
@@ -687,24 +760,22 @@ function forceSelectionLigue(){
   		}		
  		}
  		
- 		document.getElementById('texteFerme').innerHTML='Retour';
+ 		//document.getElementById('texteFerme').innerHTML='Retour';
 
-		document.getElementById('btnFermeDial').innerHTML="[&#8629]";
+		//document.getElementById('btnFermeDial').innerHTML="[&#8629]";
 
- 				document.getElementById('btnFermeDial').onclick=function(){window.location.href=document.referrer;}
+ 				//document.getElementById('btnFermeDial').onclick=function(){window.location.href=document.referrer;}
 
 
-	titreChoix=document.createElement('H1');
-			titreChoix.innerHTML="Vous devez choisir une ligue avant d'aller plus loin.";
-			document.getElementById('divDialogue').appendChild(titreChoix);
+			$('#modalChangeLigue .modal-title').text("Vous devez choisir une ligue avant d'aller plus loin.");
 			/*			titreChoix=document.createElement('H1');
 						titreChoix=document.createElement('H1');
 			titreChoix.innerHTML="Vous devez choisir une ligue avant d'aller plus loin.";*/
 
-
+$('#modalChangeLigue .modal-body').attr("id","corpsModalChangeLigue");
 			mJSLigue = {};
 			mJSLigue.id = "tableauLigues";
-			mJSLigue.parentId = "divDialogue";
+			mJSLigue.parentId = "corpsModalChangeLigue";
 			mJSLigue.titre = "Liste des ligues";
 			mJSLigue.rangeeTitre = new Array();
 			mJSLigue.rangeeTitre[0] = "Nom de la ligue";
@@ -943,8 +1014,9 @@ lh=document.createElement('div');
 }
 
 function connexion(){
-	construitDialogue();
-							dial =document.getElementById('divDialogue');
+	construitDialogue("modalConnexion");
+	$('#modalConnexion').modal("show");
+							dial =$('#modalConnexion .modal-body').get(0);
 							formulaire=document.createElement('DIV');
 							formulaire.id='divFormulaire';
 							dial.appendChild(formulaire);
@@ -954,20 +1026,20 @@ function connexion(){
 	 window.onkeyup = function (event) {
   			if (event.keyCode == 27) {
 //					window.location.href=document.referrer;
-		detruitDialogue();
+		$('#modalConnexion').modal("hide");
   		}		
  		}
  		
 // 		document.getElementById('texteFerme').innerHTML='Retour';
 
 //		document.getElementById('btnFermeDial').innerHTML="[&#8629]";
-
+/*
  				document.getElementById('btnFermeDial').onclick=function(){
  					//window.location.href=document.referrer;
  					detruitDialogue();
  					}
 		/////	 Section specifique
-		
+*/		
 		titreConn=document.createElement('h1');
 		titreConn.innerHTML=window.tl_connect_long;
 		formulaire.appendChild(titreConn);

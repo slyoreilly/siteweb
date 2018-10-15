@@ -10,22 +10,36 @@
         <script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
 
         <script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+        <link rel="stylesheet" href="/style/general_bootcompat.css" type="text/css">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
                 <meta name="viewport" content="width=device-width,initial-scale=1">
+     
+
         <style>
         </style>
         <script type="text/javascript" charset="utf-8">
 			gereLangue();
         </script>
+                           
+        <script type="text/javascript" charset="utf-8">
+       
+        
+        
+             var mUrl="/style/ligues/"+getValue("ligueId")+"/perso.css";
+             document.write('<link rel="stylesheet" href="'+mUrl+'" type="text/css">');
+            </script>
+            
+            
+
         <script type="text/javascript">
 			function getInfoLigue(ligueId) {
 				//	return function(){
 				var requete_ajax = new XMLHttpRequest();
 
 				var url = "/stats2/infoLigue2JSON.php";
-				//	alert(url);
+				//	console.log(url);
 				var params = "ligueId=" + ligueId;
-				//alert(params);
+				//console.log(params);
 				requete_ajax.open('POST', url, true);
 
 				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -36,13 +50,13 @@
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 
 						vecEquipe = eval('(' + requete_ajax.responseText + ')');
-						//alert(vecEquipe.Ligue.saisons.length);
+						//console.log(vecEquipe.Ligue.saisons.length);
 
 						try {
 							var k = 0;
 							listeEquipe = new Array();
 							while (k < vecEquipe.equipes.length) {
-								//					alert(vecEquipe.equipes[k].equipeId);
+								//					console.log(vecEquipe.equipes[k].equipeId);
 								listeEquipe[k] = vecEquipe.equipes[k].equipeId;
 								k++;
 							}
@@ -56,7 +70,7 @@
 								d2Hor = b.pm.split(" ")[1];
 
 								var d2 = new Date(d2Cal.split("-")[0], d2Cal.split("-")[1], d2Cal.split("-")[2], d2Hor.split(":")[0], d2Hor.split(":")[1], d2Hor.split(":")[2]);
-								return (d1 - d2)
+								return (d1 - d2);
 							});
 
 							//statsJSONHome.joueurs.triPar("nbButs",1,1);
@@ -66,8 +80,10 @@
 								getMatchsdeLigueID(this.options[this.selectedIndex].value);
 								getEtoiles(this.options[this.selectedIndex].value);
 							};
-							var maSai = getValue("saisonId");
+							var maSai =null// getValue("saisonId");
+							console.log("saisonId: "+maSai);
 							for (var K = 0; K < vecEquipe.Ligue.saisons.length; K = K + 1) {
+							    console.log("for: "+K);
 								opt = document.createElement('OPTION');
 								if (vecEquipe.Ligue.saisons[K].nom != undefined) {
 									opt.innerHTML = vecEquipe.Ligue.saisons[K].nom + " - " + vecEquipe.Ligue.saisons[K].pm.split(" ")[0] + " au " + vecEquipe.Ligue.saisons[K].dm.split(" ")[0];
@@ -77,16 +93,25 @@
 								opt.value = vecEquipe.Ligue.saisons[K].saisonId;
 								if (vecEquipe.Ligue.saisons[K].saisonId == maSai) { {
 										opt.selected = "selected";
+										saisonId=vecEquipe.Ligue.saisons[K].saisonId;
+
+										getMatchsdeLigueID(vecEquipe.Ligue.saisons[K].saisonId);
+                                    getEtoiles(vecEquipe.Ligue.saisons[K].saisonId);
+										loadConditions++;
+										console.log("loadConditions: "+loadConditions);
 									}
 								}
-								if (K == vecEquipe.Ligue.saisons.length - 1 && maSai == "") {
+								if (K == vecEquipe.Ligue.saisons.length - 1 && (maSai == ""||maSai==null)) {
 									opt.selected = "selected";
+									 saisonId=vecEquipe.Ligue.saisons[K].saisonId;
+
 									getMatchsdeLigueID(vecEquipe.Ligue.saisons[K].saisonId);
 									getEtoiles(vecEquipe.Ligue.saisons[K].saisonId);
 									loadConditions++;
-									//alert(loadConditions);
+									console.log("loadConditions: "+loadConditions);
 								}
 								selSaisonJS.appendChild(opt);
+								
 								/*vecEquipe.Saisons[K].joueurs.sort(function(a, b) {
 								 return (parseInt(b.nbButs) + parseInt(b.nbPasses)) - (parseInt(a.nbButs) + parseInt(a.nbPasses))
 								 });*/
@@ -97,10 +122,11 @@
 							//	document.body.rangee.cellule.innerHTML ='yo';
 						} catch(err) {
 						      if(window.Perm<9)
-                           {   alert(window.Perm + "erreur get Infâme infoLigue");
-                              alert(err.message);}
+                           {   console.log(window.Perm + "erreur get Infâme infoLigue");
+                              console.log(err.message);}
 						}
-                  //      alert(loadConditions+" infâme infoLigue");
+						appliqueStyleLigue(vecEquipe);
+                        console.log(loadConditions+" infâme infoLigue");
 
 						if (loadConditions == window.nbloadTotal)
 							remplirTableau();
@@ -109,7 +135,86 @@
 				};
 				//	}
 			}
-			
+			function appliqueStyleLigue(lesInfos){
+			       /* try{
+                $('.bg').css("background-image","url('"+lesInfos.Ligue.cleValeur.style.arriereplan+"')");
+                
+                }catch(err){
+                    console.log("Pas trouvé image arrière plan");
+                    
+                }
+                try{
+                $('#divTitreDoc').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                $('.bouton_1').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                $('#barreNav a').css("color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                $('#barreNav >ul >div:hover').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                 $('#barreNav >ul >div').hover(function(){
+                 $(this).css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                 $(this).find( 'a' ).css("color",lesInfos.Ligue.cleValeur.style.couleurmenu2);
+                 }, function(){
+                    $(this).css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu2);
+                     $(this).find( 'a' ).css("color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                });
+                */
+                //$('.tableEnveloppeMois td').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                //$('.tableEnveloppeMois td').css("color",lesInfos.Ligue.cleValeur.style.couleurmenu2);
+              /*  console.log("a");
+                 $('#tableResultats_tbody tr.lignePaire,#tableResultats_tbody tr.ligneImpaire').hover(function(){
+                 $(this).find('td').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                 $(this).find('td').find( 'a' ).css("color",lesInfos.Ligue.cleValeur.style.couleurmenu2);
+                 }, function(){
+                    $(this).find('td').css("background-color","#ccc");
+                     $(this).find('td').find( 'a' ).css("color","#222");
+                });
+               
+                
+                }catch(err){
+                    console.log("Pas de couleur de menu1");
+                    
+                }
+                try{
+                $('#barreNav ul').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu2);
+                
+                }catch(err){
+                    console.log("Pas de couleur de menu");
+                    
+                }
+                 */
+                try{
+                   if (getValue('m')=='1'){
+                 $('#divDroite').remove();
+                 $('#divGauche').remove();
+                 $('#divCentrale').removeClass('col-sm-6').addClass('col-sm-12');
+                      
+                      
+                  }else{
+                if("false".localeCompare(lesInfos.Ligue.cleValeur.siteWeb.structurePage.divDroite)==0){
+                   
+                 $('#divDroite').remove();
+                 $('#divGauche').before($('<div></div>').addClass("col-sm-1 espaceur"));
+                 $('#divCentrale').removeClass('col-sm-6').addClass('col-sm-8');
+                    }
+                      
+                      
+                  }
+                  
+                }catch(err){
+                    console.log("Erreur try catch structurePage");
+                    
+                }
+                /*try{
+                  //  console.log(lesInfos.Ligue.cleValeur.siteWeb.structurePage.divDroite);
+                if("auto".localeCompare(lesInfos.Ligue.cleValeur.siteWeb.structurePage.banniere)!=0){
+                   
+                   $('#contInfoLigue').empty().removeClass("contOuiJet").append($('<img></img>').attr("src",lesInfos.Ligue.cleValeur.siteWeb.structurePage.banniere));
+                  }
+                  
+                }catch(err){
+                    console.log("Erreur try catch structurePage_banniere");
+                    
+                }*/
+			    
+			}
 			
 			function getAppareilsAbonne(arenaId,mavId){
 //          return function(){
@@ -122,7 +227,7 @@
                 var strLigueId = "arenaId=" + arenaId;
                 var strMavId = "mavId=" + mavId;
                 params = strMAVId + '&' + strLigueId+'&' + strMavId;
-                //      alert(url+'?'+param);
+                //      console.log(url+'?'+param);
                 //requete_ajax.send(null);
                 //  return requete_ajax.responseText;
 
@@ -137,11 +242,11 @@
 
                 requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
                     if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-                        //alert(requete_ajax.responseText);
+                        //console.log(requete_ajax.responseText);
                         vecAbonApp= eval('(' + requete_ajax.responseText + ')');
                         if(vecAbonApp!=null){
                             if($('#titreAppareils').length==0){
-                            $('#divDialogue').append($('<h2></h2>').text('Appareils disponibles').attr('id','titreAppareils'),$('<h3></h3>').text('Cameras').attr('id','titreCam')).append($('<div></div>').attr('id','divAppareils'));
+                            $('#modalModifMatch .modal-body').append($('<h2></h2>').text('Appareils disponibles').attr('id','titreAppareils'),$('<h3></h3>').text('Cameras').attr('id','titreCam')).append($('<div></div>').attr('id','divAppareils'));
                             
                             if(vecAbonApp.cams!=null){
                                 for(var a=0; a<vecAbonApp.cams.length;a++){
@@ -158,7 +263,7 @@
                                     
                                 }
                             }
-                            $('#divDialogue').append($('<h3></h3>').text('Télécommandes').attr('id','titreTel')).append($('<div></div>').attr('id','divAppareils2'));
+                            $('#modalModifMatch .modal-body').append($('<h3></h3>').text('Télécommandes').attr('id','titreTel')).append($('<div></div>').attr('id','divAppareils2'));
                             if(vecAbonApp.remotes!=null){
                                 for(var a=0; a<vecAbonApp.remotes.length;a++){
                                     role=parseInt(vecAbonApp.remotes[a].role)!=0?true:false;
@@ -178,8 +283,8 @@
                         //                          window.location.reload(true);
                     }
                 };
-                //alert(requete_ajax.responseText);
-                //              alert(JSON.stringify(listeMatch));
+                //console.log(requete_ajax.responseText);
+                //              console.log(JSON.stringify(listeMatch));
                 //  return vecMAV;
                 //}
             }
@@ -193,7 +298,7 @@
 				var strMAVId = "mavId=" + window.mavId;
 				var strLigueId = "ligueId=" + window.ligueId;
 				params = strMAVId + '&' + strLigueId;
-				//		alert(url+'?'+param);
+				//		console.log(url+'?'+param);
 				//requete_ajax.send(null);
 				//	return requete_ajax.responseText;
 
@@ -208,7 +313,7 @@
 
 				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-						//alert(requete_ajax.responseText);
+						//console.log(requete_ajax.responseText);
 						vecMAV = eval('(' + requete_ajax.responseText + ')');
 						var k = 0;
 						listeMatch = new Array();
@@ -217,7 +322,7 @@
 							k++;
 						}
 						loadConditions++;
-                    //    alert(loadConditions + " getMatchAvenir");
+                       console.log(loadConditions + " getMatchAvenir");
 
 						if (loadConditions >= window.nbloadTotal)
 							remplirTableau();
@@ -225,8 +330,8 @@
 						//							window.location.reload(true);
 					}
 				};
-				//alert(requete_ajax.responseText);
-				//				alert(JSON.stringify(listeMatch));
+				//console.log(requete_ajax.responseText);
+				//				console.log(JSON.stringify(listeMatch));
 				//	return vecMAV;
 				//}
 			}
@@ -261,40 +366,48 @@
 
 
 			function getMatchsdeLigueID(saisonId) {
-				var requete_ajax = new XMLHttpRequest();
+			    ventOff=false;
+			    if(window.ligueId==94){
+			        ventOff=true;
+			    }
+			    
+			     $.ajax({
+                        url : "/scriptsphp/matchsDsSaison.php"/*"http://syncstats.com/scriptsphp/listeEquipes.php"*/,
+                        datatype : 'json',
+                        contentType: "application/json",
+                        type : 'POST',
+                        data : JSON.stringify({
+                            saisonId : saisonId,
+                            ligueId : window.ligueId,
+                            ventOff : ventOff
+                        }),
+                        contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+                        success : function(response) {
+                        //    console.log(response);
+                       rJSON = eval('(' + response + ')');
 
-				var url = "/scriptsphp/matchsDsSaison.php";
+                        loadConditions++;
+                                            console.log(loadConditions + " matrchsDsSaison");
 
-				var strLigueId = "ligueId=" + window.ligueId;
-				var strSaisonId = "saisonId=" + saisonId;
-				params = strLigueId + '&' + strSaisonId;
-				url = url + "?" + params;
-
-				//requete_ajax.send(null);
-				//	return requete_ajax.responseText;
-
-				requete_ajax.open('POST', url, true);
-				//				requete_ajax.send(null);
-
-				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				requete_ajax.setRequestHeader("Content-length", params.length);
-				requete_ajax.setRequestHeader("Connection", "close");
-
-				requete_ajax.send(params);
-
-				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
-					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-
-						rJSON = eval('(' + requete_ajax.responseText + ')');
-
-						loadConditions++;
-						//                      alert(loadConditions + " matrchsDsSaison");
-
-						if (loadConditions >= window.nbloadTotal)
-							remplirTableau();
-
-					}
-				};
+                        if (loadConditions >= window.nbloadTotal){
+                              remplirTableau();
+                        }
+                          
+                       
+                        //console.log(JSON.stringify(matchsDsSaison));
+                         
+                        },
+                        error : function(xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            console.log(err.Message + "  --  ereur lc2MS");
+                        }
+                    });
+    
+    
+    
+            
+			    
+				
 			}
 
 			function getArena() {
@@ -315,9 +428,9 @@
 
 				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-						//alert(requete_ajax.responseText);
+						//console.log(requete_ajax.responseText);
 						vecArena = eval('(' + requete_ajax.responseText + ')');
-						//	alert(requete_ajax.responseText);
+						//	console.log(requete_ajax.responseText);
 
 						var k = 0;
 						listeArena = new Array();
@@ -326,14 +439,14 @@
 							k++;
 						}
 						loadConditions++;
-						              //        alert(loadConditions+ " arena");
+						                     console.log(loadConditions+ " arena");
 
 						if (loadConditions == window.nbloadTotal)
 							remplirTableau();
 
 					}
 				};
-				//				alert(JSON.stringify(listeMatch));
+				//				console.log(JSON.stringify(listeMatch));
 				//	return vecMAV;
 				//}
 			}
@@ -347,7 +460,7 @@
 
 				var strLigueId = "ligueId=" + window.ligueId;
 				params = strLigueId;
-				//		alert(url+'?'+param);
+				//		console.log(url+'?'+param);
 				//requete_ajax.send(null);
 				//	return requete_ajax.responseText;
 
@@ -362,11 +475,11 @@
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 						vecArbitres = eval('(' + requete_ajax.responseText + ')');
 
-						//	alert(requete_ajax.responseText);
+						//	console.log(requete_ajax.responseText);
 
 						var k = 0;
 						loadConditions++;
-						                //      alert(loadConditions+"  z'arbitres");
+						                     console.log(loadConditions+"  z'arbitres");
 
 						if (loadConditions == window.nbloadTotal)
 							remplirTableau();
@@ -377,7 +490,7 @@
 
 				requete_ajax.send(params);
 
-				//alert("getMatchAvenir: "+requete_ajax.responseText);
+				//console.log("getMatchAvenir: "+requete_ajax.responseText);
 
 			}
 
@@ -391,7 +504,7 @@
 				var strLigueId = "ligueId=" + match.ligueId;
 				var strMavId = "mavId=" + match.mavId;
 				params = strLigueId + '&' + strMavId;
-				//		alert(url+'?'+param);
+				//		console.log(url+'?'+param);
 				//requete_ajax.send(null);
 				//	return requete_ajax.responseText;
 
@@ -406,7 +519,7 @@
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 						afficheAnalyse = eval('(' + requete_ajax.responseText + ')');
 
-						//	alert(requete_ajax.responseText);
+						//	console.log(requete_ajax.responseText);
 
 					}
 
@@ -414,14 +527,14 @@
 
 				requete_ajax.send(params);
 
-				//alert("getMatchAvenir: "+requete_ajax.responseText);
+				//console.log("getMatchAvenir: "+requete_ajax.responseText);
 
 			}
 			function extirpeEtoile(matchID,etoile){
 				var k = 0;
 				try{
 				while (k < window.etoiles.length) {
-					//				alert(window.vecArbitres[k].arenaId);
+					//				console.log(window.vecArbitres[k].arenaId);
 					if (matchID == window.etoiles[k].nomMatch) {
 						switch(etoile){
 							case 1:
@@ -442,17 +555,17 @@
 				return "";}
 				catch(err){
 				          if(window.Perm<9)
-                           {   alert(window.Perm+ " erreur dans extirpeEtoile");
-                              alert(err.message);}
+                           {   console.log(window.Perm+ " erreur dans extirpeEtoile");
+                              console.log(err.message);}
 				    return "";}
 				
 			}
 
 			function extirpeArbitres(id) {
-				//			alert(window.vecArbitres.length);
+				//			console.log(window.vecArbitres.length);
 				var k = 0;
 				while (k < window.vecArbitres.length) {
-					//				alert(window.vecArbitres[k].arenaId);
+					//				console.log(window.vecArbitres[k].arenaId);
 					if (id == window.vecArbitres[k].arbitreId) {
 						return k;
 					}
@@ -462,10 +575,10 @@
 			}
 
 			function extirpeArena(id) {
-				//			alert(window.vecArena.length);
+				//			console.log(window.vecArena.length);
 				var k = 0;
 				while (k < window.vecArena.length) {
-					//				alert(window.vecArena[k].arenaId);
+					//				console.log(window.vecArena[k].arenaId);
 					if (id == window.vecArena[k].arenaId) {
 						return k;
 					}
@@ -475,10 +588,10 @@
 			}
 
 			function extirpeEquipe(id) {
-				//			alert(window.vecEquipe.equipes.length);
+				//			console.log(window.vecEquipe.equipes.length);
 				var k = 0;
 				while (k < window.vecEquipe.equipes.length) {
-					//					alert(window.vecEquipe.equipes.equipeId);
+					//					console.log(window.vecEquipe.equipes.equipeId);
 					if (id == window.vecEquipe.equipes[k].equipeId) {
 						return k;
 					}
@@ -511,7 +624,7 @@
 
 				var k = 0;
 				enf = document.getElementById('rangeeTitre');
-				//alert(k+" "+no);
+				//console.log(k+" "+no);
 
 				while (enf.parentNode.lastChild != enf) {
 					enf = enf.nextSibling;
@@ -536,181 +649,15 @@
 				editMatch2(1000000);
 
 			}
-/*
-			function editMatch(no) {
-				//						amettre = document.getElementById('rangeeTitre');
-				enf = document.getElementById('rangeeTitre');
-
-				var k = 0;
-				var trouve = false;
-				var trInd = 0;
-				lesTR = document.getElementsByTagName("TR");
-				//ablert("nbLignes: "+lesTR.length+" , no de ligne a changer: "+no);
-
-				while (k < lesTR.length) {
-					//ablert(lesTR[k].id);
-					if (lesTR[k].id == "rangeeMatch_" + no) {
-						enf = lesTR[k];
-						trouve = true;
-						trInd = k;
-					}
-					k++;
-				}
-				/*
-				if(!trouve)
-				{
-				nouvTr=document.createElement
-				}
-				
-
-				//	alert(k+" "+no+" "+trInd);
-				tdEnf = enf.firstChild;
-				nTd = document.createElement('INPUT');
-				nTd.type = "TEXT";
-				nTd.value = tdEnf.firstChild.innerHTML;
-				tdEnf.replaceChild(nTd, tdEnf.firstChild);
-				////////////////
-				tdEnf = tdEnf.nextSibling.nextSibling;
-				nTd = document.createElement('INPUT');
-				nTd.type = "TEXT";
-				nTd.value = tdEnf.firstChild.innerHTML;
-				tdEnf.replaceChild(nTd, tdEnf.firstChild);
-				///////////////
-				tdEnf = tdEnf.nextSibling;
-				nTd = document.createElement('SELECT');
-				strIn = "";
-				for ( a = 0; a < window.vecArena.length; a++) {
-					opt = document.createElement('OPTION');
-					opt.innerHTML = window.vecArena[a].nomArena;
-					opt.value = window.vecArena[a].arenaId;
-					if (tdEnf.firstChild.innerHTML.split(",")[0] == window.vecArena[a].nomArena)
-						opt.selected = "selected";
-					nTd.appendChild(opt);
-					//strIn += "indice: " + a + ", valeur: " + opt.value + "\n ";
-				}
-				tdEnf.replaceChild(nTd, tdEnf.firstChild);
-				///////////////
-				tdEnf = tdEnf.nextSibling;
-				nTd = document.createElement('SELECT');
-				strIn = "";
-				for ( a = 0; a < window.vecEquipe.equipes.length; a++) {
-					opt = document.createElement('OPTION');
-					opt.innerHTML = window.vecEquipe.equipes[a].nom;
-					opt.value = window.vecEquipe.equipes[a].equipeId;
-					if (tdEnf.firstChild.innerHTML == window.vecEquipe.equipes[a].nom)
-						opt.selected = "selected";
-					nTd.appendChild(opt);
-					//strIn += "indice: " + a + ", valeur: " + opt.value + "\n ";
-				}
-				tdEnf.replaceChild(nTd, tdEnf.firstChild);
-				///////////////
-				tdEnf = tdEnf.nextSibling;
-				nTd = document.createElement('SELECT');
-				strIn = "";
-				for ( a = 0; a < window.vecEquipe.equipes.length; a++) {
-					opt = document.createElement('OPTION');
-					opt.innerHTML = window.vecEquipe.equipes[a].nom;
-					opt.value = window.vecEquipe.equipes[a].equipeId;
-					if (tdEnf.firstChild.innerHTML == window.vecEquipe.equipes[a].nom)
-						opt.selected = "selected";
-					nTd.appendChild(opt);
-					//strIn += "indice: " + a + ", valeur: " + opt.value + "\n ";
-				}
-				tdEnf.replaceChild(nTd, tdEnf.firstChild);
-
-				//////////////////////
-				tdEnf = tdEnf.nextSibling;
-				tdEnf.firstChild.cssFloat = "right";
-
-				nTd = document.createElement('DIV');
-				nTd.id = "div_edit_" + no;
-				nTd.style.cssFloat = "left";
-
-				imgSave = document.createElement('IMG');
-				imgSave.src = "\/images\/icones\/save.png";
-				imgSave.id = "img_save_" + no;
-				imgSave.width = "32";
-				imgSave.height = "32";
-				imgSave.onclick = function() {
-					sauvegardeMAV(no)
-				};
-				imgSave.style.cssFloat = "left";
-				imgFermer = document.createElement('IMG');
-				imgFermer.src = "\/images\/icones\/fermer.png";
-				imgFermer.id = "img_fermer_" + no;
-				imgFermer.width = "32";
-				imgFermer.height = "32";
-				imgFermer.onclick = function() {
-					detruitNoeud("div_edit_" + no);
-
-					enf = document.getElementById('rangeeTitre');
-					var k = 0;
-					var trouve = false;
-					lesTR = document.getElementsByTagName("TR");
-					while (k < lesTR.length) {
-						if (lesTR[k].id == "tr_" + no) {
-							enf = lesTR[k];
-							trouve = true;
-						}
-						k++;
-					}
-					tdEnf = enf.firstChild;
-					ptexte = document.createElement('P');
-					ptexte.innerHTML = tdEnf.firstChild.value;
-					tdEnf.replaceChild(ptexte, tdEnf.firstChild);
-					////////////////
-					tdEnf = tdEnf.nextSibling.nextSibling;
-					ptexte = document.createElement('P');
-					ptexte.innerHTML = tdEnf.firstChild.value;
-					tdEnf.replaceChild(ptexte, tdEnf.firstChild);
-					///////////////
-					tdEnf = tdEnf.nextSibling;
-					ptexte = document.createElement('P');
-					try {
-						ptexte.innerHTML = tdEnf.firstChild.options[tdEnf.firstChild.selectedIndex].innerHTML;
-					} catch(err) {
-						ptexte.innerHTML = window.tl_horaire_nonDef;
-					}
-					tdEnf.replaceChild(ptexte, tdEnf.firstChild);
-					///////////////
-					tdEnf = tdEnf.nextSibling;
-					ptexte = document.createElement('P');
-					try {
-						ptexte.innerHTML = tdEnf.firstChild.options[tdEnf.firstChild.selectedIndex].innerHTML;
-					} catch(err) {
-						ptexte.innerHTML = window.tl_horaire_nonDef;
-					}
-					tdEnf.replaceChild(ptexte, tdEnf.firstChild);
-					///////////////
-					tdEnf = tdEnf.nextSibling;
-					ptexte = document.createElement('P');
-					try {
-						ptexte.innerHTML = tdEnf.firstChild.options[tdEnf.firstChild.selectedIndex].innerHTML;
-					} catch(err) {
-						ptexte.innerHTML = window.tl_horaire_nonDef;
-					}
-					tdEnf.replaceChild(ptexte, tdEnf.firstChild);
-
-					//////////////////////
-
-				};
-				// Fin de imgFermer.onclick();
-				imgFermer.style.cssFloat = "left";
-				nTd.appendChild(imgSave);
-				nTd.appendChild(imgFermer);
-				tdEnf.appendChild(nTd);
-
-			}*/
 
 			function editMatch2(no) {// Le no est la position dans MatchsDsSaison
 				//						amettre = document.getElementById('rangeeTitre');
 				enf = document.getElementById('rangeeTitre');
-				construitDialogue();
-				dialEdit = document.getElementById('divDialogue');
-
-				h1ModMatch = document.createElement('H2');
-				h1ModMatch.innerHTML = "Modifier un match";
-				dialEdit.appendChild(h1ModMatch);
+				$('#modalModifMatch').modal("show");
+				$('#modalModifMatch .modal-title').text("Modifier un match");
+				$('#modalModifMatch .modal-body').empty();
+                $('#modalModifMatch .modal-footer').empty();
+                
 				var k = 0;
 				var trouve = false;
 				var trInd = 0;
@@ -726,124 +673,57 @@
 					}
 					k++;
 				}
-				/*
-				if(!trouve)
-				{
-				nouvTr=document.createElement
-				}
-				*/
-
-				//	alert(k+" "+no+" "+trInd);
+				//	console.log(k+" "+no+" "+trInd);
 				var dt = new Date();
 
 				var month = (dt.getMonth() + 1).pad(2);
 				var day = (dt.getDate()).pad(2);
 				var year = dt.getFullYear();
+                var valeurDate = no == 1000000 ? year + "-" + month + "-" + day : window.matchsDsSaison[no].date.split(' ')[0];
+                var valeurHeure = no == 1000000 ? "20:00" : window.matchsDsSaison[no].date.split(' ')[1];
 
-				maDate = document.createElement('DIV');
-				maDate.className = 'formGauche';
-				maDate.innerHTML = 'Date (AAAA-MM-JJ):';
+             $('#modalModifMatch .modal-body').append(
+                 $('<div></div>').addClass("formGauche").text('Date (AAAA-MM-JJ):'),
+                 $('<input></input').attr("type","text").attr("id","inDateMatch").addClass("formDroite").val(valeurDate),
+                   $('<div></div>').addClass("formGauche").text('Heure (HH:MM):'),
+                 $('<input></input').attr("type","text").attr("id","inHeureMatch").addClass("formDroite").val(valeurHeure),
+                 $('<div></div>').addClass("formGauche").text('Arena: '),
+                 $('<select></select').addClass("formDroite").attr("id","selArena"),
+                 $('<div></div>').addClass("formGauche").text('Equipe Domicile :'),
+                 $('<select></select').addClass("formDroite").attr("id","selDomicile"),
+                 $('<div></div>').addClass("formGauche").text('Equipe Visiteur :'),
+                 $('<select></select').addClass("formDroite").attr("id","selVisiteur")
+                 
+               
+                 );
 
-				inDate = document.createElement('INPUT');
-				inDate.type = "TEXT";
-				inDate.className = "formDroite";
-				inDate.value = no == 1000000 ? year + "-" + month + "-" + day : window.matchsDsSaison[no].date.split(' ')[0];
-				dialEdit.appendChild(maDate);
-				//tdEnf.firstChild.innerHTML;
-				dialEdit.appendChild(inDate);
-				//tdEnf.firstChild.innerHTML;
 
-				monHeure = document.createElement('DIV');
-				monHeure.className = 'formGauche';
-				monHeure.innerHTML = 'Heure (HH:MM):';
-
-				inHeure = document.createElement('INPUT');
-				inHeure.type = "TEXT";
-				inHeure.className = "formDroite";
-				inHeure.value = no == 1000000 ? "20:00" : window.matchsDsSaison[no].date.split(' ')[1];
-				dialEdit.appendChild(monHeure);
-				//tdEnf.firstChild.innerHTML;
-				dialEdit.appendChild(inHeure);
-				//tdEnf.firstChild.innerHTML;
-				///////////////
-
-				monArena = document.createElement('DIV');
-				monArena.className = 'formGauche';
-				monArena.innerHTML = 'Arena :';
-
-				inArena = document.createElement('SELECT');
-				inArena.className = "formDroite";
-				//alert(window.matchsDsSaison[no].arenaId );
-				strIn = "";
-//				alert(window.vecArena.length);
 				for ( a = 0; a < window.vecArena.length; a++) {
-					opt = document.createElement('OPTION');
+				    $('#selArena').append($("<option></option>").val(window.vecArena[a].arenaId).text(window.vecArena[a].nomArena + " - "+window.vecArena[a].nomGlace));
 					
-					opt.value = window.vecArena[a].arenaId;
-//					alert(opt.value);
- //                   alert(no);
-                    opt.innerHTML = window.vecArena[a].nomArena + " - "+window.vecArena[a].nomGlace;
-					if (no != 1000000) {
-						if (window.matchsDsSaison[no].arenaId == window.vecArena[a].arenaId)
-							{opt.selected = "selected";}
-							
-	//						alert(window.vecArena[a].nomArena + " - "+window.vecArena[a].nomGlace);
-							getAppareilsAbonne(window.matchsDsSaison[no].arenaId, window.matchsDsSaison[no].mavId);
-					}
-					inArena.appendChild(opt);
-					//strIn += "indice: " + a + ", valeur: " + opt.value + "\n ";
 				}
-				dialEdit.appendChild(monArena);
-				//tdEnf.firstChild.innerHTML;
-				dialEdit.appendChild(inArena);
-				///////////////
+				    
+                for ( a = 0; a < window.vecEquipe.equipes.length; a++) {
+                    $('#selDomicile').append($("<option></option>").val(window.vecEquipe.equipes[a].equipeId).text(window.vecEquipe.equipes[a].nom));
+                    $('#selVisiteur').append($("<option></option>").val(window.vecEquipe.equipes[a].equipeId).text(window.vecEquipe.equipes[a].nom));
+                    
+                }
 
-				eqDom = document.createElement('DIV');
-				eqDom.className = 'formGauche';
-				eqDom.innerHTML = 'Equipe Domicile :';
-
-				selEqDom = document.createElement('SELECT');
-				selEqDom.className = "formDroite";
-				strIn = "";
-				for ( a = 0; a < window.vecEquipe.equipes.length; a++) {
-					opt = document.createElement('OPTION');
-					opt.innerHTML = window.vecEquipe.equipes[a].nom;
-					opt.value = window.vecEquipe.equipes[a].equipeId;
-					if (no != 1000000) {
-						if (window.matchsDsSaison[no].eqDomId == window.vecEquipe.equipes[a].equipeId)
-							opt.selected = "selected";
-					}
-					selEqDom.appendChild(opt);
-					//strIn += "indice: " + a + ", valeur: " + opt.value + "\n ";
-				}
-				dialEdit.appendChild(eqDom);
-				//tdEnf.firstChild.innerHTML;
-				dialEdit.appendChild(selEqDom);
-
-				eqVis = document.createElement('DIV');
-				eqVis.className = 'formGauche';
-				eqVis.innerHTML = 'Equipe Visiteur :';
-
-				selEqVis = document.createElement('SELECT');
-				selEqVis.className = "formDroite";
-				strIn = "";
-				for ( a = 0; a < window.vecEquipe.equipes.length; a++) {
-					opt = document.createElement('OPTION');
-					opt.innerHTML = window.vecEquipe.equipes[a].nom;
-					opt.value = window.vecEquipe.equipes[a].equipeId;
-					if (no != 1000000) {
-						if (window.matchsDsSaison[no].eqVisId == window.vecEquipe.equipes[a].equipeId)
-							opt.selected = "selected";
-					}
-					selEqVis.appendChild(opt);
-					//strIn += "indice: " + a + ", valeur: " + opt.value + "\n ";
-				}
-				dialEdit.appendChild(eqVis);
-				//tdEnf.firstChild.innerHTML;
-				dialEdit.appendChild(selEqVis);
-
+				
+				if (no != 1000000) {
+				     $('#selArena').val(window.matchsDsSaison[no].arenaId);
+                     getAppareilsAbonne(window.matchsDsSaison[no].arenaId, window.matchsDsSaison[no].mavId);
+                      $('#selDomicile').val(window.matchsDsSaison[no].eqDomId);
+                       $('#selVisiteur').val(window.matchsDsSaison[no].eqVisId);
+                    }
+			
+				
 				//////////////////////
-				$(dialEdit).append($('<div></div>').attr('id','contBouton').append($('<div></div>').attr('id','div_sauv'), $('<div></div>').attr('id','div_dem') , $('<div></div>').attr('id','div_eff'),$('<div></div>').attr('id','div_annul'))
+				 $('#modalModifMatch .modal-footer').append(
+				    $('<button></button>').attr('id','div_sauv').attr('type','button').addClass("btn btn-secondary"),
+				     $('<button></button>').attr('id','div_dem').attr('type','button').addClass("btn btn-secondary") ,
+				      $('<button></button>').attr('id','div_eff').attr('type','button').addClass("btn btn-secondary"),
+				      $('<button></button>').attr('id','div_annul').attr('type','button').addClass("btn btn-secondary")
                     				);
                         if (no == 1000000) {
                                 $("#div_eff,#div_dem").css("display","none");
@@ -851,25 +731,24 @@
                     				
                 //              nTd.style.cssFloat = "left";
 
-                boutAnn = document.createElement('DIV');
-                boutAnn.className = "bouton_2 cliquable";
-                boutAnn.onclick = function() {
-                    detruitDialogue();
-                };
-                boutAnn.innerHTML = "Annuler";
-                $('#div_annul').append($(boutAnn));
+                
+                //boutAnn.className = "bouton_2 cliquable";
+                $('#div_annul').on("click", function() {
+                    $("#modalModifMatch").modal("hide");
+                }).text("Annuler");
+           
                 
             //////////////////////////////
                 ////////////////////////        
-                //alert(no);
-                //alert(JSON.stringify(window.matchsDsSaison[no]));  
+                //console.log(no);
+                //console.log(JSON.stringify(window.matchsDsSaison[no]));  
                  if (no != 1000000) {  
                 equipe_event_id = window.matchsDsSaison[no].eqDomId+parseInt(window.matchsDsSaison[no].eqVisId).pad(4);
                 match_event_id =  window.matchsDsSaison[no].matchID;
                 }
                             
-                //alert(equipe_event_id);
-                //alert(match_event_id);
+                //console.log(equipe_event_id);
+                //console.log(match_event_id);
                 
               valeur = {
                     match_event_id : window.match_event_id,
@@ -895,8 +774,8 @@
                 
                 }
                 
-                $('#div_dem').append(
-                    $('<div></div>').addClass("bouton_2 cliquable").text('Démarrer').click(function(){
+               
+                    $('#div_dem').text('Démarrer').click(function(){
                         var strMAVId = (no == 1000000) ? "" : window.matchsDsSaison[no].mavId;
                      $.ajax({
                      url: "/scriptsphp/setGenerique.php",
@@ -904,15 +783,15 @@
                       data: jQuery.param({ table : "TableEvenement0", valeur :JSON.stringify(valeur), mode : "creer"}) ,
                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                        success: function (response) {
-                         // alert(response);                            
+                         // console.log(response);                            
                               lc2++;
                               if(lc2>=lc2Max){ 
-                                //alert("lc2Max: "+lc2Max);
+                                //console.log("lc2Max: "+lc2Max);
                                 window.location.href = '/zstats/match.html?match=' + encodeURIComponent(matchsDsSaison[no].matchID) + '&m=' + window.m;}
                      },
                         error:  function(xhr, status, error) {
                              var err = eval("(" + xhr.responseText + ")");
-                              alert(err.Message+"  --  ereur lc2Max");
+                              console.log(err.Message+"  --  ereur lc2Max");
                                 }
                   }); 
                   for(var a=0;a<window.matchsDsSaison[no].alDom.length;a++){
@@ -927,15 +806,15 @@
                       data: jQuery.param({ table : "TableEvenement0", valeur :JSON.stringify(valeur), mode : "creer"}) ,
                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                        success: function (response) {
-                         // alert(response);                            
+                         // console.log(response);                            
                               lc2++;
                               if(lc2>=lc2Max){ 
-                                                              //      alert("lc2Max: "+lc2Max);
+                                                              //      console.log("lc2Max: "+lc2Max);
                                   window.location.href = '/zstats/match.html?match=' + encodeURIComponent(matchsDsSaison[no].matchID) + '&m=' + window.m;}
                      },
                         error:  function(xhr, status, error) {
                              var err = eval("(" + xhr.responseText + ")");
-                              alert(err.Message);
+                              console.log(err.Message);
                                 }
                   });                 
                   }
@@ -951,15 +830,15 @@
                       data: jQuery.param({ table : "TableEvenement0", valeur :JSON.stringify(valeur), mode : "creer"}) ,
                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                        success: function (response) {
-                         // alert(response);                            
+                         // console.log(response);                            
                               lc2++;
                               if(lc2>=lc2Max){ 
-                                // alert("lc2Max: "+lc2Max);
+                                // console.log("lc2Max: "+lc2Max);
                                   window.location.href ='/zstats/match.html?match=' + encodeURIComponent(matchsDsSaison[no].matchID) + '&m=' + window.m;}
                      },
                         error:  function(xhr, status, error) {
                              var err = eval("(" + xhr.responseText + ")");
-                              alert(err.Message);
+                              console.log(err.Message);
                                 }
                   });                 
                   }
@@ -972,21 +851,19 @@
                        success: function (response) {
                          lc2++;
                               if(lc2>=lc2Max){
-                                    //                                alert("lc2Max: "+lc2Max);
+                                    //                                console.log("lc2Max: "+lc2Max);
                                    window.location.href = '/zstats/match.html?match=' + encodeURIComponent(matchsDsSaison[no].matchID) + '&m=' + window.m;}
                      },
                         error:  function(xhr, status, error) {
                           var err = eval("(" + xhr.responseText + ")");
-                          alert(err.Message);
+                          console.log(err.Message);
                            }
                   }); 
-                    })
+                    }
                 );    
 	       ////////////////////////			
 
-                boutEff = document.createElement('DIV');
-                boutEff.className = "bouton_2 cliquable";
-                boutEff.onclick = function() {
+                $('#div_eff').on("click", function() {
                      var strMAVId = (no == 1000000) ? "" : window.matchsDsSaison[no].mavId;
                      $.ajax({
                      url:  "/stats2/effaceMatchAVenir.php",
@@ -994,7 +871,7 @@
                       data: jQuery.param({  mavId : strMAVId }) ,
                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                        success: function (response) {
-                         // alert(response);
+                         // console.log(response);
                               window.location.reload(true);
                      },
                         error: function () {
@@ -1002,39 +879,16 @@
                        }
                   }); 
 
-                };
-                boutEff.innerHTML = "Effacer";
-                $('#div_eff').append($(boutEff));
+                }).text("Effacer");
 				
 ////////////////////
 
-				boutEnv = document.createElement('DIV');
-				boutEnv.className = "bouton_2 cliquable";
-				boutEnv.onclick = function() {
+				$('#div_sauv').on("click",function() {
 					sauvegardeMAV(no);
-				};
-				boutEnv.innerHTML = "Sauvegarder";
-				$('#div_sauv').append($(boutEnv));
+					$('#modalModifMatch').modal("hide");
+                    window.click_save=false;
 
-				/*
-				imgSave = document.createElement('IMG');
-				imgSave.src = "\/images\/icones\/save.png";
-				imgSave.id = "img_save";
-				imgSave.onclick = function() {
-				sauvegardeMAV(no)
-				};*/
-				/*				imgFermer = document.createElement('IMG');
-				imgFermer.src = "\/images\/icones\/fermer.png";
-				imgFermer.id = "img_fermer_" + no;
-				imgFermer.width = "32";
-				imgFermer.height = "32";
-				imgFermer.onclick = function() {
-				detruitDialogue();
-				};  // Fin de imgFermer.onclick();
-				imgFermer.style.cssFloat = "left";*/
-				//				nTd.appendChild(imgSave);
-				//				nTd.appendChild(imgFermer);
-				//				dialEdit.appendChild(nTd);
+				}).text("Sauvegarder");
 
 			}
 
@@ -1050,11 +904,11 @@
 				 }	*/
 				if(window.click_save==false){
 					window.click_save=true;
-				mDate = window.inDate.value;
-				mHeure = window.inHeure.value;
-				mArena = (window.inArena.value == "") ? 0 : window.inArena.value;
-				mEqDom = window.selEqDom.options[window.selEqDom.selectedIndex].value;
-				mEqVis = window.selEqVis.options[window.selEqVis.selectedIndex].value;}
+				mDate = $('#modalModifMatch #inDateMatch').val();
+				mHeure = $('#modalModifMatch #inHeureMatch').val();
+				mArena = ( $('#selArena')).val() == "" ? 0 :  $('#selArena').val();
+				mEqDom =  $('#selDomicile').val();
+				mEqVis = $('#selVisiteur').val();}
 
     //var url = "/stats2/setMatchAVenir.php";
     var rienDom = false;
@@ -1089,7 +943,7 @@
                 var strArbId = (no == 1000000) ? undefined :  window.matchsDsSaison[no].arbitreId;
                 
                 var appareils = {};
-//                alert(window.matchsDsSaison[no].alignementDom.length +" , "+no+" , "+strJDom+" , "+JSON.stringify(window.matchsDsSaison[no].alignementDom)+" , "+window.matchsDsSaison[no].alignementDom);
+//                console.log(window.matchsDsSaison[no].alignementDom.length +" , "+no+" , "+strJDom+" , "+JSON.stringify(window.matchsDsSaison[no].alignementDom)+" , "+window.matchsDsSaison[no].alignementDom);
                 try{
                     appareils['cams'] = new Array();
                    for(var a=0; a<($('.camera').length) ; a++){
@@ -1105,9 +959,9 @@
                        appareils.cams.push(jsonData);
                       
                    } 
-                  // alert('LES APPAREILS:'+JSON.stringify(appareils));
+                  // console.log('LES APPAREILS:'+JSON.stringify(appareils));
                 }catch(err){
-                    alert("erreur!"+err);
+                    console.log("erreur!"+err);
                     
                 }
                 
@@ -1126,15 +980,12 @@
                        appareils.remotes.push(jsonData);
                       
                    } 
-                  // alert('LES APPAREILS:'+JSON.stringify(appareils));
+                  
                 }catch(err){
-                    alert("erreur!"+err);
+                    console.log("erreur!"+err);
                     
                 }
-              //  var strArena = "arenaId=" + mArena;
-               // var params = strJDom + "&" + strJVis + "&" + strGDom + "&" + strGVis + "&" + strEqDom + "&" + strEqVis + "&" + strDateDeb + "&" + strDateFin + "&" + strLigueId + "&" + strMAVId + "&" + strArena + "&" + strArbId;
-
-
+            
                 $.ajax({
                      url:  "/stats2/setMatchAVenir.php",
                         type: 'POST',
@@ -1142,8 +993,10 @@
                               ligueId : window.ligueId , mavId : strMAVId, arbitreId : strArbId, arenaId : mArena, appareils: JSON.stringify(appareils) }) ,
                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                        success: function (response) {
-                       //alert(response);
-                              window.location.reload(true);
+                                                       getMatchsdeLigueID(window.saisonId);
+
+                      console.log(response);
+                          //    window.location.reload(true);
                      },
                         error: function () {
                                 //your error code
@@ -1152,52 +1005,14 @@
 
 
 
-			/*	var requete_ajax = new XMLHttpRequest();
-
-			
-				//		alert(url);
-			/*	var strJDom = (no == 1000000 || window.matchsDsSaison[no].alignementDom.length == 0) ? "" : "jDom=" + JSON.stringify(window.matchsDsSaison[no].alignementDom);
-				var strJVis = (no == 1000000 || window.matchsDsSaison[no].alignementVis.length == 0) ? "" : "jVis=" + JSON.stringify(window.matchsDsSaison[no].alignementVis);
-				var strGDom = (no == 1000000) ? "gDom=undefined" : "gDom=" + window.matchsDsSaison[no].gardienDom;
-				var strGVis = (no == 1000000) ? "gVis=undefined" : "gVis=" + window.matchsDsSaison[no].gardienVis;
-				var strEqDom = "eqDom=" + mEqDom;
-				var strEqVis = "eqVis=" + mEqVis;
-				var strDateDeb = "dateDeb=" + mDate + " " + mHeure;
-				var strDateFin = (no == 1000000) ? "dateFin=2020-01-01" : "dateFin=" + window.matchsDsSaison[no].dateFin;
-				var strLigueId = "ligueId=" + window.ligueId;
-				var strMAVId = (no == 1000000) ? "" : "mavId=" + window.matchsDsSaison[no].mavId;
-				var strArbId = (no == 1000000) ? "arbitreId=undefined" : "arbitreId=" + window.matchsDsSaison[no].arbitreId;
-				var strArena = "arenaId=" + mArena;
-				var params = strJDom + "&" + strJVis + "&" + strGDom + "&" + strGVis + "&" + strEqDom + "&" + strEqVis + "&" + strDateDeb + "&" + strDateFin + "&" + strLigueId + "&" + strMAVId + "&" + strArena + "&" + strArbId;
-
-
-
-				
-				
-				//alert(params);
-				requete_ajax.open('POST', url, true);
-
-				//Send the proper header information along with the request
-				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				requete_ajax.setRequestHeader("Content-length", params.length);
-				requete_ajax.setRequestHeader("Connection", "close");
-
-				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
-					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-						//alert(requete_ajax.responseText);
-						//if (window.Perm < 9)
-						//alert(requete_ajax.responseText);
-						window.location.reload(true);
-					}
-				};
-				requete_ajax.send(params);}*/
 				
 			}
 
 			function filtreEquipe(mMatch, appellant) {
-				if (globalEquipeId.length > 0 && globalEquipeId != null) {
-					//			        alert(mMatch.eqDomId +" " + mMatch.eqVisId  +" " + mMatch.eqDom  +" " + mMatch.eqVis +" "  );
-					//			        alert(globalEquipeId==mMatch.eqDomId ||globalEquipeId==mMatch.eqVisId || globalEquipeId==mMatch.eqDom ||globalEquipeId==mMatch.eqVis);
+			    if(globalEquipeId!=null){
+				if (globalEquipeId.length > 0) {
+					//			        console.log(mMatch.eqDomId +" " + mMatch.eqVisId  +" " + mMatch.eqDom  +" " + mMatch.eqVis +" "  );
+					//			        console.log(globalEquipeId==mMatch.eqDomId ||globalEquipeId==mMatch.eqVisId || globalEquipeId==mMatch.eqDom ||globalEquipeId==mMatch.eqVis);
 					// Appellant ==1: Match déjà joué. Appellant ==2: Match à venir.
 					if (appellant == 1) {
 						if (globalEquipeId == mMatch.eqDomId || globalEquipeId == mMatch.eqVisId) {
@@ -1208,8 +1023,8 @@
 
 					}
 					if (appellant == 2) {
-						//alert(mMatch.eqDom  +" " + mMatch.eqVis +" "  );
-						//alert(globalEquipeId==mMatch.eqDom ||globalEquipeId==mMatch.eqVis);
+						//console.log(mMatch.eqDom  +" " + mMatch.eqVis +" "  );
+						//console.log(globalEquipeId==mMatch.eqDom ||globalEquipeId==mMatch.eqVis);
 
 						if (globalEquipeId == mMatch.eqDom || globalEquipeId == mMatch.eqVis) {
 							return true;
@@ -1219,7 +1034,7 @@
 
 					}
 
-				}
+				}}
 				return true;
 			}
 
@@ -1236,10 +1051,10 @@
 					var dPMCal = maSaison.pm.split(" ")[0];
 					var dDMHor = maSaison.dm.split(" ")[1];
 					var dDMCal = maSaison.dm.split(" ")[0];
-					//					alert(dPMCal);
-					//					alert(dPMHor);
-					//					alert(dDMCal);
-					//					alert(dDMHor);
+					//					console.log(dPMCal);
+					//					console.log(dPMHor);
+					//					console.log(dDMCal);
+					//					console.log(dDMHor);
 					var dPM = new Date(dPMCal.split("-")[0], dPMCal.split("-")[1], dPMCal.split("-")[2], dPMHor.split(":")[0], dPMHor.split(":")[1], dPMHor.split(":")[2]);
 					var dDM = new Date(dDMCal.split("-")[0], dDMCal.split("-")[1], dDMCal.split("-")[2], dDMHor.split(":")[0], dDMHor.split(":")[1], dDMHor.split(":")[2]);
 					var cpt = 0;
@@ -1248,7 +1063,7 @@
 						d1Hor = window.rJSON.matchs[J].date.split(" ")[1];
 
 						var d1 = new Date(d1Cal.split("-")[0], d1Cal.split("-")[1], d1Cal.split("-")[2], d1Hor.split(":")[0], d1Hor.split(":")[1], d1Hor.split(":")[2]);
-						//alert(d1+" / "+dPM+" / "+dDM );
+						//console.log(d1+" / "+dPM+" / "+dDM );
 						if (dPM < d1 && dDM > d1 && filtreEquipe(window.rJSON.matchs[J], 1)) {
 							matchsDsSaison[cpt] = window.rJSON.matchs[J];
 							if(window.rJSON.matchs[J].statut!=""){matchsDsSaison[cpt].etat = "termine";}
@@ -1260,9 +1075,11 @@
 					}
 					if (window.m != 1 && cpt > 0)// Pas embarqué, ni aucun match existant.
 					{
-						afficheFiches(window.rJSON.matchs.length - 1);
+					    try{
+						afficheFiches(window.rJSON.matchs.length - 1);}
+						catch(err){}
 					}
-					//	alert(cpt);
+					//	console.log(cpt);
 					/*for (var a = 0; a < window.vecMAV.length; a++) {
 						d1Cal = window.vecMAV[a].date.split(" ")[0];
 						d1Hor = window.vecMAV[a].date.split(" ")[1];
@@ -1270,7 +1087,7 @@
 						if (filtreEquipe(window.vecMAV[a], 2)) {
 
 							var d1 = new Date(d1Cal.split("-")[0], d1Cal.split("-")[1], d1Cal.split("-")[2], d1Hor.split(":")[0], d1Hor.split(":")[1], d1Hor.split(":")[2]);
-							//alert(dPM+' '+d1+' '+dDM);
+							//console.log(dPM+' '+d1+' '+dDM);
 							if (dPM < d1 && dDM > d1) {
 								var trouve = 0;
 								for (var b = 0; b < matchsDsSaison.length; b++)//  Vérifier si un match planifié a déjà été joué.
@@ -1288,9 +1105,9 @@
 						}
 
 					}*/
-					//										alert(cpt);
+					//										console.log(cpt);
 
-					//					alert(JSON.stringify(matchsDsSaison));
+					//					console.log(JSON.stringify(matchsDsSaison));
 
 					matchsDsSaison.sort(function(a, b) {
 
@@ -1309,8 +1126,8 @@
 					});
 				} catch(err) {
 				          if(window.Perm<9)
-                           {   alert(window.Perm+" erreur, resultats.html, no1");
-                              alert(err.message);}
+                           {   console.log(window.Perm+" erreur, resultats.html, no1");
+                              console.log(err.message);}
 				}
 
 				afficheResultats(matchsDsSaison);
@@ -1325,11 +1142,26 @@
 					
 					//$("#divCentrale").append('<p></p>').text("Filtre");
 					try {
-						$("#divCentrale").append("<div id='divSelEquipe'>Horaire de: </div>").append($("<SELECT id='divFiltreEquipe'></SELECT>").change(function(){
+					    $('#divSelEquipe').remove();
+                        
+						$("#divCentrale").append($("<div id='divSelEquipe'>Horaire de: </div>").append(
+						    $("<SELECT id='divFiltreEquipe'></SELECT>").change(function(){
 						    location = "http://www.syncstats.com/zstats/resultats.html?equipeId="+this.options[this.selectedIndex].value;
 						    
-						}));
+						}), $("<SELECT id='divFiltreHoraire'></SELECT>").change(function(){
+						    
+                            $('tr').each(function(i,element){
+                               // console.log("arenas : "+$(element).html()+" "+$($(element).attr('id')+ ' .surfaceId').val() + " "+ $('#divFiltreHoraire option:selected').val());
+                               if($(element).find($('.surfaceId')).first().val()==$('#divFiltreHoraire option:selected').val()){
+                                  $(element).show();
+                               } else{
+                                   $(element).hide();
+                               }
+                            })
+                           
+                        })));
                             $("#divFiltreEquipe").append($("<option></option>").text("Toutes les équipes").attr("selected", true).attr("value",""));
+                            $("#divFiltreHoraire").append($("<option></option>").text("Toutes les surfaces").attr("selected", true).attr("value",""));
 
 
 						for ( a = 0; a < vecEquipe.equipes.length; a++) {
@@ -1349,12 +1181,16 @@
 							        .attr("value", vecEquipe.equipes[a].equipeId).attr("selected", eqSel));
 
 						}
+						for(a=0;a<vecArena.length;a++){
+						    $('#divFiltreHoraire').append($('<option></option>').append($('<input></input>').attr('type','hidden').val(vecArena[a].arenaId)).text(vecArena[a].arenaId));
+						}
+						
 					} catch(err) {
 						  if(window.Perm<9)
-						   {   alert(window.Perm);
-						      alert(err.message+ " erreur afficheResultats");}
+						   {   console.log(window.Perm);
+						      console.log(err.message+ " erreur afficheResultats");}
 					}
-
+/*
 					mJS = {};
 					mJS.id = "tableResultats";
 					mJS.parentId = "divCentrale";
@@ -1371,6 +1207,43 @@
 					document.getElementById('cellTitre_2').colSpan = 2;
 					document.getElementById('cellTitre_1').style.textAlign = "center";
 					document.getElementById('cellTitre_2').style.textAlign = "center";
+					
+					   mParent = document.getElementById(jsObject.parentId);
+				*/  try {
+                	  $('#divCentrale').append( 
+					      $('<table></table>').attr("id","tableResultats").addClass("c_tableau contOuiJet").append(
+					          $('<tbody></tbody>').attr('id','tableResultats_tbody').css("width","100%").append(
+					              $('<tr></tr>').addClass("titreTableau").append(
+					                  $('<td></td>').addClass('titreTableau').text( tl_resultats_matchDispo).attr('id','tableResultats_tdTitre').attr('colspan','100')
+					              ),
+					              $('<tr></tr>').append(
+                                      $('<td></td>').attr('id','tableResultats_tdOpt').attr('colspan','100').append(
+                                          $('<div></div>').addClass('optionTableau').attr('id','tableResultats_divOpt').attr('colspan','100').append(
+                                              $('<div></div>').addClass("divNav").append(
+                                                  $('<div></div>').addClass("versGauche").text("<<"),
+                                                  $('<h2></h2>').addClass("titreNav").text(""),
+                                                  $('<div></div>').addClass("versDroite").text(">>")
+                                              )
+                                          )
+                                      )
+                                  ),
+                                  $('<tr></tr>').addClass("rangeeTitre").attr('id','rangeeTitre').append(
+                                      $('<td></td>').addClass('rangeeTitre').text(window.tl_resultats_Date).attr('id','cellTitre_0').attr('colspan','2'),
+                                      $('<td></td>').addClass('rangeeTitre').text( window.tl_resultats_Visiteur).attr('id','cellTitre_1'),
+                                      $('<td></td>').addClass('rangeeTitre').text("").attr('id','cellTitre_2').attr('colspan','2'),
+                                      $('<td></td>').addClass('rangeeTitre').text(window.tl_resultats_Domicile).attr('id','cellTitre_3'),
+                                      $('<td></td>').addClass('rangeeTitre').text( "Actions").attr('id','cellTitre_4')
+                                  )
+					          )
+					      ));
+	
+					} catch(err) {
+                         // if(window.Perm<30)
+                          // {   console.log(window.Perm);
+                              console.log(err.message+ " erreur afficheResultats");
+                           //   }
+                    }
+					
 
 					for ( J = 0; J < matchsDsSaison.length; J = J + 1) {
 
@@ -1382,34 +1255,12 @@
                                     ),
                                     $('<TD></TD>').append(
                                         $('<P></P>').html((matchsDsSaison[J].date.split(" ")[1]).substring(0, 5)/*str2humain(matchsDsSaison[J].date)*/)     
-                                    )                               
+                                    ),
+                                    $('<input></input>').attr('type','hidden').addClass("surfaceId").val(matchsDsSaison[J].arenaId)                               
                                 )                               
                             );
                            // rangee = 
-                            /*
-							rangee = document.createElement('TR');
-							rangee.id = "rangeeMatch_" + J;
-							amettre = document.getElementById('rangeeTitre');
-							amettre.parentNode.appendChild(rangee);
-
-							celluleNom = document.createElement('TD');
-							cellContDate = document.createElement('P');
-							cellContDate.innerHTML = matchsDsSaison[J].date.split(" ")[0];
-
-							//							texteNom = document.createTextNode(matchsDsSaison[J].date.split(" ")[0]);
-							celluleNom.appendChild(cellContDate);
-							celluleNom.className = "cache";
-							celluleNom.style.visibility = "gone";
-							rangee.appendChild(celluleNom);
-
-							celluleNom = document.createElement('TD');
-							cellContDate = document.createElement('P');
-							cellContDate.innerHTML = str2humain(matchsDsSaison[J].date);
-
-							//							texteNom = document.createTextNode(matchsDsSaison[J].date.split(" ")[0]);
-							celluleNom.appendChild(cellContDate);
-							rangee.appendChild(celluleNom);
-*/
+               
 							cellEqVis = document.createElement('TD');
 							cellEqVis.style.textAlign = "right";
 							tmpImg = document.createElement('IMG');
@@ -1450,11 +1301,14 @@ $('#rangeeMatch' + J).append($(celluleScoreDom));
 $('#rangeeMatch' + J).append($(cellEqDom));
 							celluleEq = document.createElement('TD');
 							lien = document.createElement('A');
-							lien.innerHTML = window.tl_resultats_Sommaire;
-							lien.setAttribute('href', 'match.html?match=' + encodeURIComponent(matchsDsSaison[J].matchID) + '&m=' + window.m);
-							$('#rangeeMatch' + J).on("click", {
+							lien.innerHTML = window.tl_resultats_Sommaire;  
+							if(window.m=='1'){lien.setAttribute('href', 'https://syncstats.com/zstats/match.html?match=' + encodeURIComponent(matchsDsSaison[J].matchID ) + '&m=' + window.m);}else{
+							    lien.setAttribute('href', '/zstats/match.html?match=' + encodeURIComponent(matchsDsSaison[J].matchID ));
+							} 
+							
+							/*$('#rangeeMatch' + J).on("click", {
 						match : encodeURIComponent(matchsDsSaison[J].matchID)
-					}, function(event) {document.location.href= 'match.html?match=' + event.data.match+ '&m=' + window.m;}) ;
+					}, function(event) {location.href= 'match.html?match=' + event.data.match+ '&m=' + window.m;}) ;*/
 								
 							if (J % 2 == 0)
     							$('#rangeeMatch' + J).addClass('lignePaire');
@@ -1494,7 +1348,9 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 									),
 									$('<TD></TD>').append(
 										$('<P></P>').html((matchsDsSaison[J].date.split(" ")[1]).substring(0, 5)/*str2humain(matchsDsSaison[J].date)*/)		
-									)								
+								    ),
+                                     $('<input></input>').attr('type','hidden').addClass("surfaceId").val(matchsDsSaison[J].arenaId)                               
+							
 								)								
 							);
 							var domEqAff = window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqDomId)].ficId != 0 ?
@@ -1516,19 +1372,7 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 									)
 									
 								);
-	/*						}else{
-								$('#rangeeMatch' + J).append(
-									$('<TD></TD>').css("text-align","right").append(
-									$('<P></P>').text(window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqVisId)].nom)
-									),
-									$('<TD></TD>').css("text-align","center").attr("colspan","2").text("VS")
-									,
-									$('<TD></TD>').css("text-align","left").append(
-									$('<P></P>').text(window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[J].eqDomId)].nom)
-									)
-								);
-							}
-		*/					
+		
 							
 							
 
@@ -1539,7 +1383,10 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 
 							
 							rangee = document.getElementById('rangeeMatch' + J);
-							
+							//var largeur = 100/ $(rangee).find('td').length();
+							//$(rangee).find('td').css("width",largeur+'%');
+							//console.log(largeur);
+							 //$('#tableResultats tr.lignePaire td,tr.ligneImpaire td').css("width",'20%');
 							
 							celluleEq =  document.createElement('TD');
 
@@ -1547,12 +1394,13 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 							lien.innerHTML = window.tl_zc_Alignements + " | ";
 							lien.className = "lien";
 //							celluleEq.appendChild(lien);
-//							alert(JSON.stringify(match));
+//							console.log(JSON.stringify(match));
 							lien.onclick = (function(match) {
 								return function() {
-									construitDialogue();
-//									                           alert(JSON.stringify(match));
-									parent = document.getElementById('divDialogue');
+									//$('#corpsModal').modal("show");
+									$('#monModal').modal("show");
+//									                           console.log(JSON.stringify(match));
+									parent = document.getElementById('corpsModal');
 
 									btnAnal = document.createElement('INPUT');
 									btnAnal.type = 'button';
@@ -1569,7 +1417,7 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 									btnPrint.value = "Imprimer";
 									btnPrint.onclick = function() {
 										eS = document.getElementById('ecranSombre');
-										dD = document.getElementById('divDialogue');
+										dD = document.getElementById('corpsModal');
 										eS.style.display = 'none';
 										dD.style.width = '100%';
 										dD.style.height = '100%';
@@ -1586,7 +1434,7 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 									dBD = document.createElement('DIV');
 									dBD.id = 'blocDroit';
 									h1BG = document.createElement('H1');
-									// alert(match);
+									// console.log(match);
 									h1BG.innerHTML = window.vecEquipe.equipes[extirpeEquipe(match.eqDomId)].nom;
 									h1BD = document.createElement('H1');
 									h1BD.innerHTML = window.vecEquipe.equipes[extirpeEquipe(match.eqVisId)].nom;
@@ -1633,7 +1481,7 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 							})(matchsDsSaison[J]);
 
 							$('#rangeeMatch' + J).append($(celluleEq));
-							//alert(window.Perm);
+							//console.log(window.Perm);
 							if (window.Perm < 19) {
 
 								// Préparer Match
@@ -1661,7 +1509,7 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 								lien3.className = 'cliquable';
 								lien3.onclick = (function(J) {
 									return function() {
-										//construitDialogue();
+										//$('#corpsModal').modal("show");
 										editMatch2(J);
 									};
 								})(J);
@@ -1684,52 +1532,59 @@ $('#rangeeMatch' + J).append($(cellEqDom));
                                     afficheFiches(event.data.fiche);
                                 //};
 						    });
+                           
+                            // $('#rangeeMatch' + J).css("width",'20%');
 							//rangee.onmouseover = (function(a) {
 								
 							//})(J);
 						}
+						
+                            var largeur = 100/  $('#rangeeMatch' + J).find('td').length;
+                            $('#rangeeMatch' + J).find('td').css("width",largeur+'%');
 
 					}//Fin des rangées
-					rangeePlus2 = document.createElement('TR');
-					cellPlus2 = document.createElement('TD');
-					cellPlus2.colSpan = 6;
+					//rangeePlus2 = document.createElement('TR');
+					//cellPlus2 = document.createElement('TD');
+					//cellPlus2.colSpan = 7;
 
-					cellPlus2.innerHTML = window.tl_general_nouvMatch + "[ + ]";
-					cellPlus2.style.textAlign = "center";
-					cellPlus2.style.fontSize = "small";
-					cellPlus2.style.color = "#04789D";
-					rangeePlus2.className = "lignePaire cliquable";
+					//cellPlus2.innerHTML = window.tl_general_nouvMatch + "[ + ]";
+					//cellPlus2.style.textAlign = "center";
+					//cellPlus2.style.fontSize = "small";
+					//cellPlus2.style.color = "#04789D";
+					//rangeePlus2.className = ;
 
-					cellPlus2.onclick = function() {
-						nouveauMatch();
-					};
+					//cellPlus2.onclick = function() {
+					//	nouveauMatch();
+					//};
 					//cellPlus2.appendChild(element2);
-					rangeePlus2.appendChild(cellPlus2);
-					amettre = document.getElementById('rangeeTitre');
-					//alert(window.Perm);
-
+					//appendChild(cellPlus2);
+					
 					if (window.Perm < 19) {
-						amettre.parentNode.appendChild(rangeePlus2);
-					} else {/*alert(window.Perm);*/
+						$('#tableResultats_tbody').append($('<tr></tr>').append(
+						    $('<td></td>').text( window.tl_general_nouvMatch + "[ + ]").attr("colspan","7").addClass("lignePaire cliquable")
+						    .css("text-align","center").css("font-size","small").on("click",nouveauMatch)
+						));
+					} else {/*console.log(window.Perm);*/
 					}
 
-					//	document.body.rangee.cellule.innerHTML ='yo';
-
+				
 				} catch(err) {
 					if (window.Perm < 10) {
-						alert("Erreur: " + err);
+						console.log("Erreur: " + err);
 					}
 				}
 				var d = new Date();
-				//alert(getValue('mois'));
-				//alert(d.getMonth());
+				//console.log(getValue('mois'));
+				//console.log(d.getMonth());
 				if(getValue('mois')==null ||getValue('mois')==""||getValue('mois')==undefined){
 				var mois =d.getMonth();}
 				else{
 				var mois=	parseInt(getValue('mois'))-1;
 				}
-				//alert(mois);
+				//console.log(mois);
 				enveloppeTableMois('tableResultats', d.getFullYear(),mois , 0);
+				
+			
 
 			}
 
@@ -1938,8 +1793,8 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 					clearInterval(window.idInter);
 				} catch(err) {
 				          if(window.Perm<9)
-                           {   alert(window.Perm + "  erreur defileFiches");
-                              alert(err.message);}
+                           {   console.log(window.Perm + "  erreur defileFiches");
+                              console.log(err.message);}
 				}
 				idInter = setInterval(function() {
 					cptLoc = 0
@@ -1950,14 +1805,14 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 					}
 					if (window.matchsDsSaison[window.rang % window.matchsDsSaison.length].etat == "termine") {
 						rempliFicheTermine((window.rang) % window.matchsDsSaison.length);
-						window.contFicheMavJS.style.display = "none";
-						window.contFicheMatchJS.style.display = "block";
+                        $('#contFicheMAV').hide();
+                        $('#contFicheMatch').show();
 					}
 
 					if (window.matchsDsSaison[window.rang % window.matchsDsSaison.length].etat == "avenir") {
 						rempliFicheAvenir((window.rang) % window.matchsDsSaison.length);
-						window.contFicheMavJS.style.display = "block";
-						window.contFicheMatchJS.style.display = "none";
+						$('#contFicheMAV').show();
+                        $('#contFicheMatch').hide();
 					}
 
 					//window.rang++;
@@ -1970,19 +1825,19 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 				try {
 					if (window.matchsDsSaison[pos].etat == "termine") {
 						rempliFicheTermine(pos);
-						window.contFicheMavJS.style.display = "none";
-						window.contFicheMatchJS.style.display = "block";
+                        $('#contFicheMAV').hide();
+                        $('#contFicheMatch').show();
 					}
 
 					if (window.matchsDsSaison[pos].etat == "avenir") {
 						rempliFicheAvenir(pos);
-						window.contFicheMavJS.style.display = "block";
-						window.contFicheMatchJS.style.display = "none";
+                        $('#contFicheMAV').show();
+                        $('#contFicheMatch').hide();
 					}
 				} catch(err) {
-				          if(window.Perm<9)
-                           {   alert(window.Perm + " erreur afficheFiches");
-                              alert(err.message);}
+				          if(window.Perm<9&&ligueId!=94)
+                           {   console.log(window.Perm + " erreur afficheFiches. Visible que si window.Perm<9");
+                              console.log(err.message);}
 				}
 				//window.rang++;
 
@@ -1994,8 +1849,8 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 
 				window.divImgDomFM.src = '/admin/afficheImage.php?ficId=' + window.matchsDsSaison[a].ficIdDom;
 				window.divImgVisFM.src = '/admin/afficheImage.php?ficId=' + window.matchsDsSaison[a].ficIdVis;
-				window.lienImgDomFMJS.href = "/zstats/statsequipe.html?equipeId=" + window.matchsDsSaison[a].eqDomId;
-				window.lienImgVisFMJS.href = "/zstats/statsequipe.html?equipeId=" + window.matchsDsSaison[a].eqVisId;
+				window.lienImgDomFMJS.href = "/zstats/statsequipe.html?equipeId=" + window.matchsDsSaison[a].eqDomId+'&m='+getValue('m');
+				window.lienImgVisFMJS.href = "/zstats/statsequipe.html?equipeId=" + window.matchsDsSaison[a].eqVisId+'&m='+getValue('m');
 				window.pDateMatchFM.innerHTML = str2humain(window.matchsDsSaison[a].date);
 				premPer = 0;
 				try {
@@ -2004,15 +1859,16 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 						premPer = 1;
 					}
 				} catch(err) {
-				          if(window.Perm<9)
-                           {   alert(window.Perm+ "erreur rempliFicherTermine");
-                              alert(err.message);}
+				          if(window.Perm<9&&ligueId!=94)
+                           {   
+                               console.log(window.Perm+ "erreur rempliFicherTermine");
+                              console.log(err.message);}
 				}
 
 				/*while(document.getElementById('tableVent').childNodes.length>2)
 				 {
-				 alert(document.getElementById('tableVent').childNodes.length);
-				 alert(get_lastchild(document.getElementById('tableVent')).innerHTML);
+				 console.log(document.getElementById('tableVent').childNodes.length);
+				 console.log(get_lastchild(document.getElementById('tableVent')).innerHTML);
 				 document.removeChild(get_lastchild(document.getElementById('tableVent')));}*/
 				for (var b = premPer; b < window.matchsDsSaison[a].ventDom.length; b++) {
 					laLigne = document.createElement('DIV');
@@ -2039,8 +1895,8 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 					window.pEtoile3.innerHTML = window.matchsDsSaison[a].etoile3 == undefined ? "" : "&#9734 &#9734 &#9734 -" + window.matchsDsSaison[a].etoile3;
 				} catch(err) {
 				          if(window.Perm<9)
-                           {   alert(window.Perm + " erreur rempliFicheTermine 2");
-                              alert(err.message);}
+                           {   console.log(window.Perm + " erreur rempliFicheTermine 2");
+                              console.log(err.message);}
 					window.p3etoiles.innerHTML = "";
 
 				}
@@ -2165,16 +2021,23 @@ $('#rangeeMatch' + J).append($(cellEqDom));
         </script>
     </HEAD>
 
-    <body id="mbody">
+    <body id="mbody" class="bg">
+        <div class="container-fluid bg">
+            <div class="row">
 
-        <div id="divHaut"></div>
-        <div id="divGauche"></div>
-        <div id="divMenuHaut"></div>
-
-        <div id="divCentrale"></div>
-        <div id="divDroite"></div>
+        <div id="divHaut" class="col-sm-12 mb-4"></div>
+        <div id="divMenuHaut" class="col-sm-12"></div>
+</div>            <div class="row ml-2 mr-2">
+        <div id="divGauche" class="col-sm-3"></div>
+        <div id="divCentrale" class="col-sm-6">
+        </div>
+        <div id="divDroite" class="col-sm-3"></div>
+</div>            <div class="row">        <div id="divBas" class="col-sm-12"></div>
+</div>
+</div>
         <script type="text/javascript" charset="utf-8">
 			developper(6);
+			construitDialogue("modalModifMatch");
 			rang = 0;
 			bufClass = 0;
 			if (window.m != 1) {
@@ -2199,7 +2062,7 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 			loadConditions = 0;
 			nbloadTotal = 4;
 			getInfoLigue(ligueId);
-			//getMatchAVenir();
+			getMatchAVenir();
 			getArena();
 			getArbitres();
 			click_save=false;

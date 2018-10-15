@@ -60,7 +60,7 @@
 						}
 						
 					}
-				}
+				};
 				requete_ajax.send(params);
 			}
 
@@ -155,7 +155,7 @@ topDivJS.appendChild(tFermeJS);
 		<div id="divDroite"></div>
 		<script type="text/javascript" charset="utf-8">
 			developper(21);
-			chargeListeImage(ligueId);
+			chargeListeImage(getCookie('ligueId'));
 
 			frameModifJS = document.createElement('IFRAME');
 			frameModifJS.className = "cachePlein";

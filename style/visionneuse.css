@@ -316,11 +316,11 @@
 	top: -10px;
 	left: 20px;
 }
-
+/*
 .container{
 	width:1100px;
 	margin:0 auto;
-}
+}*/
 
 #media-play-list {
     clear: both;
@@ -556,6 +556,14 @@ span.thumbnail-content:hover {
 	opacity:1;
 	cursor:pointer;
 }
+.rate-modal2{
+    display:none;
+    float: left;
+    min-width:200px;
+    text-align:left;
+    position: absolute;
+}
+
 .sharing{
 	background-image:url(../images/share.png);
 	width:14px;
@@ -597,7 +605,7 @@ span.thumbnail-content:hover {
 	margin-right:20px;
 	margin-top:3px;
 }
-button {
+/*button {
     background: url("buttons.png") no-repeat scroll 0 0 transparent;
     border: medium none;
     cursor: pointer;
@@ -607,7 +615,7 @@ button {
     text-indent: -9999px;
     width: 17px;
 	margin-top:5px;
-}
+}*/
 .top-triangle{
 	background-image: url("../images/top-triangle.png");
     float: left;
@@ -704,7 +712,7 @@ button {
 	position:relative; 
 	line-height:12px;
 	padding:50px 100px 50px 100px;
-	width:240px;
+	
 	display:block;
 	
 }

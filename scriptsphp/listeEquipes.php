@@ -111,6 +111,7 @@ while($rangeeEquipe=mysql_fetch_array($resultEquipe))
 	$equipe[$Ie]['ficId']=$rangeeEquipe['ficId'];
 	$equipe[$Ie]['logo']=$rangeeEquipe['logo'];
 	$equipe[$Ie]['couleur1']=$rangeeEquipe['couleur1'];
+	$equipe[$Ie]['cleValeur']=$rangeeEquipe['cleValeur'];
 	$Ie++;
 }
 

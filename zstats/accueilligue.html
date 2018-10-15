@@ -23,8 +23,9 @@
           <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
         <link rel="stylesheet" href="/style/general_bootcompat.css" type="text/css">
         <script type="text/javascript" charset="utf-8">
-		//	gereLangue();
-			          langue = (getCookie("langue")==undefined)?"fr":getCookie("langue");
+        
+			gereLangue();
+			 //         langue = (getCookie("langue")==undefined)?"fr":getCookie("langue");
 // document.write('<script type="text/javascript" charset="utf-8" src="/scripts/texte_' + langue + '.js"><!--/script>');
 
         </script>
@@ -34,9 +35,14 @@
         <script src="/scripts/visionneuse.js"></script>
         <script src="/scripts/jquery.raty.js"></script-->
         <meta name="viewport" content="width=device-width,initial-scale=1"/>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+         <script type="text/javascript" charset="utf-8">
+             var mUrl="/style/ligues/"+getValue("ligueId")+"/perso.css";
+             var longTag = '<link rel="stylesheet" href="'+mUrl+'" type="text/css"   >';
+            try{  document.write(longTag);}catch(err){}
+            </script>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <style>
+ <style>   
         #divHaut {
         position:relative;
         }
@@ -96,6 +102,7 @@
 						//          window.location.reload();
 						var tmpStr = eval('(' + requete_ajax.responseText + ')');
 						remplirOuiJetInfoLigue(tmpStr);
+						
 
 						return requete_ajax.responseText;
 					}
@@ -300,8 +307,8 @@
 
 						nouveauFicId = requete_ajax.responseText;
 						document.getElementById('imgNouv').src = '/admin/afficheImage.php?ficId=' + requete_ajax.responseText;
-						document.getElementById('idBtnLogo').style.display = 'inline';
-						document.getElementById('idBtnLogo2').style.display = 'inline';
+						$('#modalNouvellePhoto .btn-primary').prop("disabled",false);
+						//document.getElementById('idBtnLogo2').style.display = 'inline';
 
 						return requete_ajax.responseText;
 					}
@@ -719,14 +726,143 @@
 				requete_ajax.send(params);
 
 			}
-			
+			 function boiteMatch(a,offset){
+			    /* try{
+		     $('#divBoiteMatch_'+a).remove();}
+		      catch(err){
+		          console.log('#divBoiteMatch_'+a+"// "+err);
+		      }*/
+                var vraiA = a+offset;
+			         $.ajax({
+                url :"/scriptsphp/infoMatch2JSON.php",
+                type : 'POST',
+                data : jQuery.param({
+                    match : vraiA,
+                    ligueId : window.ligueId
+                  
+                }),
+                contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+                success : function(response) {
 
-			function boiteMatch(a) {
+                  
+                    try {
+                            infoMatch = eval('(' + response + ')');
+                            if (infoMatch.matchId != "") {
+                                //divBoiteMatch =
+                                //                              divBoiteMatch.className = 'boiteMatchHaut';
+                                //                              divBoiteMatch.style.position = "absolute";
+                                //                              calcW = a * 100 / window.nbMatchs;
+                                //                              divBoiteMatch.style.left = calcW + "%";
+                                   if($('#divBoiteMatch_'+a).length==0){
+                                $('#contMatchHaut').append($('<div></div>').attr('id', 'divBoiteMatch_'+a).addClass(classeCol+' boiteMatchHaut container-fluid'));                                       
+                                   }else{
+                                       $('#divBoiteMatch_'+a).empty();
+                                   }
+                                //                              document.getElementById('contMatchHaut').appendChild(divBoiteMatch);
+                                divLigne = $('<div></div>').addClass("blocScore afficheScore");
+                                strTexte2 = str2humain(infoMatch.date);
+                                strTexte = strTexte2.split(' ');
+                                texte = strTexte2;//[0];
+                                
+                                  
+                                
+                                //////////////////////////
+                                divBlocH  = $('<div></div>').addClass("blocScoreH afficheScore").append(
+                                    $('<div></div>').addClass('ligneScore').append(
+                                        $('<div></div>').text( infoMatch.equipeNomDom).addClass("nomEquipe"), $('<div></div>').addClass("scoreDom").text( infoMatch.equipeScoreDom).addClass("score")
+                                    ),
+                                    $('<div></div>').addClass('ligneScore').append(
+                                        $('<div></div>').text( infoMatch.equipeNomVis).addClass("nomEquipe"), $('<div></div>').addClass("scoreVis").text( infoMatch.equipeScoreVis).addClass("score")
+                                    ),
+                                    $('<div></div>').addClass('blocHeure'));                            
+                                
+                                
+                                divEmplacement = $('<div></div>').addClass("row container").append(
+                                        $('<div></div>').addClass("col-sm-12 infoArena").append(
+                                            $('<nobr></nobr>').append(
+                                                $('<div></div>').append(
+                                                    $('<i class="fa fa-map-marker-alt"></i>'),
+                                                    $('<span></span>').text(" "+infoMatch.nomArena),
+                                                    $('<span></span>').text(" / "+infoMatch.nomGlace))
+                                                )
+                                            )
+                                            );
+
+                                $('#divBoiteMatch_'+a).append($('<div></div>').attr("id", "divDateMatch").addClass("row").append(
+                                    $('<div></div>').addClass("col").append(
+                                     $('<nobr></nobr>').append($('<p></p>').text(texte).addClass('date')), $(divBlocH),$(divEmplacement))));
+
+                            }
+
+                            if (infoMatch.statut.length > 0) {
+                               // .append($('<DIV></DIV>').addClass("chiffreScore").append($('<p></p>').text(infoMatch.equipeScoreDom), $('<p></p>').text("-"), $('<p></p>').text(infoMatch.equipeScoreVis)));
+                            } else {
+                                fullHeure=infoMatch.date.split(' ')[1];
+                                heure = fullHeure.split(":")[0]+":"+fullHeure.split(":")[1];
+                                $('#divBoiteMatch_'+a+' .scoreVis').text(heure);
+                                $('#divBoiteMatch_'+a+' .scoreDom').text(" ");
+                                }
+                                
+                                
+                                d1Cal = infoMatch.date.split(" ")[1];
+                                d1 = d1Cal.split(":")[0] + ":" + d1Cal.split(":")[1];
+                                  $(divLigne).append(
+                                    $('<div></div>').append(
+                                        $('<a></a>').addClass("lienImgDom").attr("href","/zstats/statsequipe.html?equipeId=" + infoMatch.equipeIdDom + "&ligueId=" + infoMatch.ligueId).append(
+                                            $('<img></img>').addClass("logoEqDom").attr("src", '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdDom).attr("alt", infoMatch.equipeNomDom)
+                                        )
+                                    )
+                                    ,
+                                    /*$(divScore)
+                                    ,*/
+                                    $('<div></div>').append(
+                                    $('<a></a>').addClass("lienImgVis").attr("href","/zstats/statsequipe.html?equipeId=" + infoMatch.equipeIdVis + "&ligueId=" + infoMatch.ligueId).append(
+                                        $('<img></img>').addClass("logoEqVis").attr("src",'/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdVis).attr("alt",infoMatch.equipeNomVis)    
+                                        )
+                                     ));      
+                                ///// Emplacement de match
+                                
+                                    
+                                    
+/*                                   $('<div></div>').addClass("row").append(
+                                        $('<div></div>').addClass("col-sm-12 infoArena").append(
+                                            $('<nobr></nobr>').append(
+                                            
+                                            $('<i class="fa fa-map-signs"></i>'),
+                                            $('<span></span>').text(" "+infoMatch.nomGlace)
+                                            )
+                                        ))*/
+                                        var mMatch = infoMatch.matchId;
+                                //alert(mMatch);
+                                $('#divBoiteMatch_'+a).on("click", function() {
+                                   // alert("a");
+                                    //return function(infoMatch) {
+                                        window.location.href = "/zstats/match.html?match=" + mMatch;
+                                    //};
+                                });
+                                //divBoiteMatch.onclick = ()(infoMatch.matchId);
+                               a++;
+                               if(a<maxBoitesMatchs){
+                            boiteMatch(a,offset);}
+                     
+
+                    } catch(err) {
+                    }
+
+                },
+                error : function(xhr, status, error) {
+                    var err = eval("(" + xhr.responseText + ")");
+                    alert(err.Message + "  --  ereur lc2Max");
+                }
+            });
+			     
+			 }
+
+		/*	function boiteMatch(a,offset) {
 				var requete_ajax = new XMLHttpRequest();
-
-				var url = "/scriptsphp/infoMatch2JSON.php";
-
-				var strMatch = "match=" + a;
+              var url = "/scriptsphp/infoMatch2JSON.php";
+                var vraiA = a+offset;
+				var strMatch = "match=" + vraiA;
 				var strLigue = "ligueId=" + window.ligueId;
 				params = strMatch + '&' + strLigue;
 				url = url + "?" + params;
@@ -783,9 +919,32 @@
 								divImgVis.src = '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdVis;
 								divImgDom.alt = infoMatch.equipeNomDom;
 								divImgVis.alt = infoMatch.equipeNomVis;
+								
+								
+								//////////////////////////
+								$divBlocH  = $('<div></div>').addClass("blocScoreH afficheScore").append(
+								    $('<div></div>').addClass('ligneScore').append(
+								        $('<div></div>').text( infoMatch.equipeNomDom).addClass("nomEquipe"), $('<div></div>').text( infoMatch.equipeScoreDom).addClass("score")
+								    ),
+								    $('<div></div>').addClass('ligneScore').append(
+                                        $('<div></div>').text( infoMatch.equipeNomVis).addClass("nomEquipe"), $('<div></div>').text( infoMatch.equipeScoreVis).addClass("score")
+                                    ),
+								    $('<div></div>').addClass('blocHeure'));							
+								
+								
+								divEmplacement = $('<div></div>').addClass("row container").append(
+                                        $('<div></div>').addClass("col-sm-12 infoArena").append(
+                                            $('<nobr></nobr>').append(
+                                                $('<div></div>').append(
+                                                    $('<i class="fa fa-map-marker-alt"></i>'),
+                                                    $('<span></span>').text(" "+infoMatch.nomArena),
+                                                    $('<span></span>').text(" / "+infoMatch.nomGlace)),
+                                                )
+                                            )
+                                            );
 
 								$('#divBoiteMatch_'+a).append($('<div></div>').attr("id", "divDateMatch").addClass("row").append(
-								     $('<nobr></nobr>').append($('<p></p>').text(texte).addClass('date')), $(divLigne)));
+								     $('<nobr></nobr>').append($('<p></p>').text(texte).addClass('date')), $($divBlocH),$(divEmplacement)));
 
 							}
 
@@ -810,24 +969,17 @@
 								
 								///// Emplacement de match
 								
-								$('#divBoiteMatch_'+a).append(
-								    $('<div></div>').addClass("row").append(
-								        $('<div></div>').addClass("col-sm-12 infoArena").append(
-								            $('<nobr></nobr>').append(
-								            $('<i class="fa fa-map-marker-alt"></i>'),
-								            $('<span></span>').text(" "+infoMatch.nomArena)
-								            ))
-								            ),
-								     $('<div></div>').addClass("row").append(
+								    
+								    
+/*								     $('<div></div>').addClass("row").append(
                                         $('<div></div>').addClass("col-sm-12 infoArena").append(
                                             $('<nobr></nobr>').append(
                                             
                                             $('<i class="fa fa-map-signs"></i>'),
                                             $('<span></span>').text(" "+infoMatch.nomGlace)
                                             )
-                                        ))
-								);
-								var mMatch = infoMatch.matchId;
+                                        ))*//*
+										var mMatch = infoMatch.matchId;
 								//alert(mMatch);
 								$('#divBoiteMatch_'+a).on("click", function() {
 								   // alert("a");
@@ -838,13 +990,13 @@
 								//divBoiteMatch.onclick = ()(infoMatch.matchId);
                                a++;
                                if(a<maxBoitesMatchs){
-							boiteMatch(a);}
+							boiteMatch(a,offset);}
 
 						}//fin du if 200
 					};
 				})(a);
 			}
-
+*/
             function babillard() {
                 videNoeud('contBabillard');
                 parent2 = document.getElementById('contBabillard');
@@ -1110,31 +1262,94 @@
 
             function galerie() {
                 parent2 = document.getElementById('contPhoto');
+                
                 photo = document.createElement('IMG');
                 photo.id = "imgPhotoGalerie";
 
                 titreGal = document.createElement('H1');
                 titreGal.innerHTML = "Galerie";
                 titreGal.className = 'texteEmphase';
-                lienGal = document.createElement('A');
-                lienGal.href = "/zstats/galerie.html";
-                lienGal.innerHTML = "plus de photo...";
-
-                lienPlus = document.createElement('A');
-                lienPlus.onclick = function() {
-                    nouvellePhoto();
-                };
-                lienPlus.innerHTML = "nouvelle photo";
-                lienPlus.className = 'cliquable';
+                //lienGal = document.createElement('A');
+                //lienGal.href = "/zstats/galerie.html";
+                //lienGal.innerHTML = "plus de photo...";
+                
+//                lienPlus.innerHTML = "nouvelle photo";
+ //               lienPlus.className = 'cliquable';
                 parent2.appendChild(titreGal);
-                parent2.appendChild(lienGal);
-                parent2.appendChild(lienPlus);
+                //parent2.appendChild(lienGal);
+                $("#contPhoto").append(
+                    $('<a></a>').addClass('cliquable').attr("href","/zstats/galerie.html").append(
+                    $('<i></i>').addClass('far fa-images').css("font-size","1.5em").css("margin","0.4em")
+                    ),
+                    $('<a></a>').addClass('cliquable').on("click",nouvellePhoto).append(
+                    $('<i></i>').addClass('far fa-plus-square').css("font-size","1.5em").css("margin","0.4em")
+                    )
+                    );
                 parent2.appendChild(photo);
+                $(parent2).append($('<div></div>').append($('<h2></h2>').attr("id","titrePhotoGalerie"),
+                $('<p></p>').attr("id","descriptionPhotoGalerie")));
                 chargeListeImage(window.ligueId);
 
             }
 
             function remplirOuiJetInfoLigue(lesInfos) {
+               
+                try{
+             //   $('.bg').css("background-image","url('"+lesInfos.Ligue.cleValeur.style.arriereplan+"')");
+                
+                }catch(err){
+                    console.log("Pas trouvé image arrière plan");
+                    
+                }
+                try{
+               // $('#divTitreDoc').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+              /*  $('.bouton_1').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu2);
+                $('.cliquable,#contBabillard .simpleMessage .cliquable').css("color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                $('#barreNav a').css("color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                $('#barreNav >ul >div:hover').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                 $('#barreNav >ul >div').hover(function(){
+                 $(this).css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                 $(this).find( 'a' ).css("color",lesInfos.Ligue.cleValeur.style.couleurmenu2);
+                 }, function(){
+                    $(this).css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu2);
+                     $(this).find( 'a' ).css("color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                });*/}catch(err){
+                    console.log("Pas de couleur de menu1");
+                    
+                }
+                try{
+               /* $('#barreNav ul').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu2);*/
+                
+                }catch(err){
+                    console.log("Pas de couleur de menu");
+                    
+                }
+                
+                try{
+                  //  alert(lesInfos.Ligue.cleValeur.siteWeb.structurePage.divDroite);
+                if("false".localeCompare(lesInfos.Ligue.cleValeur.siteWeb.structurePage.divDroite)==0){
+                   
+                 $('#divDroite').remove();
+                 $('#divCentrale').before($('<div></div>').addClass("col-sm-1 espaceur")).removeClass('col-sm-9').addClass('col-sm-10');
+                    }
+                  
+                }catch(err){
+                    console.log("Erreur try catch structurePage");
+                    
+                }
+                try{
+                  //  alert(lesInfos.Ligue.cleValeur.siteWeb.structurePage.divDroite);
+                if("auto".localeCompare(lesInfos.Ligue.cleValeur.siteWeb.structurePage.banniere)!=0){
+                   
+                   $('#contInfoLigue').empty().removeClass("contOuiJet").append($('<img></img>').attr("src",lesInfos.Ligue.cleValeur.siteWeb.structurePage.banniere));
+                  }
+                  
+                }catch(err){
+                    console.log("Erreur try catch structurePage_banniere");
+                    
+                }
+
+               
                 logoLigueJS = document.createElement('img');
                 logoLigueJS.className = 'petitLogo';
                 
@@ -1147,11 +1362,17 @@
                 }
                 divInfoJS = document.createElement('div');
                 divInfoJS.id = 'divInfo';
+                if( $('#contInfoLigue').children().length==0){
                 $('#contInfoLigue').append($(divInfoJS));
-                $('#contInfoLigue').append($(logoLigueJS));
+                $('#contInfoLigue').append($(logoLigueJS));}
+                try{
+                $('.contOuiJet.couleur1').css("background-color",/*lesInfos.Ligue.cleValeur.style.couleurmenu1*/'#0000');
+                }catch(err){}
                 //window.contInfoLigueJS.appendChild(divInfoJS);
                 //window.contInfoLigueJS.appendChild(logoLigueJS);
                 
+                
+                /*
                 pNom = document.createElement('p');
                 pNom.innerHTML = lesInfos.Ligue.nom;
                 pNom.className = 'texteEmphase';
@@ -1161,7 +1382,16 @@
                 divInfoJS.appendChild(pLieu);
                 pHoraire = document.createElement('P');
                 pHoraire.innerHTML = lesInfos.Ligue.horaire;
-                divInfoJS.appendChild(pHoraire);
+                divInfoJS.appendChild(pHoraire);*/
+               
+                $(divInfoJS).append($('<p></p>').addClass('texteEmphase').text(lesInfos.Ligue.nom),
+                $('<i></i>').addClass('fa fa-map-marker-alt').css("float","left").css("margin","0.2em").css("display","inline"),
+                $('<p></p>').addClass('texteEmphase').text(lesInfos.Ligue.lieu),
+                $('<i></i>').addClass('far fa-clock').css("float","left").css("margin","0.2em").css("display","inline"),
+                $('<p></p>').addClass('texteEmphase').text(lesInfos.Ligue.horaire));
+                
+                
+                
                 /*
                  divLienJS=document.createElement('div');
                  divLienJS.id='divLiens';
@@ -1188,6 +1418,8 @@
                     //              alert('/admin/afficheImage.php?ficId=' + window.listeImages[a].ficId);
                     //logoLigue.setAttribute('src','images/ligues/logo/'+getValue('ligueId')+'.jpg');
                     $('#imgPhotoGalerie').attr("src", '/admin/afficheImage.php?ficId=' + window.listeImages[a].ficId);
+                    $('#titrePhotoGalerie').text(window.listeImages[a].titre);
+                      $('#descriptionPhotoGalerie').text(window.listeImages[a].description);
 
                     //              var preload = "/admin/afficheImage.php?ficId=" + window.statsJSON.joueurs[a].ficIdPortrait;
                 } catch(err) {
@@ -1197,27 +1429,24 @@
             }
 
             function nouvellePhoto() {
-                construitDialogue();
-                divDial = document.getElementById('divDialogue');
+                $('#modalNouvellePhoto').modal("show");
+                $('#modalNouvellePhoto .modal-body').empty();
+                $('#modalNouvellePhoto .modal-footer').empty();
+                $('#modalNouvellePhoto .modal-title').text(window.tl_titreNouvPhoto);
+                divDial = $('#modalNouvellePhoto .modal-body');
                 divParentImg = document.createElement('div');
                 divParentImg.id = "divFormulaire";
-                divDial.appendChild(divParentImg);
-                dLIs = document.createElement('div');
-                dLIs.id = 'divLesInputs';
-                dLI = document.createElement('div');
-                dLI.className = 'divLigneInput';
-
-                /*              divImg = document.createElement('DIV');
+               $(divDial).append($('<div></div>').attr("id","divFormulaire"));
+                dLIs = $('<div></div>').attr("id","divLesInputs");
+                
+                
+                                /*              divImg = document.createElement('DIV');
                  divImg.id = "divImg";
                  divImg.innerHTML = window.tl_equipes_ficImage;
                  divImg.className = "formGauche";*/
                 divInImg = document.createElement('DIV');
                 divInImg.className = "formDroite";
                 //dLI.appendChild(divImg);
-                dLI.appendChild(divInImg);
-
-                nouvH1 = document.createElement('H1');
-                nouvH1.innerHTML = window.tl_titreNouvPhoto;
 
                 divST = document.createElement('div');
                 divST.id = 'divSousTitre';
@@ -1228,256 +1457,84 @@
                 lh = document.createElement('div');
                 lh.id = 'ligneH';
 
-                nouvImg = document.createElement('img');
-                nouvImg.id = "imgNouv";
 
-                inImgLE = document.createElement('INPUT');
-                inImgLE.name = "userfile";
-                inImgLE.type = "file";
-                inImgLE.onchange = function() {
-                    if (this.value) {
+                maForme = $('<form></form>')
+                .attr("name","nomFormeEdit")
+                .attr("id","idFormeEdit")
+                .attr("action","/admin/enregistreFichier.php")
+                .attr("enctype","multipart/form-data")
+                .attr("method","POST").append(
+                    $('<div></div>').addClass('divLigneInput').append(
+                    $('<input></input>').attr("type","file").addClass("btn btn-info").attr("name","userfile").attr("id","idLogo").on("change",function(){
+                    if ($(this).val()) {
                         televerseFic();
-                    }
-                };
-                inImgLE.id = "idLogo";
-
-                dLI0 = document.createElement('div');
-                dLI0.className = 'divLigneInput';
-                dLI0.appendChild(inImgLE);
-
-                maForme = document.createElement('FORM');
-                maForme.name = "nomFormeEdit";
-                maForme.id = "idFormeEdit";
-                maForme.action = "/admin/enregistreFichier.php";
-                maForme.enctype = "multipart/form-data";
-                maForme.method = "POST";
-
-                inHiMFS = document.createElement('INPUT');
-                inHiMFS.type = 'hidden';
-                inHiMFS.id = 'maxFileSize';
-                inHiMFS.name = 'MAX_FILE_SIZE';
-                inHiMFS.value = '2000000';
-
-                inHiCon = document.createElement('INPUT');
-                inHiCon.type = 'hidden';
-                inHiCon.id = 'idContexte';
-                inHiCon.name = 'contexte';
-                inHiCon.value = 'equipe';
-
-                dLI1 = document.createElement('div');
-                dLI1.className = 'divLigneInput';
-                dLI2 = document.createElement('div');
-                dLI2.className = 'divLigneInput';
-
-                btnImgLE = document.createElement('INPUT');
-                btnImgLE.name = "nomBtnLogo";
-                btnImgLE.type = "BUTTON";
-                btnImgLE.id = "idBtnLogo";
-                btnImgLE.style.display = 'none';
-                btnImgLE.value = window.tl_bouton_save;
-                btnImgLE.onclick = function() {
-                    sauvegardeGalerie(window.ligueId, window.nouveauFicId);
-
-                }
-                btnImgLE2 = document.createElement('INPUT');
-                btnImgLE2.name = "nomBtnLogo2";
-                btnImgLE2.type = "BUTTON";
-                btnImgLE2.id = "idBtnLogo2";
-                btnImgLE2.style.display = 'none';
-                btnImgLE2.value = window.tl_bouton_save;
-                btnImgLE2.onclick = function() {
-                    sauvegardeGalerie(window.ligueId, window.nouveauFicId);
-
-                }
-
-                maForme.appendChild(inHiMFS);
-                maForme.appendChild(dLI0);
-
-                divParentImg.appendChild(nouvH1);
-
-                divParentImg.appendChild(divST);
-                divParentImg.appendChild(lh);
-
-                divParentImg.appendChild(dLIs);
-                dLIs.appendChild(dLI);
-                dLIs.appendChild(dLI1);
-                dLI1.appendChild(btnImgLE);
-                dLIs.appendChild(maForme);
-                dLIs.appendChild(nouvImg);
-                dLIs.appendChild(dLI2);
-                dLI2.appendChild(btnImgLE2);
-            }
-
-            function structurePage() {
-             if(document.documentElement.clientWidth >= 500){
-                //detruitDivGauche();
-                }
-
-                $('#divCentrale').append($('<div></div>').attr('id','contMatchHaut').addClass('contOuiJet row')); 
-                $('#divCentrale').append($('<div></div>').attr('id','contInfoLigue').addClass('contOuiJet')); 
-                $('#divCentrale').append($('<div></div>').attr('id','contPhoto').addClass('contOuiJet')); 
-                $('#divCentrale').append($('<div></div>').attr('id','contBabillard').addClass('contOuiJet')); 
-                $('#divCentrale').append($('<div></div>').attr('id','contVideo').addClass('contOuiJet')); 
-
-            }
-            
-            /*
-            function getInfoVid(videofile, mBut) {
-                //alert("getInfoVid "+videofile);
-                $('#parent-erreur').remove();   
-                $('#contVids').show();
-                $('#media-video').videoPlayer({
-                    'playerWidth' : 1,
-                    'videoClass' : 'video'
-                });
-                mediaPlayer = document.getElementById('media-video');
-                if(mediaPlayer!=null){
-                $('.close-btn').click(function(){
-                    $('#ecranSombre').remove();
-                    
-                        
-                        mediaPlayer.pause();
-                        try{
-                        mediaPlayer.currentTime = 0;}
-                        catch(err){}
-                        $('.media-box').hide();
-                        $( ".play-btn" ).show();
-                        $('.play-pause').addClass('play').removeClass('pause');
-                        
-                });
-                }
-
-                var requete_ajax = new XMLHttpRequest();
-                var url = "/scriptsphp/getVideoUnique.php";
-                var pVF = String(videofile);
-
-                var sVF = pVF.split(".");
-                var strVid = "videofile=" + sVF[0];
-                params = strVid;
-                url = url + "?" + params;
-                requete_ajax.open('POST', url, true);
-                requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-                requete_ajax.send(params);
-                if(mBut!=undefined&&mBut!=""){
-                chargeListeCote(videofile, mBut);}
-                requete_ajax.onreadystatechange = function() {
-                    if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-
-                        infoVid = eval('(' + requete_ajax.responseText + ')');
-                        $('#rateSpan').text("RATING: " + infoVid.eval + " / 5");
-                        $('#nbVuesSpan').text("Vue " + infoVid.nbVues + " fois");
-                        $('.video-info p').text("Marqueur: " + infoVid.NomJoueur);
-                        evalBut = getCookie('videoId_eval_' + infoVid.videoId);
-                        if (evalBut != null) {
-                            $('#rating-star').raty({
-                                score : evalBut
-                            });
-                        } else {
-                            $('#rating-star').raty({
-                                click : function(score, evt) {
-                                    $.post('/scriptsphp/evalueVid.php', {
-                                        videoId : infoVid.videoId,
-                                        evalBut : score
-                                    });
-                                    setCookie('videoId_eval_' + infoVid.videoId, score, 1000);
-                                }
-                            });
-                            
-
-                        }
-                        vidSuite(videofile, mBut);
-                            $.post('/scriptsphp/incrementeVidNbVues.php', {
-                                videoId : infoVid.videoId
-                            });
-                            $('#drapeauVert').click(function() {
-                                $.post('/scriptsphp/changeAngleOk.php', {
-                                    changeAngle : 1,
-                                    videoId : infoVid.videoId
-                                });
-                            });
-                            $('#drapeauRouge').click(function() {
-                                $.post('/scriptsphp/changeAngleOk.php', {
-                                    changeAngle : -1,
-                                    videoId : infoVid.videoId
-                                });
-                            });
-
-
-                    }
-                }
-            }
-
-            function chargeListeCote(videofile, mBut) {
-
-                vidsAlt = mBut;
-                //alert("mBut.video.length :"+mBut.video.length);
-                if (mBut.video.length > 0) {
-                    //$(laliste)=$('#media-play-list');
-                    videNoeud('media-play-list');
-
-                    $('#media-play-list').append($('<ul id="play-list"></ul>'));
-                    for (var a = 0; a < mBut.video.length; a++) {
-                        //alert(vidsAlt.video[a].fic);
-                        $('#media-play-list').append($('<li></li>').append(
-
-                        // $('<video></video>').addClass('play-item').attr('src',vidsAlt.video[a].fic),
-                        $('<div></div>').addClass('thumbnail-wrap').append(/*$('<span></span>').addClass('thumbnail-title').text(vidsAlt.video[a].cam),*//*
-                        $('<br />'), $('<span></span>').addClass('thumbnail-content').text("Cam " + vidsAlt.video[a].cam), $('<img></img>').addClass('thumbnail-content').attr("src", "/images/icones/movie.png").attr("alt", "Video"))).click({
-                            vids : vidsAlt.video[a].fic,
-                            but : mBut
-                        }, function(event) {
-                            getInfoVid(event.data.vids, event.data.but);
-                        })
-                        //.click(loadVideo(vidsAlt.video[a].fic))
-                        );
-                    }
-                    $('#media-play-list').show();
-
-                }
-
-            }
-
-            function vidSuite(videofile, mBut) {
-
-                vidSVC = document.getElementById('media-video');
-                vidSVC.style.display = "block";
-                vidSVC.load();
-
-                rang = 0;
-
-        $('video').attr('preload', 'auto');
-        
-
-                $('.media-box > img, .erreur').remove();
-                $('.erreur').parent().css('background','#000');
-                mVid = "/lookatthis/" + videofile;
-                    $('#vidPrincId').attr("src", mVid);
-                    $('#parent-erreur').remove();
-
+                }})
+                ),
+                $('<input></input>')
+                .attr("type","hidden")
+                .attr("id","maxFileSize")
+                .attr("name","MAX_FILE_SIZE")
+                .val('2000000'),
+                $('<input></input>')
+                .attr("type","hidden")
+                .attr("id","idContexte")
+                .attr("name","contexte")
+                .val('galerie')
+                );
                 
-                document.getElementById('vidPrincId').addEventListener('error', function(event) { 
-                    if($('.erreur').length<2){
-                    $( this ).parent().before($('<div id="parent-erreur"></div>').append($('<p class="erreur"></p>').text("There is an error with this video, please go to the next one (and sorry, btw...)"))
-                    .append($('<img ></img>').attr("src", "/images/icones/warning.png" ).css("width","50px").css("width","50px")));
-                    //$( this ).unbind("error");
-                    $('.play-pause').addClass('play').removeClass('pause');
-                    }
-                    //alert("There's an error with this video, please go to the next one (and sorry, btw...)")
-                    }, true);
+                $('#modalNouvellePhoto .modal-footer').append(
+                    $('<button></button>').attr("type","button").addClass("btn btn-primary").prop("disabled","true").text(window.tl_bouton_save).on("click",
+                     function() {
+                    sauvegardeGalerie(window.ligueId, window.nouveauFicId);
 
-        //////////////////////
-        // FB Override
+                    }));
+                  
+        $('#divFormulaire').append($(divST),$(lh),$(dLIs));
 
-        logoOverride=true;
-        logoOverrideLoc=document.location.href+"&videofile="+encodeURIComponent(videofile);//+"&but="+encodeURIComponent(mBut);
-        logoOverrideT="Vidéo";
+        $('#divLesInputs').append(
+            $('<div></div>').addClass('divLigneInput'),
+            $('<div></div>').addClass('divLigneInput'),
+            $('<div></div>').addClass('divLigneInput').append(
+                $('<button></button>').attr("type","button").addClass("btn btn-primary").prop("disabled","true").text(window.tl_bouton_save).on("click",
+                    function() {
+                    sauvegardeGalerie(window.ligueId, window.nouveauFicId);
 
+                })
+                ),
+            $(maForme),
+            $('<img></img>').attr('id','imgNouv'),
+            $('<div></div>').addClass('divLigneInput'));
 
+        }
 
+        function structurePage() {
+        if(document.documentElement.clientWidth >= 500){
+        //detruitDivGauche();
+        }
+           console.log("E");
+        $('#barreNav').before($('<div></div>').attr('id','contContMatch').append(
+         
+        $('<div></div>').attr('id','poigneeGauche').addClass('contOuiJet noborder').append('<i class="fas fa-caret-left"></i>').on("click",function(){
+        window.offset= window.offset-7;
+           
+        boiteMatch(0,window.offset);
+        }),
+        $('<div></div>').attr('id','contMatchHaut').addClass('contOuiJet noborder row'),
+        $('<div></div>').attr('id','poigneeDroite').addClass('contOuiJet noborder').append('<i class="fas fa-caret-right"></i>').on("click",function(){
+        window.offset= window.offset+7;
+    
+        boiteMatch(0,window.offset);
+        })));
+          console.log("F");
+        $('#divCentrale').append($('<div></div>').attr('id','contInfoLigue').addClass('contOuiJet'));
+        $('#divCentrale').append($('<div></div>').attr('id','contPhoto').addClass('contOuiJet'));
+        console.log("G");
+        $('#divCentrale').append($('<div></div>').attr('id','contBabillard').addClass('contOuiJet'));
+        $('#divCentrale').append($('<div></div>').attr('id','contVideo').addClass('contOuiJet'));
+           console.log("I");
+        }
 
-
-            };
-            }*/
+           
             function developperBootstrap(){
                         pageId=0;
                         if(window.menus[pageId].ingredients!=undefined)
@@ -1486,9 +1543,13 @@
                         if(window.m!=1)
                         {
                             try{
+                                console.log("J");
                             gestionBackEnd();
+                                console.log("K");
                             peupleDivHaut();
+                                console.log("L");
                             peupleDivBas();
+                                console.log("M");
                             //genereLiensContext(pageId);
                             barreTitreContexte(pageId);
                             if(window.innerWidth>=500)
@@ -1500,7 +1561,7 @@
                                     if(window.Perm<10){
                                         alert(err.message+" - Erreur dans developper()");    
                                         }
-                                };
+                                }
                         }
                         
                         else
@@ -1521,7 +1582,7 @@
         </script>
     </head>
     <body id="mbody">
-        <div class="container-fluid">
+        <div class="container-fluid bg">
             <div class="row">
                 <div id="divHaut" class="col-sm-12"></div>
                 <div id="divMenuHaut" class="col-sm-12"></div>
@@ -1529,7 +1590,8 @@
             </div>
 
             <div class="row">
-                <div id="divCentrale" class="col-sm-9 container">
+                <div id="divCentrale" class="col-sm-9 container contOuiJet couleur1">
+                    
                     <div class="container" id="contVids" style="display:none">
 
                         <!--h1 align="center">video-player</h1-->
@@ -1584,10 +1646,19 @@
 
         </div>
         <script type="text/javascript" charset="utf-8">
-//                                console.log("A");
+                                console.log("A");
+if(getValue('ligueId').length>0){
+            setCookie('ligueId',getValue('ligueId'));
 
+}
+    
+            
 			jQuery(document).ready(function() {
+			    
+                console.log("C");
 				developperBootstrap();
+				
+                console.log("D");
 				rang = 0;
 				structurePage();
 				nbMatchs = 6;
@@ -1611,9 +1682,12 @@
                 
                   
 				}
+				console.log("B");
 				//for (var a = 0; a < nbMatchs; a++) {
-					boiteMatch(0);
+				window.offset=0;
+					boiteMatch(0,window.offset);
 				//}
+				construitDialogue("modalNouvellePhoto");
 				babillard();
 				galerie();
 				//videos();

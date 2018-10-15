@@ -5,14 +5,14 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
 		<!-- Include the jQuery library -->
-		<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 		<script src="/scripts/jquery.js"></script>
 
 		<!-- Include the jQuery Mobile library -->
 		<!--script src="/scripts/jquery.mobile-1.4.5.js"></script>
 		<script src="/scripts/jquery.mobile-1.4.5.min.js"></script-->
-		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
-		<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.js"></script>
+		<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+		<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.js"></script>
 		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
 
@@ -22,8 +22,8 @@
 		<!-- Include jQuery Mobile stylesheets -->
 		<link rel="stylesheet" href="themes/theme_mobile_1.min.css" />
 		<link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
-		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" />
-		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+		<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile.structure-1.4.5.min.css" />
+		<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
 		<link rel="stylesheet" href="/style/mobile.css">
 		<link rel="canonical" href="http://www.syncstats.com/zstats/match.html">
 
@@ -87,16 +87,20 @@
 				divLigne = document.createElement('DIV');
 				divLigne.id = "contResumeMatch";
 				divLigne.className = "ui-collapsible-content ui-body-inherit";
+				
+				$("#col_sommaire > div").append(
+                    $("<div id=tmp_col></div>").append(
+                        $("<div></div>").attr('id','contResume').append(
+                            $("<div></div>").attr("id","contDom"),
+                            $("<div></div>").attr("id","contVis"))));
+				
+				
 
-				divLogoDom =$('<div/>').attr({
-					id:"logoDom"
-				});
-				divLogoVis =$('<div/>').attr({
-					id:"logoVis"
-				});
+				divLogoDom =$('<div></div>').attr("id","logoDom");
+				divLogoVis =$('<div></div>').attr("id","logoVis");
 
 				var nomEqDom = $('<p id="nomEqDom">' + infoMatch.equipeNomDom + "<br/>" + '</p>');
-				var villeEqDom = $('<p id="villeEqDom">' + infoMatch.equipeVilleDom + "<br/>" + '</p>');
+				//var villeEqDom = 
 				var lienImgDom = $('<a id="lienImgDom" href=' + "/zstats/statsequipe.html?equipeId=" + encodeURIComponent(infoMatch.equipeIdDom + "&ligueId=" + infoMatch.ligueId) + '></a>');
 				var logoEquipeDom = $('<img/>').attr({
 					id:"logoEquipeDom",
@@ -109,73 +113,56 @@
 				divImgVis = document.createElement('IMG');
 				divImgVis.id = "logoEquipeVis";
 				divImgVis.className = "logoEquipe";
-				pNomEqVis = document.createElement('P');
-				pNomEqVis.id = "nomEqVis";
-				pNomEqVis.innerHTML = infoMatch.equipeNomVis + "<br/>";
+				
+				pNomEqVis = $('<p></p>').attr("id","nomEqVis").text(infoMatch.equipeNomVis).addClass("moyenTexte");
+				//pVilleEqVis = document.createElement('P');
+				//pVilleEqVis.id = "villeEqVis";
+				//pVilleEqVis.innerHTML = infoMatch.equipeVilleVis + "<br/>";
+				//pVilleEqVis.className = "moyenTexte";
 
-				pNomEqVis.className = "moyenTexte";
-				pVilleEqVis = document.createElement('P');
-				pVilleEqVis.id = "villeEqVis";
-				pVilleEqVis.innerHTML = infoMatch.equipeVilleVis + "<br/>";
-				pVilleEqVis.className = "moyenTexte";
-				divPDom = document.createElement('P');
-				divPDom.id = "tScoreDom";
-				divPDom.className = "grosTexte";
-				divPVis = document.createElement('P');
-				divPVis.id = "tScoreVis";
-				divPVis.className = "grosTexte";
-				divScoreDom = document.createElement('DIV');
-				divScoreDom.id = "scoreDom";
-				divScoreDom.className = "grosTexte";
-				divScoreVis = document.createElement('DIV');
-				divScoreVis.id = "scoreVis";
-				divScoreVis.className = "grosTexte";
-				//	divScoreDom.style.margin="5%";
-				//	divScoreVis.style.margin="5%";
-				pDash = document.createElement('P');
-				pDash.className = "grosTexte";
-				pDash.innerHTML = "-";
-				divDash = document.createElement('DIV');
-				divDash.className = "grosTexte";
 
-				divCont = $('<div/>').attr('id','contResume');
+
+                 $("#contDom").addClass("contEquipe").append(
+                    $(lienImgDom).append($(logoEquipeDom)),
+                    $('<div></div>').append($(nomEqDom),
+                    $('<div></div>').attr("id","scoreDom").addClass("grosTexte").append(
+                        $('<p></p>').attr("id","tScoreDom").addClass("grosTexte").text(infoMatch.equipeScoreDom)
+                    )));
+                $("#contVis").addClass("contEquipe").append(
+                   
+                    $('<div></div>').append(
+                        $(pNomEqVis),
+                    $('<div></div>').attr("id","scoreVis").addClass("grosTexte").append(
+                        $('<p></p>').attr("id","tScoreVis").addClass("grosTexte").text(infoMatch.equipeScoreVis)
+                    )),
+                     $(lienImgVisJS).append($(divImgVis))
+                    );
+				//;
 				if(infoMatch.equipeVilleDom!=undefined){
-								infoMatch.equipeVilleDom.length > 0 ? divLogoDom.appendChild(villeEqDom) : "";}
+				    if(infoMatch.equipeVilleDom.length > 0){
+				         $(divLogoDom).append($('<p id="villeEqDom">' + infoMatch.equipeVilleDom + "<br/>" + '</p>'));
+				         $('#villeEqDom').addClass("moyenTexte");
+				    }								
+								}
 								
-				$(divLogoDom).append($(nomEqDom));
-				$(divLogoDom).append($(lienImgDom));
+				//$(divLogoDom).append($(nomEqDom));
+				//$(divLogoDom).append($(lienImgDom));
 				$(lienImgDom).append($(logoEquipeDom));
-//				divCont.appendChild(divLogoDom);
-				divScoreDom.appendChild(divPDom);
-				divDash.appendChild(pDash);
-				divScoreVis.appendChild(divPVis);
+
+				
+				
 				if(infoMatch.equipeVilleVis!=undefined){
-				infoMatch.equipeVilleVis.length > 0 ? divLogoVis.appendChild(pVilleEqVis) : "";}
-				//divLogoVis.appendChild(pVilleEqVis);
-				$(divLogoVis).append($(pNomEqVis));
-				$(divLogoVis).append($(lienImgVisJS));
-				lienImgVisJS.appendChild(divImgVis);
-
-				$(divCont).append(divLogoDom).append($(divScoreDom)).append($(divDash)).append($(divScoreVis)).append(divLogoVis);
-
-
+				     if(infoMatch.equipeVilleVis.length > 0){
+				         $(divLogoVis).append($('<p id="villeEqVis">' + infoMatch.equipeVilleVis + "<br/>" + '</p>'));
+				         $('#villeEqVis').addClass("moyenTexte");
+                }}
+				
 	//			divCont.appendChild(divLogoVis);
 				//	lecorps = document.getElementById('mbody');
 				$(logoEquipeDom).attr('src', '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdDom);
 				divImgVis.src = '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdVis;
 
-				divPDom.innerHTML = infoMatch.equipeScoreDom;
-				divPVis.innerHTML = infoMatch.equipeScoreVis;
-				//	lecorps.appendChild(divLigne);
 
-				$(divLigne).append($(divCont));
-				//videNoeud('col_sommaire');
-//				$("#col_sommaire > div").remove();
-
-				div2 = $("<div id=tmp_col></div>");
-				$(div2).append($(divCont));
-
-				$("#col_sommaire > div").append($(div2));
 
 				$("#temps_col").page();
 				$("#temps_col").collapsibleset('refresh');
@@ -195,6 +182,8 @@
 				$("#col_buts").collapsible();
 				
 				maPer=0;
+				if(rSMB.buts.length>0){
+				
 				premierBut=rSMB.buts[0].chrono;
 				$.each(rSMB.buts,function(i,valeur){
 //					alert(JSON.stringify(valeur));
@@ -216,7 +205,7 @@
                     }
                     			
 					if(noPer>maPer){
-						$('#listeButs').append($('<li/>').attr('data-role','list-divier').text('Periode '+chronoRel.periode.numero));
+						$('#listeButs').append($('<li/>').attr('data-role','list-divider').text('Periode '+chronoRel.periode.numero));
 						maPer = parseInt(chronoRel.periode.numero);
 					}
 					
@@ -297,7 +286,7 @@
     				}
 
 });*/
-				
+				}
 				
 			}
 
@@ -315,20 +304,30 @@
 				$("#col_arrets").trigger('create');
 				$("#col_arrets").collapsible();
 				maPer=0;
+				if(rSMB.clips.length>0){
+				   
+                                    strChrono = 0 + ":" + 0 + 0;
+				}
+				
 				
 				$.each(rSMB.clips,function(i,valeur){
-
+     if(rSMB.periodes.length>0){
 									var chronoRel = getChronoRel(rSMB.periodes,valeur.chrono);
 									minutes = Math.floor(parseInt(chronoRel.chrono) / 60000);
 									dizSecondes = Math.floor((parseInt(chronoRel.chrono) - minutes * 60000) / 10000);
 									secondes = Math.floor((parseInt(chronoRel.chrono) - minutes * 60000 - dizSecondes * 10000) / 1000);
-									strChrono = minutes + ":" + dizSecondes + secondes;				
+									strChrono = minutes + ":" + dizSecondes + secondes;
+													
 					//alert( chronoRel.periode.numero+'  ' + maPer);					
 					if(parseInt(chronoRel.periode.numero)>maPer){
-						$('#listeArrets').append($('<li/>').attr('data-role','list-divier').text('Periode '+chronoRel.periode.numero));
+						$('#listeArrets').append($('<li/>').attr('data-role','list-divider').text('Periode '+chronoRel.periode.numero));
 						maPer = parseInt(chronoRel.periode.numero);
 					}
-					
+					}else{
+					           $('#listeArrets').append($('<li/>').attr('data-role','list-divider').text('Periode '+0));
+                        maPer = 0;
+                    
+					}
 
 					$('#listeArrets').append(
 						/*$('<li/>').append(function(){
@@ -368,7 +367,7 @@
 							})*/
 							$('<li/>').append(
                                     $('<img />', {
-                                    src: mSrc,
+                                    src: "/images/icones/movie.png",
                                     'class':'logoEquipe'
                                 })
                                     
@@ -536,15 +535,16 @@
 	<body>
 
 		<div data-role="page" id="sommaire">
-			<div data-role="header">
-				<h1>SyncStats Mobile!</h1>
+			<div data-role="header" id="divTete">
+			   
+				<h1> <img src="/images/logoFondNoir.png"/></h1>
 			</div>
 
 			<div data-role="main" class="ui-content" id="main_sommaire">
 
 				<div data-role="collapsible" data-collapsed="false" id="col_sommaire">
 					<h1>Sommaire</h1>
-					<a href="#buts" data-transition="slidefade">Buts</a>
+					<!--a href="#buts" data-transition="slidefade">Buts</a-->
 				</div>
 				<div data-role="collapsible" id="col_buts">
 					<h1>Buts</h1>
@@ -575,7 +575,7 @@
 
 			<div data-role="footer">
 				<h1>www.syncstats.com</h1>
-				<a id="lien_syncboard" data-ajax="false"  class="ui-btn ui-icon-forward ui-btn-icon-right" style="display:block;"><h1>Go to SyncBoard</h1></a>
+				<!--a id="lien_syncboard" data-ajax="false"  class="ui-btn ui-icon-forward ui-btn-icon-right" style="display:block;"><h1>Go to SyncBoard</h1></a-->
 			</div>
 		</div>
 

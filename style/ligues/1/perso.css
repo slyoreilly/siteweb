@@ -1,0 +1,21 @@
+.bouton_1 {background-color:#4471bb}
+div#divTitreDoc {background-color:#040028}
+.cliquable,#contBabillard .simpleMessage .cliquable {color:#040028}
+#barreNav a {color:#040028}
+#barreNav a:hover {color:#4471bb}
+#barreNav >ul >li:hover {background-color:#040028}
+#barreNav >ul >li:hover {color:#4471bb}
+#ulMeneurs a {color:#4471bb}
+#barreNav a:hover {color:#040028}
+#ulMeneurs >li {background-color:#040028}
+#ulMeneurs >li {color:#4471bb}
+#ulMeneurs >li:hover {background-color:#4471bb}
+#ulMeneurs >li:hover {color:#040028}
+#ulMeneurs >li.active {background-color:#4471bb}
+#ulMeneurs >li.active {color:#040028}
+#barreNav ul {background-color:#4471bb}
+.bg {background-image: url('/style/ligues/1/MNH.jpg')}
+.titreOnglet.actif {background-color: #040028color: #4471bb}
+.titreOnglet.passif {background-color: #4471bbcolor: #040028}
+.couleur1 {background-color: #040028}
+td.titreTableau {color: #040028}

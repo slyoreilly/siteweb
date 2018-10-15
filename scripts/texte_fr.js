@@ -142,7 +142,7 @@ tl_index_hintLigue="Nom de la ligue";
 tl_index_hintJoueur="Nom du joueur";
 tl_index_hintAAAMMJJ="AAAA/MM/JJ";
 
-
+tl_index_accueil="Accueil";
 
 ///////////  Boites Contextuelles
 
@@ -176,6 +176,8 @@ tl_match_Resume ="Résumé";
 tl_match_Penalites ="Pénalités";
 tl_match_Reussi ="Réussi";
 tl_match_Manque ="Manqué";
+tl_match_TirPenalite ="Tir de Pénalité";
+tl_match_FiletDesert ="Filet Désert";
 
 		tl_match_Fusillade ="Fusillade";
 		tl_match_corrigePresence = "Corriger les alignements";
@@ -197,15 +199,36 @@ tl_resultats_ButsVis = "Buts - vis";
 ///////////// Classement.html
 
 
-	tl_class_Vic = "Victoires";
-	tl_class_Def  = "Défaites";
-	tl_class_Nul  = "Nulles";
+	tl_class_Vic = "V";
+	tl_class_Def  = "D";
+	tl_class_Nul  = "N";
+	tl_class_VProl = "VP";
+	tl_class_DProl  = "DP";
+	tl_class_Pts  = "Pts";
+	tl_class_BP  = "BP";
+	tl_class_BC  = "BC";
+	tl_class_PJ  = "PJ";
+	tl_class_Diff  = "Diff";
+		tl_class_Disc  = "Discipline";
+	tl_class_Dern10  = "Dern 10";
+	tl_class_Seq  = "Séq";
+	tl_class_PUN  = "PUN";
+	
+	tl_class_Victoires = "Victoires";
+	tl_class_VictoiresProl = "Vic. Prol.";
+	tl_class_DefaitesProl  = "Def. Prol.";
+	tl_class_Defaites = "Défaites";
+	tl_class_Nulles  = "Nulles";
 	tl_class_Points  = "Points";
-	tl_class_BP  = "Buts pour";
-	tl_class_BC  = "Buts contre";
-	tl_class_PJ  = "Parties jouées";
-	tl_class_abr_PJ  = "Parties jouées";
-	tl_class_Diff  = "Différence";
+	tl_class_ButsPour  = "Buts pour";
+	tl_class_ButsContre  = "Buts contre";
+	tl_class_PartiesJouees  = "Parties jouées";
+	tl_class_Difference  = "Différence";
+	tl_class_Discipline  = "Discipline";
+	tl_class_Dernier10  = "Dernier 10";
+	tl_class_Sequence  = "Séquence";
+	tl_class_MinutesPunitions  = "Minutes de punitions";
+	
 
 	tl_class_Classement = "Classement";
 	
@@ -213,6 +236,7 @@ tl_resultats_ButsVis = "Buts - vis";
 
 	tl_stats_Statistiques = "Statistiques" ;
 	tl_stats_Buts = "Buts" ;
+	tl_stats_But = "But" ;
 	tl_stats_Passes = "Passes" ;
 	tl_stats_saisonDeb = "Début de la saison:";
 	tl_stats_saisonFin = "Fin de la saison:";
@@ -298,6 +322,8 @@ tl_connect_pasInsc="Vous n'avez pas de compte? ";
 
 tl_statseq_Saison="Saison";
 tl_statseq_Ligue="Ligue";
+tl_statseq_ville = "Ville";
+
 tl_statseq_nomEq="Nom de l'équipe";
 tl_statseq_ficheVDN="Fiche (V-D-N): ";
 
@@ -305,6 +331,14 @@ tl_statseq_ficheVDN="Fiche (V-D-N): ";
 
 tl_equipes_couleur="Couleur de l'équipe ";
 tl_equipes_ficImage="Fichier d'image ";
+
+tl_equipes_blanc="Blanc";
+tl_equipes_rouge="Rouge";
+tl_equipes_orange="Orange";
+tl_equipes_bleu="Bleu";
+tl_equipes_vert="Vert";
+tl_equipes_noir="Noir";
+
 
 /////////////// horaire.html
 
@@ -326,7 +360,7 @@ tl_login_nomUsager = "Nom d'usager";
 tl_login_motPasse = "Mot de passe";
 tl_login_idInvalide = 'Identification invalide';
 tl_login_idValide = 'Identification valide';
-
+tl_login_composeMessage="Composer votre message";
 
 /////////////////  gestionligue.html
 
@@ -335,7 +369,7 @@ tl_ges_Serie = "Série";
 tl_ges_listeEq = "Liste des équipes";
 tl_ges_abonEq= "Abonner cette équipe";
 tl_ges_desabonEq= "Désabonner cette équipe";
-tl_ges_typeSaison= "Type de saison: ";
+tl_ges_typeSaison= "Type de saison ";
 
 tl_ges_gesHoraire = "Gérer l'horaire";
 tl_ges_noMatch = "Il n'y a pas de match à l'horaire pour cette saison";

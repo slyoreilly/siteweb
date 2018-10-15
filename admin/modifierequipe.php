@@ -19,20 +19,19 @@ $ligueId = $_POST['ligueId'];
 $code = $_POST['code'];
 $ficId = $_POST['ficId'];
 $couleur1 = $_POST['couleur'];
+$ville = $_POST['ville'];
 
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
-	
-		mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
+
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+
 	//////////////////////////////////////////////////////////////////////
 //
 //	Partie upload file
@@ -44,27 +43,26 @@ mysql_query("SET CHARACTER SET 'utf8'");
 //	Les queries
 //
 
-
 	if(1==$code)  // Code 1:  Cr�er une nouvelle equipe.
 {
 	$query_equipe = "INSERT INTO TableEquipe (nom_equipe, logo, ligue_equipe_ref,ficId,equipeActive,dernierMAJ,couleur1) ".
 "VALUES ('$nomEquipe', '$logo', '$ligueId','$ficId',1,NOW(),'$couleur1')";
 		
-		$retour = mysql_query($query_equipe) or die("Erreur: ".$query_equipe.mysql_error);
+		$retour = mysqli_query($conn,$query_equipe) or die("Erreur: ".$query_equipe.mysqli_error($conn));
 
 
 $requeteDernId = "SELECT * FROM TableEquipe WHERE nom_equipe='$nomEquipe' ORDER BY equipe_id DESC";
-$rDernId = mysql_query($requeteDernId) or die("Erreur: ".$requeteDernId.mysql_error);
+$rDernId = mysqli_query($conn,$requeteDernId) or die("Erreur: ".$requeteDernId.mysqli_error($conn));
 
 
-$rEID = mysql_fetch_array($rDernId);
+$rEID = mysqli_fetch_array($rDernId);
 
 
 
 $requeteAbon = "INSERT INTO abonEquipeLigue (equipeId, ligueId, permission, debutAbon, finAbon) ".
 "VALUES ('$rEID[0]', '$ligueId', 30, NOW(), '2050-01-01')";
 
-$retour2 = mysql_query($requeteAbon) or die("Erreur: ".$requeteAbon.mysql_error);
+$retour2 = mysqli_query($conn,$requeteAbon) or die("Erreur: ".$requeteAbon.mysqli_error($conn));
 echo "$rEID[0]";
 
 }
@@ -75,11 +73,11 @@ echo "$rEID[0]";
 		
 		
 		
-	$query_update = "UPDATE TableEquipe SET nom_equipe='$nomEquipe', logo='$logo', ficId='$ficId', couleur1='$couleur1', dernierMAJ=NOW() WHERE equipe_id= '$equipeId'";	
-	mysql_query($query_update)or die(mysql_error()." update");	
-	
-	
-	}
+	$query_update = "UPDATE TableEquipe SET nom_equipe='{$nomEquipe}', logo='{$logo}', ville='{$ville}',ficId='{$ficId}', couleur1='{$couleur1}', dernierMAJ=NOW() WHERE equipe_id= '$equipeId'";	
 
+	mysqli_query($conn,$query_update)or die(mysqli_error($conn)." update");	
+
+	}
+mysqli_close($conn);
 	
 ?>

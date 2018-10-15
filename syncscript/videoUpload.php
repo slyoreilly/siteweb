@@ -65,10 +65,10 @@ if(!get_magic_quotes_gpc())
  
  echo "Good!";
  if($retByte==$_FILES['fichier']['size']){
- 	$cmdwatermark = 'ffmpeg -i '.$chemin.' -i /home/images/logoFondNoir3.png -filter_complex "overlay=x=main_w-overlay_w-10:y=10"'." /home/vidtmp/".$fileName."; "."mv -f /home/vidtmp/".$fileName." ".$chemin;
+ 	$cmdwatermark = 'sudo -u www-data ffmpeg -y -i '.$chemin.' -i /home/images/logoFondNoir3.png -filter_complex "overlay=x=main_w-overlay_w-10:y=10"'." /home/vidtmp/".$fileName."; "."sudo -u www-data mv -f /home/vidtmp/".$fileName." ".$chemin;
  $retour2 = mysqli_query($conn, "INSERT INTO TacheShell (commande,date) 
 VALUES ('{$cmdwatermark}',NOW())")or die(mysqli_error($conn)." INSERT INTO TacheShell");
-$strEnr = "ffmpeg -i /home/lookatthis/".$fileName." -ss 00:00:07 -vframes 1 /home/thumbnails/".$fileName.".jpg";
+$strEnr = "sudo ffmpeg -y -i /home/lookatthis/".$fileName." -ss 00:00:07 -vframes 1 /home/thumbnails/".$fileName.".jpg";
  	
  $retour2 = mysqli_query($conn, "INSERT INTO TacheShell (commande,date) 
 VALUES ('{$strEnr}',NOW())")or die(mysqli_error($conn)." INSERT INTO TacheShell");

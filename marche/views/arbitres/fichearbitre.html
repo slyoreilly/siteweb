@@ -1,0 +1,26 @@
+<p>Quelques refs...</p>
+<ul ng-repeat="x in arbitres | filtreannonces:'arbitre'">
+    <li>
+        <div>No d'usager: {{x.userId}} - {{x.nom}}  - montant demandé: {{x.montantOffert}}</div>
+        <h3>Requis</h3>
+        <ul ng-repeat="mRequis in requis | requisfiltre:x.requis">
+            <li>
+                <!--div>{{getTitreRequis({rId:y.requisId})}}</div-->
+                <div>{{mRequis}}</div>
+
+            </li>
+       </ul>
+       <h3>Arenas</h3>
+        <ul ng-repeat="mArenas in arenas | arenafiltre:x.arenaId">
+            <li>
+                <!--div>{{getTitreRequis({rId:y.requisId})}}</div-->
+                <div>{{mArenas}}</div>
+
+            </li>
+       </ul>
+       
+        <div><a ui-sref="detailsArbitre({id:x.id})">Voir détails</a>
+        <a ui-sref="supprimerArbitre({id:x.id})">Supprimer l'offre</a></div>
+        
+    </li>
+</ul>

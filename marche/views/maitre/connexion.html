@@ -1,0 +1,42 @@
+<section ng-transclude>
+    <article>
+                        <header>
+                            <a class="close-btn" ng-click="showLightBox = false"><i class="fa fa-times-circle"></i></a>
+                        </header>
+                        <content>
+                            <div>
+                                <form name="formconnexion"  novalidate>
+                                    <p>
+                                        Nom d'utilisateur ou courriel:
+                                        <input type="text" name="username"  ng-model="user.username" />
+                                    </p>
+                                    <div ng-show="formconnexion.$submitted || formconnexion.username.$touched">
+                                        <div ng-show="formconnexion.username.$error.required">
+                                            Nom d'utilisateur ou courriel absent!
+                                        </div>
+                                    </div>
+                                    <p>
+                                        Mot de passe: 
+                                        <input type="password" name="mdp" ng-model="user.mdp" required/>
+                                    </p>
+                                    <div ng-show="formconnexion.$submitted || formconnexion.mdp.$touched">
+                                        <div ng-show="formconnexion.mdp.$error.required">
+                                            Manque le mot de passe!
+                                        </div>
+                                    </div>
+                                
+
+                                    <p>
+                                        <input type="submit" ng-click="connexion()">
+                                        </input>
+                                    </p>
+
+                                </form>
+                            </div>
+                          
+                        </content>
+                    </article>
+    
+    
+    
+</section>

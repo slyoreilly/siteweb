@@ -13,10 +13,12 @@ $arenaId = $_POST['arenaId'];
 $telId = $_POST['telId'];
 $batterie = $_POST['batterie'];
 $memoire = $_POST['memoire'];
+$temperature = round($_POST['temperature']);
 $codeEtat= $_POST['codeEtat'];
 $camId= $_POST['camId'];
 
 		echo " - INIT";
+	echo " ".$temperature." ";
 
 
 if (!mysql_connect($db_host, $db_user, $db_pwd))
@@ -60,7 +62,7 @@ mysql_query("SET CHARACTER SET 'utf8'");
 			{$tmpSel=mysql_fetch_row($resultSel );
 			
 			if($codeEtat==$tmpSel[0]){
-				$queryMod = "UPDATE StatutCam SET memoire = '{$memoire}', batterie = '{$batterie}', dernierMaJ=now(), userId = '{$usager}', arenaId = '{$arenaId}', camId = '{$camId}', codeEtat = '{$codeEtat}'
+				$queryMod = "UPDATE StatutCam SET memoire = '{$memoire}', batterie = '{$batterie}',temperature='{$temperature}', dernierMaJ=now(), userId = '{$usager}', arenaId = '{$arenaId}', camId = '{$camId}', codeEtat = '{$codeEtat}'
 					WHERE telId='{$telId}'";
 				mysql_query($queryMod) or die("Erreur: "+$queryMod+"\n"+mysql_error());
 						$message = " - mod1".$queryMod. mysql_error();
@@ -70,7 +72,8 @@ mysql_query("SET CHARACTER SET 'utf8'");
 						
 				}
 				else{
-				$queryMod = "UPDATE StatutCam SET dernierModif = now(), memoire = '{$memoire}', batterie = '{$batterie}', dernierMaJ=now(), userId = '{$usager}', arenaId = '{$arenaId}', camId = '{$camId}', codeEtat = '{$codeEtat}'
+				$queryMod = "UPDATE StatutCam SET dernierModif = now(), memoire = '{$memoire}', batterie = '{$batterie}'
+				,temperature='{$temperature}', dernierMaJ=now(), userId = '{$usager}', arenaId = '{$arenaId}', camId = '{$camId}', codeEtat = '{$codeEtat}'
 					WHERE telId='{$telId}'";
 				mysql_query($queryMod) or die("Erreur: "+$queryMod+"\n"+mysql_error());
 						echo " - mod2".$queryMod;
@@ -81,8 +84,8 @@ mysql_query("SET CHARACTER SET 'utf8'");
 			
 			}
 		else {
-			$queryIns = "INSERT INTO StatutCam (userId,dernierModif,dernierMaJ,arenaId,batterie, memoire, telId, codeEtat, camId) ".
-				"VALUES ('{$usager}',now(),now(),'{$arenaId}','{$batterie}','{$memoire}','{$telId}','{$codeEtat}','{$camId}')";
+			$queryIns = "INSERT INTO StatutCam (userId,dernierModif,dernierMaJ,arenaId,batterie, memoire,temperature, telId, codeEtat, camId) ".
+				"VALUES ('{$usager}',now(),now(),'{$arenaId}','{$batterie}','{$memoire}','{$temperature}','{$telId}','{$codeEtat}','{$camId}')";
 		
 			mysql_query($queryIns) or die("Erreur: "+$queryIns+"\n"+mysql_error());
 		$message = " - ins".$queryIns. mysql_error();
@@ -93,6 +96,6 @@ mysql_query("SET CHARACTER SET 'utf8'");
 	
 	
 		
-		
+	mysql_close();	
 	
 ?>

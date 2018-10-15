@@ -116,7 +116,7 @@ while($rangSai=mysql_fetch_array($rSai))
 		 			AND chrono<=(UNIX_TIMESTAMP('{$listeLigue[$a]['saisons'][$ISai]['dm']}')*1000) 
 		 			AND TableMatch.ligueRef='{$listeLigue[$a]['ligueId']}'
 		 			ORDER BY equipe_event_id";
-
+mysql_query("SET SQL_BIG_SELECTS=1");
 	$rMatch = mysql_query($reqMatchs)or die(mysql_error()." reqMatchs");
 	$IE = -1;
 	$eqId=0;

@@ -117,7 +117,7 @@ function afficheSommairePunitions(rJSON) {
 
 			var lesLiens = new Array();
 			lesLiens[0] = null;
-			lesLiens[1] = '/zstats/statsjoueur.html?joueurId=' + rJSON.punitions[J].joueurId;
+			lesLiens[1] = '/zstats/statsjoueur.html?joueurId=' + rJSON.punitions[J].joueurId+'&m='+getValue('m');
 			lesLiens[2] = null;
 			lesLiens[3] = null;
 
@@ -681,7 +681,7 @@ function afficheStatsDom(statsJoueurs, code) {
 				lesCols[3] = parseInt(statsJoueurs.joueurs[J].nbButs) + parseInt(statsJoueurs.joueurs[J].nbPasses);
 
 				var lesLiens = new Array();
-				lesLiens[0] = '/zstats/statsjoueur.html?joueurId=' + statsJoueurs.joueurs[J].joueurId;
+				lesLiens[0] = '/zstats/statsjoueur.html?joueurId=' + statsJoueurs.joueurs[J].joueurId+'&m='+getValue('m');
 				lesLiens[1] = null;
 				lesLiens[2] = null;
 				lesLiens[3] = null;
@@ -858,7 +858,7 @@ function afficheStatsEquipe(statsJSON) {
 					var lesLiens = new Array();
 					lesLiens[0] = null;
 					lesLiens[1] = null;
-					lesLiens[2] = '/zstats/statsjoueur.html?joueurId=' + statsJSON.joueurs[J].id;
+					lesLiens[2] = '/zstats/statsjoueur.html?joueurId=' + statsJSON.joueurs[J].id+'&m='+getValue('m');
 					lesLiens[3] = null;
 					//'statsequipe.html?equipeId=' + cJSON.equipes[J].id + '&m=' + window.m;
 					lesLiens[4] = null;
@@ -944,8 +944,8 @@ function afficheMeneursPatineurs(statsJSON, code) {
 			for ( a = 2; a < tbody.childNodes.length; a++) {
 				tbody.childNodes[a].childNodes[2].className = "colChoisie";
 			}
-		}
-	};
+		};
+	}
 
 	function classeButs(statsJSON, code) {
 		return function() {
@@ -960,8 +960,8 @@ function afficheMeneursPatineurs(statsJSON, code) {
 			for ( a = 2; a < tbody.childNodes.length; a++) {
 				tbody.childNodes[a].childNodes[5].className = "colChoisie";
 			}
-		}
-	};
+		};
+	}
 
 	function classePasses(statsJSON, code) {
 		return function() {
@@ -976,8 +976,8 @@ function afficheMeneursPatineurs(statsJSON, code) {
 			for ( a = 2; a < tbody.childNodes.length; a++) {
 				tbody.childNodes[a].childNodes[6].className = "colChoisie";
 			}
-		}
-	};
+		};
+	}
 
 	function classePoints(statsJSON, code) {
 		return function() {
@@ -992,8 +992,8 @@ function afficheMeneursPatineurs(statsJSON, code) {
 			for ( a = 2; a < tbody.childNodes.length; a++) {
 				tbody.childNodes[a].childNodes[7].className = "colChoisie";
 			}
-		}
-	};
+		};
+	}
 
 	function construitMP(statsJSON, code) {
 		switch(code) {
@@ -1013,7 +1013,7 @@ function afficheMeneursPatineurs(statsJSON, code) {
 		div1 = document.getElementById(strParent);
 		table1 = document.createElement('TABLE');
 		table1.id = "tableMeneurs_" + code;
-		table1.className = "c_tableau";
+		table1.className = " table table-striped table-light table-hover";/*c_tableau*/
 		tb = document.createElement('TBODY');
 		tb.id = "meneurs_tbody_" + code;
 		//		tb.id = "bodyTable";
@@ -1105,7 +1105,7 @@ function afficheMeneursPatineurs(statsJSON, code) {
 					var lesLiens = new Array();
 					lesLiens[0] = null;
 					lesLiens[1] = null;
-					lesLiens[2] = '/zstats/statsjoueur.html?joueurId=' + statsJSON.joueurs[J].id;
+					lesLiens[2] = '/zstats/statsjoueur.html?joueurId=' + statsJSON.joueurs[J].id+'&m='+getValue('m');
 					lesLiens[3] = null;
 					//'statsequipe.html?equipeId=' + cJSON.equipes[J].id + '&m=' + window.m;
 					lesLiens[4] = null;
@@ -1113,8 +1113,11 @@ function afficheMeneursPatineurs(statsJSON, code) {
 					lesLiens[6] = null;
 					lesLiens[7] = null;
 
-					for ( K = 0; K < lesCols.length; K++) {
+					$(rangee).append($('<th></th>').attr("scope","row").text(parseInt(J + 1)));
+
+					for ( K = 1; K < lesCols.length; K++) {
 						cellule = document.createElement('TD');
+						cellule.className="px-1 px-md-2";
 						if (lesLiens[K] != null) {
 							lien = document.createElement('A');
 							lien.innerHTML = lesCols[K];
@@ -1124,9 +1127,10 @@ function afficheMeneursPatineurs(statsJSON, code) {
 							texte = document.createTextNode(lesCols[K]);
 							cellule.appendChild(texte);
 						}
+						
 						rangee.appendChild(cellule);
 					}
-					J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
+					//J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
 					var a = statsJSON.joueurs[J].id;
 					rangee.onclick = (function(a) {
 						return function() {
@@ -1176,7 +1180,7 @@ function afficheMeneursGardiens(gJSON) {
 	div1 = document.getElementById('tabMenGard');
 	table1 = document.createElement('TABLE');
 	table1.id = "tableauGardiens";
-	table1.className = "c_tableau";
+	table1.className = "table table-striped table-light table-hover";
 	tb = document.createElement('TBODY');
 	tb.id = "bodyTable";
 	tr2 = document.createElement('TR');
@@ -1262,7 +1266,7 @@ function afficheMeneursGardiens(gJSON) {
 
 					var lesLiens = new Array();
 					lesLiens[0] = null;
-					lesLiens[1] = '/zstats/statsjoueur.html?joueurId=' + gJSON.gardiens[J].id;
+					lesLiens[1] = '/zstats/statsjoueur.html?joueurId=' + gJSON.gardiens[J].id+'&m='+getValue('m');
 					lesLiens[2] = null;
 					lesLiens[3] = null;
 					//'statsequipe.html?equipeId=' + cJSON.equipes[J].id + '&m=' + window.m;
@@ -1270,6 +1274,8 @@ function afficheMeneursGardiens(gJSON) {
 					lesLiens[5] = null;
 					lesLiens[6] = null;
 					lesLiens[7] = null;
+
+	//$(rangee).append('<th></th>').attr("scope","row").text(parseInt(J + 1));
 
 					for ( K = 0; K < lesCols.length; K++) {
 						cellule = document.createElement('TD');
@@ -1284,7 +1290,7 @@ function afficheMeneursGardiens(gJSON) {
 						}
 						rangee.appendChild(cellule);
 					}
-					J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
+					//J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
 
 			}
 
@@ -1363,125 +1369,7 @@ function afficheResumeMatch(infoMatch) {
 }
 
 
-function afficheFusillade(rJSON) {
 
-	if (rJSON.Fusillade.length > 0) {
-		div1 = document.getElementById('tabResume');
-		tabFus = document.createElement('TABLE');
-		tabFus.className = 'c_tableau';
-		tabFus.id = 'tabFus';
-		tBodyFus = document.createElement('TBODY');
-		tBodyFus.id = 'tBodyFus';
-		tdRTFus = document.createElement('TD');
-		tdRTFus.id = 'tdTitreTableauFus';
-		tdRTFus.className = 'titreTableau';
-		tdRTFus.innerHTML = window.tl_match_Fusillade;
-		tdRTFus.colSpan = 4;
-		trRTFus = document.createElement('TR');
-		trRTFus.id = 'trTitreTableauFus';
-		trRTFus.className = 'titreTableau';
-		trTitreFus = document.createElement('TR');
-		trTitreFus.id = 'trTitreFus';
-		trTitreFus.className = 'rangeeTitre';
-		tdEqDomFus = document.createElement('TD');
-		tdEqDomFus.id = 'tdEqDomFus';
-		tdEqDomFus.innerHTML = rJSON.eqDom;
-		tdEqDomFus.colSpan = 2;
-		tdEqDomFus.style.width = "50%";
-		tdEqVisFus = document.createElement('TD');
-		tdEqVisFus.id = 'tdEqVisFus';
-		tdEqVisFus.colSpan = 2;
-		tdEqVisFus.style.width = "50%";
-		tdEqVisFus.innerHTML = rJSON.eqVis;
-
-		tabFus.appendChild(tBodyFus);
-		trRTFus.appendChild(tdRTFus);
-		tBodyFus.appendChild(trRTFus);
-		tBodyFus.appendChild(trTitreFus);
-		trTitreFus.appendChild(tdEqDomFus);
-		trTitreFus.appendChild(tdEqVisFus);
-
-		div1.appendChild(tabFus);
-		nbLig = 0;
-		nbDom = 0;
-		nbVis = 0;
-		var j = 0;
-		while (j < rJSON.Fusillade.length) {
-
-			if (rJSON.Fusillade[j].equipe == rJSON.eqDom) {
-				if (nbDom >= nbLig) {
-					trFus = document.createElement('TR');
-					trFus.id = 'trFus_' + nbLig;
-					trFus.className = 'lignePaire';
-
-					tdFus = document.createElement('TD');
-					tdFus.innerHTML = rJSON.Fusillade[j].nom;
-					tdFus2 = document.createElement('TD');
-					tdFus2.innerHTML = (rJSON.Fusillade[j].but) ? '\u2713' : 'X';
-					(nbLig) % 2 == 0 ? tdFus.className = 'lignePaire' : tdFus.className = 'ligneImpaire';
-					(nbLig) % 2 == 0 ? tdFus2.className = 'lignePaire' : tdFus2.className = 'ligneImpaire';
-
-					trFus.appendChild(tdFus);
-					trFus.appendChild(tdFus2);
-
-					nbLig++;
-					tBodyFus.appendChild(trFus);
-				} else {
-					trFus = document.getElementById('trFus_' + nbDom);
-
-					tdFus = document.createElement('TD');
-					tdFus.innerHTML = rJSON.Fusillade[j].nom;
-					tdFus2 = document.createElement('TD');
-					tdFus2.innerHTML = (rJSON.Fusillade[j].but) ? '\u2713' : 'X';
-					(nbLig) % 2 == 0 ? tdFus.className = 'lignePaire' : tdFus.className = 'ligneImpaire';
-					(nbLig) % 2 == 0 ? tdFus2.className = 'lignePaire' : tdFus2.className = 'ligneImpaire';
-
-					trFus.appendChild(tdFus);
-					trFus.appendChild(tdFus2);
-
-				}
-				nbDom++;
-			}
-			if (rJSON.Fusillade[j].equipe == rJSON.eqVis) {
-				if (nbVis >= nbLig) {
-
-					trFus = document.createElement('TR');
-					trFus.id = 'trFus_' + nbLig;
-					trFus.className = 'lignePaire';
-
-					tdFus = document.createElement('TD');
-					tdFus.innerHTML = rJSON.Fusillade[j].nom;
-					tdFus2 = document.createElement('TD');
-					tdFus2.innerHTML = (rJSON.Fusillade[j].but) ? "\u2713 " : 'X';
-					(nbLig) % 2 == 0 ? tdFus.className = 'lignePaire' : tdFus.className = 'ligneImpaire';
-					(nbLig) % 2 == 0 ? tdFus2.className = 'lignePaire' : tdFus2.className = 'ligneImpaire';
-
-					trFus.appendChild(tdFus);
-					trFus.appendChild(tdFus2);
-
-					nbLig++;
-					tBodyFus.appendChild(trFus);
-				} else {
-					trFus = document.getElementById('trFus_' + nbVis);
-					tdFus = document.createElement('TD');
-					tdFus.innerHTML = rJSON.Fusillade[j].nom;
-					tdFus2 = document.createElement('TD');
-					tdFus2.innerHTML = (rJSON.Fusillade[j].but) ? "\u2713 " : 'X';
-					(nbLig) % 2 == 0 ? tdFus.className = 'lignePaire' : tdFus.className = 'ligneImpaire';
-					(nbLig) % 2 == 0 ? tdFus2.className = 'lignePaire' : tdFus2.className = 'ligneImpaire';
-
-					trFus.appendChild(tdFus);
-					trFus.appendChild(tdFus2);
-
-				}
-
-				nbVis++;
-			}
-			j++;
-		}
-	}
-
-}
 
 //////////////////////////////////////////////////////
 ///

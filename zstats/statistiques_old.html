@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<title>Statistiques</title>
+		<link rel="stylesheet" href="/style/general.css" type="text/css">
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+		<link rel="shortcut icon" href="/favicon.ico" />
+
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		        <meta name="viewport" content="width=device-width,initial-scale=1">
+		<style>
+		</style>
+		<script type="text/javascript" charset="utf-8">
+			gereLangue();
+		</script>
+
+		<script type="text/javascript" charset="utf-8">
+			function getInfoLigue(ligueId) {
+				//	return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/stats2/infoLigue2JSON.php";
+				//	alert(url);
+				var params = "ligueId=" + ligueId;
+				//alert(params);
+				requete_ajax.open('POST', url, true);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						vecLigue = eval('(' + requete_ajax.responseText + ')');
+						//alert(vecEquipe.Ligue.saisons.length);
+
+					}
+				};
+				//	}
+			}
+
+			function getSaisonActive(ligueId) {
+				//	return function(){
+
+				var requete_ajax = new XMLHttpRequest();
+
+				var url = "/scriptsphp/getSaisonActive.php";
+				//	alert(url);
+				var params = "ligueId=" + ligueId;
+				//alert(params);
+				requete_ajax.open('POST', url, true);
+
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+						saisonId = requete_ajax.responseText;
+						getClassementJSON(window.ligueId, saisonId);
+						getMatchsdeLigueID(saisonId);
+
+					}
+				};
+				//	}
+			}
+			function getClassementJSON(LigueID, saisonId) {
+				var requete_ajax = new XMLHttpRequest();
+				requete_ajax.open('POST', '/stats2/classement2JSONPOST.php', true);
+				var ligueId = 'ligueId=' + LigueID;
+				var strSaisonId = 'saisonId=' + saisonId;
+				params = ligueId + '&' + strSaisonId;
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+
+				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						cJSON = eval('(' + requete_ajax.responseText + ')');
+						//alert(requete_ajax.responseText);
+
+						try {
+							cJSON.saisons.sort(function(a, b) {
+								var d1 = new Date(a.pm);
+								var d2 = new Date(b.pm);
+								return (d1 - d2)
+							});
+
+							selSaisonJS = document.getElementById('selSaison');
+							
+							selSaisonJS.onchange = function() {
+								getClassementJSON(window.ligueId, window.cJSON.saisons[document.getElementById('selSaison').selectedIndex].saisonId);
+								getMatchsdeLigueID(window.cJSON.saisons[document.getElementById('selSaison').selectedIndex].saisonId);
+							};
+							//var maSai = getValue("saisonId");
+							
+							if(selSaisonJS.children.length==0){
+							for ( K = 0; K < cJSON.saisons.length; K = K + 1) {
+								opt = document.createElement('OPTION');
+								if (cJSON.saisons[K].nom != undefined) {
+									opt.innerHTML = cJSON.saisons[K].nom + " - " + cJSON.saisons[K].pm.split(" ")[0] + " au " + cJSON.saisons[K].dm.split(" ")[0];
+									
+							
+							
+								} else {
+									opt.innerHTML = cJSON.saisons[K].pm.split(" ")[0] + " au " + cJSON.saisons[K].dm.split(" ")[0];
+								}
+								opt.value = cJSON.saisons[K].saisonId;
+								//opt.onclick =  function() {	getClassementJSON(window.ligueId, window.cJSON.saisons[K].saisonId);};
+								//alert(cJSON.saisons[K].saisonId+" / "+maSai);
+								/*if (cJSON.saisons[K].saisonId == maSai) {
+									opt.selected = "selected";
+									document.getElementById("selSaison").selectedIndex = K;
+								}*/
+								if (K == cJSON.saisons.length - 1 && saisonId == null) {
+									opt.selected = "selected";
+									document.getElementById("selSaison").selectedIndex = K;
+								}
+								selSaisonJS.appendChild(opt);
+								//remplirTableau()
+								
+								/*vecEquipe.Saisons[K].joueurs.sort(function(a, b) {
+								 return (parseInt(b.nbButs) + parseInt(b.nbPasses)) - (parseInt(a.nbButs) + parseInt(a.nbPasses))
+								 });*/
+
+							}
+							}
+
+							
+						
+
+						} catch(err) {
+						}
+						
+													
+						window.loadCJSON++;
+						
+						if(window.loadCJSON>=2){
+						remplirTableau(saisonId);
+						if (window.m != 1) {
+							defileFiches(saisonId);
+						}
+						}
+
+					}
+				};
+				//alert(requete_ajax.responseText);
+				return requete_ajax.responseText;
+			}
+
+			function getMatchsdeLigueID(saisonId) {
+			    
+			    
+			      $.ajax({
+                        url : "/scriptsphp/matchsDsSaison.php"/*"http://syncstats.com/scriptsphp/listeEquipes.php"*/,
+                        datatype : 'json',
+                        contentType: "application/json",
+                        type : 'POST',
+                        data : JSON.stringify({
+                            saisonId : saisonId,
+                            ligueId : window.ligueId
+                        }),
+                        contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+                        success : function(response) {
+                            matchsDsSaison = eval('(' + response + ')');
+                        window.loadCJSON++;
+                        if(window.loadCJSON>=2){
+                        remplirTableau(saisonId);
+                        if (window.m != 1) {
+                            defileFiches(saisonId);
+                        }
+                        }
+                         
+                        },
+                        error : function(xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            alert(err.Message + "  --  ereur lc2MS");
+                        }
+                    });
+    
+			    
+			
+			}
+
+			function remplirTableau(saisonId) {
+
+				if (document.getElementById('tableClassement') != undefined)
+					detruitNoeud('tableClassement');
+				if (window.m != 1) {
+					defileFiches(saisonId);
+				}
+				//genTableau(window.mJS);
+
+				if (parseInt(window.ligueId) == 49 || parseInt(window.ligueId) == 50 || parseInt(window.ligueId) == 51) {
+
+					afficheClassement(window.cJSON.customClassement.saisons[extirpeSaison(saisonId)]);
+				} else {
+					afficheClassement(window.cJSON.saisons[extirpeSaison(saisonId)]);
+				}
+
+			}
+
+			function extirpeSaison(id) {
+				//			alert(window.vecEquipe.equipes.length);
+				
+				if (parseInt(window.ligueId) == 49 || parseInt(window.ligueId) == 50 || parseInt(window.ligueId) == 51) {
+
+					var k = 0;
+					while (k < window.window.cJSON.customClassement.saisons.length) {
+					//					alert(window.vecEquipe.equipes.equipeId);
+						if (id == window.window.cJSON.customClassement.saisons[k].saisonId) {
+							return k;
+						}
+						k++;
+					}
+				} else {
+					var k = 0;
+					while (k < window.window.cJSON.saisons.length) {
+					//					alert(window.vecEquipe.equipes.equipeId);
+						if (id == window.window.cJSON.saisons[k].saisonId) {
+							return k;
+						}
+						k++;
+					}
+				}
+				
+				return -1;
+			}
+
+
+
+			function discrDiff(a, b) {
+				return parseInt(b.bp - b.bc) - parseInt(a.bp - a.bc);
+			}
+
+			function discrVic(a, b) {
+				return parseInt(b.vicDom) + parseInt(b.vicVis) - parseInt(a.vicDom) - parseInt(a.vicVis);
+			}
+
+			function discrPJ(a, b) {
+
+			}
+
+			function discrFiche(a, b) {
+
+				ficheA = 0;
+				ficheB = 0;
+				strFiche = "";
+
+				if (window.matchsDsSaison != undefined) {
+					duels = new Array();
+					for (var d = 0; d < window.matchsDsSaison.matchs.length; d++) {
+						if ((window.matchsDsSaison.matchs[d].eqDomId == a.id && window.matchsDsSaison.matchs[d].eqVisId == b.id) || (window.matchsDsSaison.matchs[d].eqDomId == b.id && window.matchsDsSaison.matchs[d].eqVisId == a.id)) {
+							duels.push(window.matchsDsSaison.matchs[d]);
+						}
+					}
+					for (var e = 0; e < duels.length; e++) {
+						if (duels[e].eqDomId == a.id) {
+							if (parseInt(duels[e].equipeScoreDom) >= parseInt(duels[e].equipeScoreVis)) {
+								if (duels[e].equipeScoreDom != duels[e].equipeScoreVis) {
+									ficheA++;
+									ficheA++;
+								} else {
+									ficheA++;
+									ficheB++;
+								}
+							} else {
+								ficheB++;
+								ficheB++;
+							}
+							strFiche += duels[e].eqDom + ": " + duels[e].equipeScoreDom + " - " + duels[e].eqVis + ": " + duels[e].equipeScoreVis + " fiche A-B:" + ficheA + ficheB + "\n";
+						}
+						if (duels[e].eqVisId == a.id) {
+							if (parseInt(duels[e].equipeScoreVis) >= parseInt(duels[e].equipeScoreDom)) {
+								if (duels[e].equipeScoreVis != duels[e].equipeScoreDom) {
+									ficheA++;
+									ficheA++;
+								} else {
+									ficheA++;
+									ficheB++;
+								}
+							} else {
+								ficheB++;
+								ficheB++;
+							}
+							strFiche += duels[e].eqDom + ": " + duels[e].equipeScoreDom + " - " + duels[e].eqVis + ": " + duels[e].equipeScoreVis + " fiche A-B:" + ficheA + ficheB + "\n";
+						}
+					}
+					//		alert("fiche B:"+ficheB+" , ficheA: "+ficheA);
+					//	alert(strFiche);
+
+				}
+				return ficheB - ficheA;
+			}
+
+			function afficheClassement(saison) {
+				videNoeud('divCentrale');
+				                        var defP = false;
+                        try {
+                            if (window.vecLigue.Ligue.cleValeur.reglements.classement == "lnh2013") {
+                                defP = true;
+                            }
+                        } catch(err) {
+                        }
+                        var ptsDisc = false;
+                        try {
+                            if (window.vecLigue.Ligue.cleValeur.reglements.ptsDisc == "true") {
+                                ptsDisc = true;
+                            }
+                        } catch(err) {
+                        }
+
+				equipes = saison.equipe;
+							equipes.sort(function(a, b) {
+								if (parseInt(window.ligueId) == 49 || parseInt(window.ligueId) == 50 || parseInt(window.ligueId) == 51) {
+									compPoints = b.points - a.points;
+								} else {
+									compPoints = (parseInt(2 * b.vicDom) + 2 * parseInt(b.vicVis) + parseInt(b.nulDom) + parseInt(b.nulVis)+ parseInt(b.defPDom) + parseInt(b.defPVis)) - (parseInt(2 * a.vicDom) + 2 * parseInt(a.vicVis) + parseInt(a.nulDom) + parseInt(a.nulVis) + parseInt(a.defPDom) + parseInt(a.defPVis));
+								    if(ptsDisc){
+								        tmpDisc = b.ptsDisc -a.ptsDisc;
+								        compPoints += tmpDisc;
+								    }
+								}
+
+								if (compPoints == 0) {
+
+									retour = discrVic(a, b);
+									if (retour == 0) {
+										retour = discrFiche(a, b);
+										if(parseInt(window.ligueId) == 79 || parseInt(window.ligueId) == 80 || parseInt(window.ligueId) == 81 || parseInt(window.ligueId) == 83){
+										    retour = 0;
+										}
+										if (retour == 0) {
+											retour = discrDiff(a, b);
+										}
+									}
+								} else {
+									retour = compPoints;
+								}
+								return retour;
+							});
+
+				switch(parseInt(saison.type)) {
+					case 1:
+					case 2:
+
+						//	if(verifiePermission()<9)
+						//		alert(string2);
+						//var cJSON = eval('(' + string2 + ')');
+                        
+
+						var titreClassement = new Array();
+						var n=0;
+						titreClassement[n] = window.tl_match_Equipe;
+						n++;
+						titreClassement[n] = window.tl_class_PJ;
+						n++;
+						titreClassement[n] = window.tl_class_Vic;
+						n++;
+						titreClassement[n] = window.tl_class_Def;
+						n++;
+						titreClassement[n] = window.tl_class_Nul;
+						n++;
+						if(defP){
+                        titreClassement[n] = "OT Loss";
+                        n++;						    
+						}
+						if(ptsDisc){
+                        titreClassement[n] = "Discipline";
+                        n++;                            
+                        }
+						titreClassement[n] = window.tl_class_Points;
+						n++;
+						titreClassement[n] = window.tl_class_BP;
+						n++;
+						titreClassement[n] = window.tl_class_BC;
+						n++;
+						titreClassement[n] = window.tl_class_Diff;
+						n++;
+						
+						div1 = document.getElementById('divCentrale');
+						table1 = document.createElement('TABLE');
+						table1.id = "tableClassement";
+						table1.className = "c_tableau";
+						tb = document.createElement('TBODY');
+						tb.id = "bodyTable";
+						tr1 = document.createElement('TR');
+						tr1.id = "date2";
+						td1 = document.createElement('TD');
+						td1.className = "titreTableau";
+						td1.colSpan = titreClassement.length;
+						td1.innerHTML = window.tl_class_Classement;
+						tr2 = document.createElement('TR');
+						tr2.id = "rangeeTitreClassement";
+
+						for ( i = 0; i < titreClassement.length; i++) {
+							tdi = document.createElement('TD');
+							tdi.className = "rangeeTitre";
+							tdi.innerHTML = titreClassement[i];
+							tr2.appendChild(tdi);
+						}
+
+						tr1.appendChild(td1);
+						tb.appendChild(tr1);
+						tb.appendChild(tr2);
+						table1.appendChild(tb);
+						div1.appendChild(table1);
+
+						/////////////////////////////////////////////////////////////
+
+						////////////////////////////////////////////////////////////
+
+						try
+						{
+
+
+							for ( J = 0; J < equipes.length; J++) {
+								//	if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
+								rangee = document.createElement('TR');
+								rangee.id = "rangeeClasse_" + J;
+								amettre = document.getElementById('rangeeTitreClassement');
+								amettre.parentNode.appendChild(rangee);
+
+								var lesCols = new Array();
+								for(var c=0;c<titreClassement.length;c++){
+								    if(titreClassement[c].localeCompare(window.tl_match_Equipe)==0){
+								        lesCols[c] = equipes[J].nom;
+								    } else if(titreClassement[c].localeCompare(window.tl_class_PJ)==0){
+								        lesCols[c] = parseInt(equipes[J].vicDom) + parseInt(equipes[J].vicVis)
+                                                        + parseInt(equipes[J].defDom) + parseInt(equipes[J].defVis)
+                                                        + parseInt(equipes[J].nulDom) + parseInt(equipes[J].nulVis)
+                                                        + parseInt(equipes[J].defPDom) + parseInt(equipes[J].defPVis);
+								    }else if(titreClassement[c].localeCompare(window.tl_class_Vic)==0){
+								        lesCols[c] = parseInt(equipes[J].vicDom) + parseInt(equipes[J].vicVis);
+                                        
+                                    }else if(titreClassement[c].localeCompare(window.tl_class_Def)==0){
+                                        lesCols[c] = parseInt(equipes[J].defDom) + parseInt(equipes[J].defVis);
+                                        
+                                    }else if(titreClassement[c].localeCompare(window.tl_class_Nul)==0){
+                                        lesCols[c] = parseInt(equipes[J].nulDom) + parseInt(equipes[J].nulVis);
+                                        
+                                    }else if(titreClassement[c].localeCompare("OT Loss")==0){
+                                        lesCols[c] = parseInt(equipes[J].defPDom) + parseInt(equipes[J].defPVis);
+                                        
+                                    }else if(titreClassement[c].localeCompare(window.tl_class_Points)==0){
+                                         basePoints = parseInt(2 * equipes[J].vicDom) + 2 * parseInt(equipes[J].vicVis) + parseInt(equipes[J].nulDom) + parseInt(equipes[J].nulVis);
+                                         basePoints = defP ? basePoints + parseInt(equipes[J].defPDom) + parseInt(equipes[J].defPVis) : basePoints;
+                                          lesCols[c] = ptsDisc ? basePoints + parseInt(equipes[J].ptsDisc) : basePoints;
+                                            if (parseInt(window.ligueId) == 49 || parseInt(window.ligueId) == 50 || parseInt(window.ligueId) == 51) {
+                                                    lesCols[c] = equipes[J].points;
+                                             }
+                                
+                                    }else if(titreClassement[c].localeCompare(window.tl_class_BP)==0){
+                                       lesCols[c] =  equipes[J].bp;
+                                        
+                                    }else if(titreClassement[c].localeCompare(window.tl_class_BC)==0){
+                                        lesCols[c] = equipes[J].bc;
+                                    }else if(titreClassement[c].localeCompare(window.tl_class_Diff)==0){
+                                        lesCols[c] = parseInt(equipes[J].bp) - parseInt(equipes[J].bc);
+                                    }else if(titreClassement[c].localeCompare("Discipline")==0){
+                                         lesCols[c] =  equipes[J].ptsDisc;
+                                    }
+								    
+								}
+								/*
+								lesCols[2] = parseInt(equipes[J].vicDom) + parseInt(equipes[J].vicVis);
+								lesCols[3] = parseInt(equipes[J].defDom) + parseInt(equipes[J].defVis);
+								lesCols[4] = parseInt(equipes[J].nulDom) + parseInt(equipes[J].nulVis);
+								lesCols[5] = parseInt(equipes[J].defPDom) + parseInt(equipes[J].defPVis);
+								lesCols[1] = lesCols[2] + lesCols[3] + lesCols[4] + lesCols[5];
+								basePoints = parseInt(2 * equipes[J].vicDom) + 2 * parseInt(equipes[J].vicVis) + parseInt(equipes[J].nulDom) + parseInt(equipes[J].nulVis);
+								lesCols[6] = defP ? basePoints + parseInt(equipes[J].defPDom) + parseInt(equipes[J].defPVis) : basePoints;
+								lesCols[7] = equipes[J].bp;
+								lesCols[8] = equipes[J].bc;
+								lesCols[9] = parseInt(equipes[J].bp) - parseInt(equipes[J].bc);
+*/
+								
+
+								var lesLiens = new Array();
+								for(var c=0;c<titreClassement.length;c++){
+                                    if(titreClassement[c].localeCompare(window.tl_match_Equipe)==0){
+                                        lesLiens[c] = '/zstats/statsequipe.html?equipeId=' + equipes[J].id + '&m=' + window.m;
+                                    } else{
+                                        lesLiens[c] = null;
+                                    }
+                                }
+								
+								
+
+								for ( K = 0; K < lesCols.length; K++) {
+									cellule = document.createElement('TD');
+									if (lesLiens[K] != null) {
+										lien = document.createElement('A');
+										lien.innerHTML = lesCols[K];
+										lien.href = lesLiens[K];
+										cellule.appendChild(lien);
+									} else {
+										texte = document.createTextNode(lesCols[K]);
+										cellule.appendChild(texte);
+									}
+									rangee.appendChild(cellule);
+								}
+								J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
+
+							}
+
+							//	document.body.rangee.cellule.innerHTML ='yo';
+						} catch(err) {
+						}
+						/*if (!defP) {
+							$(document).ready(function() {
+								$('td:nth-child(6)').hide();
+							});
+						}*/
+
+						break;
+
+					case 3:
+						try {
+							var SD = saison.structureDivision;
+							//alert(JSON.stringify(saison));
+							for (var a = 0; a < SD.length; a++) {
+								var titreClassement = new Array();
+								titreClassement[0] = window.tl_match_Equipe;
+								titreClassement[1] = window.tl_class_PJ;
+								titreClassement[2] = window.tl_class_Vic;
+								titreClassement[3] = window.tl_class_Def;
+								titreClassement[4] = window.tl_class_Nul;
+								titreClassement[5] = "OT Loss";
+
+								titreClassement[6] = window.tl_class_Points;
+								titreClassement[7] = window.tl_class_BP;
+								titreClassement[8] = window.tl_class_BC;
+								titreClassement[9] = window.tl_class_Diff;
+								div1 = document.getElementById('divCentrale');
+								table1 = document.createElement('TABLE');
+								table1.id = "tableClassement" + "_div" + a;
+								table1.className = "c_tableau";
+								tb = document.createElement('TBODY');
+								tb.id = "bodyTable" + "_div" + a;
+								tr1 = document.createElement('TR');
+								tr1.id = "date2" + "_div" + a;
+								td1 = document.createElement('TD');
+								td1.className = "titreTableau";
+								td1.colSpan = titreClassement.length;
+								td1.innerHTML = SD[a].Nom
+								tr2 = document.createElement('TR');
+								tr2.id = "rangeeTitreClassement" + "_div" + a;
+
+								for ( i = 0; i < titreClassement.length; i++) {
+									tdi = document.createElement('TD');
+									tdi.className = "rangeeTitre";
+									tdi.innerHTML = titreClassement[i];
+									tr2.appendChild(tdi);
+								}
+
+								tr1.appendChild(td1);
+								tb.appendChild(tr1);
+								tb.appendChild(tr2);
+								table1.appendChild(tb);
+								div1.appendChild(table1);
+
+							}
+
+							for ( J = 0; J < equipes.length; J++) {
+								//	if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
+								var noDiv = 0;
+								for (var b = 0; b < SD.length; b++) {
+									for (var c = 0; c < SD[b].Equipes.length; c++) {
+										if (SD[b].Equipes[c] == equipes[J].id) {
+											noDiv = b;
+										}
+									}
+								}
+								rangee = document.createElement('TR');
+								rangee.id = "rangeeClasse_" + J;
+								amettre = document.getElementById('rangeeTitreClassement' + '_div' + noDiv);
+								amettre.parentNode.appendChild(rangee);
+
+								var lesCols = new Array();
+								lesCols[0] = equipes[J].nom;
+								lesCols[2] = parseInt(equipes[J].vicDom) + parseInt(equipes[J].vicVis);
+								lesCols[3] = parseInt(equipes[J].defDom) + parseInt(equipes[J].defVis);
+								lesCols[4] = parseInt(equipes[J].nulDom) + parseInt(equipes[J].nulVis);
+								lesCols[5] = parseInt(equipes[J].defPDom) + parseInt(equipes[J].defPVis);
+								lesCols[1] = lesCols[2] + lesCols[3] + lesCols[4] + lesCols[5];
+								basePoints = parseInt(2 * equipes[J].vicDom) + 2 * parseInt(equipes[J].vicVis) + parseInt(equipes[J].nulDom) + parseInt(equipes[J].nulVis);
+								lesCols[6] = defP ? basePoints + parseInt(equipes[J].defPDom) + parseInt(equipes[J].defPVis) : basePoints;
+								lesCols[7] = equipes[J].bp;
+								lesCols[8] = equipes[J].bc;
+								lesCols[9] = parseInt(equipes[J].bp) - parseInt(equipes[J].bc);
+
+								if (parseInt(window.ligueId) == 49 || parseInt(window.ligueId) == 50 || parseInt(window.ligueId) == 51) {
+									lesCols[6] = equipes[J].points;
+								}
+
+								var lesLiens = new Array();
+								lesLiens[0] = '/zstats/statsequipe.html?equipeId=' + equipes[J].id + '&m=' + window.m;
+								lesLiens[1] = null;
+								lesLiens[2] = null;
+								lesLiens[3] = null;
+								lesLiens[4] = null;
+								lesLiens[5] = null;
+								lesLiens[6] = null;
+								lesLiens[7] = null;
+								lesLiens[8] = null;
+								lesLiens[9] = null;
+
+								for ( K = 0; K < lesCols.length; K++) {
+									cellule = document.createElement('TD');
+									if (lesLiens[K] != null) {
+										lien = document.createElement('A');
+										lien.innerHTML = lesCols[K];
+										lien.href = lesLiens[K];
+										cellule.appendChild(lien);
+									} else {
+										texte = document.createTextNode(lesCols[K]);
+										cellule.appendChild(texte);
+									}
+									rangee.appendChild(cellule);
+								}
+								J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
+
+							}
+
+							//	document.body.rangee.cellule.innerHTML ='yo';
+						} catch(err) {
+						}
+						if (!defP) {
+							$(document).ready(function() {
+								$('td:nth-child(6)').hide();
+							});
+						}
+
+						break;
+
+				}// Fin switch type saison
+
+				//////////////////////////////////////////////////////////
+
+				//////////////////////////////////////////////////////////
+
+			}
+
+			function ficheClassement() {
+
+				contFicheMeneurJS = document.createElement('DIV');
+				contFicheMeneurJS.id = 'contFicheClasse';
+				imgPFJS = document.createElement('IMG');
+				imgPFJS.className = "grosLogo";
+				vecCle = ['Victoires', 'Défaites', 'Points'];
+
+				nomJS = document.createElement('H2');
+				noJS = document.createElement('DIV');
+				rangJS = document.createElement('H1');
+				equipeJS = document.createElement('H3');
+				villeJS = document.createElement('H3');
+
+				document.getElementById('divGauche').appendChild(contFicheMeneurJS);
+				contFicheMeneurJS.appendChild(imgPFJS);
+				contFicheMeneurJS.appendChild(rangJS);
+				contFicheMeneurJS.appendChild(nomJS);
+				contFicheMeneurJS.appendChild(equipeJS);
+				contFicheMeneurJS.appendChild(villeJS);
+
+				for ( a = 0; a < vecCle.length; a++) {
+					ligneStatsJS = document.createElement('div');
+					ligneStatsJS.className = 'ligneStats';
+					cleStatsJS = document.createElement('div');
+					cleStatsJS.className = 'cleStats';
+					cleStatsJS.innerHTML = vecCle[a] + ': ';
+					valeurStatsJS = document.createElement('div');
+					valeurStatsJS.className = 'valeurStats';
+					valeurStatsJS.id = 'valeurStats_' + a;
+					rangStatsJS = document.createElement('div');
+					rangStatsJS.className = 'rangStats';
+					rangStatsJS.id = 'rangStats_' + a;
+					contFicheMeneurJS.appendChild(ligneStatsJS);
+					ligneStatsJS.appendChild(cleStatsJS);
+					ligneStatsJS.appendChild(valeurStatsJS);
+					ligneStatsJS.appendChild(rangStatsJS);
+				}
+
+			}
+
+			function defileFiches(saisonId) {
+				try {
+					clearInterval(window.idInter);
+					window.rang = 0;
+				} catch(err) {
+				}
+				window.idInter = setInterval(function() {
+					rempliFiche((window.rang) % window.cJSON.saisons[extirpeSaison(saisonId)].equipe.length,saisonId);
+				}, 5000);
+
+			}
+
+			function rempliFiche(a,saisonId) {
+				indiceSaison =extirpeSaison(saisonId);
+				//alert(saisonId+" "+indiceSaison);
+				window.nomJS.innerHTML = window.cJSON.saisons[indiceSaison].equipe[a].nom;
+				var tmpVille = window.cJSON.saisons[indiceSaison].equipe[a].ville;
+				window.villeJS.innerHTML = tmpVille == null ? "" : tmpVille;
+				window.equipeJS.innerHTML = " ";
+				var rangAff = (a + 1) % window.cJSON.saisons[indiceSaison].equipe.length == 0 ? window.cJSON.saisons[indiceSaison].equipe.length : (a + 1) % window.cJSON.saisons[indiceSaison].equipe.length;
+				window.rangJS.innerHTML = '#' + rangAff;
+
+				try {
+					window.imgPFJS.src = "/admin/afficheImage.php?ficId=" + window.cJSON.saisons[indiceSaison].equipe[a].ficId;
+				} catch(err) {
+				}
+
+				rangTr = 0;
+				trouve = 0;
+				lesTr = document.getElementsByTagName('TR');
+				while (rangTr < lesTr.length && trouve == 0) {
+					if (lesTr[rangTr].id == "rangeeClasse_" + a % window.cJSON.saisons[extirpeSaison(saisonId)].equipe.length) {
+						if (window.bufClass != 0) {
+							lesTr[rangTr - 1].className = window.bufClass;
+						}
+						window.bufClass = lesTr[rangTr].className;
+						lesTr[rangTr].className = 'surligne';
+						trouve = 1;
+					}
+					rangTr++;
+				}
+
+				document.getElementById('valeurStats_0').innerHTML = window.cJSON.saisons[extirpeSaison(saisonId)].equipe[a].vicDom + window.cJSON.saisons[extirpeSaison(saisonId)].equipe[a].vicVis;
+				document.getElementById('valeurStats_1').innerHTML = window.cJSON.saisons[extirpeSaison(saisonId)].equipe[a].defDom + window.cJSON.saisons[extirpeSaison(saisonId)].equipe[a].defVis;
+
+				document.getElementById('valeurStats_2').innerHTML = 2 * window.cJSON.saisons[extirpeSaison(saisonId)].equipe[a].vicDom + 2 * window.cJSON.saisons[extirpeSaison(saisonId)].equipe[a].vicVis + window.cJSON.saisons[extirpeSaison(saisonId)].equipe[a].nulDom + window.cJSON.saisons[extirpeSaison(saisonId)].equipe[a].nulVis;
+				;
+				//           alert(window.ligueId);
+				//             if(parseInt(window.ligueId)==49 || parseInt(window.ligueId)==50 || parseInt(window.ligueId)==51){
+				//               document.getElementById('valeurStats_2').innerHTML =window.cJSON.saisons[document.getElementById("selSaison").selectedIndex].equipes[a].points;
+				//              }
+
+				window.rang++;
+
+			}
+
+		</script>
+
+	</HEAD>
+	<body id="mbody">
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+		<div id="divMenuHaut"></div>
+
+		<div id="divCentrale">
+
+		</div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+			developper(3);
+
+			getInfoLigue(window.ligueId);
+
+			dSS = document.getElementById('divSelSaison');
+			if (dSS == null) {
+				dSS = document.createElement('SELECT');
+				dSS.id = "divSelSaison";
+				dSS.style.display = "none";
+				document.getElementById('divCentrale').appendChild(dSS);
+			}
+
+
+			dSS.innerHTML = window.tl_statseq_Saison + ": ";
+			SS = document.createElement('SELECT');
+			SS.id = "selSaison";
+			dSS.appendChild(SS);
+
+			rang = 0;
+			bufClass = 0;
+			loadCJSON = 0;
+			//						faitEntete();
+			if (window.m != 1) {
+				ficheClassement();
+			}
+
+			//var strLigue = getJSONdeLigueID(ligueId);
+			//alert(strLigue);
+			//var lJSON = eval('(' + strLigue + ')');
+
+			//getInfoLigue(window.ligueId);
+			//			saisonId = (getValue("saisonId")=="")?null:getValue("saisonId");
+			var maSai = getValue("saisonId");
+			if(maSai==""){
+				getSaisonActive(window.ligueId);
+			}
+			else{
+			getClassementJSON(window.ligueId, maSai);
+			getMatchsdeLigueID(maSai);	
+			}
+			
+			loadConditions = 0;
+
+		</script>
+	</body>
+</html>

@@ -82,6 +82,6 @@ mysql_query("SET CHARACTER SET 'utf8'");
 	
 		echo " - FIN";
 		
-		
+		mysql_close();
 	
 ?>

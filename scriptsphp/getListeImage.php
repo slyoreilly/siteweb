@@ -56,6 +56,8 @@ while ($rangIm = mysql_fetch_array($rGal))
 {
 	$image[$IM]=array();
 	$image[$IM]['ficId']=$rangIm['ficId'];
+	$image[$IM]['titre']=$rangIm['titre'];
+	$image[$IM]['description']=$rangIm['description'];
 			$IM++;
 }
 

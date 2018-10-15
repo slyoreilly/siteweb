@@ -8,12 +8,12 @@
 		<meta name="author" content="Sylvain O'Reilly">
 		<link rel="shortcut icon" href="/favicon.ico" />
 		<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
-		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/fonctions_old.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/jquery.watermark.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
 		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
 		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
-		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage_old.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -119,7 +119,8 @@ $( document ).ready(function() {
 				url : "/scriptsphp/recherche.php",
 				type : "POST",
 				data : {
-					searchString : $('#recherche-ligue').val()
+					searchString : $('#recherche-ligue').val(),
+					typeRecherche: "ligue"
 				}
 			}).done(function(msg) {
 				detruitNoeud('boiteResRecherche');
@@ -148,7 +149,8 @@ $( document ).ready(function() {
 				url : "/scriptsphp/recherche.php",
 				type : "POST",
 				data : {
-					searchString : $('#recherche-joueur').val()
+					searchString : $('#recherche-joueur').val(),
+					typeRecherche: "joueur"
 				}
 			}).done(function(msg) {
 				detruitNoeud('boiteResRecherche');
@@ -478,11 +480,13 @@ $( document ).ready(function() {
 			//document.getElementById('divDroite').style.backgroundColor = "#FFF";
 			//		detruitDivGaucheDroite();
 			bN = document.getElementById('barreTitreContexte');
+			if(bN!=null){
 			for (var a = 0; a < bN.childNodes.length; a++) {
 				bN.childNodes[a].style.display = "none";
 
 			}
-			document.getElementById('barreNav').style.display = "none";
+			}
+			$('#barreNav').hide();
 			faitDivIndex1();
 			$(".adsbygoogle").remove();
 			/*

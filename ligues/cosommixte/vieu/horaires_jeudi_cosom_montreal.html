@@ -1,0 +1,1249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Horaire jeudi - Ligue amicale mixte de hockey cosom de Montréal</title>
+<meta name="keywords" content="hockey cosom, hockey cosom mixte montréal, hockey cosom montreal, ligue hockey cosom mixte Montréal, ligue hockey cosom Montreal, ligue hockey cosom, ball hockey, ligue amicale hockey cosom, hockey balle, hockey cosom mixte, hockey cosom ahuntsic, hockey cosom Régina Assumpta">
+<meta name="description" content="cosom, hockey, ligue, Montréal">
+<link href="http://cosommixte.org/_themes/css/templatemo_style.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="../../_themes/css/nivo-slider.css" type="text/css" media="screen" />
+        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+        <script src="http://syncstats.com/scripts/jquery.mCustomScrollbar.js"></script>
+        <script src="http://syncstats.com/scripts/visionneuse.js"></script>
+        <script src="http://syncstats.com/scripts/jquery.raty.js"></script>
+        <script src="http://syncstats.com/scripts/fonctions.js"></script>
+                <link rel='stylesheet' type='text/css' href='http://syncstats.com/style/visionneuse.css' />
+        <link rel='stylesheet' type='text/css' href='http://syncstats.com/style/jquery.raty.css' />
+        <link rel="stylesheet" type='text/css' href="http://syncstats.com/style/jquery.mCustomScrollbar.css">
+<script type="text/javascript">
+
+function MM_jumpMenu(targ,selObj,restore){ //v3.0
+  eval(targ+".location='"+selObj.options[selObj.selectedIndex].value+"'");
+  if (restore) selObj.selectedIndex=0;
+}
+
+</script>
+<style>
+
+.tr_ligne_heure,.tr_ligne_heure tbody  :hover{
+    background:#000000;
+}
+.tab_match:hover td {
+    background:#ccc  !important;
+    color:#000 !important;
+}
+#gradient-style tbody tr:hover td {
+    background: #000;
+    color: #8ba2c0;
+}
+
+#divDialogue
+{
+    position :absolute;
+    width :60%;
+    height :80%;
+    position :fixed;
+    left :20%;
+    top :10%;
+    background-color : #eee;
+    border: 2px solid #aaa;
+    display :block;
+    padding :20px;
+    z-index:2000;
+    overflow:scroll;
+}
+
+
+#divDialogue iframe
+{
+    border-style:none;
+    width:96%;
+    height:96%;
+    margin:2%;
+}
+
+
+#divDialogue table
+{
+    background-color:rgba(0,0,0,0);
+border-bottom-style:groove;
+border-bottom-width:2px;
+border-bottom-color:rgba(225,225,225,0.5);
+padding-bottom:5px;
+margin:20px 0 0 0 ;
+}
+#divDialogue tbody,#divDialogue tr,#divDialogue td{
+    background-color:rgba(0,0,0,0);
+margin:20px 0 0 0 ;
+}
+
+#divDialogue td{
+border-width:none;
+border-style:0px;
+padding:0px;
+margin:0px;
+
+}
+
+
+#divDialogue tr.titreTableau, #divDialogue td.titreTableau
+{
+    
+        text-align: left;
+font-family: "Arial black",arial,Georgia,"Times New Roman",serif;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 16px;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0px;
+
+    
+font-size:medium;
+font-weight:bold;
+color:#444;
+padding-left:0;
+}
+#divDialogue tr.rangeeTitre,#divDialogue div.rangeeTitre
+{font-size:small;
+font-weight:bold;
+color:#888;
+padding-bottom:5px;
+border-bottom-style:groove;
+border-bottom-width:2px;
+border-bottom-color:rgba(225,225,225,0.2);
+
+    background-color:rgba(0,0,0,0);
+}
+
+#divDialogue td.rangeeTitre
+{font-size:small;
+font-weight:bold;
+color:#888;
+padding-bottom:5px;
+border-bottom-style:groove;
+border-bottom-width:0 0 2px 0;
+border-bottom-color:rgba(225,225,225,0.2);
+
+    background-color:rgba(0,0,0,0);
+}
+
+#divDialogue #photoFiche
+{
+margin:0;
+}
+
+#divDialogue #descriptionFiche
+{
+margin:0 0 0 20px;
+}
+
+#divDialogue h1
+{
+margin:0;
+}
+
+#divDialogue .btnFerme
+{
+    cursor:pointer;
+color:red;
+padding:3px;
+        display:inline;
+        font-weight:bold;
+}
+
+#divDialogue #divFerme
+{
+    cursor:auto;
+text-align:right;
+position:absolute;
+padding:3px;
+top:0;
+right:0;
+}
+#divDialogue #texteFerme
+{
+    display:inline;
+float:left;
+}
+
+#divDialogue #blocGauche
+{
+    width:45%;
+    margin: 5% 0 5% 5%;
+    float:left;
+}
+#divDialogue .blocGauche
+{
+    width:45%;
+    margin: 5% 0 5% 5%;
+    float:left;
+    display:inline;
+    
+    
+}
+#divDialogue #blocDroit
+{
+    width:45%;
+    margin: 5% 5% 5% 0;
+    float:right;
+}
+#divDialogue .blocDroit
+{
+    width:45%;
+    margin: 5% 5% 5% 0;
+    float:right;
+    display:inline;
+    
+    
+}
+
+#ecranSombre{
+    opacity:0.7;
+    background-color:black;
+    position:fixed;
+    height:100%;
+    width:100%;
+    top:0;
+    left:0;
+    z-index:1000;
+    
+}
+
+.critere
+{
+    display:block;
+    
+}
+.critere p
+{
+    display:inline;
+    float:none;
+}
+.critere div
+{
+    display:inline;
+    float:left;
+    clear:left;
+}
+
+#divFerme
+{
+cursor : pointer;
+position :absolute;
+right : 50px;
+top :0;
+
+    
+}
+#divSave
+{
+cursor : pointer;
+position :absolute;
+right : 50px;
+bottom :0;
+
+    
+}
+
+</style>
+</head>
+<body>
+
+<div id="templatemo_header_wrapper">
+    <div id="templatemo_header">
+    
+        <div id="site_title">
+        <nobr>
+            <a href="http://www.cosommixte.org"><span><img src="../../../../images/facebook_100_100.gif" alt="banner" border="0" /><img src="../../../../images/templatemo_logo.png"/></span></a>
+        </nobr>
+        </div> <!-- end of site_title -->
+        
+        <div id="social_box">
+            
+            <a href="http://www.facebook.com/cosommixte"><img src="../../../../images/facebook.png" alt="facebook" /></a>
+            <!--<a href="#"><img src="../../../../images/twitter.png" alt="twitter" /></a>-->
+            <a href="mailto:liguemixtedecosom@gmail.com?bcc=jean.joly@jolywood.com&amp;subject=Informations Ligue de Hockey Cosom Mixte (www.cosommixte.org)"><img src="../../../../images/mailto.png" alt="Courriel" /></a>
+            
+        </div>
+        
+        <div id="templatemo_menu">
+            <ul>
+                <li><a href="../../../../index.html">Accueil</a></li>
+                <li><a href="../../../jeudi_cosom_montreal.html">Jeudi</a></li>
+                <li><a href="../../../equipes_cosom_montreal/2018/hiver_cosom_montreal/equipes_jeudi_cosom_montreal.html">Équipes</a></li>
+                <li><a href="../../../nouvelles_cosom_montreal/2018/hiver_cosom_montreal/chroniques_jeudi_cosom_montreal.html">Chroniques</a></li>
+                <li><a href="#" class="current">Horaires</a></li>
+                <li><a href="../../../classements_cosom_montreal/2018/hiver_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement</a></li>
+                <li><a href="../../../statistiques_cosom_montreal/2018/hiver_cosom_montreal/statistiques_jeudi_cosom_montreal.html">Compteurs</a></li>
+            </ul>       
+        </div> <!-- end of templatemo_menu -->
+    
+    </div> <!-- end of header -->
+</div> <!-- end of header wrapper -->
+
+<div id="templatemo_main_wrapper">
+    <!-- Début bloc principal -->
+    <div id="templatemo_main" >
+        <!-- Début bloc de gauche -->
+        <div id="templatemo_content_full" >
+            <!-- Début automne 2012 new -->
+            <div class="post_box" style="border-bottom: none; border-top:none;">
+                <div class="post_box_full_960">                 
+                    <table width="100%">
+                        <tr>
+                            <td width="80%">
+                                <h2><font color="#FA9B02">CLASSEMENT DU JEUDI - AUTOMNE 2017</font></h2>
+                            </td>
+                            <td width="20%">
+                                <select name="jumpMenu" id="jumpMenu" onchange="MM_jumpMenu('parent',this,0)">
+                                    <option value="#">Archives des classements</option>
+<option value="../../2014/ete_cosom_montreal/classements_jeudi_cosom_montreal.html">ETE 2014</option>
+<option value="../../2017/hiver_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement HIVER 2017</option>
+<option value="../../2017/hiver_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement HIVER 2017</option>
+<option value="../../2016/automne_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement AUTOMNE 2017</option>
+<option value="../../2016/automne_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement AUTOMNE 2017</option>
+<option value="../../2016/ete_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement ÉTÉ 2016</option>
+<option value="../../2016/ete_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement ÉTÉ 2016</option>
+<option value="../../2016/printemps_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement PRINTEMPS 2016</option>
+<option value="../../2016/printemps_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement PRINTEMPS 2016</option>
+<option value="../../2016/hiver_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement HIVER 2016</option>
+<option value="../../2016/hiver_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement HIVER 2016</option>
+<option value="../../2015/automne_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement AUTOMNE 2016</option>
+<option value="../../2015/automne_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement AUTOMNE 2016</option>
+<option value="../../2015/ete_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement ÉTÉ 2015</option>
+<option value="../../2015/ete_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement ÉTÉ 2015</option>
+<option value="../../2015/printemps_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement PRINTEMPS 2015</option>
+<option value="../../2015/printemps_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement PRINTEMPS 2015</option>
+<option value="../../2014/automne_cosom_montreal/classements_jeudi_cosom_montreal.html">Classement AUTOMNE 2015</option>
+
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <span style="line-height:2em;">
+                        
+                        
+                        
+                        
+                        
+                         <div class="cleaner"><br></div>
+                        <div id="classement" align="left">
+                            <div class="cleaner"></div>                     
+                            <p class='TitreClassement' align='left'>COMPTEURS DU JEUDI - CALIBRE A</p>
+<table id='gradient-style'  id='gradient-style' width='965px' border='1px solid' cellspacing='0' cellpadding='0'>
+<tbody id="tb_h"></tbody>
+</table>
+
+                        <div class="cleaner"><br></div>
+                        
+                        
+                        
+                       
+                        </div>
+                    </span>     
+                    <div class="cleaner"></div>
+                </div>
+                
+            </div><!-- Fin automne 2012 new -->
+            <!--
+                <div class="recent_comment_box">
+                    <a href="#">Aenean feugiat mattis </a>
+                    <p>Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu.</p>
+                </div>
+                
+                <div class="recent_comment_box last_recent_comment_box">
+                    <a href="#"> Lacus enim id lacinia in</a>
+                    <p>Curabitur ullamcorper ultricies nisi.  Nam eget dui. Validate <a href="http://validator.w3.org/check?uri=referer" rel="nofollow"><strong>XHTML</strong></a> &amp; <a href="http://jigsaw.w3.org/css-validator/check/referer" rel="nofollow"><strong>CSS</strong></a>.</p>
+                </div>
+            </div>-->
+        </div><!-- Début SideBar à droite -->
+    
+    <div class="cleaner"></div>
+    </div> <!-- Début bloc principal -->
+</div> <!-- end of main wrapper -->
+
+<div id="templatemo_footer_wrapper">
+    <div id="templatemo_footer">
+        <div class="footer_col_w300">
+            &nbsp;
+        </div>
+        <div class="footer_col_w300" align="center">
+            <p>Copyright ©printemps <a href="http://www.cosommixte.org">www.cosommixte.org</a> <br /> Designed by <a href="http://www.templatemo.com" target="_parent">Free CSS Templates</a></p>        
+        </div>
+        
+        <div class="footer_col_w300 last">
+            &nbsp;
+        </div>
+        <div class="cleaner"></div>
+    </div> <!-- end of templatemo_footer -->
+</div> <!-- end of templatemo_footer wrapper -->
+
+
+<script type="text/javascript">
+
+function construitDialogue (matchId){
+        monOverlay=document.createElement('DIV');
+        monOverlay.id="ecranSombre";
+        document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
+        monDial=document.createElement('DIV');
+        monDial.id="divDialogue";
+        monDial.className="divDialogue visible";
+        dFerme=document.createElement('DIV');
+        dFerme.id="divFerme";
+        tFerme=document.createElement('DIV');
+        tFerme.id="texteFerme";
+        tFerme.innerHTML="Fermer";
+        bFerme=document.createElement('DIV');
+        bFerme.id="btnFermeDial";
+        bFerme.className="btnFerme";
+        bFerme.innerHTML="[X]";
+        bFerme.onclick=function(){detruitNoeud('divDialogue');
+        $('#ecranSombre').remove();
+//         detruitNoeud('ecranSombre');
+        };
+        monDial.appendChild(dFerme);
+            dFerme.appendChild(tFerme);
+            dFerme.appendChild(bFerme);
+
+        $("#templatemo_main_wrapper").append(monDial);
+        
+         window.onkeyup = function (event) {
+            if (event.keyCode == 27) {
+            detruitDialogue();
+        }       
+        };
+    
+    $.ajax({
+                     url: "http://syncstats.com/stats2/sommaire2JSON.php",
+                     //datatype:'json',
+                        type: 'POST',
+                      data: jQuery.param({ matchId : matchId}) ,
+                       contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                       success: function (response) {
+                  loadCondition++;
+                    if(loadCondition>=maxLoad){
+                    afficheSommaireButs(eval("(" +response+ ")"));}
+                    
+                
+                 
+                },
+                        error:  function(xhr, status, error) {
+                             var err = eval("(" + xhr.responseText + ")");
+                              alert(err.Message+"  --  ereur gardMax");
+                                }
+                  }); 
+                  
+                      
+    $.ajax({
+                     url: "http://syncstats.com/scriptsphp/infoMatch2JSON.php",
+                     //datatype:'json',
+                        type: 'POST',
+                      data: jQuery.param({ matchId : matchId}) ,
+                       contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                       success: function (response) {
+                  infoMatch = eval('(' + response + ')');
+             loadCondition++;
+                    if(loadCondition>=maxLoad){
+                    afficheSommaireButs(eval("(" +response+ ")"));}
+                
+                 
+                },
+                        error:  function(xhr, status, error) {
+                             var err = eval("(" + xhr.responseText + ")");
+                              alert(err.Message+"  --  ereur gardMax");
+                                }
+                  }); 
+    
+    
+}
+function detruitDialogue (){
+detruitNoeud('divDialogue'); detruitNoeud('ecranSombre');
+     window.onkeyup = function (event) {
+            if (event.keyCode == 27) {
+        }       
+        };
+
+loadCondition=0;
+}
+
+function detruitNoeud(noeud) {
+try{
+var cell = document.getElementById(noeud);
+   $('#'+noeud).empty();
+cell.parentNode.removeChild(cell);
+}
+catch(err){}
+
+
+}
+
+            function getMatchsdeLigueID(saisonId) {
+                var requete_ajax = new XMLHttpRequest();
+
+                var url = "http://syncstats.com/scriptsphp/matchsDsSaison.php";
+
+                var strLigueId = "ligueId=78";
+                var strSaisonId = "saisonId="+saisonId;
+                params = strLigueId + '&' + strSaisonId;
+                url = url + "?" + params;
+
+                //requete_ajax.send(null);
+                //  return requete_ajax.responseText;
+
+                requete_ajax.open('POST', url, true);
+                //              requete_ajax.send(null);
+
+                requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                requete_ajax.setRequestHeader("Content-length", params.length);
+                requete_ajax.setRequestHeader("Connection", "close");
+
+                requete_ajax.send(params);
+
+                requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+                    if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+                        rJSON = eval('(' + requete_ajax.responseText + ')');
+
+                        loadConditions++;
+                        //                      alert(loadConditions + " matrchsDsSaison");
+
+                        if (loadConditions >= window.nbLoadTotal)
+                            afficheTableau();
+
+                    }
+                };
+            }
+
+            function getArena() {
+                //          return function(){
+
+                var requete_ajax = new XMLHttpRequest();
+
+                var url = "http://syncstats.com/stats2/getArena.php";
+
+                var strLigueId = "ligueId=78" ;
+                params = strLigueId;
+                requete_ajax.open('POST', url, true);
+                requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                requete_ajax.setRequestHeader("Content-length", params.length);
+                requete_ajax.setRequestHeader("Connection", "close");
+    
+                requete_ajax.send(params);
+
+                requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+                    if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+                        //alert(requete_ajax.responseText);
+                        vecArena = eval('(' + requete_ajax.responseText + ')');
+                        //  alert(requete_ajax.responseText);
+
+                        var k = 0;
+                        listeArena = new Array();
+                        while (k < vecArena.length) {
+                            listeArena[k] = vecArena[k].arenaId;
+                            k++;
+                        }
+                        loadConditions++;
+                                      //        alert(loadConditions+ " arena");
+
+                        if (loadConditions == window.nbLoadTotal)
+                            afficheTableau();
+
+                    }
+                };
+                //              alert(JSON.stringify(listeMatch));
+                //  return vecMAV;
+                //}
+            }
+
+                  
+                  function afficheTableau(){
+                      
+                     //alert(rJSON.matchs[0].date);
+                        //rJSON = eval('(' + requete_ajax.responseText + ')');
+                      
+                        //for(var a=0;a<rJSON.matchs.length;a++){
+                          
+                                
+                               rJSON.matchs.sort(function(a, b) {
+                                   if(a.date!=b.date){
+                                        return new Date(a.date.replace(/-/g, "/")) - new Date(b.date.replace(/-/g, "/"));}
+                                        else{  return a.arenaId - b.arenaId;}
+                                    });
+                        
+                                recDate = new Date(1);  // 1er janvier 1970
+                                recTemps = recDate.getTime();
+                                semaine=0;
+                                for(var b=0;b<rJSON.matchs.length;b++){
+                                   // alert(rJSON.matchs[b].date);
+                                    
+                                    mDate = new Date(rJSON.matchs[b].date.replace(/-/g, "/"));
+                                    mTemps = mDate.getTime();
+                                   // alert(mDate.getDate() + " / " + recDate.getDate()+ " / " +mDate.getMonth() + " / " + recDate.getMonth()+ " / " + mDate.getFullYear()+ " / " +recDate.getFullYear());
+                                    if((mDate.getDate()!=recDate.getDate())||(mDate.getMonth()!=recDate.getMonth())||(mDate.getFullYear()!=recDate.getFullYear())){
+                                        
+                                        calcMois = 1+mDate.getMonth();
+                                        mMois = calcMois<10 ? "0"+calcMois:calcMois;
+                                         semaine++;
+                                         $('#tb_h').append($("<table></table>").css("width","100%").attr("id","t_sem"+semaine).append($('<thead></thead>').append($('<tr></tr>').append($('<th></th>').attr("colSpan","16").attr("scope","colgroup").text(mDate.getDate()+"-"+mMois+"-"+mDate.getFullYear())))));
+                                         recDate = mDate;
+                                    }
+                                    //<td border=0 colspan=2><table width='100%' style=>
+                                    //<tr><td rowspan=2 width='210px'><nobr>&nbsp;&nbsp;19H00 À 20H00 (Gym 1)&nbsp;:</nobr></td>
+                                    //<td width='20px' bgcolor='#FFFFFF' >&nbsp;</td><td >&nbsp;&nbsp;N/A</td><td width='20px' align='center'></td></tr>
+                                    //<tr><td width='20px' bgcolor='#FFFFFF' >&nbsp;</td><td>&nbsp;&nbsp;N/A</td><td width='20px' align='center'></td></tr></table></td>
+                                    if(mTemps!=recTemps){
+                                        bligne = b;
+                                        mMinutes = mDate.getMinutes()<10? "0"+mDate.getMinutes():mDate.getMinutes();
+                                        
+                                        $('#t_sem'+semaine).append(
+                                            $("<tbody></tbody>").append(
+                                            $('<tr></tr>').attr("id","tr_"+b).addClass("tr_ligne_heure").append(
+                                                $('<td></td>').attr('border','0').attr('colspan','2').append(
+                                                    $('<table></table>').addClass("tab_match").attr('width','100%').attr("id",rJSON.matchs[b].matchID).css({'border-top':'none','border-bottom':'none','border-left':'none','border-right':'none'}).append(
+                                                        $('<tr></tr>').append(
+                                                            $('<td></td>').attr('rowspan',2).attr('width','210px').append(
+                                                                $('<nobr></nobr>').text(mDate.getHours()+"h"+mMinutes+"  ("+extirpeArena(rJSON.matchs[b].arenaId)+")").css("font-size","larger").css("font-weight","bold")
+                                                            ),
+                                                            $('<td></td>').attr('bgcolor','#'+rJSON.matchs[b].coulDom).attr('width','20px'),
+                                                            $('<td></td>').text(rJSON.matchs[b].eqDom),
+                                                            $('<td></td>').attr('align','center').attr('width','20px').text(rJSON.matchs[b].equipeScoreDom)
+                                                        ),
+                                                        $('<tr></tr>').append(                                
+                                                            $('<td></td>').attr('bgcolor','#'+rJSON.matchs[b].coulVis).attr('width','20px'),
+                                                            $('<td></td>').text(rJSON.matchs[b].eqVis),
+                                                            $('<td></td>').attr('align','center').attr('width','20px').text(rJSON.matchs[b].equipeScoreVis)
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                            
+                                        )
+                                        );
+                                        recTemps=mTemps;
+                                    }
+                                    else{
+//                                        <td border=0 colspan=2><table width='100%' style='border-top:none;border-bottom:none;border-left:none;border-right:none'>
+//<tr><td rowspan=2 width='210px'><nobr>&nbsp;&nbsp;19H00 À 20H00 (Gym 2)&nbsp;:</nobr></td><td width='20px' bgcolor='#FFFFFF' >&nbsp;</td><td >&nbsp;&nbsp;Broche à foin</td><td width='20px' align='center'>0</td></tr><tr><td width='20px' bgcolor='#FF0000' >&nbsp;</td><td>&nbsp;&nbsp;Fourmis Atomiques</td><td width='20px' align='center'>0</td></tr></table></td>
+                                        $('#tr_'+bligne).addClass("tr_ligne_heure").append(
+                                            $('<td></td>').attr('border','0').attr('colspan','2').append(
+                                                    $('<table></table>').addClass("tab_match").attr("id",rJSON.matchs[b].matchID).attr('width','100%').css({'border-top':'none','border-bottom':'none','border-left':'none','border-right':'none'}).append(
+                                                        $('<tr></tr>').append(
+                                                            $('<td></td>').attr('rowspan',2).attr('width','210px').append(
+                                                                $('<nobr></nobr>').text(mDate.getHours()+"h"+mMinutes+"  ("+extirpeArena(rJSON.matchs[b].arenaId)+")")
+                                                            ),
+                                                            $('<td></td>').attr('bgcolor','#'+rJSON.matchs[b].coulDom).attr('width','20px'),
+                                                            $('<td></td>').text(rJSON.matchs[b].eqDom),
+                                                            $('<td></td>').attr('align','center').attr('width','20px').text(rJSON.matchs[b].equipeScoreDom)
+                                                        ),
+                                                        $('<tr></tr>').append(                                
+                                                            $('<td></td>').attr('bgcolor','#'+rJSON.matchs[b].coulVis).attr('width','20px'),
+                                                            $('<td></td>').text(rJSON.matchs[b].eqVis),
+                                                            $('<td></td>').attr('align','center').attr('width','20px').text(rJSON.matchs[b].equipeScoreVis)
+                                                        )
+                                                    )
+                                                )
+                                            
+                                            
+                                        );
+                                        
+                                    }
+                                    
+                                    /*
+                                    pj = parseInt(statsJSON.saisons[a].equipe[b].vicDom)+parseInt(statsJSON.saisons[a].equipe[b].vicVis)+parseInt(statsJSON.saisons[a].equipe[b].defDom)+parseInt(statsJSON.saisons[a].equipe[b].defVis)+parseInt(statsJSON.saisons[a].equipe[b].nulDom)+parseInt(statsJSON.saisons[a].equipe[b].nulVis);
+                                    points = 2*parseInt(statsJSON.saisons[a].equipe[b].vicDom)+2*parseInt(statsJSON.saisons[a].equipe[b].vicVis)+parseInt(statsJSON.saisons[a].equipe[b].nulDom)+parseInt(statsJSON.saisons[a].equipe[b].nulVis);
+                                    $('#tbody_horaire').append($('<tr></tr>').append(
+                            $('<td></td>').text(statsJSON.saisons[a].equipe[b].nom),
+                            $('<td></td>').attr("align","center").text(pj),
+                            $('<td></td>').attr("align","center").text(parseInt(statsJSON.saisons[a].equipe[b].vicDom)+parseInt(statsJSON.saisons[a].equipe[b].vicVis)),
+                            $('<td></td>').attr("align","center").text(parseInt(statsJSON.saisons[a].equipe[b].nulDom)+parseInt(statsJSON.saisons[a].equipe[b].nulVis)),
+                            $('<td></td>').attr("align","center").text(parseInt(statsJSON.saisons[a].equipe[b].defDom)+parseInt(statsJSON.saisons[a].equipe[b].defVis)),
+                            $('<td></td>').attr("align","center").text(parseInt(statsJSON.saisons[a].equipe[b].bp)),
+                            $('<td></td>').attr("align","center").text(parseInt(statsJSON.saisons[a].equipe[b].bc)),
+                            $('<td></td>').attr("align","center").text(parseInt(statsJSON.saisons[a].equipe[b].bp)-parseInt(statsJSON.saisons[a].equipe[b].bc)),
+                            $('<td></td>').attr("align","center").text(points)
+                            ));*/
+                                    
+                                }
+                           
+                            
+                 $(".tab_match").css("cursor","pointer").click(function(){construitDialogue($(this).attr("id"));});
+                             
+                            
+                        }
+
+                //  }
+                
+                function extirpeArena(id) {
+                //          alert(window.vecArena.length);
+                var k = 0;
+                while (k < window.vecArena.length) {
+                    //              alert(window.vecArena[k].arenaId);
+                    if (id == window.vecArena[k].arenaId) {
+                        return window.vecArena[k].nomGlace;
+                    }
+                    k++;
+                }
+                return -1;
+            }
+
+                
+                  loadConditions=0;
+                  nbLoadTotal = 2;
+                  getMatchsdeLigueID(159);
+                  getArena();
+                  
+                  
+                  
+                  
+                  
+                  
+            
+                        function afficheSommaireButs(rSMB) {
+                var lesTitres = new Array();
+                lesTitres[0] = "Équipe";
+                lesTitres[1] = "";
+                lesTitres[2] = "Marqueur";
+                lesTitres[3] = "Passeur 1";
+                lesTitres[4] = "Passeur 2";
+                lesTitres[5] = "Chrono";
+                lesTitres[6] = "";
+                div1 = document.getElementById('divDialogue');
+               /* if (window.vPerm < 19) {
+                    $(div1).append('<div></div>').append('<h2 id="admin_title"></h2>', '<img id="admin_vids"></img>');
+                    $('#admin_title').text("Admin Tools").css("margin;10px", "display;inline");
+                    $('#admin_title').append($('<div></div>').text("Ajouter un but").css("margin;10px", "display;inline").click(function() {
+                        nouveauBut(1);
+                    }));
+
+                    $('#admin_vids').attr("src", "http://syncstats.com/images/icones/movie.png").attr("alt", "Video").on("click", {
+                        rjson : rSMB
+                    }, function(event) {
+                        construitDialogue();
+                        rJSON_loc = event.data.rjson;
+                        //      alert(JSON.stringify(rJSON));
+                        dial = document.getElementById('divDialogue');
+                        $('<div id="divt"></div>').text("Available cams").appendTo(dial);
+                        var arrayCam = [];
+                        for (var a = 0; a < rJSON_loc.buts.length; a++) {
+                            //              alert("but"+a);
+                            for (var b = 0; b < rJSON_loc.buts[a].video.length; b++) {
+                                //                  alert("vid"+rJSON.buts[a].video[b].cam);
+                                if (jQuery.inArray(rJSON_loc.buts[a].video[b].cam, arrayCam) < 0) {
+                                    arrayCam.push(rJSON_loc.buts[a].video[b].cam);
+                                }
+                            }
+                        }
+                        //          alert(arrayCam.length);
+                        for (var a = 0; a < arrayCam.length; a++) {
+                            $('<div></div>').attr("id", "ligneCam_" + a).addClass("ligneBloc").appendTo(dial);
+                            $('<div></div>').attr("id", "blocGauche_" + a).addClass("blocGauche").text("Camera #" + arrayCam[a]).appendTo($('#ligneCam_' + a));
+                            $('<div></div>').attr("id", "blocDroit_" + a).addClass("blocDroit").appendTo($('#ligneCam_' + a));
+                            $('<div></div>').attr("id", "cellTableProm_" + a).addClass("cliquable cellTableCourt").appendTo($("#blocDroit_" + a)).append('<img src="http://syncstats.com/images/icones/arrow-up-double.png" alt="promote"></img>');
+                            $('<div></div>').attr("id", "cellTableDem_" + a).addClass("cliquable cellTableCourt").appendTo($("#blocDroit_" + a)).append('<img src="http://syncstats.com/images/icones/arrow-down-double.png" alt="demote"></img>')
+                            $('<div></div>').attr("id", "cellTableDel_" + a).addClass("cliquable cellTableCourt").appendTo($("#blocDroit_" + a)).append('<img src="http://syncstats.com/images/icones/delete.png" alt="delete"></img>')
+                        }
+                        $('[id^=cellTableDel_]').on("click", {
+                            arrayCam : arrayCam
+                        }, function(event) {
+                            var id = $(this).attr("id").split('_')[1];
+                            var camId = event.data.arrayCam[id];
+                            $('#blocDroit_' + id).fadeOut(200, function() {
+                                $('<div></div>').attr("id", "askErase").addClass("blocDroit").text("Do you really want to erase this camera?").appendTo($('#ligneCam_' + id)).fadeIn();
+                                $('<br></br>').appendTo('#askErase');
+                                $('<div></div>').addClass("cliquable cellTableCourt").text("Yup!").appendTo('#askErase').on("click", {
+                                    camId : camId
+                                }, function(event) {
+                                    $.ajax({
+                                        url : "http://syncstats.com/scriptsphp/effaceCam.php",
+                                        type : "POST",
+                                        data : {
+                                            camId : event.data.camId,
+                                            matchId : window.matchID
+                                        },
+                                        dataType : "html"
+                                    });
+
+                                    //              window.location.reload(true);
+                                });
+                                $('<div></div>').addClass("cliquable cellTableCourt").text("Noooo!").appendTo('#askErase').on("click", function() {
+                                    $('#askErase').remove();
+                                    $('[id^=blocDroit]').show();
+                                });
+
+                            });
+                        });
+
+                        $('.cellTableCourt').css("margin", "10px");
+
+                    });
+                    $(div1).append('<hline></hline>');
+                }*/
+                //div1.id = "divSommaireButs";
+                //div1.className = "centrale";
+
+                //  lecorps = document.getElementById('divCentrale');
+                table1 = document.createElement('TABLE');
+                table1.id = "tableSommaireButs";
+                table1.className = "c_tableau";
+                tb = document.createElement('TBODY');
+                tb.id = "bodyTable";
+                tr1 = document.createElement('TR');
+                tr1.id = "date2";
+                td1 = document.createElement('TD');
+                td1.className = "titreTableau";
+                td1.colSpan = lesTitres.length;
+                td1.innerHTML ="Sommaire du match";
+                tr2 = document.createElement('TR');
+                tr2.id = "rangeeTitreSommaireButs";
+
+                for ( i = 0; i < lesTitres.length; i++) {
+                    tdi = document.createElement('TD');
+                    tdi.className = "rangeeTitre";
+                    tdi.innerHTML = lesTitres[i];
+                    tr2.appendChild(tdi);
+                }
+
+                tr1.appendChild(td1);
+                tb.appendChild(tr1);
+                tb.appendChild(tr2);
+                table1.appendChild(tb);
+                div1.appendChild(table1);
+                $('#divDialogue').prepend($('<div></div>').addClass('container').attr('id','contVids').css('display','none'));
+                                    
+                //lecorps.appendChild(div1);
+                //lecorps.appendChild(frameModif);
+
+                /////////////////////////////////////////////////////////////
+
+                ////////////////////////////////////////////////////////////
+
+                try
+                {
+                    var scoreDom = 0;
+                    var scoreVis = 0;
+                    maPer = new Array();
+                    //rSMB.periodes.shift();
+                    
+                    if (rSMB.periodes.length>0)
+                        maPer = rSMB.periodes[0];
+                    else {
+
+                        maPer.chrono = rSMB.buts[0].chrono;
+                    }
+                    var Iper = 0;
+                    for (var J = 0; J < rSMB.buts.length; J = J + 1) {
+
+                        //                      try {
+                        var perStop = false;
+                        if (rSMB.periodes.length>0) {
+                            //if (parseInt(rSMB.periodes[Iper].chrono) < parseInt(rSMB.buts[J].chrono)) {
+                            while (Iper < rSMB.periodes.length && !perStop) {
+                                //                  maPer = rSMB.periodes.shift();
+
+                                //          alert(parseInt(rSMB.periodes[Iper].chrono)-parseInt(rSMB.buts[J].chrono)+" , Iper: "+Iper+", J: "+J);
+
+                                if (parseInt(rSMB.periodes[Iper].chrono) < parseInt(rSMB.buts[J].chrono)) {
+                                    perStop = ajoutePeriode(document.getElementById('rangeeTitreSommaireButs').parentNode, rSMB.periodes[Iper].numero);
+                                    Iper++;
+                                } else {
+                                    perStop = true;
+                                }
+
+                            }
+
+                            //                              }
+                        }
+                        //                      } catch(err) {
+                        //                      }
+
+                        //  if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
+
+                        $('#rangeeTitreSommaireButs').parent().append($('<TR></TR>').attr('id', 'tr_dD_' + J));
+                        minutes = Math.floor((parseInt(rSMB.buts[J].chrono) - parseInt(maPer.chrono)) / 60000);
+                        //  alert("minutes"+minutes+" ");
+                        dizSecondes = Math.floor(((parseInt(rSMB.buts[J].chrono) - parseInt(maPer.chrono)) - minutes * 60000) / 10000);
+                        secondes = Math.floor(((parseInt(rSMB.buts[J].chrono) - parseInt(maPer.chrono)) - minutes * 60000 - dizSecondes * 10000) / 1000);
+                        //  alert("secondes"+secondes+" ");
+                        strChrono = minutes + ":" + dizSecondes + secondes;
+
+                        if (rSMB.buts[J].qualif != null) {
+                            strChrono = strChrono + " - ";
+                            nbQ = 0;
+                            while (nbQ < rSMB.buts[J].qualif.length) {
+                                strChrono = strChrono + "(" + rSMB.buts[J].qualif[nbQ] + ")";
+                                nbQ++;
+                            }
+                        }
+                        mSrc = (rSMB.eqDom == rSMB.buts[J].equipe) ? 'http://syncstats.com/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdDom : 'http://syncstats.com/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdVis;
+                        strImg = '<img src=\"http:\/\/syncstats.com\/images\/icones\/edit.png\" onclick=corrigeBut(' + J + ') class=\"tresPetitLogo\"  alt=\"Edit\"\\/\>';
+
+                        var lesCols = new Array();
+                        //
+                        //alert('mSrc');
+                        //alert(mSrc);
+                        try {
+                            lesCols[0] = '<img src=\"' + mSrc + '\" alt=\"' + rSMB.buts[J].equipe + '\" class=\"tresPetitLogo\" \\/\>';
+                        } catch(err) {
+                            lesCols[0] = rSMB.buts[J].equipe;
+                        }
+                        //alert(rSMB.buts[J].equipe);
+                        //
+                        window.vPerm < 19 ? lesCols[1] = strImg : lesCols[1] = null;
+                        lesCols[2] = rSMB.buts[J].marqueur;
+                        lesCols[3] = rSMB.buts[J].passeur1;
+                        lesCols[4] = rSMB.buts[J].passeur2;
+                        lesCols[5] = strChrono;
+                        lesCols[6] = "";
+                        //          alert(rSMB.buts[J].video.length);
+                        //          lesCols[6] = (rSMB.buts[J].video.length <= 0) ? "" : "Voir";
+
+                        if (rSMB.buts[J].video.length > 0) {
+
+                            var mBut = rSMB.buts[J];
+                            strV = mBut.video[0];
+                            pVids = document.createElement('A');
+                            //          pVids[a].innerHTML= UrlExists("../lookatthis/" + strV.fic)?" Cam  "+b+" ":"";
+                            imgVid = document.createElement('IMG');
+                            imgVid.src = "http://syncstats.com/images/icones/movie.png";
+                            imgVid.alt = "Video";
+
+                            /*$(imgVid).hover(function(){
+                             $(this).attr('src','/images/icones/movie.ico');
+                             },function(){
+                             $(this).attr('src','/images/icones/movie.ico');
+                             });*/
+
+                            pVids.appendChild(imgVid);
+                            //              pVids.innerHTML= " Video Replay ";
+                            place = mBut.video[0].emplacement;
+                            if (place == null || place=="") {
+                                place = "syncstats.com";
+                            }
+                            pVids.id = "http://" + place + "/lookatthis/" + mBut.video[0].fic;
+                            pVids.className = "cliquable";
+                            pVids.onclick = (function(mBut) {
+                                return function() {
+                                    $("#contVids").empty();
+                                    construitVid();
+                                    //alert("Construit vids");
+                                    vidIndex = 0;
+
+                                    strV = mBut.video[vidIndex];
+                                   // monOverlay = document.createElement('DIV');
+                                    //monOverlay.id = "ecranSombre";
+                                    document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
+                                    $('.media-box').show();
+                                    place = mBut.video[0].emplacement;
+                                    if (place == null ||  place=="") {
+                                        place = "syncstats.com";
+                                        document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + mBut.video[0].fic;
+
+                                    } else {
+                                        document.getElementsByTagName('SOURCE')[0].src = "http://" + place + "/lookatthis/" + mBut.video[0].fic;
+                                    }
+                                    //alert(document.getElementsByTagName('SOURCE')[0].src );
+                                    //document.getElementsByTagName('SOURCE')[0].src = "http://"+place+"/lookatthis/" + mBut.video[0].fic;
+                                    document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
+                                    $('#divDialogue').addClass("divDialogue").addClass("visible").css({
+                                        "opacity" : "1",
+                                        "position" : "fixed",
+                                        "left" : "100px",
+                                        "top" : "100px",
+                                        "z-index" : "2000"
+                                    });
+
+                                    getInfoVid(vidIndex, mBut);
+
+                                };
+                            })(mBut);
+                        }// Fin du If video
+
+                        var lesLiens = new Array();
+                        lesLiens[0] = null;
+                        lesLiens[1] = null;
+                        lesLiens[2] = 'http://syncstats.com/zstats/statsjoueur.html?joueurId=' + rSMB.buts[J].marqueurId;
+                        lesLiens[3] = 'http://syncstats.com/zstats/statsjoueur.html?joueurId=' + rSMB.buts[J].passeur1Id;
+                        lesLiens[4] = 'http://syncstats.com/zstats/statsjoueur.html?joueurId=' + rSMB.buts[J].passeur2Id;
+                        lesLiens[5] = null;
+                        lesLiens[6] = null;
+
+                        for ( K = 0; K < lesCols.length; K++) {
+                            cellule = document.createElement('TD');
+                            if (lesCols[K] != undefined) {
+                                if (lesLiens[K] != null) {
+                                    lien = document.createElement('A');
+                                    lien.innerHTML = lesCols[K];
+                                    lien.href = lesLiens[K];
+                                    cellule.appendChild(lien);
+                                } else {
+
+                                    if (K == 6 && rSMB.buts[J].video.length > 0) {
+                                        cellule.appendChild(pVids);
+                                    } else {
+                                        ptexte = document.createElement('P');
+
+                                        ptexte.innerHTML = lesCols[K];
+                                        //                  texte = document.createTextNode(lesCols[K]);
+                                        cellule.appendChild(ptexte);
+                                    }
+                                }
+                            }
+                            if (J % 2 == 0) {
+                                $('#tr_dD_' + J).addClass('lignePaire')
+                            } else {
+                                $('#tr_dD_' + J).addClass('ligneImpaire')
+                            }
+                            //J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
+                            $('#tr_dD_' + J).append($(cellule));
+                            //rangee.appendChild(cellule);
+                        }
+
+                    }
+                    while (Iper <= rSMB.periodes.length) {
+                        //                  maPer = rSMB.periodes.shift();
+
+                        //          alert(parseInt(rSMB.periodes[Iper].chrono)-parseInt(rSMB.buts[J].chrono)+" , Iper: "+Iper+", J: "+J);
+
+                        perStop = ajoutePeriode(document.getElementById('rangeeTitreSommaireButs').parentNode, rSMB.periodes[Iper]);
+                        Iper++;
+
+                    }
+
+                    //  document.body.rangee.cellule.innerHTML ='yo';
+                } catch(err) {
+                                     //alert(err.message);
+                }
+            }
+            
+            function getInfoVid(vidIndex, mBut) {
+                //alert("getInfoVid "+videofile);
+
+                var place = mBut.video[vidIndex].emplacement;
+                if (place == null || place=="") {
+                    place = "syncstats.com";
+                }
+                if ((navigator.userAgent.indexOf('iPhone') != -1) || (navigator.userAgent.indexOf('iPod') != -1) || (navigator.userAgent.indexOf('iPad') != -1)) {
+                    //alert($('source').attr('src'));
+
+                    document.location = "http://" + place + "/lookatthis/" + mBut.video[vidIndex].fic;
+                }
+                $('#parent-erreur').remove();
+                $('#contVids').show();
+                $('#media-video').videoPlayer({
+                    'playerWidth' : 1,
+                    'videoClass' : 'video'
+                });
+
+                var requete_ajax = new XMLHttpRequest();
+                var url = "http://syncstats.com/scriptsphp/getVideoUnique.php";
+                var pVF = String(mBut.video[vidIndex].fic);
+
+                var sVF = pVF.split(".");
+                var strVid = "videofile=" + sVF[0];
+                params = strVid;
+                url = url + "?" + params;
+                requete_ajax.open('POST', url, true);
+                requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+                requete_ajax.send(params);
+                if (mBut != undefined && mBut != "") {
+                    chargeListeCote(vidIndex, mBut);
+                }
+                requete_ajax.onreadystatechange = function() {
+                    if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+                        infoVid = eval('(' + requete_ajax.responseText + ')');
+                        $('#rateSpan').text("RATING: " + infoVid.eval + " / 5");
+                        $('#nbVuesSpan').text("Vue " + infoVid.nbVues + " fois");
+                        $('.video-info p').text("Marqueur: " + infoVid.NomJoueur);
+                        evalBut = getCookie('videoId_eval_' + infoVid.videoId);
+                        if (evalBut != null) {
+                            $('#rating-star').raty({
+                                score : evalBut
+                            });
+                        } else {
+                            $('#rating-star').raty({
+                                click : function(score, evt) {
+                                    $.post('http://syncstats.com/scriptsphp/evalueVid.php', {
+                                        videoId : infoVid.videoId,
+                                        evalBut : score
+                                    });
+                                    setCookie('videoId_eval_' + infoVid.videoId, score, 1000);
+                                }
+                            });
+
+                        }
+                        //alert(vidIndex);
+                        vidSuite(vidIndex, mBut);
+                        $.post('http://syncstats.com/scriptsphp/incrementeVidNbVues.php', {
+                            videoId : infoVid.videoId
+                        });
+                        $('#drapeauVert').click(function() {
+                            $.post('http://syncstats.com/scriptsphp/changeAngleOk.php', {
+                                changeAngle : 1,
+                                videoId : infoVid.videoId
+                            });
+                        });
+                        $('#drapeauRouge').click(function() {
+                            $.post('http://syncstats.com/scriptsphp/changeAngleOk.php', {
+                                changeAngle : -1,
+                                videoId : infoVid.videoId
+                            });
+                        });
+
+                    }
+                };
+            }
+    function vidSuite(vidIndex, mBut) {
+
+                vidSVC = document.getElementById('media-video');
+                vidSVC.style.display = "block";
+                vidSVC.load();
+
+                rang = 0;
+               $('video').attr('preload', 'auto');
+               $('.media-box > img, .erreur').remove();
+                $('.erreur').parent().css('background', '#000');
+
+                if (mBut != "") {
+
+                    place = mBut.video[vidIndex].emplacement;
+                    if (place == null || !strcmp(place, "")) {
+                        place = "syncstats.com";
+                    }
+                    mVid = "http://" + place + "/lookatthis/" + mBut.video[vidIndex].fic;
+                    //alert(mVid);
+                    $('#vidPrincId').attr("src", mVid);
+                    $('#parent-erreur').remove();
+                  for ( a = 0; a < mBut.video.length; a++) {
+                        if (a == vidIndex) {
+                            if (strcmp(mBut.video[a].etat, "archive") == 0) {
+                                $('#vidPrincId').parent().before($('<div id="parent-erreur"></div>').append($('<p class="erreur"></p>').text("This video has been put in the archive. It can be automaticaly restored in 24h if you wish to proceed.")).append($('<input type="button" value="Proceed?"></input>').click({
+                                    videoId : vidsAlt.video[a].videoId,
+                                    fic : mBut.video[a].fic
+                                }, function(event) {
+                                    $.post("http://syncstats.com/scriptserveur/demandeRestoreVideo.php", {
+                                        videoId : event.data.videoId,
+                                        fic : event.data.fic
+                                    }, "json").done(function(data) {
+                                        //alert(data);
+                                        retour = eval('(' + data + ')');
+                                        if (parseInt(retour.succes) == 1) {
+                                            alert("La demande a été envoyée");
+                                        }
+                                        if (parseInt(retour.succes) == 0) {
+                                            alert("Une erreur s'est produite");
+                                        }
+
+                                    });
+                                })).append($('<img ></img>').attr("src", "http://syncstats.com/images/icones/Icon-Archive.png").css("width", "50px").css("width", "50px")));
+                                //$( this ).unbind("error");
+
+                                $('.play-pause').addClass('play').removeClass('pause');
+                            } else {
+                                document.getElementById('vidPrincId').addEventListener('error', function(event) {
+                                    if ($('.erreur').length < 2) {
+                                        $(this).parent().before($('<div id="parent-erreur"></div>').append($('<p class="erreur"></p>').text("There is an error with this video, please go to the next one (and sorry, btw...)")).append($('<img ></img>').attr("src", "http://syncstats.com/images/icones/warning.png").css("width", "50px").css("width", "50px")));
+                                        //$( this ).unbind("error");
+                                        $('.play-pause').addClass('play').removeClass('pause');
+                                    }
+                                    //alert("There's an error with this video, please go to the next one (and sorry, btw...)")
+                                }, true);
+
+                            }
+
+                        }
+
+                    }
+
+                    logoOverride = true;
+                    logoOverrideLoc = document.location.href + "&videofile=" + encodeURIComponent(mBut.video[vidIndex].fic);
+                    //+"&but="+encodeURIComponent(mBut);
+                    logoOverrideT = "Vidéo";
+
+                } else {
+                    place = "5.39.81.14";
+                    mVid = "http://" + place + "/lookatthis/" + getValue('videofile');
+                    //alert(mVid);
+                    $('#vidPrincId').attr("src", mVid);
+                    $('#parent-erreur').remove();
+
+                }
+
+            };
+
+            function ajoutePeriode(noeudParent, noPer) {
+                //perStop = false;
+
+//                                    amettrePer = document.getElementById('rangeeTitreHighlights');
+ //                                   amettrePer.parentNode.appendChild(rangeePer);
+                $(noeudParent).append(
+                    $('<TR></TR>').addClass("periode").append(
+                                        $('<TD></TD>').attr("colSpan","7").addClass("rangeeTitre periode").text(window.tl_match_periode + " " + noPer)
+                                    )
+                );
+
+            }
+            function construitVid() {
+                $('<div/>').addClass('media-box').append($('<span/>').addClass('close-btn'), $('<div/>').attr({
+                    id : "media-play-list",
+                    'class' : 'content mCustomScrollbar'
+                }), $('<video/>').attr({
+                    id : "media-video",
+                    width : "480",
+                    height : "320",
+                    preload : "auto",
+                    autoplay : "true"
+                }).append($('<source/>').attr({
+                    id : "vidPrincId",
+                    type : "video/mp4"
+                })), $('<div/>').addClass('video-info').append($('<div/>').append($('<img>').attr({
+                    id : 'info-img',
+                    src : "/images/info-img.png"
+                }), $('<span/>').text('Video Info').addClass('title')), $('<p>').addClass('video-content').text('Aimez-vous cette nouvelle interface?'), $('<div>').addClass('share').append($('<img/>').attr('src', "/images/fb.png"), $('<img/>').attr('src', "/images/tweet.png"), $('<img/>').attr('src', "/images/google.png"), $('<img/>').attr('src', "/images/youtube.png")), $('<span/>').attr('id', 'rateSpan').text('RATING : 3.5 / 5 '), $('<span/>').attr('id', 'nbVuesSpan').text('Vue 0 fois'), $('<button/>').attr('type', 'button').addClass('btn-style').append($('<span/>').addClass('comment').text('Write a comment'))), $('<span/>').addClass('play-btn').attr("id", "btn-play-centre").append($('<img/>').attr('src', '/images/main-play.png'))).appendTo('#contVids');
+                // fin de div.append
+                /*
+
+                 */
+            };
+            function detruitVid() {
+                $('#contVids').empty();
+                
+            };
+            
+            function chargeListeCote(vidIndex, mBut) {
+
+                vidsAlt = mBut;
+                //alert("mBut.video.length :"+mBut.video.length);
+                if (mBut.video.length > 0) {
+                    //$(laliste)=$('#media-play-list');
+
+                    $('#media-play-list').empty();
+                    $('#media-play-list').append($('<ul id="play-list"></ul>'));
+                    for (var a = 0; a < mBut.video.length; a++) {
+                        //alert(vidsAlt.video[a].fic);
+                        $('#play-list').append($('<li></li>').append(
+
+                        // $('<video></video>').addClass('play-item').attr('src',vidsAlt.video[a].fic),
+                        $('<div></div>').addClass('thumbnail-wrap').append(/*$('<span></span>').addClass('thumbnail-title').text(vidsAlt.video[a].cam),*/
+                        $('<br />'), $('<span></span>').addClass('thumbnail-content').text("Cam " + vidsAlt.video[a].cam), $('<img></img>').addClass('thumbnail-content').attr("src", "/images/icones/movie.png").attr("alt", "Video"))).click({
+                            vids : a,
+                            but : mBut
+                        }, function(event) {
+                            getInfoVid(event.data.vids, event.data.but);
+                        })
+                        //.click(loadVideo(vidsAlt.video[a].fic))
+                        );
+                    }
+                    $('#media-play-list').show();
+
+                }
+
+            }
+            loadCondition=0;
+            maxLoad=2;
+                  
+                  </script>
+
+</body>
+</html>

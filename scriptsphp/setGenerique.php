@@ -20,6 +20,12 @@ mysql_query("SET CHARACTER SET 'utf8'");
 $valeur = json_decode(stripslashes($_POST['valeur']));
 $table = $_POST['table'];
 $mode = $_POST['mode'];
+if(strcmp($table, "Ligue")==0 )
+{
+
+	$valeur = $_POST['valeur'];
+}
+
 if(strcmp($table, "TableArbitre")==0)
 {
 	$tmpVal=stripslashes($_POST['valeur']);

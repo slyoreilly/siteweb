@@ -40,7 +40,7 @@ if (!mysql_select_db($database))
 mysql_query("SET CHARACTER SET 'utf8'");
 
 		$rPun = mysql_query("SELECT *
-								FROM commandeBoard 
+								FROM commandeboard 
 								WHERE matchId='$matchId'
 								")or die(mysql_error()); 
 

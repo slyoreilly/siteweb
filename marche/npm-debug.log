@@ -1,0 +1,66 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files (x86)\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   '--save',
+1 verbose cli   '@uirouter/angularjs' ]
+2 info using npm@1.3.2
+3 info using node@v0.10.13
+4 verbose node symlink C:\Program Files (x86)\nodejs\\node.exe
+5 verbose cache add [ '@uirouter/angularjs', null ]
+6 verbose cache add name=undefined spec="@uirouter/angularjs" args=["@uirouter/angularjs",null]
+7 verbose parsed url { protocol: null,
+7 verbose parsed url   slashes: null,
+7 verbose parsed url   auth: null,
+7 verbose parsed url   host: null,
+7 verbose parsed url   port: null,
+7 verbose parsed url   hostname: null,
+7 verbose parsed url   hash: null,
+7 verbose parsed url   search: null,
+7 verbose parsed url   query: null,
+7 verbose parsed url   pathname: '@uirouter/angularjs',
+7 verbose parsed url   path: '@uirouter/angularjs',
+7 verbose parsed url   href: '@uirouter/angularjs' }
+8 verbose cache add name="" spec="uirouter/angularjs" args=["","uirouter/angularjs"]
+9 verbose parsed url { protocol: null,
+9 verbose parsed url   slashes: null,
+9 verbose parsed url   auth: null,
+9 verbose parsed url   host: null,
+9 verbose parsed url   port: null,
+9 verbose parsed url   hostname: null,
+9 verbose parsed url   hash: null,
+9 verbose parsed url   search: null,
+9 verbose parsed url   query: null,
+9 verbose parsed url   pathname: 'uirouter/angularjs',
+9 verbose parsed url   path: 'uirouter/angularjs',
+9 verbose parsed url   href: 'uirouter/angularjs' }
+10 silly lockFile 9433d85e-uirouter-angularjs uirouter/angularjs
+11 verbose lock uirouter/angularjs C:\Users\user\AppData\Roaming\npm-cache\9433d85e-uirouter-angularjs.lock
+12 info maybeGithub Attempting uirouter/angularjs from git://github.com/uirouter/angularjs
+13 silly lockFile 54494a85-it-github-com-uirouter-angularjs git://github.com/uirouter/angularjs
+14 verbose lock git://github.com/uirouter/angularjs C:\Users\user\AppData\Roaming\npm-cache\54494a85-it-github-com-uirouter-angularjs.lock
+15 verbose addRemoteGit [ 'git://github.com/uirouter/angularjs', 'master' ]
+16 silly lockFile 54494a85-it-github-com-uirouter-angularjs git://github.com/uirouter/angularjs
+17 silly lockFile 54494a85-it-github-com-uirouter-angularjs git://github.com/uirouter/angularjs
+18 info maybeGithub Attempting uirouter/angularjs from git+ssh://git@github.com:uirouter/angularjs
+19 silly lockFile a23a5065-it-github-com-uirouter-angularjs git+ssh://git@github.com:uirouter/angularjs
+20 verbose lock git+ssh://git@github.com:uirouter/angularjs C:\Users\user\AppData\Roaming\npm-cache\a23a5065-it-github-com-uirouter-angularjs.lock
+21 verbose addRemoteGit [ 'git@github.com:uirouter/angularjs', 'master' ]
+22 silly lockFile c3c8a32f-it-github-com-uirouter-angularjs git@github.com:uirouter/angularjs
+23 silly lockFile 9433d85e-uirouter-angularjs uirouter/angularjs
+24 silly lockFile 9433d85e-uirouter-angularjs uirouter/angularjs
+25 error addLocal Could not install uirouter/angularjs
+26 error Error: ENOENT, stat 'C:\Users\user\Documents\Aptana Studio 3 Workspace\webSyncStats\dev_angular\uirouter\angularjs'
+27 error If you need help, you may report this log at:
+27 error     <http://github.com/isaacs/npm/issues>
+27 error or email it to:
+27 error     <npm-@googlegroups.com>
+28 error System Windows_NT 6.2.9200
+29 error command "C:\\Program Files (x86)\\nodejs\\\\node.exe" "C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "--save" "@uirouter/angularjs"
+30 error cwd C:\Users\user\Documents\Aptana Studio 3 Workspace\webSyncStats\dev_angular
+31 error node -v v0.10.13
+32 error npm -v 1.3.2
+33 error path C:\Users\user\Documents\Aptana Studio 3 Workspace\webSyncStats\dev_angular\uirouter\angularjs
+34 error code ENOENT
+35 error errno 34
+36 verbose exit [ 34, true ]

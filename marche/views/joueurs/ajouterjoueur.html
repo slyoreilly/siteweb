@@ -1,0 +1,12 @@
+
+<form ng-init="joueur.position='A'">
+   <p>Nom: <input type="text" name="nom" value="Nom" ng-model="joueur.nomJoueur"/></p>
+   <p>Id: <input type="text" name="id" value="id" ng-model="joueur.joueurId"/></p>
+   <select ng-model="joueur.position" ng-options=" x.id as x.intitule for x in positions">
+       <!--option ng-repeat="x in positions" value="{{x.id}}">{{x.intitule}}</option-->
+     
+   </select>
+   <p><button ng-click="ajouterJoueur(joueur)">Ajouter</button></p>
+
+ 
+</form>

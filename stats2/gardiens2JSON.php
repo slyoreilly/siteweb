@@ -107,7 +107,7 @@ return $monMatch;
 //   Trouve ID de la ligue � partir du nom.
 //
 ////////////////////////////////////////////////////
-
+/*
 $resultLigue = mysql_query("SELECT * FROM {$tableLigue}")
 or die(mysql_error());  
 while($rangeeLigue=mysql_fetch_array($resultLigue))
@@ -116,14 +116,14 @@ while($rangeeLigue=mysql_fetch_array($resultLigue))
 	{$ligueSelect =$rangeeLigue['ID_Ligue'];
 	}
 		// Prend le ID de la ligue pour trouver les �quipes.
-}
+}*/
 
 /////////////////////////////////////////////////////
 	//
 //   Trouve ID de l'equipe � partir du nom.
 //
 ////////////////////////////////////////////////////
-
+/*
 $resultEquipe = mysql_query("SELECT * FROM {$tableEquipe}")
 or die(mysql_error());  
 while($rangeeEquipe=mysql_fetch_array($resultEquipe))
@@ -131,7 +131,7 @@ while($rangeeEquipe=mysql_fetch_array($resultEquipe))
 		if(!strcmp($rangeeEquipe['nom_equipe'],$equipe))
 	{$equipeID =$rangeeEquipe['equipe_id'];// Ce sont de INT
 	}
-}
+}*/
 
 /////////////////////////////////////////////////////////////////////////////////////
 //
@@ -148,7 +148,7 @@ or die(mysql_error());
 $lSaison=mysql_result($rSaison, 0);
 }*/
 
-if(!strcmp($saisonId,"")&&strcmp($ligueId,""))// Sp�cifie par la ligue
+if((strcmp($saisonId,"")||($saisonId==null))&&!strcmp($ligueId,""))// Sp�cifie par la ligue
 {
 	$saisonId = trouveSaisonActiveDeLigueId($ligueId);
 //	$saisonId =2;

@@ -1040,6 +1040,7 @@ margin:0;
 height:100%;
 padding-left:2%;
 vertical-align:center;
+display:inline;
 /*
 -moz-box-shadow: 0px 2px 0 0px #AAAAAAAA;
  	box-shadow: 0px 2px 0 0px #AAAAAAAA;	
@@ -1362,15 +1363,6 @@ min-height:60%;
     width:100%;
 }  
 
-
-#divMenuHaut
-{
-/*	position:absolute;*/
-/*float : left;
-width : 85%;
-  margin: 0;*/
-/*  margin: 50px 0 0px 0;*/ 
-}   /* top right bottom left*/
 
 
 #barreTitreContexte
@@ -2273,18 +2265,18 @@ float:left;
  margin:0; 
 
        line-height:45px;
-       height:45px;
+      
        
         list-style: none;
         color:#034E58;
-        float:left;
-           display: inline-block;
+      
+           display: block;
     vertical-align: middle;
 }
 #menu li a{
         font-size:17px;
         font-family:"arial black",arial;
-        color:#034E58;
+        color:#00ACED;
         text-transform:uppercase;
 }
 #menu li:hover li a{
@@ -4482,6 +4474,7 @@ div#divTitreDoc #divBoiteID {
     font-family:arial;
     font-weight:bold;
 }
+
 #barreTitreContexte
 {
     vertical-align:bottom;

@@ -13,14 +13,18 @@
 		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
-
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
-		<style>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+       <style>
 		</style>
 		<script type="text/javascript" charset="utf-8">
 			gereLangue();
 		</script>
 
+<script type="text/javascript" charset="utf-8">
+             var mUrl="/style/ligues/"+getValue("ligueId")+"/perso.css";
+             document.write('<link rel="stylesheet" href='+mUrl+' type="text/css"</link>');
+            </script>
 	</HEAD>
 	<script type="text/javascript">
 		function creerLigue() {
@@ -44,8 +48,8 @@
 			var url = "/admin/modifiersaison.php";
 
 			//	alert(url);
-			monType = document.getElementById("selSaisonType").selectedIndex + 1;
-			var params = "type=" + monType + "&ligueId=" + window.ligueId + "&dateDeb=" + window.dateDeb.value + "&dateFin=" + window.dateFin.value + "&nom=" + window.nom.value + "&code=1";
+			monType = document.getElementById("typeSaison").selectedIndex + 1;
+			var params = "type=" + monType + "&ligueId=" + window.ligueId + "&dateDeb=" + window.inDateDeb2.value + "&dateFin=" + window.inDateFin2.value + "&nom=" + window.nom.value + "&code=1";
 			//		alert(params);
 			requete_ajax.open('POST', url, true);
 
@@ -87,6 +91,7 @@
 				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 					//		alert(requete_ajax.responseText);
 					//			window.location.reload();
+					appliqueStyleLigue(eval('('+requete_ajax.responseText+')'));
 					remplirTableauLigue(requete_ajax.responseText);
 					afficheEquipes(requete_ajax.responseText, 'corpsSujet_1');
 
@@ -544,6 +549,194 @@
 			//		loadXMLDoc();
 		}
 
+        function modifierEquipe(equipeId){
+             for ( J = 0; J < lJSON.equipes.length; J = J + 1) {
+                 if(lJSON.equipes[J].equipeId==equipeId){
+                     mEquipe = lJSON.equipes[J];
+                 }
+             }
+            
+                        $('#modalModifierEquipe').modal("show");
+            $('#modalModifierEquipe .modal-body').empty();
+            
+             $('#modalModifierEquipe .modal-title').text(mEquipe.nom);  
+            $('#modalModifierEquipe .modal-body').append($("<form></form>").attr("id","inFormeEdit"));
+            $('#modalModifierEquipe .modal-footer').empty();
+             $('#modalModifierEquipe .modal-footer').append(
+                $("<button></button>").attr("type","button").addClass("btn btn-primary").text("OK").on("click",{mEquipe3:mEquipe},metAjourEquipe)
+            );
+            
+            $('#modalModifierEquipe form').append(
+                     $("<div></div>").addClass("form-group").append(
+                         $('<label></label>').attr("for","nomEquipe").text(tl_profil_nom),
+                         $('<input></input>').attr("id","nomEquipe").attr("name","nomEquipe").attr("type","text").addClass("form-control").attr("placeholder",tl_profil_nom).val(mEquipe.nom)
+                    ),
+                                         $("<div></div>").addClass("form-group").append(
+                         $('<label></label>').attr("for","villeEquipe").text(tl_profil_nom),
+                         $('<input></input>').attr("id","villeEquipe").attr("name","villeEquipe").attr("type","text").addClass("form-control").attr("placeholder",tl_statseq_ville).val(mEquipe.ville)
+                    ),      $("<div></div>").addClass("form-group").append(
+                         $('<label></label>').attr("for","selCouleur").text(tl_equipes_couleur),
+                         $('<select></select>').attr("id","selCouleur").attr("name","selCouleur").attr("type","text").addClass("form-control").append(
+                            $('<option></option>').text(window.tl_equipes_blanc).val("blanc"),    
+                            $('<option></option>').text(window.tl_equipes_noir).val("mauve"),    
+                            $('<option></option>').text(window.tl_equipes_bleu).val("bleu"),    
+                            $('<option></option>').text(window.tl_equipes_rouge).val("rouge"),    
+                            $('<option></option>').text(window.tl_equipes_vert).val("vert"), 
+                             $('<option></option>').text(window.tl_equipes_orange).val("orange")     
+                         )
+                    ),
+                    $('<div></div>').attr("id","divImage").addClass("w-50").append(
+                        $('<img></img>').attr("id","imgModif").attr("src",'/admin/afficheImage.php?ficId=' + mEquipe.ficId).attr("data-ficid",mEquipe.ficId),
+                            $("<div></div>").addClass("form-group").append(
+                         $('<label></label>').attr("for","modifLogo").text(tl_profil_nom),
+                         $('<input></input>').attr("id","modifLogo").attr("name","userfile").attr("type","file").addClass("form-control").on("change",{mEquipe2:mEquipe},function(event){
+                             $('#divImage img').addClass("disabled");
+                             televerseFic();
+                             $('#divImage').append(
+                                 $('<button></button>').attr("type","button").addClass("btn btn-success").text("Confirm").on("click",{mEquipe3:event.data.mEquipe2},metAjourEquipe),
+                                 $('<button></button>').attr("type","button").addClass("btn btn-danger").text("Cancel")
+                             )
+                         }),
+                         $('<input></input>').attr("type","hidden").attr("name","contexte").attr("id","idContexte").val("equipe"),
+                         $('<input></input>').attr("type","hidden").attr("name","MAX_FILE_SIZE").attr("id","maxFileSize").val("2000000")
+                    )
+                    
+                    )
+
+                );
+                $('#selCouleur').val(mEquipe.logo);
+            mCouleur = "FFFFFF";
+            if(mEquipe.logo.localeCompare("noir")){
+                mCouleur="000000";
+            }else if (mEquipe.logo.localeCompare("bleu")){
+                mCouleur="0000FF";
+            }else if(mEquipe.logo.localeCompare("rouge")){
+                mCouleur="FF0000";
+            }else if(mEquipe.logo.localeCompare("vert")){
+                mCouleur="00FF00";
+            }else if(mEquipe.logo.localeCompare("orange")){
+                mCouleur="777700";
+            }else if(mEquipe.logo.localeCompare("blanc")){
+                mCouleur="FFFFFF";
+            }
+            
+        }
+        
+        function metAjourEquipe(event){
+                           $.ajax({
+                        url : "/admin/modifierequipe.php",
+                        datatype : 'json',
+                        contentType: "application/json",
+                        type : 'POST',
+                       
+                        data : {
+                            code : 10,
+                            logo : $('#selCouleur').val(),
+                            ligueId : window.ligueId,
+                             ville:$('#villeEquipe').val(),
+                            nom:$('#nomEquipe').val(),
+                             couleur: window.mCouleur,
+                            ficId:$('#imgModif').attr("data-ficid"),
+                            equipeId:event.data.mEquipe3.equipeId,
+                            
+                        },
+                        contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+                        success : function(response) {
+                            $('#modalModifierEquipe').modal("hide");
+                        },
+                        error : function(xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            alert(err.Message + "  --  ereur ");
+                        }
+                    });
+        }
+        
+function televerseFic() {
+                //  return function(){
+                var requete_ajax = new XMLHttpRequest();
+
+                var url = "/admin/enregistreFichier.php";
+                //  alert(url);
+                var formData = new FormData(document.getElementById('inFormeEdit'));
+                /*              var params = {contexte: equipe,
+                 form : window.maForme}
+                 alert(params);*/
+                requete_ajax.open('POST', url, true);
+
+                //              requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                //              requete_ajax.setRequestHeader("Content-length", params.length);
+                //              requete_ajax.setRequestHeader("Connection", "close");
+
+                requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+                    if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+                        //                      alert(requete_ajax.responseText);
+                        //window.mesImg[window.varKLE].src = '/admin/afficheImage.php?ficId=' + requete_ajax.responseText;
+                      //  window.mesImg[window.varKLE].src = '/admin/afficheImage.php?ficId=' + requete_ajax.responseText;
+                      //  nouveauFicId = requete_ajax.responseText;
+                        //          window.location.reload();
+                        $('#imgModif').attr("src",'/admin/afficheImage.php?ficId=' +requete_ajax.responseText);
+                      $('#imgModif').attr("data-ficid",requete_ajax.responseText );
+                        return requete_ajax.responseText;
+                    }
+                    //      else{alert("Petit problème de développement");}
+                }
+                requete_ajax.send(formData);
+                //  }
+            }
+
+
+        function afficheEquipes(str,parentId){
+
+            
+            lJSON = eval('(' + str + ')');
+            
+            
+                //alert(lJSON.equipes.length);
+                
+                            lJSON.Ligue.saisons.sort(function(a, b) {
+                                d1Cal = a.pm.split(" ")[0];
+                                d1Hor = a.pm.split(" ")[1];
+
+                                var d1 = new Date(d1Cal.split("-")[0], d1Cal.split("-")[1], d1Cal.split("-")[2], d1Hor.split(":")[0], d1Hor.split(":")[1], d1Hor.split(":")[2]);
+                                d2Cal = b.pm.split(" ")[0];
+                                d2Hor = b.pm.split(" ")[1];
+
+                                var d2 = new Date(d2Cal.split("-")[0], d2Cal.split("-")[1], d2Cal.split("-")[2], d2Hor.split(":")[0], d2Hor.split(":")[1], d2Hor.split(":")[2]);
+                                return (d1 - d2)
+                            });
+                            $('#'+parentId).addClass("container-fluid").append($('<div></div>').addClass("row"));
+                           for ( J = 0; J < lJSON.equipes.length; J = J + 1) {
+                               
+                               $('#'+parentId+" > .row").append(
+                                    $('<div></div>').addClass("mt-3 col-12 col-md-6 col-lg-4").append(
+                                   $('<div></div>').addClass("card bg-secondary p-4").append(
+                                      $('<img></img>').addClass("card-img-top") .attr("src", '/admin/afficheImage.php?ficId=' + lJSON.equipes[J].ficId),
+                                      $('<div></div>').addClass("card-body").append(
+                                          $('<p></p>').text(lJSON.equipes[J].nom).addClass("card-text"),
+                                          $('<p></p>').text(lJSON.equipes[J].ville).addClass("card-text"),
+                                          $('<img></img>').attr("src", '/images/icones/' + lJSON.equipes[J].logo + '.bmp'),
+                                          $('<div></div>').addClass("card-footer row").append(
+                                              $('<div></div>').addClass("col").append($('<i class="fa fa-edit"></i>')).on("click",{eId:lJSON.equipes[J].equipeId},function(event){
+                                                  modifierEquipe(event.data.eId);
+                                              }),
+                                               $('<div></div>').addClass("col").append($('<a></a>').addClass("text-light").attr("href","/zstats/statsequipe.html?equipeId="+lJSON.equipes[J].equipeId).append($('<i class="fa fa-external-link-alt"></i>')))
+                                          )
+                                      )
+                                   )));
+                                   
+                               
+                               
+                           }
+
+                  //  strImg = "<img src=\"\/images\/icones\/edit.png\" onclick=editEquipe(" + J + "); width=\"32\" height=\"32\" alt=\"Edit\"\>";
+                   // strImg2 = "<img src=\"\/images\/icones\/view.png\" onclick=window.location.href='\/zstats\/statsequipe.html?equipeId=" + lJSON.equipes[J].equipeId + "'; width=\"32\" height=\"32\" alt=\"Voir\"\>";
+
+
+                
+
+            
+        }
+
 		function dialCreeArbitre() {
 			creeArbitre();
 			/*			construitDialogue();
@@ -654,13 +847,12 @@
 
 		function faitDivMembre() {
 
-			parent = document.getElementById('divGauche');
+			parent = document.getElementById('contFicheMembre');
 			imgPF = document.createElement('IMG');
 			imgPF.id = 'imgPhotoMembre';
 			imgPF.className = 'grosLogo';
-			divEnteteMembreJS = document.createElement('div');
-			divEnteteMembreJS.id = 'divEnteteMembre';
-			divEnteteMembreJS.innerHTML = 'MEMBRE';
+			
+			divEnteteMembreJS =$('<div></div>').attr('id','divEnteteMembre').text('MEMBRE').addClass('couleur1');
 			divPM = document.createElement('DIV');
 			divPM.id = "divProfilMembre";
 			divPF = document.createElement('DIV');
@@ -671,7 +863,7 @@
 			divFiche.id = "ficheMembre";
 			divCF = document.createElement('DIV');
 			divCF.id = "commentaireMembre";
-			parent.appendChild(divEnteteMembreJS);
+			$(parent).append($(divEnteteMembreJS));
 			parent.appendChild(imgPF);
 
 			parent.appendChild(divPM);
@@ -687,11 +879,10 @@
 			imgEditMembreJS.className = 'petitLogo';
 
 			imgEditMembreJS.onclick = function() {
-				construitDialogue();
-				dial = document.getElementById('divDialogue');
-				monIF = document.createElement('IFRAME');
-				dial.appendChild(monIF);
-				monIF.src = "/zuser/editmembre.html?userId=" + username + '&m=1';
+			     $('#modalEditMembre').modal("show");
+			    $('#modalEditMembre .modal-body').empty();
+			                    $('#modalEditMembre .modal-title').text(tl_profil_profMembre);
+			    $('#modalEditMembre .modal-body').append($("<iframe></iframe>").css("width","100%").css("height","100%").attr("src","/zuser/editmembre.html?userId=" + username + '&m=1'));
 			};
 			/*						<div id="divProfilMembre">
 			 <h2 class="titreSection" id="h2ProfMembre">Profil du membre</h2>
@@ -741,11 +932,10 @@
 			imgEditMembreJS.className = 'petitLogo';
 
 			imgEditMembreJS.onclick = function() {
-				construitDialogue();
-				dial = document.getElementById('divDialogue');
-				monIF = document.createElement('IFRAME');
-				dial.appendChild(monIF);
-				monIF.src = "/admin/entreprofil.html?joueurId=" + joueurId + '&m=1';
+			         $('#modalEditMembre').modal("show");
+                $('#modalEditMembre .modal-body').empty();
+                $('#modalEditMembre .modal-title').text(tl_profil_profJou);
+                $('#modalEditMembre .modal-body').append($("<iframe></iframe>").css("width","100%").css("height","100%").attr("src","/admin/entreprofil.html?joueurId=" + joueurId + '&m=1'));
 			};
 		}
 
@@ -773,26 +963,34 @@
 				ongletAdmin();
 			};
 			divPAdmin.appendChild(divSelLigue);
-			vecSujet = [window.tl_ges_Saisons, window.tl_ges_Equipes, window.tl_ges_Arenas, window.tl_ges_Joueurs, window.tl_ges_Arbitres];
+			vecSujet = [window.tl_ges_Saisons, window.tl_ges_Equipes, window.tl_ges_Arenas, window.tl_ges_Joueurs, window.tl_ges_Arbitres,"Params"];
 
 			for (var a = 0; a < vecSujet.length; a++) {
-				divSai = document.createElement('Div');
-				divSai.className = 'repliable';
+			    $('#divProfilAdmin').append($('<div></div>').addClass("card text-white bg-dark").attr("id","sujet_"+a).append(
+			        $('<a></a>').addClass("card-link").attr("data-toggle","collapse").attr("href",'#parentCorpsSujet_' + a).append(
+			            $('<div></div>').addClass("card-header").text(vecSujet[a])
+			        ),
+			        $('<div></div>').addClass("collapse").attr("id","parentCorpsSujet_" + a).attr("data-parent","#divProfilAdmin").append(
+			            $('<div></div>').addClass("card-body").attr("id","corpsSujet_" + a)
+			        )
+			    ));
+				/*divSai = document.createElement('Div');
+				divSai.className = 'card';
 				divSai.id = 'sujet_' + a;
 				tDivSai = document.createElement('h3');
-				tDivSai.innerHTML = vecSujet[a];
-				btnExpSai = document.createElement('DIV');
+				tDivSai.innerHTML = vecSujet[a];*/
+				/*btnExpSai = document.createElement('DIV');
 				btnExpSai.className = 'lien btnExp';
 				btnExpSai.innerHTML = '[+]';
-				btnExpSai.id = 'btnSujet_' + a;
-				corps = document.createElement('Div');
+				btnExpSai.id = 'btnSujet_' + a;*/
+				//corps = document.createElement('Div');
 		//		corps.className = 'corps cache';
-				corps.id = 'corpsSujet_' + a;
+//				corps.id = 'corpsSujet_' + a;
 
-				divPAdmin.appendChild(divSai);
-				divSai.appendChild(tDivSai);
-				divSai.appendChild(btnExpSai);
-				divSai.appendChild(corps);
+			//	divPAdmin.appendChild(divSai);
+			//	divSai.appendChild(tDivSai);
+				//divSai.appendChild(btnExpSai);
+			//	divSai.appendChild(corps);
 				
 
 
@@ -804,7 +1002,7 @@
 			divCreer.style.paddingTop = "20px";
 			divCreer.appendChild(aCreer);
 			divPAdmin.appendChild(divCreer);
-
+/*
 
 								$(".repliable h3").next().next().hide();
 				$(".repliable h3").next().click(function(event){
@@ -816,6 +1014,9 @@
 					{event.target.innerHTML='[+]';}
 					});
 
+*/
+
+        gereParamsLigue();
 
 
 		}
@@ -830,8 +1031,15 @@
 					document.getElementById('dTitre_' + b).className = 'titreOnglet passif';
 				}
 			}
-
-		}
+        rafraichiStyle();
+		} 
+        function rafraichiStyle(){
+            try{
+                $('.titreOnglet.actif').css("background-color",couleurmenu1).css("color",couleurmenu2);
+                $('.titreOnglet.passif').css("background-color",couleurmenu2).css("color",couleurmenu1);
+            
+                 }catch(err){}
+        }
 
 		/////////////////////////
 		/// Section ProfilArbitre
@@ -873,6 +1081,22 @@
 			};
 			requete_ajax.send(params);
 
+		}
+		
+		
+		function gereParamsLigue(){
+		    $("#corpsSujet_5").append(
+		        $('<div></div>').text("Click to manage league").on("click",function(){
+		              $('#modalGereLigue').modal("show");
+                $('#modalGereLigue .modal-body').empty();
+                $('#modalGereLigue .modal-title').text(tl_statseq_Ligue);
+                $('#modalGereLigue .modal-body').append($("<iframe></iframe>").css("width","100%").css("height","100%").attr("src","/zadmin/paramsligue.html?m=1&ligueId=" + window.ligueId));
+
+
+		        })
+		    )
+		   
+		    
 		}
 
 		function setRegion(region) {
@@ -951,11 +1175,12 @@
 					parent.appendChild(divCreer);
 
 					divCreer.onclick = function() {
-						construitDialogue();
-						dial = document.getElementById('divDialogue');
-						monIF = document.createElement('IFRAME');
-						dial.appendChild(monIF);
-						monIF.src = "/zarbitre/listeArbitres.html?m=1&ligueId=" + window.ligueId;
+						         $('#modalCreerArbitre').modal("show");
+                $('#modalCreerArbitre .modal-body').empty();
+                $('#modalCreerArbitre .modal-title').text(tl_profil_profArb);
+                $('#modalCreerArbitre .modal-body').append($("<iframe></iframe>").css("width","100%").css("height","100%").attr("src","/zarbitre/listeArbitres.html?m=1&ligueId=" + window.ligueId));
+
+
 					};
 				}
 			};
@@ -1678,6 +1903,9 @@
 		//////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////
 
+       
+
+
 		function remplirTableauLigue(string2) {
 			mJS = {};
 			mJS.id = "tabGestionLigue";
@@ -1698,15 +1926,29 @@
 			videNoeud('tabGestionLigue_tbody');
 			vPerm = 1;
 			//verifiePermission();
+			
+            lJSON.Ligue.saisons.sort(function(a, b) {
+                                d1Cal = a.pm.split(" ")[0];
+                                d1Hor = a.pm.split(" ")[1];
 
-			for ( J = 0; J < lJSON.Ligue.saisons.length; J = J + 1) {
+                                var d1 = new Date(d1Cal.split("-")[0], d1Cal.split("-")[1], d1Cal.split("-")[2], d1Hor.split(":")[0], d1Hor.split(":")[1], d1Hor.split(":")[2]);
+                                d2Cal = b.pm.split(" ")[0];
+                                d2Hor = b.pm.split(" ")[1];
+
+                                var d2 = new Date(d2Cal.split("-")[0], d2Cal.split("-")[1], d2Cal.split("-")[2], d2Hor.split(":")[0], d2Hor.split(":")[1], d2Hor.split(":")[2]);
+                                return (d1 - d2)
+                            });
+
+
+
+			for ( J = lJSON.Ligue.saisons.length-1; J >-1 ; J = J - 1) {
 				//try{
 
 				rangee = document.createElement('TR');
 				amettre.appendChild(rangee);
 
 				try {
-				    rangJ = lJSON.Ligue.saisons.length-J-1;
+				    rangJ = J;
 					strImg = "<img src=\"\/images\/icones\/edit.png\" onclick=modifierSaison(" + rangJ + ") width=\"32\" height=\"32\" alt=\"Edit\"\>";
 					strImg2 = "<img src=\"\/images\/icones\/equipes.png\" onclick=tableauEquipes(" + rangJ + ") width=\"32\" height=\"32\" alt=\"Equipes\"\>";
 
@@ -1748,8 +1990,8 @@
 				}
 				//					J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
 
-				if (J >= 1) {
-					$(rangee).hide();
+				if (J < lJSON.Ligue.saisons.length-1) {
+					$(rangee).addClass("togglable").hide();
 					//rangee.style.visibiliy="hidden";
 				}
 
@@ -1763,7 +2005,7 @@
 			var td4=$('<TD></TD>').text("Type");
 			var td5=$('<TD></TD>').text("Options");
 			
-			$('#corpsSujet_0 TBODY:first-child').before(trTitre);
+			$('#corpsSujet_0 TBODY').prepend(trTitre);
 			$(trTitre).append(td1,td2,td3,td4,td5);
 			$(trTitre).css("font-weight","bold");
 			
@@ -1783,9 +2025,10 @@
 
 			element3.innerHTML = "Afficher toutes les saisons";
 			$(element3).click(function() {
-				$("#tabGestionLigue_tbody tr").fadeToggle(200);
-				$("#tabGestionLigue_tbody tr:first-child").fadeToggle(0);
-				element3.innerHTML = "Afficher moins";
+				$("#tabGestionLigue_tbody .togglable").fadeToggle(200);
+				
+//				$("#tabGestionLigue_tbody tr:first-child").show(0);
+				element3.innerHTML = "Afficher plus";
 				//						$(element3).click(function(){
 				//							$("#tabGestionLigue_tbody tr ").hide(300);
 				//							$("tabGestionLigue_tbody tr:first-child").show(200);
@@ -1818,154 +2061,72 @@
 		function creeSaison() {
 			return function() {
 
-				construitDialogue();
-				dialCreeSai = document.getElementById('divDialogue');
+				
+				                     $('#modalModifierSaison').modal("show");
+                $('#modalModifierSaison .modal-body').empty();
+                $('#modalModifierSaison .modal-title').text("Créer votre saison");
+                $('#modalModifierSaison .modal-footer').empty();
+                
+                $('#modalModifierSaison .modal-body').append(
+                    $('<form></form>')
+                        );
 
+				
 				////////////////////////////////////////////////////////////////////////////
-
-				titreCS = document.createElement('h1');
-				titreCS.innerHTML = "Créer votre saison";
-				dialCreeSai.appendChild(titreCS);
-				divST = document.createElement('div');
-				divST.id = 'divSousTitre';
-				dialCreeSai.appendChild(divST);
-				sousTitre = document.createElement('h2');
-				sousTitre.innerHTML = "Vos matchs seront inclus ou non dans les saisons en fonction des dates de début et de fins de celles-ci.";
-				divST.appendChild(sousTitre);
-
-				lh = document.createElement('div');
-				lh.id = 'ligneH';
-				dialCreeSai.appendChild(lh);
-
-				dLI = document.createElement('div');
-				dLI.id = "divLesInputs";
-				dialCreeSai.appendChild(dLI);
-
-				ligneIn1 = document.createElement('div');
-				ligneIn1.className = "divLigneInput";
-				ligneIn2 = document.createElement('div');
-				ligneIn2.className = "divLigneInput";
-
-				ligneIn3 = document.createElement('div');
-				ligneIn3.className = "divLigneInput";
-				ligneIn4 = document.createElement('div');
-				ligneIn4.className = "divLigneInput";
-				ligneIn5 = document.createElement('div');
-				ligneIn5.className = "divLigneInput";
-
-				dLI.appendChild(ligneIn1);
-				dLI.appendChild(ligneIn2);
-				dLI.appendChild(ligneIn3);
-				dLI.appendChild(ligneIn4);
-				dLI.appendChild(ligneIn5);
 
 				///////////
 
-				d1 = document.createElement('div');
-				d1.id = 'tNomUsager';
-				d1.className = 'formGauche';
-				d1.innerHTML = "Nom de la saison";
+                var auj=new Date();
+                var jour = ("0" + auj.getDate()).slice(-2);
+                var mois = ("0" + (auj.getMonth() + 1)).slice(-2);
+                var an = auj.getYear()+1900;
 
-				d2 = document.createElement('div');
-				d2.className = 'formDroite';
-				nom = document.createElement('INPUT');
-				nom.type = "text";
-				nom.value = "Saison ";
-				nom.name = "nom";
-				nom.id = "nom";
-				d2.appendChild(nom);
+				$('#modalModifierSaison form').append(
+				     $("<div></div>").addClass("form-group").append(
+				         $('<label></label>').attr("for","nom").text(tl_statseq_Saison),
+                         $('<input></input>').attr("id","nom").attr("name","nom").attr("type","text").addClass("form-control").attr("placeholder",tl_statseq_Saison)
+				    ),
+				   
+               
+               $("<div></div>").addClass("form-group").attr("id","divDateDeb").append(
+                         $('<label></label>').attr("for","inGrDeb").text(tl_ges_Debut),
+                         $('<div></div>').addClass("input-group date").attr("id","inGrDeb").attr("data-target-input","nearest").append(
+                         $('<input></input>').attr("type","button").attr("id","inDateDeb2").val("...").on("click",
+                 function() {
+  //                   EIS_FIX_EI1("divDateDeb");
+                    displayCalendar($('#inDateDeb2').get(0), 'yyyy/mm/dd hh:ii',  $("#divDateDeb").get(0), true);
+                }),
+                       $('<div></div>').addClass("input-group-text").append($('<i></i>').addClass("fa fa-calendar"))                             
+                    
+                 )),$("<div></div>").addClass("form-group").attr("id","divDateFin").append(
+                         $('<label></label>').attr("for","inGrFin").text(tl_ges_Fin),
+                         $('<div></div>').addClass("input-group date").attr("id","inGrFin").attr("data-target-input","nearest").append(
+                         $('<input></input>').attr("type","button").attr("id","inDateFin2").val("...").on("click",
+                 function() {
+//                       EIS_FIX_EI1("divDateFin");
+                    displayCalendar($('#inDateFin2').get(0), 'yyyy/mm/dd hh:ii',   $("#divDateFin").get(0), true);
+                }),
+                       $('<div></div>').addClass("input-group-text").append($('<i></i>').addClass("fa fa-calendar"))                             
+                    )
+                 ),
+                      $("<div></div>").addClass("form-group").append(
+                         $('<label></label>').attr("for","typeSaison").text(tl_ges_typeSaison),
+                         $('<select></select>').attr("id","typeSaison").attr("name","typeSaison").addClass("form-control").append(
+                            $('<option></option>').text(window.tl_ges_Regulier).prop("selected",true),
+                            $('<option></option>').text(window.tl_ges_Serie)
+                         )
+                    )
+                
+				);
 
-				d3 = document.createElement('div');
-				d3.id = 'tMotPasse';
-				d3.className = 'formGauche';
-				d3.innerHTML = "Date de début";
+			
 
-
-				var auj=new Date();
-				var jour = ("0" + auj.getDate()).slice(-2);
-				var mois = ("0" + (auj.getMonth() + 1)).slice(-2);
-				var an = auj.getYear()+1900;
-				d4 = document.createElement('div');
-				d4.className = 'formDroite';
-				dateDeb = document.createElement('INPUT');
-				dateDeb.type = "text";
-				dateDeb.value = an+"-"+mois+"-"+jour;
-				dateDeb.name = "deb";
-				dateDeb.id = "dateDeb";
-
-				btnDeb = document.createElement('INPUT');
-				btnDeb.type = "button";
-				btnDeb.value = window.tl_bouton_Calendrier + "...";
-				btnDeb.onclick = function() {
-					displayCalendar(dateDeb, 'yyyy/mm/dd hh:ii', this, true);
-				};
-
-				d5 = document.createElement('div');
-				d5.id = 'tMotPasse';
-				d5.className = 'formGauche';
-				d5.innerHTML = "Date de fin";
-
-				d6 = document.createElement('div');
-				d6.className = 'formDroite';
-				dateFin = document.createElement('INPUT');
-				dateFin.type = "text";
-				dateFin.value = "2020-09-01";
-				dateFin.name = "fin";
-				dateFin.id = "dateFin";
-
-				btnFin = document.createElement('INPUT');
-				btnFin.type = "button";
-				btnFin.value = window.tl_bouton_Calendrier + "...";
-				btnFin.onclick = function() {
-					displayCalendar(dateFin, 'yyyy/mm/dd hh:ii', this, true);
-				};
-
-				d7 = document.createElement('div');
-				d7.id = 'dSelType';
-				d7.className = 'formGauche';
-				d7.innerHTML = "Type saison";
-
-				d8 = document.createElement('div');
-				d8.className = 'formDroite';
-
-				selSaisonType = document.createElement('SELECT');
-				selSaisonType.id = "selSaisonType";
-
-				opt = document.createElement('OPTION');
-				opt.innerHTML = window.tl_ges_Regulier;
-				opt.setAttribute("selected", "true");
-				selSaisonType.appendChild(opt);
-
-				opt = document.createElement('OPTION');
-				opt.innerHTML = window.tl_ges_Serie;
-				selSaisonType.appendChild(opt);
-				d8.appendChild(selSaisonType);
-
-				boutOK = document.createElement('div');
-				boutOK.id = "divSave";
-				boutOK.innerHTML = window.tl_bouton_OK;
-				boutOK.onclick = function() {
-					//alert("Script pour créer saison...");
-					btnOkCreeSaison();
-					//						window.location.reload();
-
-				};
-
-				ligneIn1.appendChild(d1);
-				ligneIn1.appendChild(d2);
-				d2.appendChild(nom);
-				ligneIn2.appendChild(d3);
-				ligneIn2.appendChild(d4);
-				d4.appendChild(dateDeb);
-				d4.appendChild(btnDeb);
-				ligneIn3.appendChild(d5);
-				ligneIn3.appendChild(d6);
-				d6.appendChild(dateFin);
-				d6.appendChild(btnFin);
-				ligneIn4.appendChild(d7);
-				ligneIn4.appendChild(d8);
-				dialCreeSai.appendChild(boutOK);
-
+$('#modalModifierSaison .modal-footer').append(
+                    $('<button></button>').addClass("btn btn-primary").attr("id","divSave").text(window.tl_bouton_OK).on("click",function(){
+                    btnOkCreeSaison();    
+                    })
+                );
+	
 				////////////////////////////////////////////////////////////////////////////
 
 			};
@@ -1990,7 +2151,7 @@
 				amettre.appendChild(rangee);
 
 				try {
-					strImg = "<img src=\"\/images\/icones\/delete.png\" onclick=enleveArena(" + window.ligueId + "," + vecArena[J].arenaId + ") width=\"32\" height=\"32\" alt=\"Edit\"\>";
+					strImg = "<img src=\"\/images\/icones\/delete.png\" onclick=desabonneArena(" + window.ligueId + "," + vecArena[J].arenaId + ") width=\"32\" height=\"32\" alt=\"Edit\"\>";
 
 					var lesCols = new Array();
 					lesCols[0] = vecArena[J].nomArena;
@@ -2049,20 +2210,19 @@
 		}
 
 		function ajouteArena() {
+		    
+                                     $('#modalAjouteArena').modal("show");
+                $('#modalAjouteArena .modal-body').empty();
+                $('#modalAjouteArena .modal-title').text("Ajouter une arena");
+                 $('#modalAjouteArena .modal-subtitle').remove();
+                $('#modalAjouteArena .modal-footer').empty();
+                 $('#modalAjouteArena .modal-header').append($('<br></br>'),$('<h4></h4>').addClass("modal-subtitle").text( "Sélectionnez l'arena à ajouter à votre ligue"));
+                 $('#modalAjouteArena .modal-body').append($('<div></div>').attr("id","divListe"));
 
-			construitDialogue();
-
-			divCentraleJS = document.getElementById('divDialogue');
-			divListeJS = document.createElement('DIV');
+			
+			divListeJS = $('#divListe').get(0);
 			divListeJS.id = "divListe";
 
-			h1Ajoute = document.createElement('H1');
-			h1Ajoute.innerHTML = "Ajouter une arena";
-			h2Sel = document.createElement('H2');
-			h2Sel.innerHTML = "Sélectionnez l'arena à ajouter à votre ligue";
-			divCentraleJS.appendChild(h1Ajoute);
-			divCentraleJS.appendChild(h2Sel);
-			divCentraleJS.appendChild(divListeJS);
 
 			window.toutesArenas.sort(function(a, b) {
 				return ((a.nomArena == b.nomArena) ? 0 : ((a.nomArena.toLowerCase() > b.nomArena.toLowerCase()) ? 1 : -1 ));
@@ -2084,12 +2244,6 @@
 				})(window.toutesArenas[K].arenaId);
 				divListeJS.appendChild(divElement);
 			}
-		}
-
-		function enleveArena(ligueId, arenaId) {
-
-			desabonneArena(ligueId, arenaId);
-
 		}
 
 		function desabonneArena(ligueId, arenaId) {
@@ -2161,9 +2315,14 @@
 		}
 
 		function tableauEquipes(saison) {
-			construitDialogue();
+		    
+		                                         $('#modalTableauEquipes').modal("show");
+                $('#modalTableauEquipes .modal-body').empty();
+                $('#modalTableauEquipes .modal-title').text("Ajouter une équipe");
+                $('#modalTableauEquipes .modal-footer').empty();
+                 $('#modalTableauEquipes .modal-body').append($('<div></div>').attr("id","divListe"));
 
-			var doc = document.getElementById('divDialogue');
+			var doc = $('#modalTableauEquipes .modal-body').get(0);
 
 			var lesCols = new Array();
 			lesCols[0] = "#ID";
@@ -2429,8 +2588,105 @@
 
 		function modifierSaison(saison) {
 
-			construitDialogue();
+                                     $('#modalModifierSaison').modal("show");
+                $('#modalModifierSaison .modal-body').empty();
+                $('#modalModifierSaison .modal-title').text("Modifier votre saison");
+                $('#modalModifierSaison .modal-footer').empty();
+                
+                $('#modalModifierSaison .modal-body').append(
+                    $('<form></form>')
+                        );
 
+                
+                ////////////////////////////////////////////////////////////////////////////
+
+                ///////////
+
+                var auj=new Date();
+                var jour = ("0" + auj.getDate()).slice(-2);
+                var mois = ("0" + (auj.getMonth() + 1)).slice(-2);
+                var an = auj.getYear()+1900;
+
+                $('#modalModifierSaison form').append(
+                     $("<div></div>").addClass("form-group").append(
+                         $('<label></label>').attr("for","nom").text(tl_statseq_Saison),
+                         $('<input></input>').attr("id","nom").attr("name","nom").attr("type","text").addClass("form-control").attr("placeholder",tl_statseq_Saison).val(window.lJSON.Ligue.saisons[saison].nom)
+                    ),
+                   
+               
+               $("<div></div>").addClass("form-group").attr("id","divDateDeb").append(
+                         $('<label></label>').attr("for","inGrDeb").text(tl_ges_Debut),
+                         $('<div></div>').addClass("input-group date").attr("id","inGrDeb").attr("data-target-input","nearest").append(
+                         $('<input></input>').attr("type","button").attr("id","inDateDeb2").val(window.lJSON.Ligue.saisons[saison].pm).on("click",
+                 function() {
+                     
+                     //$('body').prepend($('<div></div>').attr("id","overlay"));
+                    displayCalendar($(this).get(0), 'yyyy/mm/dd hh:ii', $(this).get(0), true);
+                }),
+                       $('<div></div>').addClass("input-group-text").append($('<i></i>').addClass("fa fa-calendar"))                             
+                    
+                 )),$("<div></div>").addClass("form-group").attr("id","divDateFin").append(
+                         $('<label></label>').attr("for","inGrFin").text(tl_ges_Fin),
+                         $('<div></div>').addClass("input-group date").attr("id","inGrFin").attr("data-target-input","nearest").append(
+                         $('<input></input>').attr("type","button").attr("id","inDateFin2").val(window.lJSON.Ligue.saisons[saison].dm).on("click",
+                 function() {
+                    displayCalendar($(this).get(0), 'yyyy/mm/dd hh:ii',  $(this).get(0), true);
+                }),
+                       $('<div></div>').addClass("input-group-text").append($('<i></i>').addClass("fa fa-calendar"))                             
+                    )
+                 ),
+                      $("<div></div>").addClass("form-group").append(
+                         $('<label></label>').attr("for","typeSaison").text(tl_ges_typeSaison),
+                         $('<select></select>').attr("id","typeSaison").attr("name","typeSaison").addClass("form-control").append(
+                            $('<option></option>').text(window.tl_ges_Regulier).prop("selected",true),
+                            $('<option></option>').text(window.tl_ges_Serie)
+                         )
+                    )
+                
+                );
+
+             $('#modalModifierSaison form').append($('<input></input>').attr("type","button").val(window.tl_bouton_Calendrier+" (ver. alpha)").on("click",function(){
+                window.location.href="/test/genereHoraire.html?saisonId="+window.lJSON.Ligue.saisons[saison].saisonId+"&ligueId="+window.lJSON.Ligue.ligueId;
+            }));
+
+$('#modalModifierSaison .modal-footer').append(
+                    $('<button></button>').addClass("btn btn-primary").attr("id","divSave").text(window.tl_bouton_OK).on("click",function(){
+                                    var requete_ajax = new XMLHttpRequest();
+                                    monType = document.getElementById("typeSaison").selectedIndex + 1;
+                mNom=$('#nom').val();
+                abon = {
+                    ligueId : window.lJSON.Ligue.ligueId,
+                    dateDeb : window.inDateDeb2.value,
+                    dateFin : window.inDateFin2.value,
+                    saisonId : window.lJSON.Ligue.saisons[saison].saisonId,
+                    nom : mNom,
+                    code : 10,
+                    type : monType
+                };
+
+                var url = "/admin/modifiersaison.php";
+                //  alert(url);
+                var params = "";
+                for (var k in abon) {
+                    params += k + "=" + abon[k] + "&";
+                }
+                requete_ajax.open('POST', url, true);
+                requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                requete_ajax.setRequestHeader("Content-length", params.length);
+                requete_ajax.setRequestHeader("Connection", "close");
+
+                requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+                    if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+                        var string2 = getInfoLigue(window.ligueId);
+                        videNoeud('corpsSujet_0');
+                            $('#modalModifierSaison').modal("hide");
+                    }
+                };
+                requete_ajax.send(params);
+    
+                    })
+                );
+/*
 			divParentNom = document.createElement('DIV');
 			divNom = document.createElement('DIV');
 			divNom.id = "divNom";
@@ -2587,7 +2843,7 @@
 
 			//				doc.body.appendChild(inputPm);
 			//				doc.body.appendChild(inputDm);
-
+*/
 		}
 
 		function ongletAdmin() {
@@ -2604,25 +2860,100 @@
 			getArbitres();
 
 		}
+		function appliqueStyleLigue(lesInfos){
+                 /*   try{
+                $('.bg').css("background-image","url('"+lesInfos.Ligue.cleValeur.style.arriereplan+"')");
+                
+                }catch(err){
+                    console.log("Pas trouvé image arrière plan");
+                    
+                }
+                try{
+                    couleurmenu1 = lesInfos.Ligue.cleValeur.style.couleurmenu1;
+                    couleurmenu2 = lesInfos.Ligue.cleValeur.style.couleurmenu2;
+                    
+                $('#divTitreDoc').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                $('.bouton_1').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                $('#barreNav a').css("color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                $('#barreNav >ul >div:hover').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                 $('#barreNav >ul >div').hover(function(){
+                 $(this).css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                 $(this).find( 'a' ).css("color",lesInfos.Ligue.cleValeur.style.couleurmenu2);
+                 }, function(){
+                    $(this).css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu2);
+                     $(this).find( 'a' ).css("color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+                });
+                
+                $('.titreOnglet.actif').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu1).css("color",lesInfos.Ligue.cleValeur.style.couleurmenu2);
+                $('.titreOnglet.passif').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu2).css("color",lesInfos.Ligue.cleValeur.style.couleurmenu1);
+            $('.couleur1').css("background-color",couleurmenu1);
+            $('td.titreTableau').css('color',couleurmenu1);
+                
+                }catch(err){
+                    console.log("Pas de couleur de menu1");
+                    
+                }
+                try{
+                $('#barreNav ul').css("background-color",lesInfos.Ligue.cleValeur.style.couleurmenu2);
+                
+                }catch(err){
+                    console.log("Pas de couleur de menu");
+                    
+                }*/
+                
+                try{
+                  //  alert(lesInfos.Ligue.cleValeur.siteWeb.structurePage.divDroite);
+                if("false".localeCompare(lesInfos.Ligue.cleValeur.siteWeb.structurePage.divDroite)==0){
+                   
+                 $('#divDroite').remove();
+                 if($(".col-sm-1.espaceur").length==0){                     
+                 $('#divGauche').before($('<div></div>').addClass("col-sm-1 espaceur"));
+                 }
+                 $('#divCentrale').removeClass('col-sm-6').addClass('col-sm-8');
+                    }
+                  
+                }catch(err){
+                    console.log("Erreur try catch structurePage");
+                    
+                }
+ 
+                
+            }
+
+		
 
 	</script>
 
 	<body id="body" >
-		<div id="divHaut"></div>
-		<div id="divGauche"></div>
-		<div id="divMenuHaut"></div>
+        <div class="container-fluid bg">
+            <div class="row">
 
-		<div id="divCentrale">
-
-		</div>
-		<div id="divDroite"></div>
-		<script type="text/javascript" charset="utf-8">
+        <div id="divHaut" class="col-sm-12"></div>
+        <div id="divMenuHaut" class="col-sm-12"></div>
+</div>            <div class="row">
+        <div id="divGauche" class="col-sm-3">
+            <div id="contFicheMembre" class="contOuiJet"></div>
+        </div>
+        <div id="divCentrale" class="col-sm-6 contOuiJet">
+        </div>
+        <div id="divDroite" class="col-sm-3"></div>
+</div>            <div class="row">        <div id="divBas" class="col-sm-12"></div>
+</div>
+</div><script type="text/javascript" charset="utf-8">
 			developper(7);
 			loadAdmin = 0;
 			maxLoadAdmin = 2;
 			vecNomTab = [window.tl_match_Joueur, window.tl_profil_Arbitre, window.tl_profil_Admin];
 			faitEntete();
 			selectOnglet(0);
+			construitDialogue("modalEditMembre");
+			construitDialogue("modalCreerArbitre");
+			construitDialogue("modalAjouteArena");
+			construitDialogue("modalTableauEquipes");
+			construitDialogue("modalModifierSaison");
+			construitDialogue("modalModifierEquipe");
+            construitDialogue("modalGereLigue");
+			
 			
 //			$("#div*").slideDown(500);
 

@@ -6,7 +6,7 @@
 function deleteCookie(name, path, domain) {
 
 }
-
+/*
 function getCookie(c_name) {
 	var i, x, y, ARRcookies = document.cookie.split(";");
 	for ( i = 0; i < ARRcookies.length; i++) {
@@ -17,15 +17,22 @@ function getCookie(c_name) {
 			return unescape(y);
 		}
 	}
-}
+}*/
 
 function gereLangue() {
 	langue = (getCookie("langue") == undefined) ? "fr" : getCookie("langue");
 	document.write('<script type="text/javascript" charset="utf-8" src="/scripts/texte_' + langue + '.js"></script>');
-	document.write('<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>');
-	document.write('<link rel="stylesheet" href="/scripts/font-awesome-4.7.0/css/font-awesome.min.css">');
-	document.write('<link rel="stylesheet" href="/style/general.css" type="text/css">');
+	document.write('<link rel="stylesheet" href="/style/general_bootcompat.css" type="text/css">');
+	document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>');
+	document.write('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">');
+	document.write('<link rel="stylesheet"  href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">');
 
+	document.write('<link href="https://fonts.googleapis.com/css?family=Krona+One" rel="stylesheet"> ');
+	document.write('<link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans" rel="stylesheet"> ');
+
+	//document.write('<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>');
+	document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>');
+	document.write('<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>');
 	//	langue = (getCookie("langue")==undefined)?"fr":getCookie("langue");
 
 	//	mS = document.createElement('SCRIPT');
@@ -47,7 +54,7 @@ function gereLangue_mob() {
 function peupleDivHaut() {
 
 	usager1 = getCookie("userId");
-
+console.log("Z");
 	topDiv = document.getElementById('divHaut');
 	if (topDiv.childNodes.length > 1) {
 
@@ -57,6 +64,14 @@ function peupleDivHaut() {
 	} else {
 		divTitre = document.createElement('DIV');
 		divTitre.id = 'divTitreDoc';
+				//divTitre.appendChild(divLangueJS);
+		topDiv.appendChild(divTitre);
+		//		alert(".");
+		if(window.location.href.localeCompare("http://www.syncstats.com")==0||
+		window.location.href.localeCompare("http://syncstats.com")==0		
+		 )
+		{
+		//	alert(window.location.href);
 		titre1 = document.createElement('IMG');
 		titre1.id = 'imgLogo';
 		h1Titre = document.createElement('H1');
@@ -71,27 +86,13 @@ function peupleDivHaut() {
 		titre1.src = "/images/logoSeul.png";
 
 		divTitre.appendChild(divLogoJS);
-		//divTitre.appendChild(divLangueJS);
-		topDiv.appendChild(divTitre);
-		//		alert(".");
 
+		}
 	}
-	/*
-	 divLangueJS = $('<div/>').attr("id","divLangue").click(function(){
-	 if (window.langue == "fr") {
-	 $(this).innerHTML = "En";
-	 setCookie("langue", "en", 3000);
-	 window.location.reload(true);
-	 }
-	 if (window.langue == "en") {
-	 $(this).innerHTML = "Fr";
-	 setCookie("langue", "fr", 3000);
-	 window.location.reload(true);
-	 }
-
-	 });*/
-
-	divLangueSel = $('<select/>').attr("id", "divLangue").append($('<option/>').text("EN").attr('value', 'en'), $('<option/>').text("FR").attr('value', 'fr')).change(function() {
+	
+console.log("N");
+	divLangueSel = $('<select></select>').attr("id", "divLangue").on("change",function() {
+		console.log("P");
 		if ($(this).val() == 'en' && window.langue == "fr") {
 			setCookie("langue", "en", 3000);
 			window.location.reload(true);
@@ -101,20 +102,27 @@ function peupleDivHaut() {
 			window.location.reload(true);
 		}
 	});
+console.log("O");
+try{
+$('#divLangue').append($('<option></option>').text("EN").val('en'), $('<option></option>').text("FR").val('fr'));
+}catch(err){console.log(err.message);}
+console.log("Q");
 
-	/*
-	 if (window.langue == "en") {
-	 divLangueJS.innerHTML = "FR </br> EN";
-	 } else {
-	 divLangueJS.innerHTML = "EN </br> FR";
-	 }*/
+
 
 	divContact = document.createElement('DIV');
 	divContact.innerHTML = "Contact: <a href=\"mailto:info&#64syncstats.com\" class=\"lien\">info" + "@" + "syncstats.com</a>";
-
+console.log("V "+$('#divTitreDoc').length);
+//try{
+console.log("Y");
+//demandeInfoLigue();
+$('#divTitreDoc').append($("<div></div>").attr('id', 'divBoiteID').addClass("optionHautDroit"));
+console.log("X");
+$('#divBoiteID').append($('<ul></ul>').attr('id', 'menuBoiteID'));
+console.log("W");
 	if (usager1 === undefined || usager1 === null) {
-
-		toLog = document.createElement('H2');
+console.log("R");
+		/*toLog = document.createElement('H2');
 		// toLog.style.width='20%';
 		toLog.id = 'toLog';
 		//	toLog.setAttribute('width','90%')
@@ -137,102 +145,47 @@ function peupleDivHaut() {
 		lien2 = document.createElement('A');
 		lien2.innerHTML = window.tl_general_login;
 		lien2.style.cursor = "pointer";
-		/*lien2.onclick = function() {
-		construitDialogue();
-		dial =document.getElementById('divDialogue');
-		monIF=document.createElement('IFRAME');
-		dial.appendChild(monIF);
-		monIF.src=menus[8].lien+"?m=1";
-		}
-		*/
+
 		//lien2.href = menus[8].lien;
 		lien2.onclick = function() {
 			connexion();
-		};
-		toLog.appendChild(lien2);
-		affUserJS = document.createElement('div');
+		};*/
+		//toLog.appendChild(lien2);
+		$('#divTitreDoc').append($('<div></div>').attr("id","affUser").addClass("optionHautDroit").css("text-align","right").append(
+			$('<p></p>').attr("id","toLog").css("text-align","right").css("padding","0 2px").append(
+				$('<a></a>').text(window.tl_general_signin).addClass("cliquable").attr("href",'/zuser/inscription.html'),
+				$('<span></span>').text(" | "),
+				$('<a></a>').text(window.tl_general_login).addClass("cliquable").on("click",function(){connexion(); }),
+				$('#divLangue')				
+			)
+		));
+		console.log("T");
+		/*affUserJS = document.createElement('div');
 		affUserJS.id = "affUser";
 		affUserJS.textAlign = "right";
 		affUserJS.className = "optionHautDroit";
 		affUserJS.appendChild(toLog);
 		toLog.style.padding = "0 2px";
-		//divLangueJS.style.marginLeft = "10px";
-		//divLangueJS.style.paddingLeft = "10px";
-		//divLangueJS.style.borderLeft = "solid 1px #bbb";
-
-		$(toLog).append($(divLangueSel));
-
-		divTitre.appendChild(affUserJS);
-
-		$(toLog).prepend($('<div id="divSearch"></div>').append($('<img></img>').attr("src", "/images/icones/delete.png").attr("id", "iconeDelete").css({
+		
+		$(toLog).append($('#divLangue'));*/
+//$("#affUser"));
+//		divTitre.appendChild(affUserJS);
+console.log("U");
+		$("toLog").prepend($('<div id="divSearch"></div>').hide().append($('<img></img>').attr("src", "/images/icones/delete.png").attr("id", "iconeDelete").css({
 			"width" : "24px",
 			"height" : "24px"
-		}).hide(), $('<input></input>').attr("type", "text").attr("id", "editSearch"), $('<img></img>').attr("src", "/images/icones/search.png").attr("id", "iconeSearch")));
+		}), $('<input></input>').attr("type", "text").attr("id", "editSearch"), $('<i class="fas fa-search"></i>').attr("id", "iconeSearch")));
 
 		//////////////////////////////////////////
 		////  Boîte de recherche
 
-		$(function() {
-			$('#editSearch').hide();
-			$('#iconeSearch').hover(function() {
-				$('#editSearch').show(400);
-				$('#iconeDelete').show(400);
-			});
-		});
-
-		$('#iconeDelete').click(function() {
-			$('#editSearch').hide();
-			$(this).hide();
-			detruitNoeud('boiteResRecherche');
-		});
-
-		$('#editSearch').keyup(function(event) {
-
-			$.ajax({
-				url : "/scriptsphp/recherche.php",
-				type : "POST",
-				data : {
-					searchString : $('#editSearch').val()
-				}
-			}).done(function(msg) {
-				detruitNoeud('boiteResRecherche');
-				$('<div id="boiteResRecherche"></div>').appendTo('#divSearch').css("position", "relative").css("text-align", "left");
-				res = jQuery.parseJSON(msg);
-				if (res.ligue.length > 0) {
-					$("#boiteResRecherche").append($('<h3></h3>').text("Ligues"));
-				}
-				for (var a = 0; a < res.ligue.length; a++) {
-					$("#boiteResRecherche").append($('<div></div>').text(res.ligue[a].nom).hover(function() {
-						$(this).css("background", "#AAAAAA")
-					}, function() {
-						$(this).css("background", "#FFFFFF")
-					}).click({
-						id : res.ligue[a].id
-					}, function(event) {
-						document.location.href = "/zstats/accueilligue.html?ligueId=" + event.data.id;
-					}));
-				}
-				if (res.joueur.length > 0) {
-					$("#boiteResRecherche").append($('<h3></h3>').text("Joueurs"));
-				}
-				for (var a = 0; a < res.joueur.length; a++) {
-					$("#boiteResRecherche").append($('<div></div>').text(res.joueur[a].nom).hover(function() {
-						$(this).css("background", "#AAAAAA")
-					}, function() {
-						$(this).css("background", "#FFFFFF")
-					}).click({
-						id : res.joueur[a].id
-					}, function(event) {
-						document.location.href = "/zstats/statsjoueur.html?joueurId=" + event.data.id;
-					}));
-				}
-			});
-		});
-
+		boiteRecherche();
 		//		divTitre.appendChild(mIF3);
 
 	} else {
-		$('#divTitreDoc').append($('<div></div>').attr('id', 'divBoiteID').addClass("optionHautDroit").append($('<ul></ul>').attr('id', 'menuBoiteID')));
+		console.log("S");
+
+		
 		
 
 		$('<i class="fa fa-bars iconeFa"><i>').attr("id", "iconeBars").appendTo($('#divTitreDoc')).on("click", function() {
@@ -252,19 +205,18 @@ function peupleDivHaut() {
 		lienCourrielJS = document.createElement('A');
 		lienCourrielJS.href = "/zadmin/messages.html";
 		lienCourrielJS.id = "lienCourriel";
-		imgCourrielJS = document.createElement('IMG');
-		imgCourrielJS.id = "imgCourriel";
-		imgCourrielJS.style.width = "32px";
-		imgCourrielJS.style.height = "32px";
-		imgCourrielJS.src = "/images/icones/email.png";
-		lienCourrielJS.appendChild(imgCourrielJS);
+		$(lienCourrielJS).append($('<i class="fas fa-envelope"></i>'));
+		
 
 		//		divTitre.appendChild(mIF3);
-		$('#menuBoiteID').append($('<li></li>').append($('<div id="divSearch"></div>').append($('<img></img>').attr("src", "/images/icones/delete.png").attr("id", "iconeDelete").css({
+		$('#menuBoiteID').append(
+			$('<li></li>').append($('<div id="divSearch"></div>').hide().append($('<img></img>').attr("src", "/images/icones/delete.png").attr("id", "iconeDelete").css({
 			"width" : "24px",
 			"height" : "24px"
-		}).hide(), $('<input></input>').attr("type", "text").attr("id", "editSearch"), $('<img></img>').attr("src", "/images/icones/search.png").attr("id", "iconeSearch"))));
-		$('#menuBoiteID').append($('<li></li>').append($(lienCourrielJS)), $('<li></li>').append(
+		}), $('<input></input>').attr("type", "text").attr("id", "editSearch"))),
+		$('<li></li>').append($('<i class="fas fa-search"></i>').attr("id", "iconeSearch")),
+		$('<li></li>').append($(lienCourrielJS)), 
+		$('<li></li>').append(
 			$('<DIV></DIV>').attr('id','affUser').html(window.tl_general_welcome + '<b>' + usager1 + '</b>' + '! </br>').append(
 			$('<a></a>').text(window.tl_general_logout).on("click",function(){
 			SimpleDeleteCookie("ligueId");
@@ -291,17 +243,29 @@ function peupleDivHaut() {
 		//////////////////////////////////////////
 		////  Boîte de recherche
 
-		$(function() {
-			$('#editSearch').hide();
+		boiteRecherche();
+
+		$('#menuBoiteID').append($('<li></li>').append($('#divLangue')));
+
+	}// fin du else
+
+	genereMenu_dev();
+	//	barreTitreContexte();
+//	afficheLigueId();
+}
+
+function boiteRecherche(){
+	$(function() {
+			$('#divSearch').hide();
 			$('#iconeSearch').hover(function() {
-				$('#editSearch').show(400);
-				$('#iconeDelete').show(400);
+				$('#divSearch').show(400);
+				
 			});
 		});
 
 		$('#iconeDelete').click(function() {
-			$('#editSearch').hide();
-			$(this).hide();
+			$('#divSearch').hide();
+			
 			detruitNoeud('boiteResRecherche');
 		});
 
@@ -349,26 +313,19 @@ function peupleDivHaut() {
 			});
 
 		});
-
-		//				mLi=document.createElement('LI');
-		//				menuBoiteIDJS.appendChild(mLi);
-		$('#menuBoiteID').append($('<li></li>').append($(divLangueSel)));
-
-	}// fin du else
-
-	genereMenu_dev();
-	//	barreTitreContexte();
+	
 }
 
 function barreTitreContexte(i_menu) {
-//alert("0");
+	/*
 	maBarre = $('<DIV></DIV>').attr('id', 'barreTitreContexte');
 	//maBarre.id="barreTitreContexte";
 	//	x=document.getElementById('divGauche').parentNode;
-	$('#divHaut').after($(maBarre));
+	$('#divHaut').after($(maBarre));*/
 	//alert($("#divHaut").innerHTML);
 	//	x.insertBefore(maBarre,document.getElementById('divGauche'));
 	afficheLigueId();
+	
 	if (window.Perm < 10) {//alert(window.matchMedia());
 	}
 	if (document.documentElement.clientWidth < 500) {
@@ -377,7 +334,7 @@ function barreTitreContexte(i_menu) {
 		selChLigue = $('<SELECT></SELECT>').addClass("bouton_2").val("window.ligueId").text("...  >").on("change", function() {
 
 			setCookie('ligueId', this.options[this.selectedIndex].value, 120);
-			window.location.reload(true);
+			window.location.href="/zstats/accueilligue.html?ligueId="+this.options[this.selectedIndex].value;
 		});
 //console.log("1");
 		var uneString = getJSONdeLigueID(null, null);
@@ -431,36 +388,30 @@ function barreTitreContexte(i_menu) {
 		$("#divLigue").append($(selChLigue));
 	} else {
 
-		boutChLigue = $('<div></div>').addClass("bouton_2").text("Changer de ligue  >").on("click", function() {
-			/*window.location.href = "/listeligues.html" + "?code=10";*/
-			forceSelectionLigue();
-		});
-		$("#divLigue").append($(boutChLigue));
 	}
 
-	barreNavJS = $('<DIV></DIV>').attr('id', 'barreNav');
+	barreNavJS = $('<NAV></NAV>').attr('id', 'barreNav').addClass("container-fluid").addClass("navbar-expand-md");
 	//maBarre.id="barreTitreContexte";
 	//	x=document.getElementById('divGauche').parentNode;
-	$('#barreTitreContexte').after($(barreNavJS));
+	$('#divTitreDoc').after($(barreNavJS));
 
 	//barreNavJS=document.createElement('DIV');
 	//barreNavJS.id="barreNav";
 	//x=document.getElementById('divGauche').parentNode;
 	//x.insertBefore(barreNavJS,document.getElementById('divGauche'));
 
-	selSaisonJS = document.createElement('div');
-	selSaisonJS.id = 'divSelSaison';
-
+	
 	genereLiensContext(i_menu);
-	barreNavJS.firstChild.appendChild(selSaisonJS);
-
+	$('#barreNav ul').append( $('<li></li>').attr("id","divSelSaison").addClass("nav-item px-md-4"));
+/*
 	var frac = 100 / ($(barreNavJS).first().children().length + 1);
 	for (var a = 0; a < $(barreNavJS).first().children().length; a++) {//barreNavJS.firstChild.childNodes[a].style.width=frac+'%';
 		//barreNavJS.firstChild.childNodes[a].style.width=10+'%';
 		/*alert(barreNavJS.firstChild.childNodes[a].style.width);*/
-	}
-	selSaisonJS.style.width = 30 + '%';
-	selSaisonJS.style.maxWidth = 30 + '%';
+	/*}*/
+//	selSaisonJS.style.width = 30 + '%';
+//	selSaisonJS.style.maxWidth = 30 + '%';
+
 }
 
 function peupleDivBas() {
@@ -528,89 +479,6 @@ function peupleDivBas() {
 
 }
 
-/*
- function genereMenu(position) {
- divMenu = document.createElement('DIV');
- m2body = document.getElementsByTagName("body")[0];
- //	m2body = document.getElementById("mbody");
- m2body.appendChild(divMenu);
- divMenu.style.width = '100%';
- divMenu.style.height = '30px';
- divMenu.style.cssFloat = 'left';
- divMenu.id = 'divMenu';
- divMenu.style.font = 'small-caps bold small/24px "Times New Roman", serif';
- divMenu.style.letterSpacing = '1px';
- divMenu.style.textAlign = 'center';
- /*	divMenu.style.border='1px solid';*/
-/*	divMenu.style.mozBorderRadius = '15px';
- divMenu.style.borderRadius = '15px';
-
- menu2_b = document.createElement('UL');
- divMenu.appendChild(menu2_b);
- menu2_b.id = 'menu2_b';
-
- li1 = document.createElement('LI');
- menu2_b.appendChild(li1);
- a1 = document.createElement('A');
- li1.appendChild(a1);
- a1.setAttribute('href', '/index.html');
- a1.innerHTML = 'Page d\'accueil';
-
- li4 = document.createElement('LI');
- menu2_b.appendChild(li4);
- a4 = document.createElement('A');
- li4.appendChild(a4);
- a4.setAttribute('href', '/login.html');
- a4.innerHTML = 'Mon profil';
-
- li2 = document.createElement('LI');
- menu2_b.appendChild(li2);
- a2 = document.createElement('A');
- li2.appendChild(a2);
- //	a2.setAttribute('href','/listeligues.html');
- a2.href = '/statistiques.html';
- a2.innerHTML = 'Statistiques';
-
- li3 = document.createElement('LI');
- menu2_b.appendChild(li3);
- a3 = document.createElement('A');
- li3.appendChild(a3);
- a3.setAttribute('href', '/faq.html');
- a3.innerHTML = 'FAQ';
-
- li5 = document.createElement('LI');
- menu2_b.appendChild(li5);
- a5 = document.createElement('A');
- li5.appendChild(a5);
- a5.setAttribute('href', '/zoneadmin.html');
- a5.innerHTML = 'Zone Admin';
-
- switch(position%10) {
- case 1:
- a1.className = 'actif_b';
- break;
- case 2:
- a2.className = 'actif_b';
-
- break;
- case 3:
- a3.className = 'actif_b';
- break;
- case 4:
- a4.className = 'actif_b';
- break;
- case 5:
- a5.className = 'actif_b';
- break;
-
- default:
- break;
- }
- divDate = document.createElement('DIV');
- menu2_b.appendChild(divDate);
- divDate.innerHTML = formatDate(new Date());
- divDate.className = 'date';
- }*/
 
 function trouveIndiceMenu(menu_id) {
 	var j = 0
@@ -623,7 +491,7 @@ function trouveIndiceMenu(menu_id) {
 }
 
 function genereMenu_dev() {
-	divHautJS = document.getElementById("divTitreDoc");
+	divHautJS = document.getElementById("divBas");
 
 	if (document.getElementById("menuDivHaut") == null) {
 		divMenuHautJS = document.createElement("DIV");
@@ -649,24 +517,7 @@ function genereMenu_dev() {
 				a_n1.innerHTML = menus[hierarchie[k][0]].iH_en;
 
 			i_n1.appendChild(a_n1);
-			if (hierarchie[k].length > 1) {
-				ul_n2 = document.createElement('UL');
-				i_n1.appendChild(ul_n2);
-				for (var l = 1; l < hierarchie[k].length; l++) {
-					i_n2 = document.createElement('LI');
-					ul_n2.appendChild(i_n2);
-					i_n2.id = menus[hierarchie[k][l]].id;
-					a_n2 = document.createElement('A');
-					a_n2.href = menus[hierarchie[k][l]].lien;
-					i_n2.appendChild(a_n2);
-					if (window.langue == "fr")
-						a_n2.innerHTML = menus[hierarchie[k][l]].iH_fr;
-					else
-						a_n2.innerHTML = menus[hierarchie[k][l]].iH_en;
-
-				}
-
-			}
+			
 
 		}// Fin du for hierarchie
 	}
@@ -724,32 +575,27 @@ function genereLiensContext(i_menu) {
 	 divGaucheJS.appendChild(titreLC);
 	 */
 	liens = getLiensFreres(i_menu);
-	listeLien = document.createElement('UL');
+	
+	listeLien = $('<ul></ul>').addClass("navbar-nav");
 
 	for ( a = 1; a < liens.length; a++) {
-		li_lc = document.createElement('LI');
-		a_lc = document.createElement('A');
+		li_lc =$('<li></li>').addClass("nav-item  px-md-4");
+		a_lc = $('<a></a>').addClass("nav-link");
 		if (window.langue == "fr")
-			a_lc.innerHTML = menus[liens[a]].iH_fr;
+			$(a_lc).text(menus[liens[a]].iH_fr);
 		else
-			a_lc.innerHTML = menus[liens[a]].iH_en;
+			$(a_lc).text(menus[liens[a]].iH_en);
 
-		a_lc.href = menus[liens[a]].lien;
+		$(a_lc).attr("href",menus[liens[a]].lien);
 		if (liens[a] == i_menu) {
-			a_lc.className = "actif";
-			//			li_lc.parentNode.className="actif";
-
-			if (window.langue == "fr")
-				a_lc.innerHTML = menus[liens[a]].iH_fr;
-			else
-				a_lc.innerHTML = menus[liens[a]].iH_en;
+			$(a_lc).addClass("active");
+			
 		}
-		li_lc.appendChild(a_lc);
-		listeLien.appendChild(li_lc);
+		$(listeLien).append($(li_lc).append($(a_lc)));
 	}
 
 	if (barreNavJS != null) {
-		barreNavJS.appendChild(listeLien);
+		$('#barreNav').append($(listeLien));
 	}
 
 	//strLien=window.location.href.split('?')[0].split('/')[3];//prévenir loop sur listeligue
@@ -856,7 +702,7 @@ function genereBoites() {
 	if (getCookie('ligueId') == 86)
 		faireBoite(1, 10);
 	else
-		faireBoite(1, 9);
+		faireBoite(1, 1);
 	//	genBoiteContexte(3);
 	//	genBoiteContexte(4);
 	//genBoiteContexte(5);
@@ -1234,10 +1080,11 @@ function faireBoite(a, id) {
 		if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 			//		if(verifiePermission())
 			//			alert(requete_ajax.responseText);
-
+			try{
 			boite = eval('(' + requete_ajax.responseText + ')');
 			eval(boite.corps);
-
+			}
+			catch(err){}
 		}
 	}
 	requete_ajax.send(params);
@@ -1332,7 +1179,49 @@ function genereSousMenu(position) {
 
 }// Fin genereSousMenu
 
+
+
+function demandeInfoLigue() {
+	//	ligueId = null;
+	if (getValue('ligueId') != "") {
+		ligueId = getValue('ligueId');
+	}
+	if (getCookie('ligueId') != null) {
+		ligueId = getCookie('ligueId');
+	} else {
+		ligueId = null
+	};
+
+	$.ajax({
+		url : "/stats2/infoLigue2JSON.php",
+        type : 'POST',
+        data : {
+                            ligueId : ligueId
+                        },
+         
+       success : function(response) {
+                         try {
+				var locJSON = eval('(' + response+ ')');
+					setMenusLigue(locJSON.Ligue);
+			} catch(err) {
+				alert('Le serveur éprouve quelques problêmes. Merci de réessayer plus tard.');
+			}
+
+		
+                         
+                        },
+                        error : function(xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            console.log(err.Message + "  --  ereur infoLigue2JSON");
+                        }
+	});
+	
+
+}// Fin genereNiveau2
+
 function afficheLigueId() {
+	
+	//alert("SS");
 	//	ligueId = null;
 	if (getValue('ligueId') != "") {
 		ligueId = getValue('ligueId');
@@ -1351,12 +1240,27 @@ function afficheLigueId() {
 	 }*/
 
 	divLigue = document.createElement('DIV');
-	m2body = document.getElementById('barreTitreContexte');
+	m2body = document.getElementById('divTitreDoc');
 	divLigue.id = 'divLigue';
-	texte1 = document.createElement('H1');
+	
+	texte1 = document.createElement('h2');
 	texte1.id = "ligueBTC";
-	divLigue.appendChild(texte1);
+	$(divLigue).append($("<i class='fas fa-bars'></i>").attr('id','menuBarsTitre').mouseover(function(){
+		$('#optionsMenuBars').show();
+	})
+	,$('<UL></UL>').attr("id","optionsMenuBars").hide().append(
+				$('<li></li>').text("Changer de ligue ").mouseover(function(){
+					$(this).css("background-color","#777");
+								}).mouseout(function(){
+									$('#optionsMenuBars').hide();
+									
+								}).on("click", function() {
+										
+											forceSelectionLigue();
+								})),
+								texte1);
 	m2body.appendChild(divLigue);
+	construitDialogue ("modalChangeLigue");
 
 	var requete_ajax = new XMLHttpRequest();
 
@@ -1392,7 +1296,9 @@ function afficheLigueId() {
 				}
 			}
 			if(document.getElementById('ligueBTC')!=null){
-			document.getElementById('ligueBTC').innerHTML = maLigue == null ? "Ligue / Tournoi de Hockey" : monNomLigue;}
+		
+			maLigue == null ? $('#ligueBTC').text("Ligue / Tournoi de Hockey") : $('#ligueBTC').text(monNomLigue);}
+		
 
 		}
 		//		else{alert("Petit problème de développement");}
@@ -1427,94 +1333,24 @@ function setMenusLigue(maLigue) {
 				 }*/
 				window.liens[window.liens.length] = window.menus.length;
 				window.menus[window.menus.length] = menuSiteWeb[a];
-
+				
+				var	offsetMenu=a+4;
 				//alert(JSON.stringify(window.liens)+" "+JSON.stringify(window.menus[window.liens[window.liens.length-1]]));
-				$(listeLien).append($(li_lc).append($(a_lc)));
+				$('#barreNav > .navbar-nav').find(" li:nth-child("+offsetMenu+")").after($(li_lc).addClass("nav-item px-md-4").append($(a_lc).addClass("nav-link")));
+				//$("#holder > div:nth-child(2)").after("<div>foobar</div>");
 				if (((window.location.href.split("syncstats.com"/*"host"*/)[1]).split("?")[0]).localeCompare(menuSiteWeb[a].lien) == 0) {
 					//alert($(li_lc).html());
-					$('#barreNav li a').removeClass("actif");
-					$(a_lc).addClass("actif");
+					$('#barreNav li a').removeClass("active");
+					$(a_lc).addClass("active");
 				}
 			}
 
 		}
 
-	} catch(err) {/*alert(err.message);*/
+	} catch(err) {console.log(err.message);
 	}
 
 }
-
-function afficheLigueIdAvecCode(code) {
-	//	ligueId = null;
-	if (getValue('ligueId') != "") {
-		ligueId = getValue('ligueId');
-	}
-	if (getCookie('ligueId') != null) {
-		ligueId = getCookie('ligueId');
-	} else {
-		if (getValue('ligueId') == "" || window.ligueId == null || window.ligueId == undefined) {
-			window.location.href = "/listeligues.html" + "?code=" + code;
-		}//Code 10: origine de statistique
-		else {
-			ligueId = getValue('ligueId');
-		}
-	}
-	var uneString = getJSONdeLigueID();
-	try {
-		var rJSON = eval('(' + uneString + ')');
-	} catch(err) {
-		alert('Le serveur éprouve quelques problêmes. Merci de réessayer plus tard.');
-	}
-
-	maLigue = null;
-	for ( J = 0; J < rJSON.Ligues.length; J = J + 1) {
-		if (rJSON.Ligues[J].ligueId == ligueId) {
-			maLigue = rJSON.Ligues[J].nomLigue;
-		}
-	}
-
-	divLigue = document.createElement('DIV');
-	m2body = document.getElementById('mbody');
-	divLigue.style.width = '100%';
-	divLigue.style.height = '50px';
-	divLigue.style.cssFloat = 'left';
-	divLigue.id = 'divLigue';
-	divLigue.style.font = 'small-caps bold small/24px "Times New Roman", serif';
-	divLigue.style.letterSpacing = '1px';
-	divLigue.style.textAlign = 'left';
-	divLigue.style.margin = '5px';
-
-	texte1 = document.createElement('P');
-	texte1.innerHTML = window.tl_general_ligueAct + ":   ";
-	texte1.style.cssFloat = 'left';
-
-	lien1 = document.createElement('P');
-	lien1.innerHTML = maLigue + "   |  ";
-	lien1.style.cssFloat = 'left';
-
-	texte2 = document.createElement('P');
-	texte2.innerHTML = "  ";
-	texte2.style.cssFloat = 'left';
-
-	lien2 = document.createElement('A');
-	lien2.innerHTML = "  " + window.tl_general_ligueChange;
-	lien2.href = "/listeligues.html" + "?code=" + code;
-	lien2.style.cssFloat = 'left';
-	lien2.style.marginLeft = '10px';
-
-	divLigue.appendChild(texte1);
-	texte2.appendChild(lien2);
-	divLigue.appendChild(texte2);
-
-	divLigue.appendChild(lien1);
-
-	//				referenceNode=document.getElementById('divLigue');
-	m2body.appendChild(divLigue);
-	//				referenceNode.parentNode.insertBefore( divLigue, referenceNode.nextSibling );
-
-	//				b4.setAttributetAttribute('href', '/classement.html');
-
-}// Affiche Ligue Avec Code
 
 function afficheNonPermis(divParent) {
 
@@ -1596,7 +1432,7 @@ function enveloppeTableMois(tableId, annee, mois, indCol) {
 	mois = parseInt(mois);
 	var moisDAnnee = new Array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
 	maTable = document.getElementById(tableId);
-	maTable.className = "tableEnveloppeMois";
+	//maTable.className = "tableEnveloppeMois";
 	lesLignes = maTable.firstChild.childNodes;
 	cpt = 0;
 	for (var a = 0; a < lesLignes.length; a++) {
@@ -1604,52 +1440,57 @@ function enveloppeTableMois(tableId, annee, mois, indCol) {
 			try {
 				//alert(lesLignes[a].childNodes[indCol].firstChild.innerHTML);
 				if (lesLignes[a].childNodes[indCol].firstChild.innerHTML.split('-')[0] == annee && lesLignes[a].childNodes[indCol].firstChild.innerHTML.split('-')[1] == mois + 1) {
+					 $(lesLignes[a]).show();
 					cpt % 2 == 0 ? lesLignes[a].className = 'lignePaire' : lesLignes[a].className = 'ligneImpaire';
 				} else {
-					lesLignes[a].className = "ligneCache";
+					 $(lesLignes[a]).hide();
+//					lesLignes[a].className = "ligneCache";
 				}
 			} catch(err) {/*alert("Erreur dans enveloppeTableMois:"+a+" "+indCol+" "+lesLignes[a].childNodes[indCol].innerHTML);*/
 			}
 			cpt++;
 		}
-
+		//console.log(""+a);
 	}
-	videNoeud(tableId + "_divOpt");
-	divOpt = document.getElementById(tableId + "_divOpt");
-	divNav = document.createElement('DIV');
-	divNav.className = "divNav";
-	divOpt.appendChild(divNav);
+	//videNoeud(tableId + "_divOpt");
+	//divOpt = document.getElementById(tableId + "_divOpt");
+	//divNav = document.createElement('DIV');
+	//divNav.className = "divNav";
+	//divOpt.appendChild(divNav);
 	trans = new Array();
 	trans[0] = tableId;
 	trans[1] = annee;
 	trans[2] = mois;
 	trans[3] = indCol;
 
-	aG = document.createElement('DIV');
-	aG.innerHTML = '<<';
-	aG.className = 'versGauche';
+	//aG = document.createElement('DIV');
+	//aG.innerHTML = '<<';
+	//aG.className = 'versGauche';
+	$('#'+tableId).addClass("tableEnveloppeMois");
+	$('#'+tableId).find('.versGauche').on('click',{trans:trans},function(event) {
+		///return function(){
+			enveloppeTableMois(event.data.trans[0], event.data.trans[2] == 0 ? event.data.trans[1] - 1 : event.data.trans[1], ((event.data.trans[1] * 12) + event.data.trans[2] - 1) % 12, event.data.trans[3]);
+		//};
+	});
 
-	aG.onclick = (function(trans) {
-		return function() {
-			enveloppeTableMois(trans[0], trans[2] == 0 ? trans[1] - 1 : trans[1], ((trans[1] * 12) + trans[2] - 1) % 12, trans[3]);
-		};
-	})(trans);
+	//pOpt = document.createElement('h2');
+	//pOpt.innerHTML = moisDAnnee[mois] + " " + annee;
+	$('#'+tableId).find('.titreNav').text(moisDAnnee[mois] + " " + annee);
 
-	pOpt = document.createElement('h2');
-	pOpt.innerHTML = moisDAnnee[mois] + " " + annee;
 
-	aD = document.createElement('DIV');
-	aD.innerHTML = '>>';
-	aD.className = 'versDroite';
-	aD.onclick = (function(trans) {
-		return function() {
-			enveloppeTableMois(trans[0], trans[2] == 11 ? trans[1] + 1 : trans[1], ((trans[1] * 12) + trans[2] + 1) % 12, trans[3]);
-		};
-	})(trans);
+	//aD = document.createElement('DIV');
+	//aD.innerHTML = '>>';
+	//aD.className = 'versDroite';
+	$('#'+tableId).find('.versDroite').on('click',{trans:trans},function(event) {
+			
+		//return function(){
+			enveloppeTableMois(event.data.trans[0], event.data.trans[2] == 11 ? event.data.trans[1] + 1 :event.data.trans[1], ((event.data.trans[1] * 12) + event.data.trans[2] + 1) % 12, event.data.trans[3]);
+		//};
+	});
 
-	divNav.appendChild(aG);
-	divNav.appendChild(pOpt);
-	divNav.appendChild(aD);
+	//divNav.appendChild(aG);
+	//divNav.appendChild(pOpt);
+	//divNav.appendChild(aD);
 
 }
 

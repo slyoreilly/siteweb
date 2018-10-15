@@ -32,30 +32,27 @@ $tableEquipe = 'TableEquipe';
 //
 ////////////////////////////////////////////////////////////
 
-$lien1=mysql_connect($db_host, $db_user, $db_pwd);
-if (!$lien1)
-    die("Can't connect to database");
-mysql_set_charset('utf8',$lien1);
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
 
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+
 
 /////////////////////////////////////////////////////////////
 //
 //
 
-function trouveNomJoueurParID($ID){ 
+function trouveNomJoueurParID($ID,$maConn){ 
 
-$resultJoueur = mysql_query("SELECT * FROM TableJoueur WHERE joueur_id = '{$ID}'")
-or die(mysql_error());  
-if($rangeeJoueur=mysql_fetch_array($resultJoueur))
+$resultJoueur = mysqli_query($maConn,"SELECT * FROM TableJoueur WHERE joueur_id = '{$ID}'")
+or die(mysqli_error($maConn));  
+if($rangeeJoueur=mysqli_fetch_array($resultJoueur))
 		  return ($rangeeJoueur['NomJoueur']); 
 else { return ("Anonyme"); }
 } 
@@ -70,11 +67,11 @@ else { return ("Anonyme"); }
 //
 ////////////////////////////////////////////////////
 
-function trouveNomParIDEquipe($IEq)
+function trouveNomParIDEquipe($IEq,$maConn)
 {
-$resultEquipe2 = mysql_query("SELECT * FROM TableEquipe WHERE equipe_id='{$IEq}'")
-or die(mysql_error());  
-while($rangeeEquipe2=mysql_fetch_array($resultEquipe2))
+$resultEquipe2 = mysqli_query($maConn,"SELECT * FROM TableEquipe WHERE equipe_id='{$IEq}'")
+or die(mysqli_error($maConn));  
+while($rangeeEquipe2=mysqli_fetch_array($resultEquipe2))
 {
 			
 		if($rangeeEquipe2['equipe_id']==$IEq)
@@ -96,17 +93,17 @@ return $NomEquipe;
 $matchID = $_POST['matchId'];	
 //////////////////////////////////////////////
 
-$resultEvent = mysql_query("SELECT TableMatch.*, TEdom.nom_equipe AS NEdom,TEvis.nom_equipe AS NEvis, TEdom.equipe_id AS eqDomId,TEvis.equipe_id AS eqVisId
+$resultEvent = mysqli_query($conn,"SELECT TableMatch.*, TEdom.nom_equipe AS NEdom,TEvis.nom_equipe AS NEvis, TEdom.equipe_id AS eqDomId,TEvis.equipe_id AS eqVisId
 									 FROM TableMatch 
 									JOIN TableEquipe AS TEdom 
 										ON (TableMatch.eq_dom=TEdom.equipe_id)
 									JOIN TableEquipe AS TEvis
 										ON (TableMatch.eq_vis=TEvis.equipe_id)
 									WHERE matchIdRef = '{$matchID}'")
-or die(mysql_error());  
+or die(mysqli_error($conn));  
 
 
-while($rangeeEv=mysql_fetch_array($resultEvent))
+while($rangeeEv=mysqli_fetch_array($resultEvent))
 {
 	$mDate=$rangeeEv['date'];
 	$mEqDom=$rangeeEv['NEdom'];
@@ -116,18 +113,18 @@ while($rangeeEv=mysql_fetch_array($resultEvent))
 }
 
 
-		$resultAssoc = mysql_query("SELECT match_id
+		$resultAssoc = mysqli_query($conn,"SELECT match_id
 									 FROM TableMatch 
-									WHERE matchIdRef = '{$matchID}'") or die(mysql_error());  
-	$rangeeAssoc= mysql_fetch_row($resultAssoc);
+									WHERE matchIdRef = '{$matchID}'") or die(mysqli_error($conn));  
+	$rangeeAssoc= mysqli_fetch_row($resultAssoc);
 	$matchPourVideos=$rangeeAssoc[0];	
 
 
 
 //{
 $qVids = 	"SELECT nomFichier,camId,chrono,eval,nbVues,etat,videoId,emplacement, nomThumbnail  FROM Video  WHERE nomMatch = '{$matchID}'  OR nomMatch = '{$matchPourVideos}' ORDER BY nomMatch, angleOk DESC";
-$resultVids = mysql_query($qVids)
-or die(mysql_error().$qVids);  	
+$resultVids = mysqli_query($conn, $qVids)
+or die(mysqli_error($conn).$qVids);  	
 $mesVids=array();
 $mesCam=array();
 $mesChrono=array();
@@ -137,18 +134,18 @@ $mesEtat=array();
 $mesVidId=array();
 $mesEmplacement=array();
 $mesThumbnails=array();
-while($rangeeVids=mysql_fetch_array($resultVids))
+while($rangeeVids=mysqli_fetch_array($resultVids))
 	{
 		array_push($mesVids,$rangeeVids[0]);
 		array_push($mesCam,$rangeeVids[1]);
 		array_push($mesChrono,$rangeeVids[2]);
 		array_push($mesEval,$rangeeVids[3]);
 		array_push($mesNbVues,$rangeeVids[4]);
-				array_push($mesEtat,$rangeeVids[5]);
-				array_push($mesVidId,$rangeeVids[6]);
-				array_push($mesEmplacement,$rangeeVids[7]);
-				array_push($mesThumbnails,$rangeeVids[8]);
-											}
+		array_push($mesEtat,$rangeeVids[5]);
+		array_push($mesVidId,$rangeeVids[6]);
+		array_push($mesEmplacement,$rangeeVids[7]);
+		array_push($mesThumbnails,$rangeeVids[8]);
+		}
 
 
 $I0=0;
@@ -161,7 +158,7 @@ $JSONstring .="\"eqDom\": \"".$mEqDom."\",";
 $JSONstring .="\"eqVis\": \"".$mEqVis."\",";
 $JSONstring .="\"eqDomId\": \"".$mEqDomId."\",";
 $JSONstring .="\"eqVisId\": \"".$mEqVisId."\",";
-$JSONstring .="\"qVids\": \"".$qVids."\",";
+//$JSONstring .="\"qVids\": \"".$qVids."\",";
 //$JSONstring .="\"buts\": [";
 $buts=array();
 //foreach($equipe as $Ieq)
@@ -174,52 +171,45 @@ $buts=array();
 	//		En principe, ils vont déclencher un nouvel élément de la table Video.
 	//
 	////////////////////////////////////////////////
-
-	$resultClips = mysql_query("SELECT * FROM Clips 
-											 WHERE matchId = '{$matchID}'  OR matchId = '{$matchPourVideos}' ORDER BY chrono")
-or die(mysql_error());  	
+$qClips="SELECT * FROM Clips WHERE matchId = '{$matchID}'  OR matchId = '{$matchPourVideos}' ORDER BY chrono";
+	$resultClips = mysqli_query($conn,$qClips )
+or die(mysqli_error($conn));  	
 $IC=0;
 $clips=array();
-
-while($rangeeClips=mysql_fetch_array($resultClips))
+//$JSONstring .="\"qClips\": \"".$qClips."\",";
+while($rangeeClips=mysqli_fetch_array($resultClips))
 			{
 				
 				$clips[$IC]=array();
 				$clips[$IC]['video']=array();
 				$clips[$IC]['chrono']=$rangeeClips['chrono'];
-			for($b=0;$b<count($mesVids);$b++)
-		{
-			if(abs($rangeeClips['chrono']-$mesChrono[$b])<20000)
-			{
-				$clips[$IC]['video'][count($clips[$IC]['video'])]['fic']=$mesVids[$b];
-				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['cam']=$mesCam[$b];
-				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['eval']=$mesEval[$b];
-				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['nbVues']=$mesNbVues[$b];
-				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['etat']=$mesEtat[$b];
-				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['videoId']=$mesVidId[$b];
-				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['chrono']=$rangeeClips['chrono'];
-				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['emplacement']=$mesEmplacement[$b];
-				$clips[$IC]['video'][count($clips[$IC]['video'])-1]['thumbnail']=$mesThumbnails[$b];
+					for($b=0;$b<count($mesVids);$b++)
+					{
+						if(abs($rangeeClips['chrono']-$mesChrono[$b])<20000)
+						{
+							$clips[$IC]['video'][count($clips[$IC]['video'])]['fic']=$mesVids[$b];
+							$clips[$IC]['video'][count($clips[$IC]['video'])-1]['cam']=$mesCam[$b];
+							$clips[$IC]['video'][count($clips[$IC]['video'])-1]['eval']=$mesEval[$b];
+							$clips[$IC]['video'][count($clips[$IC]['video'])-1]['nbVues']=$mesNbVues[$b];
+							$clips[$IC]['video'][count($clips[$IC]['video'])-1]['etat']=$mesEtat[$b];
+							$clips[$IC]['video'][count($clips[$IC]['video'])-1]['videoId']=$mesVidId[$b];
+							$clips[$IC]['video'][count($clips[$IC]['video'])-1]['chrono']=$rangeeClips['chrono'];
+							$clips[$IC]['video'][count($clips[$IC]['video'])-1]['emplacement']=$mesEmplacement[$b];
+							$clips[$IC]['video'][count($clips[$IC]['video'])-1]['thumbnail']=$mesThumbnails[$b];
 				
 				
-			}
-		}
-					
-				
-				
+						}
+					}
 				$IC++;
 			}
 		
 $JSONstring .= "\"clips\": ".json_encode($clips).",";
-		
-$resultEvent = mysql_query("SELECT TableEvenement0.*,TableJoueur.* FROM TableEvenement0 
-										JOIN TableJoueur
-											ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id)
-											 WHERE match_event_id = '{$matchID}' AND code = 0 ORDER BY chrono")
-or die(mysql_error());  	
+$qEv="SELECT TableEvenement0.*,TableJoueur.* FROM TableEvenement0 JOIN TableJoueur ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id) WHERE match_event_id = '{$matchID}' AND code = 0 ORDER BY chrono";
+$JSONstring .="\"qEv\": \"".$qEv."\",";
+$resultEvent = mysqli_query($conn,$qEv) or die(mysqli_error($conn));  	
 
 
-while($rangeeEv=mysql_fetch_array($resultEvent))
+while($rangeeEv=mysqli_fetch_array($resultEvent))
 	{
 				$Sommaire[$Ibuts]['video']=array();
 		for($b=0;$b<count($mesVids);$b++)
@@ -247,8 +237,8 @@ while($rangeeEv=mysql_fetch_array($resultEvent))
 //		}
 		
 		
-				$Sommaire[$Ibuts]['equipe']=trouveNomParIDEquipe($rangeeEv['equipe_event_id']);
-	
+				$Sommaire[$Ibuts]['equipe']=trouveNomParIDEquipe($rangeeEv['equipe_event_id'],$conn);
+				$Sommaire[$Ibuts]['equipeId']=$rangeeEv['equipe_event_id'];
 				$Sommaire[$Ibuts]['chrono']=$rangeeEv['chrono'];
 
 				$qualif=0;
@@ -271,13 +261,13 @@ while($rangeeEv=mysql_fetch_array($resultEvent))
 				$Sommaire[$Ibuts]['marqueur']=$rangeeEv['NomJoueur'];
 				$Sommaire[$Ibuts]['noMarqueur']=$rangeeEv['NumeroJoueur'];
 								$Sommaire[$Ibuts]['marqueurId']=$rangeeEv['joueur_event_ref'];
-				$sql_passeurs = mysql_query("SELECT TableEvenement0.joueur_event_ref,TableJoueur.* FROM TableEvenement0 
+				$sql_passeurs = mysqli_query($conn,"SELECT TableEvenement0.joueur_event_ref,TableJoueur.* FROM TableEvenement0 
 														JOIN TableJoueur
 															ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id)
 														WHERE match_event_id = '{$matchID}'  AND chrono = '{$rangeeEv['chrono']}' AND code = '1'")
-				or die(mysql_error()); 
+				or die(mysqli_error($conn)); 
 				$Ipas = 0;
-				while($rangeeEv=mysql_fetch_array($sql_passeurs))
+				while($rangeeEv=mysqli_fetch_array($sql_passeurs))
 				{
 							if($Ipas==0)
 							{
@@ -307,13 +297,13 @@ while($rangeeEv=mysql_fetch_array($resultEvent))
 $SomPun = array();
 $JSONstring .="\"punitions\": ";
 $IPun=0;
-$resultPun = mysql_query("SELECT * FROM TableEvenement0 WHERE match_event_id = '{$matchID}' AND code = 4 ORDER BY chrono")
-or die(mysql_error());  	
+$resultPun = mysqli_query($conn,"SELECT * FROM TableEvenement0 WHERE match_event_id = '{$matchID}' AND code = 4 ORDER BY chrono")
+or die(mysqli_error($conn));  	
 
 
-while($rangeePun=mysql_fetch_array($resultPun))
+while($rangeePun=mysqli_fetch_array($resultPun))
 	{
-				$SomPun[$IPun]['equipe']=trouveNomParIDEquipe($rangeePun['equipe_event_id']);
+				$SomPun[$IPun]['equipe']=trouveNomParIDEquipe($rangeePun['equipe_event_id'],$conn);
 	
 				$SomPun[$IPun]['chrono']=$rangeePun['chrono'];
 
@@ -394,7 +384,7 @@ while($rangeePun=mysql_fetch_array($resultPun))
 										case 37: $SomPun[$IPun]['motif']='Inconduite de partie';
 					break;
 									}
-				$SomPun[$IPun]['joueur']=trouveNomJoueurParID($rangeePun['joueur_event_ref']);
+				$SomPun[$IPun]['joueur']=trouveNomJoueurParID($rangeePun['joueur_event_ref'],$conn);
 				$SomPun[$IPun]['joueurId']=$rangeePun['joueur_event_ref'];
 //				$JSONstring .= json_encode($SomPun[$IPun]).",";
 				$IPun++;
@@ -412,14 +402,14 @@ while($rangeePun=mysql_fetch_array($resultPun))
 
 
 
-$resultPeriode = mysql_query("SELECT * FROM TableEvenement0 WHERE match_event_id = '{$matchID}' AND code = 11 ORDER BY souscode ASC")
-or die(mysql_error());  	
+$resultPeriode = mysqli_query($conn,"SELECT * FROM TableEvenement0 WHERE match_event_id = '{$matchID}' AND code = 11 ORDER BY souscode ASC")
+or die(mysqli_error($conn));  	
 
 
 	$periode=Array();
 	$IP=0;
 	
-while($rangeePer=mysql_fetch_array($resultPeriode))
+while($rangeePer=mysqli_fetch_array($resultPeriode))
 	{
 		if($rangeePer['souscode']<10)
 		{
@@ -453,17 +443,17 @@ $IP++;
 	
 
 
-$rFus = mysql_query("SELECT TableEvenement0.*,TableJoueur.*,TableEquipe.* FROM TableEvenement0 
+$rFus = mysqli_query($conn,"SELECT TableEvenement0.*,TableJoueur.*,TableEquipe.* FROM TableEvenement0 
 										JOIN TableJoueur
 											ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id)
 										JOIN TableEquipe
 											ON (TableEvenement0.equipe_event_id=TableEquipe.equipe_id)
 											 WHERE match_event_id = '{$matchID}' AND code = 2 ORDER BY chrono")
-or die(mysql_error());  	
+or die(mysqli_error($conn));  	
 
 $fusillade =Array();
 	$IF=0;
-while($rangFus=mysql_fetch_array($rFus))
+while($rangFus=mysqli_fetch_array($rFus))
 	{
 		$fusillade[$IF]=array();
 		if($rangFus['souscode']==1)
@@ -499,11 +489,11 @@ foreach($Sommaire as $buts )
 		for($a=0; $a<count($buts['video']);$a++)
 		{
 		$reqIns = "UPDATE Video SET tagPrincipal='{$buts['marqueurId']}' WHERE videoId='{$buts['video'][$a]['videoId']}'";
-		mysql_query($reqIns)or die(mysqli_error());
+		mysqli_query($conn, $reqIns)or die(mysqli_error($conn));
 		}
 	}
 }
-	
+	mysqli_close($conn);
 //include('../scriptsphp/vidsInfos.php');
 
 ?>

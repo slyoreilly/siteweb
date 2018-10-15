@@ -5,6 +5,9 @@
 		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
 				<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+				<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+
+        
 
 		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
@@ -12,6 +15,10 @@
 				<script type="text/javascript" charset="utf-8">
 				 		gereLangue();
 		</script>
+  <script type="text/javascript" charset="utf-8">
+             var mUrl="/style/ligues/"+getValue("ligueId")+"/perso.css";
+             document.write('<link rel="stylesheet" href="'+mUrl+'" type="text/css">');
+            </script>
 
 </HEAD>
 
@@ -475,10 +482,15 @@ postwith("/index.html",person);
 	</script>
 
 	
-		<div id="divHaut"></div>
-		<div id="divGauche"></div>
-		<div id="divMenuHaut"></div>
-		<div id="divCentrale">
+		        <div class="container-fluid bg">
+            <div class="row">
+                <div id="divHaut" class="col-sm-12"></div>
+                <div id="divMenuHaut" class="col-sm-12"></div>
+
+            </div>
+
+            <div class="row">
+                <div id="divCentrale" class="col-sm-9 container contOuiJet bg-light">
 	
 <form name="myForm" id="maForme">
 
@@ -486,7 +498,9 @@ postwith("/index.html",person);
 
 </form>
 		</div>
-		<div id="divDroite"></div>
+		
+
+		<div id="divDroite"></div></div></div>
 		<script type="text/javascript" charset="utf-8">
 		
 		
@@ -499,7 +513,7 @@ postwith("/index.html",person);
 			passOk=false;
 	
 			
-			$('#maForme').append($('<div></div>').css("margin-top","25px").append(
+			$('#maForme').addClass("bg-light").append($('<div></div>').css("margin-top","25px").append(
 			 /*   $('<div></div>').addClass("ligneBloc").attr("id","contUser").append($("<div></div>").addClass("formGauche").attr("id","fgUsager").text("Nom d'usager:"),$("<div></div>").addClass("formDroite").append($("<input></input>").attr("type","text").attr("id","idUser").attr("name","usager")) ),*/
                 $('<div></div>').addClass("ligneBloc").attr("id","contPrenom").append($("<div></div>").addClass("formGauche").attr("id","fgPrenom").text("Prénom :"),$("<div></div>").addClass("formDroite").append($("<input></input>").attr("type","text").attr("id","idPrenom").attr("name","prenom")) ),
                 $('<div></div>').addClass("ligneBloc").attr("id","contNom").append($("<div></div>").addClass("formGauche").attr("id","fgNom").text("Nom :"),$("<div></div>").addClass("formDroite").append($("<input></input>").attr("type","text").attr("id","idNomFamille").attr("name","nom")) ),

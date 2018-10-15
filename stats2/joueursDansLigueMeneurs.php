@@ -114,11 +114,14 @@ function trouveSaisonActiveDeLigueId($ID) {
 $getLigue = $_POST["ligueId"];
 $saisonId = $_POST["saisonId"];
 
-if (!strcmp($saisonId, "") && strcmp($getLigue, ""))// Sp�cifie par la ligue
+
+if ((!strcmp($saisonId, "")||($saisonId==null||!strcmp($saisonId, "null"))) && strcmp($getLigue, ""))// Sp�cifie par la ligue
 {
 	$saisonId = trouveSaisonActiveDeLigueId($getLigue);
 	//	$saisonId =2;
 }
+
+//echo $saisonId;
 $prSaison = mysql_query("SELECT premierMatch 
 						FROM TableSaison 
 						WHERE saisonId ='{$saisonId}'") or die(mysql_error() . "query PM: saisonId: " . $saisonId);
@@ -191,8 +194,9 @@ unset($joueurs);
 $joueurs = Array();
 unset($evenement);
 $evenement = Array();
-$pmts = strtotime($premierMatch);
-$dmts = strtotime($dernierMatch);
+$pmts = strtotime($premierMatch)*1000;
+$dmts = strtotime($dernierMatch)*1000;
+
 
 //	 match_event_id = '{$lesMatchs[$Im]}' AND
 $strQuery = "
@@ -227,6 +231,7 @@ SELECT TableEvenement0.*, TableEquipe.nom_equipe,TableEquipe.ficId,
 						AND code<10		
 						GROUP BY event_id		
 ";
+//echo $strQuery;
 
 mysql_query("SET SQL_BIG_SELECTS=1");
 $resultEvent = mysql_query($strQuery) or die(mysql_error() . "query gros stock");
@@ -309,15 +314,17 @@ while ($Ievent < $NbEntre) {
 	$ligneEvent0 = $JoueurSommeEvenement[$Ievent]['event_id'];
 	$ligneEvent1 = $JoueurSommeEvenement[$Ievent]['joueur_event_ref'];
 	$ligneEvent2 = $JoueurSommeEvenement[$Ievent]['code'];
-	$Itrouve = 0;
+	/*$Itrouve = 0;
 	$boule = 0;
 	while ($Itrouve < count($joueursEntres)) {
 		if ($joueursEntres[$Itrouve] == $ligneEvent1) {$boule = 1;
 		}
 		$Itrouve++;
-	}
-	if ($boule == 0)//joueur pas dans la liste
+	}*/
+	if(in_array($ligneEvent1, $joueursEntres)==false)
+//	if ($boule == 0)//joueur pas dans la liste
 	{
+		$Itrouve=count($joueursEntres);
 		$joueursEntres[$Itrouve] = $ligneEvent1;
 
 		///////////////////////////

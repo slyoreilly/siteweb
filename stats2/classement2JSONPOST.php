@@ -118,6 +118,7 @@ while($rangeeEquipe=mysql_fetch_array($resultEquipe))
 	$equipe[$Ie]['id']=$rangeeEquipe['equipe_id'];
 	$equipe[$Ie]['nom']=$rangeeEquipe['nom_equipe'];
 	$equipe[$Ie]['ville']=$rangeeEquipe['ville'];
+	$equipe[$Ie]['couleur1']=$rangeeEquipe['couleur1'];
 	$equipe[$Ie]['vicDom']=0;
 	$equipe[$Ie]['defDom']=0;
 	$equipe[$Ie]['nulDom']=0;
@@ -127,9 +128,40 @@ while($rangeeEquipe=mysql_fetch_array($resultEquipe))
 	$equipe[$Ie]['defPDom']=0;
 	$equipe[$Ie]['defPVis']=0;
 	$equipe[$Ie]['ptsDisc']=0;
+	$equipe[$Ie]['nbPun']=0;
 	$equipe[$Ie]['bp']=0;
+	$equipe[$Ie]['sequence']=0;
 	$equipe[$Ie]['bc']=0;
+	$equipe[$Ie]['dernier10']=array();
 	$equipe[$Ie]['ficId']=$rangeeEquipe['ficId'];
+	$equipe[$Ie]['vecRes']=Array(    //   V-D-N / R-P / D-V
+		array(
+			array(
+				0,0
+				),
+			array(
+				0,0
+				)
+				),
+		array(
+			
+			array(
+				0,0
+				),
+			array(
+				0,0
+				)
+				),
+		array(
+			
+			array(
+				0,0
+				),
+			array(
+				0,0
+				)
+				)
+		);
 	$Ie++;
 }
 
@@ -215,42 +247,102 @@ while($rangeeMatch=mysql_fetch_array($resultMatch))
 {
 	if($rangeeMatch['date']>=$premierMatch&&$rangeeMatch['date']<=$dernierMatch)
 	{
+		$equipe[$Ie]['nbPun']=$equipe[$Ie]['nbPun']+$rangeeMatch['punitions'];
 		if($rangeeMatch['punitions']<=$nbPunMax){
 			$equipe[$Ie]['ptsDisc']++;
 		}	
 		if($rangeeMatch['eq_dom']==$equipe[$Ie]['id'])
 		{
 		
-			if($rangeeMatch['score_dom']>$rangeeMatch['score_vis'])
+			if($rangeeMatch['score_dom']>$rangeeMatch['score_vis']){
+				if($rangeeMatch['sc11']>10){
+				$equipe[$Ie]['vecRes'][0][1][0]++;
+				}else{
+				$equipe[$Ie]['vecRes'][0][0][0]++;
+				}
+			
 				$equipe[$Ie]['vicDom']++;
+				if($equipe[$Ie]['sequence']<0){
+					$equipe[$Ie]['sequence']=1;
+				}else{
+					$equipe[$Ie]['sequence']=$equipe[$Ie]['sequence']+1;
+				}
+				array_push($equipe[$Ie]['dernier10'],'V');
+				}
+				
+				
 			if($rangeeMatch['score_dom']<$rangeeMatch['score_vis'])
 			{
 				if($rangeeMatch['sc11']>10){
 				$equipe[$Ie]['defPDom']++;
+				$equipe[$Ie]['vecRes'][1][1][0]++;
 				}else{
 				$equipe[$Ie]['defDom']++;
+				$equipe[$Ie]['vecRes'][1][0][0]++;
 				}
+				if($equipe[$Ie]['sequence']>0){
+					$equipe[$Ie]['sequence']=-1;
+				}else{
+					$equipe[$Ie]['sequence']=$equipe[$Ie]['sequence']-1;
+				}
+				
+								array_push($equipe[$Ie]['dernier10'],'D');
+				
 			}
 			if($rangeeMatch['score_dom']==$rangeeMatch['score_vis']){
-				$equipe[$Ie]['nulDom']++;}
+				$equipe[$Ie]['nulDom']++;
+				$equipe[$Ie]['vecRes'][2][0][0]++;
+			$equipe[$Ie]['sequence']=0;
+							array_push($equipe[$Ie]['dernier10'],'N');
+			
+			}
 				
 			$equipe[$Ie]['bp']+=$rangeeMatch['score_dom'];
 			$equipe[$Ie]['bc']+=$rangeeMatch['score_vis'];
 			
 		}
-		else{
-			if($rangeeMatch['score_dom']<$rangeeMatch['score_vis'])
+		else{    /// L'équipe choisie est visiteur
+			if($rangeeMatch['score_dom']<$rangeeMatch['score_vis']){
+				if($rangeeMatch['sc11']>10){
+				$equipe[$Ie]['vecRes'][0][1][1]++;
+				}else{
+				$equipe[$Ie]['vecRes'][0][0][1]++;
+				}
+			
 				$equipe[$Ie]['vicVis']++;
+				if($equipe[$Ie]['sequence']<0){
+					$equipe[$Ie]['sequence']=1;
+				}else{
+					$equipe[$Ie]['sequence']=$equipe[$Ie]['sequence']+1;
+				}
+								array_push($equipe[$Ie]['dernier10'],'V');
+			}
+				
+		
+				
+				
 			if($rangeeMatch['score_dom']>$rangeeMatch['score_vis'])
 			{
 				if($rangeeMatch['sc11']>10){
 					$equipe[$Ie]['defPVis']++;
+					$equipe[$Ie]['vecRes'][1][1][1]++;
 				}else{
 					$equipe[$Ie]['defVis']++;
+					$equipe[$Ie]['vecRes'][1][0][1]++;
 				}
+				if($equipe[$Ie]['sequence']>0){
+					$equipe[$Ie]['sequence']=-1;
+				}else{
+					$equipe[$Ie]['sequence']=$equipe[$Ie]['sequence']-1;
+				}
+				array_push($equipe[$Ie]['dernier10'],'D');
 			}
 			if($rangeeMatch['score_dom']==$rangeeMatch['score_vis'])
-				$equipe[$Ie]['nulVis']++;
+				{$equipe[$Ie]['nulVis']++;
+				$equipe[$Ie]['vecRes'][2][0][1]++;
+							$equipe[$Ie]['sequence']=0;
+							array_push($equipe[$Ie]['dernier10'],'N');
+				}
 			$equipe[$Ie]['bc']+=$rangeeMatch['score_dom'];
 			$equipe[$Ie]['bp']+=$rangeeMatch['score_vis'];
 		}

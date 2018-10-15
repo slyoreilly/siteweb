@@ -243,15 +243,15 @@ function highlightMonthYear()
 	activeSelectBox = this;
 
 
-	if(this.className=='monthYearActive'){
+	if(this.className == 'DGmonthYearActive'){
 		this.className='';
 	}else{
-		this.className = 'monthYearActive';
+		this.className = 'DGmonthYearActive';
 		activeSelectBoxMonth = this;
 	}
 
 	if(this.innerHTML.indexOf('-')>=0 || this.innerHTML.indexOf('+')>=0){
-		if(this.className=='monthYearActive')
+		if(this.className == 'DGmonthYearActive')
 			selectBoxMovementInProgress = true;
 		else
 			selectBoxMovementInProgress = false;
@@ -263,17 +263,17 @@ function highlightMonthYear()
 
 function showMonthDropDown()
 {
-	if(document.getElementById('monthDropDown').style.display=='block'){
-		document.getElementById('monthDropDown').style.display='none';
+	if(document.getElementById('DGmonthDropDown').style.display=='block'){
+		document.getElementById('DGmonthDropDown').style.display='none';
 		//// fix for EI frame problem on time dropdowns 09/30/2006
 				EIS_Hide_Frame();
 	}else{
-		document.getElementById('monthDropDown').style.display='block';
-		document.getElementById('yearDropDown').style.display='none';
-		document.getElementById('hourDropDown').style.display='none';
-		document.getElementById('minuteDropDown').style.display='none';
+		document.getElementById('DGmonthDropDown').style.display='block';
+		document.getElementById('DGyearDropDown').style.display='none';
+		document.getElementById('DGhourDropDown').style.display='none';
+		document.getElementById('DGminuteDropDown').style.display='none';
 			if (MSIE)
-		{ EIS_FIX_EI1('monthDropDown')}
+		{ EIS_FIX_EI1('DGmonthDropDown')}
 		//// fix for EI frame problem on time dropdowns 09/30/2006
 
 	}
@@ -281,17 +281,17 @@ function showMonthDropDown()
 
 function showYearDropDown()
 {
-	if(document.getElementById('yearDropDown').style.display=='block'){
-		document.getElementById('yearDropDown').style.display='none';
+	if(document.getElementById('DGyearDropDown').style.display=='block'){
+		document.getElementById('DGyearDropDown').style.display='none';
 		//// fix for EI frame problem on time dropdowns 09/30/2006
 				EIS_Hide_Frame();
 	}else{
-		document.getElementById('yearDropDown').style.display='block';
-		document.getElementById('monthDropDown').style.display='none';
-		document.getElementById('hourDropDown').style.display='none';
-		document.getElementById('minuteDropDown').style.display='none';
+		document.getElementById('DGyearDropDown').style.display='block';
+		document.getElementById('DGmonthDropDown').style.display='none';
+		document.getElementById('DGhourDropDown').style.display='none';
+		document.getElementById('DGminuteDropDown').style.display='none';
 			if (MSIE)
-		{ EIS_FIX_EI1('yearDropDown')}
+		{ EIS_FIX_EI1('DGyearDropDown')}
 		//// fix for EI frame problem on time dropdowns 09/30/2006
 
 	}
@@ -299,15 +299,15 @@ function showYearDropDown()
 }
 function showHourDropDown()
 {
-	if(document.getElementById('hourDropDown').style.display=='block'){
-		document.getElementById('hourDropDown').style.display='none';
+	if(document.getElementById('DGhourDropDown').style.display=='block'){
+		document.getElementById('DGhourDropDown').style.display='none';
 		//// fix for EI frame problem on time dropdowns 09/30/2006
 				EIS_Hide_Frame();
 	}else{
-		document.getElementById('hourDropDown').style.display='block';
-		document.getElementById('monthDropDown').style.display='none';
-		document.getElementById('yearDropDown').style.display='none';
-		document.getElementById('minuteDropDown').style.display='none';
+		document.getElementById('DGhourDropDown').style.display='block';
+		document.getElementById('DGmonthDropDown').style.display='none';
+		document.getElementById('DGyearDropDown').style.display='none';
+		document.getElementById('DGminuteDropDown').style.display='none';
 				if (MSIE)
 		{ EIS_FIX_EI1('hourDropDown')}
 		//// fix for EI frame problem on time dropdowns 09/30/2006
@@ -316,15 +316,15 @@ function showHourDropDown()
 }
 function showMinuteDropDown()
 {
-	if(document.getElementById('minuteDropDown').style.display=='block'){
-		document.getElementById('minuteDropDown').style.display='none';
+	if(document.getElementById('DGminuteDropDown').style.display=='block'){
+		document.getElementById('DGminuteDropDown').style.display='none';
 		//// fix for EI frame problem on time dropdowns 09/30/2006
 				EIS_Hide_Frame();
 	}else{
-		document.getElementById('minuteDropDown').style.display='block';
-		document.getElementById('monthDropDown').style.display='none';
-		document.getElementById('yearDropDown').style.display='none';
-		document.getElementById('hourDropDown').style.display='none';
+		document.getElementById('DGminuteDropDown').style.display='block';
+		document.getElementById('DGmonthDropDown').style.display='none';
+		document.getElementById('DGyearDropDown').style.display='none';
+		document.getElementById('DGhourDropDown').style.display='none';
 				if (MSIE)
 		{ EIS_FIX_EI1('minuteDropDown')}
 		//// fix for EI frame problem on time dropdowns 09/30/2006
@@ -334,14 +334,14 @@ function showMinuteDropDown()
 
 function selectMonth()
 {
-	document.getElementById('calendar_month_txt').innerHTML = this.innerHTML
+	document.getElementById('DGcalendar_month_txt').innerHTML = this.innerHTML
 	currentMonth = this.id.replace(/[^\d]/g,'');
 
-	document.getElementById('monthDropDown').style.display='none';
+	document.getElementById('DGmonthDropDown').style.display='none';
 	//// fix for EI frame problem on time dropdowns 09/30/2006
 				EIS_Hide_Frame();
 	for(var no=0;no<monthArray.length;no++){
-		document.getElementById('monthDiv_'+no).style.color='';
+		document.getElementById('DGmonthDiv_'+no).style.color='';
 	}
 	this.style.color = selectBoxHighlightColor;
 	activeSelectBoxMonth = this;
@@ -351,9 +351,9 @@ function selectMonth()
 
 function selectHour()
 {
-	document.getElementById('calendar_hour_txt').innerHTML = this.innerHTML
+	document.getElementById('DGcalendar_hour_txt').innerHTML = this.innerHTML
 	currentHour = this.innerHTML.replace(/[^\d]/g,'');
-	document.getElementById('hourDropDown').style.display='none';
+	document.getElementById('DGhourDropDown').style.display='none';
 	//// fix for EI frame problem on time dropdowns 09/30/2006
 	EIS_Hide_Frame();
 	if(activeSelectBoxHour){
@@ -365,9 +365,9 @@ function selectHour()
 
 function selectMinute()
 {
-	document.getElementById('calendar_minute_txt').innerHTML = this.innerHTML
+	document.getElementById('DGcalendar_minute_txt').innerHTML = this.innerHTML
 	currentMinute = this.innerHTML.replace(/[^\d]/g,'');
-	document.getElementById('minuteDropDown').style.display='none';
+	document.getElementById('DGminuteDropDown').style.display='none';
 	//// fix for EI frame problem on time dropdowns 09/30/2006
 				EIS_Hide_Frame();
 	if(activeSelectBoxMinute){
@@ -380,9 +380,9 @@ function selectMinute()
 
 function selectYear()
 {
-	document.getElementById('calendar_year_txt').innerHTML = this.innerHTML
+	document.getElementById('DGcalendar_year_txt').innerHTML = this.innerHTML
 	currentYear = this.innerHTML.replace(/[^\d]/g,'');
-	document.getElementById('yearDropDown').style.display='none';
+	document.getElementById('DGyearDropDown').style.display='none';
 	//// fix for EI frame problem on time dropdowns 09/30/2006
 				EIS_Hide_Frame();
 	if(activeSelectBoxYear){
@@ -417,8 +417,8 @@ function switchMonth()
 
 function createMonthDiv(){
 	var div = document.createElement('DIV');
-	div.className='monthYearPicker';
-	div.id = 'monthPicker';
+	div.className='DGmonthYearPicker';
+	div.id = 'DGmonthPicker';
 
 	for(var no=0;no<monthArray.length;no++){
 		var subDiv = document.createElement('DIV');
@@ -426,7 +426,7 @@ function createMonthDiv(){
 		subDiv.onmouseover = highlightMonthYear;
 		subDiv.onmouseout = highlightMonthYear;
 		subDiv.onclick = selectMonth;
-		subDiv.id = 'monthDiv_' + no;
+		subDiv.id = 'DGmonthDiv_' + no;
 		subDiv.style.width = '56px';
 		subDiv.onselectstart = cancelCalendarEvent;
 		div.appendChild(subDiv);
@@ -459,13 +459,13 @@ function changeSelectBoxYear(e,inputObj)
 
 	for(var no=1;no<yearItems.length-1;no++){
 		yearItems[no].innerHTML = startYear+no-1;
-		yearItems[no].id = 'yearDiv' + (startYear/1+no/1-1);
+		yearItems[no].id = 'DGyearDiv' + (startYear/1+no/1-1);
 
 	}
 	if(activeSelectBoxYear){
 		activeSelectBoxYear.style.color='';
-		if(document.getElementById('yearDiv'+currentYear)){
-			activeSelectBoxYear = document.getElementById('yearDiv'+currentYear);
+		if(document.getElementById('DGyearDiv'+currentYear)){
+			activeSelectBoxYear = document.getElementById('DGyearDiv'+currentYear);
 			activeSelectBoxYear.style.color=selectBoxHighlightColor;;
 		}
 	}
@@ -494,13 +494,13 @@ function changeSelectBoxHour(e,inputObj)
 		if((startHour/1 + no/1) < 11)prefix = '0'; else prefix = '';
 		hourItems[no].innerHTML = prefix + (startHour+no-1);
 
-		hourItems[no].id = 'hourDiv' + (startHour/1+no/1-1);
+		hourItems[no].id = 'DGhourDiv' + (startHour/1+no/1-1);
 
 	}
 	if(activeSelectBoxHour){
 		activeSelectBoxHour.style.color='';
-		if(document.getElementById('hourDiv'+currentHour)){
-			activeSelectBoxHour = document.getElementById('hourDiv'+currentHour);
+		if(document.getElementById('DGhourDiv'+currentHour)){
+			activeSelectBoxHour = document.getElementById('DGhourDiv'+currentHour);
 			activeSelectBoxHour.style.color=selectBoxHighlightColor;;
 		}
 	}
@@ -512,7 +512,7 @@ function updateYearDiv()
     if (turnOffYearSpan) {
        yearSpan = 0;
     }
-	var div = document.getElementById('yearDropDown');
+	var div = document.getElementById('DGyearDropDown');
 	var yearItems = div.getElementsByTagName('DIV');
 	for(var no=1;no<yearItems.length-1;no++){
 		yearItems[no].innerHTML = currentYear/1 -yearSpan + no;
@@ -528,16 +528,16 @@ function updateYearDiv()
 function updateMonthDiv()
 {
 	for(no=0;no<12;no++){
-		document.getElementById('monthDiv_' + no).style.color = '';
+		document.getElementById('DGmonthDiv_' + no).style.color = '';
 	}
-	document.getElementById('monthDiv_' + currentMonth).style.color = selectBoxHighlightColor;
-	activeSelectBoxMonth = 	document.getElementById('monthDiv_' + currentMonth);
+	document.getElementById('DGmonthDiv_' + currentMonth).style.color = selectBoxHighlightColor;
+	activeSelectBoxMonth = 	document.getElementById('DGmonthDiv_' + currentMonth);
 }
 
 
 function updateHourDiv()
 {
-	var div = document.getElementById('hourDropDown');
+	var div = document.getElementById('DGhourDropDown');
 	var hourItems = div.getElementsByTagName('DIV');
 
 	var addHours = 0;
@@ -563,11 +563,11 @@ function updateMinuteDiv()
 		var prefix = '';
 		if(no<10)prefix = '0';
 
-		document.getElementById('minuteDiv_' + prefix + no).style.color = '';
+		document.getElementById('DGminuteDiv_' + prefix + no).style.color = '';
 	}
-	if(document.getElementById('minuteDiv_' + currentMinute)){
-		document.getElementById('minuteDiv_' + currentMinute).style.color = selectBoxHighlightColor;
-		activeSelectBoxMinute = document.getElementById('minuteDiv_' + currentMinute);
+	if(document.getElementById('DGminuteDiv_' + currentMinute)){
+		document.getElementById('DGminuteDiv_' + currentMinute).style.color = selectBoxHighlightColor;
+		activeSelectBoxMinute = document.getElementById('DGminuteDiv_' + currentMinute);
 	}
 }
 
@@ -576,11 +576,11 @@ function updateMinuteDiv()
 function createYearDiv()
 {
 
-	if(!document.getElementById('yearDropDown')){
+	if(!document.getElementById('DGyearDropDown')){
 		var div = document.createElement('DIV');
-		div.className='monthYearPicker';
+		div.className='DGmonthYearPicker';
 	}else{
-		var div = document.getElementById('yearDropDown');
+		var div = document.getElementById('DGyearDropDown');
 		var subDivs = div.getElementsByTagName('DIV');
 		for(var no=0;no<subDivs.length;no++){
 			subDivs[no].parentNode.removeChild(subDivs[no]);
@@ -615,7 +615,7 @@ function createYearDiv()
 		subDiv.onmouseover = highlightMonthYear;
 		subDiv.onmouseout = highlightMonthYear;
 		subDiv.onclick = selectYear;
-		subDiv.id = 'yearDiv' + no;
+		subDiv.id = 'DGyearDiv' + no;
 		subDiv.onselectstart = cancelCalendarEvent;
 		div.appendChild(subDiv);
 		if(currentYear && currentYear==no){
@@ -640,10 +640,10 @@ function createYearDiv()
 function slideCalendarSelectBox()
 {
 	if(selectBoxMovementInProgress){
-		if(activeSelectBox.parentNode.id=='hourDropDown'){
+		if(activeSelectBox.parentNode.id=='DGhourDropDown'){
 			changeSelectBoxHour(false,activeSelectBox);
 		}
-		if(activeSelectBox.parentNode.id=='yearDropDown'){
+		if(activeSelectBox.parentNode.id=='DGyearDropDown'){
 			changeSelectBoxYear(false,activeSelectBox);
 		}
 
@@ -654,11 +654,11 @@ function slideCalendarSelectBox()
 
 function createHourDiv()
 {
-	if(!document.getElementById('hourDropDown')){
+	if(!document.getElementById('DGhourDropDown')){
 		var div = document.createElement('DIV');
-		div.className='monthYearPicker';
+		div.className='DGmonthYearPicker';
 	}else{
-		var div = document.getElementById('hourDropDown');
+		var div = document.getElementById('DGhourDropDown');
 		var subDivs = div.getElementsByTagName('DIV');
 		for(var no=0;no<subDivs.length;no++){
 			subDivs[no].parentNode.removeChild(subDivs[no]);
@@ -685,7 +685,7 @@ function createHourDiv()
 		subDiv.onmouseover = highlightMonthYear;
 		subDiv.onmouseout = highlightMonthYear;
 		subDiv.onclick = selectHour;
-		subDiv.id = 'hourDiv' + no;
+		subDiv.id = 'DGhourDiv' + no;
 		subDiv.onselectstart = cancelCalendarEvent;
 		div.appendChild(subDiv);
 		if(currentYear && currentYear==no){
@@ -707,11 +707,11 @@ function createHourDiv()
 
 function createMinuteDiv()
 {
-	if(!document.getElementById('minuteDropDown')){
+	if(!document.getElementById('DGminuteDropDown')){
 		var div = document.createElement('DIV');
-		div.className='monthYearPicker';
+		div.className='DGmonthYearPicker';
 	}else{
-		var div = document.getElementById('minuteDropDown');
+		var div = document.getElementById('DGminuteDropDown');
 		var subDivs = div.getElementsByTagName('DIV');
 		for(var no=0;no<subDivs.length;no++){
 			subDivs[no].parentNode.removeChild(subDivs[no]);
@@ -727,7 +727,7 @@ function createMinuteDiv()
 		subDiv.onmouseover = highlightMonthYear;
 		subDiv.onmouseout = highlightMonthYear;
 		subDiv.onclick = selectMinute;
-		subDiv.id = 'minuteDiv_' + prefix +  no;
+		subDiv.id = 'DGminuteDiv_' + prefix +  no;
 		subDiv.onselectstart = cancelCalendarEvent;
 		div.appendChild(subDiv);
 		if(currentYear && currentYear==no){
@@ -741,19 +741,19 @@ function createMinuteDiv()
 function highlightSelect()
 {
 
-	if(this.className=='selectBoxTime'){
-		this.className = 'selectBoxTimeOver';
+	if(this.className == 'DGselectBoxTime'){
+		this.className = 'DGselectBoxTimeOver';
 		this.getElementsByTagName('IMG')[0].src = pathToImages + 'down_time_over.gif';
-	}else if(this.className=='selectBoxTimeOver'){
-		this.className = 'selectBoxTime';
+	}else if(this.className == 'DGselectBoxTimeOver'){
+		this.className = 'DGselectBoxTime';
 		this.getElementsByTagName('IMG')[0].src = pathToImages + 'down_time.gif';
 	}
 
-	if(this.className=='selectBox'){
-		this.className = 'selectBoxOver';
+	if(this.className == 'DGselectBox'){
+		this.className = 'DGselectBoxOver';
 		this.getElementsByTagName('IMG')[0].src = pathToImages + 'down_over.gif';
-	}else if(this.className=='selectBoxOver'){
-		this.className = 'selectBox';
+	}else if(this.className == 'DGselectBoxOver'){
+		this.className = 'DGselectBox';
 		this.getElementsByTagName('IMG')[0].src = pathToImages + 'down.gif';
 	}
 
@@ -782,10 +782,12 @@ function highlightClose()
 
 function closeCalendar(){
 
-	document.getElementById('yearDropDown').style.display='none';
-	document.getElementById('monthDropDown').style.display='none';
-	document.getElementById('hourDropDown').style.display='none';
-	document.getElementById('minuteDropDown').style.display='none';
+deleteCalendar();
+/*
+	document.getElementById('DGyearDropDown').style.display='none';
+	document.getElementById('DGmonthDropDown').style.display='none';
+	document.getElementById('DGhourDropDown').style.display='none';
+	document.getElementById('DGminuteDropDown').style.display='none';
 
 	calendarDiv.style.display='none';
 	if(iframeObj){
@@ -795,15 +797,15 @@ function closeCalendar(){
 	if(activeSelectBoxMonth)activeSelectBoxMonth.className='';
 	if(activeSelectBoxYear)activeSelectBoxYear.className='';
 
-
+*/
 }
 
 function writeTopBar()
 {
 
 	var topBar = document.createElement('DIV');
-	topBar.className = 'topBar';
-	topBar.id = 'topBar';
+	topBar.className = 'DGtopBar';
+	topBar.id = 'DGtopBar';
 	calendarDiv.appendChild(topBar);
 
 	// Left arrow
@@ -833,13 +835,13 @@ function writeTopBar()
 
 	// Month selector
 	var monthDiv = document.createElement('DIV');
-	monthDiv.id = 'monthSelect';
+	monthDiv.id = 'DGmonthSelect';
 	monthDiv.onmouseover = highlightSelect;
 	monthDiv.onmouseout = highlightSelect;
 	monthDiv.onclick = showMonthDropDown;
 	var span = document.createElement('SPAN');
 	span.innerHTML = monthArray[currentMonth];
-	span.id = 'calendar_month_txt';
+	span.id = 'DGcalendar_month_txt';
 	monthDiv.appendChild(span);
 
 	var img = document.createElement('IMG');
@@ -847,7 +849,7 @@ function writeTopBar()
 	img.style.position = 'absolute';
 	img.style.right = '0px';
 	monthDiv.appendChild(img);
-	monthDiv.className = 'selectBox';
+	monthDiv.className = 'DGselectBox';
 	if(Opera){
 		img.style.cssText = 'float:right;position:relative';
 		img.style.position = 'relative';
@@ -859,7 +861,7 @@ function writeTopBar()
 	monthPicker.style.left = '37px';
 	monthPicker.style.top = monthDiv.offsetTop + monthDiv.offsetHeight + 1 + 'px';
 	monthPicker.style.width ='60px';
-	monthPicker.id = 'monthDropDown';
+	monthPicker.id = 'DGmonthDropDown';
 
 	calendarDiv.appendChild(monthPicker);
 
@@ -870,14 +872,14 @@ function writeTopBar()
 	yearDiv.onclick = showYearDropDown;
 	var span = document.createElement('SPAN');
 	span.innerHTML = currentYear;
-	span.id = 'calendar_year_txt';
+	span.id = 'DGcalendar_year_txt';
 	yearDiv.appendChild(span);
 	topBar.appendChild(yearDiv);
 
 	var img = document.createElement('IMG');
 	img.src = pathToImages + 'down.gif';
 	yearDiv.appendChild(img);
-	yearDiv.className = 'selectBox';
+	yearDiv.className = 'DGselectBox';
 
 	if(Opera){
 		yearDiv.style.width = '50px';
@@ -890,7 +892,7 @@ function writeTopBar()
 	yearPicker.style.left = '113px';
 	yearPicker.style.top = monthDiv.offsetTop + monthDiv.offsetHeight + 1 + 'px';
 	yearPicker.style.width = '35px';
-	yearPicker.id = 'yearDropDown';
+	yearPicker.id = 'DGyearDropDown';
 	calendarDiv.appendChild(yearPicker);
 
 
@@ -912,12 +914,13 @@ function writeTopBar()
 
 function writeCalendarContent()
 {
+	console.log("writeCalendarContent");
 	var calendarContentDivExists = true;
-	if(!calendarContentDiv){
+	//if(!calendarContentDiv){
 		calendarContentDiv = document.createElement('DIV');
 		calendarDiv.appendChild(calendarContentDiv);
 		calendarContentDivExists = false;
-	}
+	//}
 	currentMonth = currentMonth/1;
 	var d = new Date();
 
@@ -931,10 +934,10 @@ function writeCalendarContent()
       dayStartOfMonth--;
    }
 
-	document.getElementById('calendar_year_txt').innerHTML = currentYear;
-	document.getElementById('calendar_month_txt').innerHTML = monthArray[currentMonth];
-	document.getElementById('calendar_hour_txt').innerHTML = currentHour/1 > 9 ? currentHour : '0' + currentHour;
-	document.getElementById('calendar_minute_txt').innerHTML = currentMinute/1 >9 ? currentMinute : '0' + currentMinute;
+	document.getElementById('DGcalendar_year_txt').innerHTML = currentYear;
+	document.getElementById('DGcalendar_month_txt').innerHTML = monthArray[currentMonth];
+	document.getElementById('DGcalendar_hour_txt').innerHTML = currentHour/1 > 9 ? currentHour : '0' + currentHour;
+	document.getElementById('DGcalendar_minute_txt').innerHTML = currentMinute/1 >9 ? currentMinute : '0' + currentMinute;
 
 	var existingTable = calendarContentDiv.getElementsByTagName('TABLE');
 	if(existingTable.length>0){
@@ -952,11 +955,11 @@ function writeCalendarContent()
 	var calTBody = document.createElement('TBODY');
 	calTable.appendChild(calTBody);
 	var row = calTBody.insertRow(-1);
-	row.className = 'calendar_week_row';
+	row.className = 'DGcalendar_week_row';
    if (showWeekNumber) {
       var cell = row.insertCell(-1);
 	   cell.innerHTML = weekString;
-	   cell.className = 'calendar_week_column';
+	   cell.className = 'DGcalendar_week_column';
 	   cell.style.backgroundColor = selectBoxRolloverBgColor;
 	}
 
@@ -969,7 +972,7 @@ function writeCalendarContent()
 
    if (showWeekNumber) {
 	   var cell = row.insertCell(-1);
-	   cell.className = 'calendar_week_column';
+	   cell.className = 'DGcalendar_week_column';
 	   cell.style.backgroundColor = selectBoxRolloverBgColor;
 	   var week = getWeek(currentYear,currentMonth,1);
 	   cell.innerHTML = week;		// Week
@@ -991,7 +994,7 @@ function writeCalendarContent()
 			var row = calTBody.insertRow(-1);
          if (showWeekNumber) {
             var cell = row.insertCell(-1);
-            cell.className = 'calendar_week_column';
+            cell.className = 'DGcalendar_week_column';
             var week = getWeek(currentYear,currentMonth,no);
             cell.innerHTML = week;		// Week
             cell.style.backgroundColor = selectBoxRolloverBgColor;
@@ -999,7 +1002,7 @@ function writeCalendarContent()
 		}
 		var cell = row.insertCell(-1);
 		if(currentYear==inputYear && currentMonth == inputMonth && no==inputDay){
-			cell.className='activeDay';
+			cell.className='DGactiveDay';
 		}
 		cell.innerHTML = no;
 		cell.onclick = pickDate;
@@ -1008,11 +1011,13 @@ function writeCalendarContent()
 
 
 	if(!document.all){
-		if(calendarContentDiv.offsetHeight)
-			document.getElementById('topBar').style.top = calendarContentDiv.offsetHeight + document.getElementById('timeBar').offsetHeight + document.getElementById('topBar').offsetHeight -1 + 'px';
+		if(calendarContentDiv.offsetHeight){
+			
+		//	document.getElementById('DGtopBar').style.top = calendarContentDiv.offsetHeight + document.getElementById('DGtimeBar').offsetHeight + document.getElementById('DGtopBar').offsetHeight -1 + 'px';
+		}
 		else{
-			document.getElementById('topBar').style.top = '';
-			document.getElementById('topBar').style.bottom = '0px';
+			document.getElementById('DGtopBar').style.top = '';
+			document.getElementById('DGtopBar').style.bottom = '0px';
 		}
 
 	}
@@ -1130,8 +1135,8 @@ function getWeek(year,month,day){
 function writeTimeBar()
 {
 	var timeBar = document.createElement('DIV');
-	timeBar.id = 'timeBar';
-	timeBar.className = 'timeBar';
+	timeBar.id = 'DGtimeBar';
+	timeBar.className = 'DGtimeBar';
 
 	var subDiv = document.createElement('DIV');
 	subDiv.innerHTML = 'Time:';
@@ -1144,14 +1149,14 @@ function writeTimeBar()
 	hourDiv.style.width = '30px';
 	var span = document.createElement('SPAN');
 	span.innerHTML = currentHour;
-	span.id = 'calendar_hour_txt';
+	span.id = 'DGcalendar_hour_txt';
 	hourDiv.appendChild(span);
 	timeBar.appendChild(hourDiv);
 
 	var img = document.createElement('IMG');
 	img.src = pathToImages + 'down_time.gif';
 	hourDiv.appendChild(img);
-	hourDiv.className = 'selectBoxTime';
+	hourDiv.className = 'DGselectBoxTime';
 
 	if(Opera){
 		hourDiv.style.width = '30px';
@@ -1164,7 +1169,7 @@ function writeTimeBar()
 	hourPicker.style.left = '130px';
 	//hourPicker.style.top = monthDiv.offsetTop + monthDiv.offsetHeight + 1 + 'px';
 	hourPicker.style.width = '35px';
-	hourPicker.id = 'hourDropDown';
+	hourPicker.id = 'DGhourDropDown';
 	calendarDiv.appendChild(hourPicker);
 
 	// Add Minute picker
@@ -1178,14 +1183,14 @@ function writeTimeBar()
 	var span = document.createElement('SPAN');
 	span.innerHTML = currentMinute;
 
-	span.id = 'calendar_minute_txt';
+	span.id = 'DGcalendar_minute_txt';
 	minuteDiv.appendChild(span);
 	timeBar.appendChild(minuteDiv);
 
 	var img = document.createElement('IMG');
 	img.src = pathToImages + 'down_time.gif';
 	minuteDiv.appendChild(img);
-	minuteDiv.className = 'selectBoxTime';
+	minuteDiv.className = 'DGselectBoxTime';
 
 	if(Opera){
 		minuteDiv.style.width = '30px';
@@ -1198,7 +1203,7 @@ function writeTimeBar()
 	minutePicker.style.left = '167px';
 	//minutePicker.style.top = monthDiv.offsetTop + monthDiv.offsetHeight + 1 + 'px';
 	minutePicker.style.width = '35px';
-	minutePicker.id = 'minuteDropDown';
+	minutePicker.id = 'DGminuteDropDown';
 	calendarDiv.appendChild(minutePicker);
 
 
@@ -1211,15 +1216,15 @@ function writeBottomBar()
 	var d = new Date();
 	var bottomBar = document.createElement('DIV');
 
-	bottomBar.id = 'bottomBar';
+	bottomBar.id = 'DGbottomBar';
 
 	bottomBar.style.cursor = 'pointer';
-	bottomBar.className = 'todaysDate';
+	bottomBar.className = 'DGtodaysDate';
 	// var todayStringFormat = '[todayString] [dayString] [day] [monthString] [year]';	;;
 
 	var subDiv = document.createElement('DIV');
 	subDiv.onclick = pickTodaysDate;
-	subDiv.id = 'todaysDateString';
+	subDiv.id = 'DGtodaysDateString';
 	subDiv.style.width = (calendarDiv.offsetWidth - 95) + 'px';
 	var day = d.getDay();
 	if (! weekStartsOnSunday) {
@@ -1281,6 +1286,7 @@ function initCalendar()
 {
 	if(MSIE){
 		iframeObj = document.createElement('IFRAME');
+		iframeObj.id="if1";
 		iframeObj.style.filter = 'alpha(opacity=0)';
 		iframeObj.style.position = 'absolute';
 		iframeObj.border='0px';
@@ -1296,13 +1302,14 @@ function initCalendar()
 		//// fix for EI frame problem on time dropdowns 09/30/2006
 		// Added fixed for HTTPS
 		iframeObj2.src = 'blank.html';
+		iframeObj2.id="if2";
 		iframeObj.src = 'blank.html';
 		document.body.appendChild(iframeObj2);  // gfb move this down AFTER the .src is set
 		document.body.appendChild(iframeObj);
 	}
 
 	calendarDiv = document.createElement('DIV');
-	calendarDiv.id = 'calendarDiv';
+	calendarDiv.id = 'DGcalendarDiv';
 	slideCalendarSelectBox();
 
 	document.body.appendChild(calendarDiv);
@@ -1322,22 +1329,46 @@ function initCalendar()
 
 }
 
+function deleteCalendar(){
+	try{
+		if(document.body.contains(document.getElementById("DGcalendarDiv"))){ 
+	document.body.removeChild(document.getElementById("DGcalendarDiv"));}
+		if(document.body.contains(document.getElementById("if1"))){ 
+	document.body.removeChild(document.getElementById("if1"));}
+		if(document.body.contains(document.getElementById("if2"))){ 
+	document.body.removeChild(document.getElementById("if2"));}
+	
+	}
+	
+	catch(err){console.log("Erreur dans deleteCalendar")}
+	var iframeObj = false;
+	var iframeObj2 =false;
+	var speedOfSelectBoxSliding = 200;	// Milliseconds between changing year and hour when holding mouse over "-" and "+" - lower value = faster
+var intervalSelectBox_minutes = 5;	// Minute select box - interval between each option (5 = default)
+
+var calendar_offsetTop = 0;		// Offset - calendar placement - You probably have to modify this value if you're not using a strict doctype
+var calendar_offsetLeft = 0;	// Offset - calendar placement - You probably have to modify this value if you're not using a strict doctype
+var calendarDiv = false;
+
+
+}
+
 function setTimeProperties()
 {
 	if(!calendarDisplayTime){
-		document.getElementById('timeBar').style.display='none';
-		document.getElementById('timeBar').style.visibility='hidden';
-		document.getElementById('todaysDateString').style.width = '100%';
+		document.getElementById('DGtimeBar').style.display='none';
+		document.getElementById('DGtimeBar').style.visibility='hidden';
+		document.getElementById('DGtodaysDateString').style.width = '100%';
 
 
 	}else{
-		document.getElementById('timeBar').style.display='block';
-		document.getElementById('timeBar').style.visibility='visible';
-		document.getElementById('hourDropDown').style.top = document.getElementById('calendar_minute_txt').parentNode.offsetHeight + calendarContentDiv.offsetHeight + document.getElementById('topBar').offsetHeight + 'px';
-		document.getElementById('minuteDropDown').style.top = document.getElementById('calendar_minute_txt').parentNode.offsetHeight + calendarContentDiv.offsetHeight + document.getElementById('topBar').offsetHeight + 'px';
-		document.getElementById('minuteDropDown').style.right = '50px';
-		document.getElementById('hourDropDown').style.right = '50px';
-		document.getElementById('todaysDateString').style.width = '115px';
+		document.getElementById('DGtimeBar').style.display='block';
+		document.getElementById('DGtimeBar').style.visibility='visible';
+		document.getElementById('DGhourDropDown').style.top = document.getElementById('DGcalendar_minute_txt').parentNode.offsetHeight + calendarContentDiv.offsetHeight + document.getElementById('DGtopBar').offsetHeight + 'px';
+		document.getElementById('DGminuteDropDown').style.top = document.getElementById('DGcalendar_minute_txt').parentNode.offsetHeight + calendarContentDiv.offsetHeight + document.getElementById('DGtopBar').offsetHeight + 'px';
+		document.getElementById('DGminuteDropDown').style.right = '50px';
+		document.getElementById('DGhourDropDown').style.right = '50px';
+		document.getElementById('DGtodaysDateString').style.width = '115px';
 	}
 }
 
@@ -1389,7 +1420,7 @@ function displayCalendar(inputField,format,buttonObj,displayTime,timeInput)
 			if(hourPos>=0){
 				tmpHour = inputField.value.substr(hourPos,2);
 				currentHour = tmpHour;
-				if(currentHour.length==1) currentHour = '0'
+				if(currentHour.length==1) currentHour = '0';
 			}else{
 				currentHour = '00';
 			}
@@ -1414,15 +1445,17 @@ function displayCalendar(inputField,format,buttonObj,displayTime,timeInput)
 	inputMonth = currentMonth;
 
 
-	if(!calendarDiv){
+	//if(!calendarDiv){
 		initCalendar();
-	}else{
+	/*}else{
+		/*
 		if(calendarDiv.style.display=='block'){
+			//deleteCalendar();
 			closeCalendar();
 			return false;
-		}
-		writeCalendarContent();
-	}
+		}*/
+		/*writeCalendarContent();
+	}*/
 
 
 

@@ -1,0 +1,22 @@
+.bouton_1 {background-color:#757575}
+div#divTitreDoc {background-color:#000000}
+.cliquable,#contBabillard .simpleMessage .cliquable {color:#000000}
+#barreNav a {color:#000000}
+#barreNav a:hover {color:#757575}
+#barreNav >ul >li:hover {background-color:#000000}
+#barreNav >ul >li:hover {color:#757575}
+#ulMeneurs a {color:#757575}
+#ulMeneurs {background-color:#000000}
+#ulMeneurs a:hover {color:#000000}
+#ulMeneurs >li {background-color:#000000}
+#ulMeneurs >li {color:#757575}
+#ulMeneurs >li:hover {background-color:#757575}
+#ulMeneurs >li:hover {color:#000000}
+#ulMeneurs >li.active {background-color:#757575}
+#ulMeneurs >li.active {color:#000000}
+#barreNav ul {background-color:#757575}
+.bg {background-image: url('')}
+.titreOnglet.actif {background-color: #000000color: #757575}
+.titreOnglet.passif {background-color: #757575color: #000000}
+.couleur1 {background-color: #000000}
+td.titreTableau {color: #000000}

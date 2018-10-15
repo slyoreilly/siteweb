@@ -21,48 +21,46 @@ $type = $_POST['typeRecherche'];
 //
 ////////////////////////////////////////////////////////////
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
-	mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+
 
 $ligue = array();
-	$rLigue = mysql_query("SELECT  Ligue.*
+	$rLigue = mysqli_query($conn,"SELECT  Ligue.*
 								FROM Ligue
 								WHERE Nom_Ligue LIKE '%".$search."%'")
-or die(mysql_error()); 
+or die(mysqli_error($conn)); 
 $IL=0;
-	while($rangLigue=mysql_fetch_assoc($rLigue)){
+	while($rangLigue=mysqli_fetch_assoc($rLigue)){
 		$ligue[$IL]['id']=$rangLigue['ID_Ligue'];
 		$ligue[$IL]['nom']=$rangLigue['Nom_Ligue'];
 		$IL++;
 	}
 	
 $joueur = array();
-	$rJoueur = mysql_query("SELECT  TableJoueur.*
+	$rJoueur = mysqli_query($conn,"SELECT  TableJoueur.*
 								FROM TableJoueur
 								WHERE NomJoueur LIKE '%".$search."%'")
-or die(mysql_error()); 
+or die(mysqli_error($conn)); 
 $IJ=0;
-	while($rangLigue=mysql_fetch_assoc($rJoueur)){
+	while($rangLigue=mysqli_fetch_assoc($rJoueur)){
 		$joueur[$IJ]['id']=$rangLigue['joueur_id'];
 		$joueur[$IJ]['nom']=$rangLigue['NomJoueur'];
 		$IJ++;
 	}
 	
-	
-	if(!strcmp($type, $match))
-$match = array();
+	$match = array();
+	if(!strcmp($type, "match")){
+
 	$datedeb = $search." 00:00:00.000";
 	$datefin = $search." 23:59:59.999";
-		$rMatch = mysql_query("SELECT  TableMatch.*, Ligue.Nom_Ligue, TEdom.nom_equipe As eqDom, TEvis.nom_equipe As eqVis
+		$rMatch = mysqli_query($conn,"SELECT  TableMatch.*, Ligue.Nom_Ligue, TEdom.nom_equipe As eqDom, TEvis.nom_equipe As eqVis
 								FROM TableMatch
 								JOIN Ligue
 									ON (TableMatch.ligueRef=Ligue.ID_Ligue)
@@ -75,9 +73,9 @@ $match = array();
 						
 
 								
-or die(mysql_error()); 
+or die(mysqli_error($conn)); 
 $IM=0;
-	while($rangMatch=mysql_fetch_assoc($rMatch)){
+	while($rangMatch=mysqli_fetch_assoc($rMatch)){
 		$match[$IM]['date']=$rangMatch['date'];
 		$match[$IM]['nom']=$rangMatch['Nom_Ligue'];
 		$match[$IM]['matchId']=$rangMatch['matchIdRef'];
@@ -86,7 +84,7 @@ $IM=0;
 				$IM++;
 	}
 	
-	
+	}
 	
 	/*
 $match = array();
@@ -113,6 +111,6 @@ $resultat['match']=$match;
 //$resultat['match']=$match;
 	
 echo json_encode($resultat);
-	
+	mysqli_close($conn);
 
 ?>

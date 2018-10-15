@@ -27,7 +27,7 @@ function loadVideo() {
             break;
         }
     }
-	$('.media-box').find('.play-pause').addClass('play').removeClass('pause');
+	$('.media-box').find('.fa-pause').addClass('fa-play').removeClass('fa-pause');
 
 
 }
@@ -70,7 +70,7 @@ var flag=0;
     					catch(err){};
 						$('.media-box').hide();
 						$( ".play-btn" ).show();
-						$('.play-pause').addClass('play').removeClass('pause');
+						$('.fa-pause').addClass('fa-play').removeClass('fa-pause');
 						
 				});
 		
@@ -84,7 +84,7 @@ var flag=0;
 				var $this = $(this);
 				var $settings = settings;
 				$( "#btn-play-centre" ).hide();
-				$(".play-pause").addClass('pause').removeClass('play');
+				$(".fa-play").addClass('fa-pause').removeClass('fa-play');
 			var $that = $this.parent('.'+$settings.videoClass);
 			if($('.video').length<1){
 				// Wrap the video in a div with the class of your choosing
@@ -96,15 +96,15 @@ var flag=0;
 				// The Structure of our video player
 				if($('.player').length<1){
 				
-				$( '<div class="player">'
-				
-					 + '<div class="time">'
+				$( '<div class="player container">'
+				+'<div class="row h-50">'
+					 + '<div class="time col-3">'
 				         + '<span class="ctime">00:00</span>' 
 				         + '<span class="stime"> / </span>'
 				         + '<span class="ttime">00:00</span>'
 				     + '</div>'		
 					 			
-				     + '<div class="progress">'
+				     + '<div class="progress col-7">'
 						+ '<div class="progress-bar">'
 				         + '<div class="button-holder">'
 				           + '<div class="progress-button">'
@@ -117,31 +117,40 @@ var flag=0;
 				       	+ '</div>'				       
 				     + '</div>'
 					 
-					 + '<span class="site-logo"></span><br><br>'
-					 
-					 + '<div class="play-pause play">'
-				       + '<span class="play-button"></span>'
-				       + '<div class="pause-button"></div>'
+					 + '<div class="site-logo col-2"></div><br><br>'
+					  + '</div>'
+					  
+					  
+					  
+					  
+					  +'<div class="d-flex  h-50 justify-content-around flex-row w-100">'
+					 + '<div class="flex-fill flex-grow-1">'
+					 +'<i class="fas fa-play"></i>'
 				     + '</div>'
+				     + '<div class="flex-fill flex-grow-1">|</div>'
 					 
-					 + '<span class="divider"></span>'
-                     + '<button id="flag-btn" class="flag" title="flag">flag</button>'
-					 + '<div class="flag-modal">'
+					+ '<div class=" flex-fill flex-grow-1">'
+                     + '<i id="flag-btn" class="fas fa-flag" title="flag"></i>'
+                     + '<div class="flag-modal">'
 					 		+ '<span class="top-triangle"></span>'
 							+ '<span class="modal-bg">'
 								+ '<img id="drapeauVert" src="/images/green-flag.png" style="margin: 0 10px 0 0;">'
 								+ '<img id="drapeauRouge" src="/images/red-flag.png">'
 							+ '</span>'
-					 + '</div>'					 
-					 				 
-                     + '<button id="rate-btn" class="rating" title="rating">rate</button>'
-					 + '<div class="rate-modal">'
+					 + '</div>'		
+                     + '</div>'
+					 			 
+					 		+ '<div class=" flex-fill flex-grow-1">'		 
+                     + '<i id="rate-btn" class="fas fa-star" title="rate"></i>'
+                      + '<div class="rate-modal">'
 					 		+ '<span class="top-triangle" style="margin-left:43px;"></span>'
 							+ '<span class="modal-bg"> <div id="rating-star" style="cursor: pointer;"></div> </span>'
 					 + '</div>'		
-					 					 
-                     + '<button id="share-btn" class="sharing" title="sharing">share</button>' 
-					 + '<div class="share-modal">'
+                     + '</div>'
+					
+					 			+ '<div class=" flex-fill flex-grow-1">'		 
+                      + '<i  id="share-btn"  class="fas fa-share-square"  title="sharing"></i>	 '
+                       + '<div class="share-modal">'
 					 		+ '<span class="top-triangle" style="margin: -5px 0 0 59px;"></span>'
 							+ '<span class="modal-bg">'
 								+ '<img id="fbLogo" src="/images/fb-icon.png" style="margin: 0 20px 5px 0;">'
@@ -151,11 +160,14 @@ var flag=0;
 								+ '<a id="downloadLink" href='+'/lookatthis/'+getValue('videofile')+'.mp4'+' download><img id="downloadLogo" src="/images/download-icon.png"></a>'
 							+ '</span>'
 					 + '</div>'	
+                     + '</div>'	
+					 			
+                
 					 					 
-                     + '<span class="divider"></span>'
-					 
-				     + '<div class="volume">'
-				       + '<div class="volume-holder">'
+                     + '<div class="flex-fill flex-grow-1">|</div>'
+					 + '<div class="flex-fill flex-grow-1">'
+				         + '<i class="fas fa-volume-up"></i>'
+				          + '<div class="volume-holder">'
 				         + '<div class="volume-bar-holder">'
 				           + '<div class="volume-bar">'
 				             + '<div class="volume-button-holder">'	
@@ -163,19 +175,24 @@ var flag=0;
 				           + '</div>'
 				         + '</div>'
 				       + '</div>'
-				       + '<div class="volume-icon v-change-0">'
-				         + '<span> </span>'
 				       + '</div>'
+				     
+				       
+				    
+				     + '<div class="flex-fill flex-grow-1 fullscreen"> '
+				       + '<a href="#"> <i class="fas fa-expand"></i></a>'
 				     + '</div>'
-					 
-				     + '<div class="fullscreen"> '
-				       + '<a href="#"> </a>'
-				     + '</div>'
-					 
-					 + '<button id="setting" class="setting" title="setting">setting</button>'
+								 
+					 		+ '<div class=" flex-fill flex-grow-1">'		 
+                    
+					 + '<i id="setting" title="setting" class="fas fa-cog"></i>'
+					 + '</div>'					 
+					
+					  + '</div>'
 					 +'<!--div id="progress"></div-->'
-				   + '</div>').appendTo($('.video'));
-				
+				   + '</div>'
+				  ).appendTo($('.video'));
+				$('i').addClass("text-info");
 				}
 				$('#rating-star').raty();
 				// Width of the video
@@ -327,7 +344,7 @@ var flag=0;
 				$spc.addEventListener('timeupdate', timeUpdate);
 								
 				// When the user clicks play, bind a click event	
-				$('.play-pause , #media-video, .play-btn , .thumbnail-content').off('click').on('click', function(){arreteDemarre();});
+				$('.fa-play,.fa-pause , #media-video, .play-btn , .thumbnail-content').off('click').on('click', function(){arreteDemarre();});
 				//$('#media-video').off('click').on('click', function(){arreteDemarre();});
 				
 				function arreteDemarre(){
@@ -340,7 +357,7 @@ var flag=0;
 					if($playing == false) {
 						$spc.pause();
 						
-						$(".play-pause").addClass('play').removeClass('pause');
+						$(".fa-pause").addClass('fa-play').removeClass('.fa-pause');
 						bufferLength();
 						//$( ".play-btn" ).show();
 						$( "#btn-play-centre" ).show();
@@ -350,7 +367,7 @@ var flag=0;
 						$begin = true;
 						$spc.play();
 						
-						$(".play-pause").addClass('pause').removeClass('play');
+						$(".fa-play").addClass('fa-pause').removeClass('fa-play');
 						
 						$( "#btn-play-centre" ).hide();
 						//$( "#media-play-list" ).hide();
@@ -507,7 +524,7 @@ var flag=0;
 							// And the current time is less than the duration				
 							if(currentTime < $duration) {		
 								// Then the play-pause icon should definitely be a pause button 
-								$that.find('.play-pause').addClass('pause').removeClass('play');
+								$that.find('.fa-play').addClass('fa-pause').removeClass('fa-play');
 							}
 						}
 						
@@ -616,7 +633,7 @@ var flag=0;
 					
 					// If the user is not dragging
 					if($draggingProgress == false) {
-						$that.find('.play-pause').addClass('play').removeClass('pause');
+						$that.find('.fa-pause').addClass('fa-play').removeClass('fa-pause');
 						$( ".play-btn" ).show();
 						$( "#media-play-list" ).show();						
 					}
