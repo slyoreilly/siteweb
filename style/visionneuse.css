@@ -592,6 +592,23 @@ span.thumbnail-content:hover {
 	opacity:1;
 	cursor:pointer;
 }
+.share-modal2 {
+  
+    opacity: 0;
+    float: left;
+    margin: -32px -78px;
+    position: absolute;
+    -webkit-transition: all 1s ease-in-out;
+    -moz-transition: all 1s ease-in-out;
+    -o-transition: all 1s ease-in-out;
+    transition: all 1s ease-in-out;
+}
+
+    .share-modal2:hover {
+      
+        opacity: 1;
+        cursor: pointer;
+    }
 .setting{
 	background-image:url(../images/setting.png);
 	width:21px;

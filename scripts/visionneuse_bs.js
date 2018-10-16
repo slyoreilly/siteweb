@@ -128,9 +128,9 @@ var flag=0;
 					 + '</div>'		
                      + '</div>'
 					
-					 			+ '<div class=" flex-fill flex-grow-1">'		 
+					 			+ '<div id="share-div" class=" flex-fill flex-grow-1">'		 
                       + '<i  id="share-btn"  class="fas fa-share-square"  title="sharing"></i>	 '
-                       + '<div class="share-modal">'
+                       + '<div class="share-modal2">'
 					 		+ '<span class="top-triangle" style="margin: -5px 0 0 59px;"></span>'
 							+ '<span class="modal-bg">'
 								+ '<img id="fbLogo" src="/images/fb-icon.png" style="margin: 0 20px 5px 0;">'
@@ -183,7 +183,12 @@ var flag=0;
 					$('.flag-modal').show();
 				},function(){
 					$('.flag-modal').hide();
-				});
+                    });
+                $('#share-div').hover(function () {
+                    $('.share-modal').show();
+                }, function () {
+                    $('.share-modal').hide();
+                });
 				//$('#rating-star').raty();
 				// Width of the video
 				$videoWidth = $this.width();
