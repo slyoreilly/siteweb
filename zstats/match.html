@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <HTML>
     <HEAD>
         <title>Résultats des matchs</title>
@@ -3201,28 +3201,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 					selectOnglet(parseInt(getValue('onglet')));
 				}
 
-				if (getValue('videofile') != "" && getValue('videofile') != undefined) {
-					if (getValue('but') != "" && getValue('but') != undefined && getValue('vidIndex') != "" && getValue('vidIndex') != undefined) {
-						getInfoVid(getValue('vidIndex'), getValue('but'));
-					} else {
-						/*monOverlay = document.createElement('DIV');
-						monOverlay.id = "ecranSombre";
-						document.getElementsByTagName('BODY')[0].appendChild(monOverlay);*/
-						$('.media-box').show();
-						document.getElementsByTagName('SOURCE')[0].src = "http://5.39.8.14/lookatthis/" + getValue('videofile');
-						document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
-
-					/*	$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
-							"opacity" : "1",
-							"position" : "fixed",
-							"left" : "100px",
-							"top" : "100px",
-							"z-index" : "2000"
-						}));
-*/
-						getInfoVid_videofile(getValue('videofile'));
-					}
-				}
+				
 				construitDialogue("modalCorrectionBut");
                 construitDialogue("modalCorrigePresences");
                 construitDialogue("modalNouveauBut");
@@ -3230,6 +3209,33 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                 construitDialogue("modalNouveauFusillade");
                 construitDialogue("modalEditTirs");
                 construitDialogue("modalVideoBut");
+
+                if (getValue('videofile') != "" && getValue('videofile') != undefined) {
+                    if (getValue('but') != "" && getValue('but') != undefined && getValue('vidIndex') != "" && getValue('vidIndex') != undefined) {
+                        getInfoVid(getValue('vidIndex'), getValue('but'));
+                    } else {
+						/*monOverlay = document.createElement('DIV');
+						monOverlay.id = "ecranSombre";
+						document.getElementsByTagName('BODY')[0].appendChild(monOverlay);*/
+                        construitVid();
+                        $('.media-box').show();
+                        document.getElementsByTagName('SOURCE')[0].src = "http://5.39.8.14/lookatthis/" + getValue('videofile');
+                        document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
+
+                        /*	$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
+                                "opacity" : "1",
+                                "position" : "fixed",
+                                "left" : "100px",
+                                "top" : "100px",
+                                "z-index" : "2000"
+                            }));
+    */
+                        getInfoVid_videofile(getValue('videofile'));
+                    }
+                }
+
+
+
 				$('#modalVideoBut .modal-content').css("background-color","#666").addClass("border border-dark");
 				$('#modalVideoBut .modal-title').addClass("text-info");
                 $('#modalVideoBut .modal-header').addClass("border-0");
