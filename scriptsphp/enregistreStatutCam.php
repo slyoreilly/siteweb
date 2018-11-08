@@ -34,12 +34,19 @@ if (!mysql_select_db($database))
 mysql_query("SET CHARACTER SET 'utf8'");
 
 
+
+$dt = new DateTime("now", new DateTimeZone('America/Toronto'));
+
+$mTemps= $dt->format('Y-m-d H:i:s');
+
 ////////////////////////////
 //
 ///		Chercher la ligne si elle existe.
 ///			La modifier si elle existe
 ///			L'insérer sinon.
 		
+
+
 		
 	
 		echo " - INIT2";
@@ -62,7 +69,7 @@ mysql_query("SET CHARACTER SET 'utf8'");
 			{$tmpSel=mysql_fetch_row($resultSel );
 			
 			if($codeEtat==$tmpSel[0]){
-				$queryMod = "UPDATE StatutCam SET memoire = '{$memoire}', batterie = '{$batterie}',temperature='{$temperature}', dernierMaJ=now(), userId = '{$usager}', arenaId = '{$arenaId}', camId = '{$camId}', codeEtat = '{$codeEtat}'
+				$queryMod = "UPDATE StatutCam SET memoire = '{$memoire}', batterie = '{$batterie}',temperature='{$temperature}', dernierMaJ='{$mTemps}', userId = '{$usager}', arenaId = '{$arenaId}', camId = '{$camId}', codeEtat = '{$codeEtat}'
 					WHERE telId='{$telId}'";
 				mysql_query($queryMod) or die("Erreur: "+$queryMod+"\n"+mysql_error());
 						$message = " - mod1".$queryMod. mysql_error();
@@ -72,8 +79,8 @@ mysql_query("SET CHARACTER SET 'utf8'");
 						
 				}
 				else{
-				$queryMod = "UPDATE StatutCam SET dernierModif = now(), memoire = '{$memoire}', batterie = '{$batterie}'
-				,temperature='{$temperature}', dernierMaJ=now(), userId = '{$usager}', arenaId = '{$arenaId}', camId = '{$camId}', codeEtat = '{$codeEtat}'
+				$queryMod = "UPDATE StatutCam SET dernierModif ='{$mTemps}', memoire = '{$memoire}', batterie = '{$batterie}'
+				,temperature='{$temperature}', dernierMaJ='{$mTemps}', userId = '{$usager}', arenaId = '{$arenaId}', camId = '{$camId}', codeEtat = '{$codeEtat}'
 					WHERE telId='{$telId}'";
 				mysql_query($queryMod) or die("Erreur: "+$queryMod+"\n"+mysql_error());
 						echo " - mod2".$queryMod;
@@ -85,7 +92,7 @@ mysql_query("SET CHARACTER SET 'utf8'");
 			}
 		else {
 			$queryIns = "INSERT INTO StatutCam (userId,dernierModif,dernierMaJ,arenaId,batterie, memoire,temperature, telId, codeEtat, camId) ".
-				"VALUES ('{$usager}',now(),now(),'{$arenaId}','{$batterie}','{$memoire}','{$temperature}','{$telId}','{$codeEtat}','{$camId}')";
+				"VALUES ('{$usager}''{$mTemps}','{$mTemps}','{$arenaId}','{$batterie}','{$memoire}','{$temperature}','{$telId}','{$codeEtat}','{$camId}')";
 		
 			mysql_query($queryIns) or die("Erreur: "+$queryIns+"\n"+mysql_error());
 		$message = " - ins".$queryIns. mysql_error();

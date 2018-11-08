@@ -79,6 +79,10 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 			{
 				$ligue['nomLigue']=$rangeeLigue['Nom_Ligue'];
 				$ligue['ligueId']=$rangeeLigue['ID_Ligue'];
+				$ligue['cleValeur']=$rangeeLigue['cleValeur'];
+				$ligue['horaire']=$rangeeLigue['Horaire'];
+				$ligue['lieu']=$rangeeLigue['Lieu'];
+
 				$ligue['equipe']=array();
 				
 				$c=0;
