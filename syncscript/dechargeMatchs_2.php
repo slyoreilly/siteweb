@@ -158,6 +158,11 @@ foreach ($leMatch as $evenement) {
 		
 		$trouvePun=0;
 
+		$retBut = $evenement['chrono'];
+		// retourner le but, sans correction de chrono.
+
+		if (isset($heure)) {$evenement['chrono'] = $evenement['chrono'] + $heureServeur - $heure;
+		}
 		switch(f_es($evenement['es'])) {
 
 			case 10 :
@@ -201,7 +206,7 @@ foreach ($leMatch as $evenement) {
 				
 				
 				
-				array_push($syncOK, $evenement['chrono']);
+				array_push($syncOK, $retBut);
 				break;
 		}
 				

@@ -230,7 +230,8 @@
 
 				try
 				{
-
+				
+	
 					maPer = new Array();
 					//rJSON.periodes.shift();
 
@@ -243,33 +244,47 @@
 
 					}
 					var Iper = 0;
+				
 					for (var J = 0; J < rJSON.punitions.length; J = J + 1) {
 
 						try {
-							if (rJSON.periodes.length > Iper) {
-								if (parseInt(rJSON.periodes[Iper].chrono) < parseInt(rJSON.punitions[J].chrono)) {
-									//                  maPer = rJSON.periodes.shift();
+						
+						
+							var perStop = false;
+							if (rJSON.periodes.length > 0) {
+							
+				
+								while (Iper < rJSON.periodes.length && !perStop) {
+								if (parseInt(rJSON.periodes[Iper].chrono) <  parseInt(rJSON.punitions[J].chrono)) {
 									maPer = rJSON.periodes[Iper];
+									perStop = ajoutePeriode(document.getElementById('rangeeTitreSommairePunitions').parentNode, rJSON.periodes[Iper].numero);
 									Iper++;
-									//                      rangeePer = $('#rangeeTitreSommairePunitions').parent().append($('<TR></TR>').attr('id', 'tr_' + J));
-									rangeePer = document.createElement('TR');
-									rangeePer.setAttribute('id', 'tr_' + J);
-									amettrePer = document.getElementById('rangeeTitreSommairePunitions');
-									amettrePer.parentNode.appendChild(rangeePer);
-									cPer = document.createElement('TD');
-									cPer.setAttribute("colSpan", "4");
-									cPer.setAttribute("class", "rangeeTitre");
-									tPer = document.createTextNode(window.tl_match_periode + " " + maPer.numero);
-									cPer.appendChild(tPer);
-									rangeePer.appendChild(cPer);
+									
+									if (Iper < rJSON.periodes.length) {
+										if (parseInt(rJSON.periodes[Iper].chrono) > parseInt(rJSON.punitions[J].chrono)) {
+											perStop = true;
+										}
+									} else {
+
+										perStop = true;
+									}									
+									
+								} else {
+									perStop = true;
 								}
+
+							}							
+							
+							
+							
+								
 							}
 						} catch(err) {
 							if (vPerm < 10) {
 								console.log(err);
 								console.log(err.message + " Erreur dans sommaire punition");
 							}
-						}
+							}
 
 						//  if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
 						//rangee = $('#rangeeTitreSommairePunitions').parent().append($('<TR></TR>').attr('id', 'tr_' + J));
@@ -331,6 +346,15 @@
 						}
 
 					}// fin du for des punitions
+					while (Iper < rJSON.periodes.length) {
+						//                  maPer = rSMB.periodes.shift();
+
+						//          console.log(parseInt(rSMB.periodes[Iper].chrono)-parseInt(rSMB.buts[J].chrono)+" , Iper: "+Iper+", J: "+J);
+
+						perStop = ajoutePeriode(document.getElementById('rangeeTitreSommairePunitions').parentNode, rJSON.periodes[Iper].numero);
+						Iper++;
+
+					}
 
 					if (rJSON.punitions.length == 0) {
 						rangee = document.createElement('TR');
@@ -974,16 +998,28 @@ function afficheFusillade(rJSON) {
 						//						try {
 						var perStop = false;
 						if (rSMB.periodes.length > 0) {
-							//if (parseInt(rSMB.periodes[Iper].chrono) < parseInt(rSMB.buts[J].chrono)) {
 							while (Iper < rSMB.periodes.length && !perStop) {
-								//					maPer = rSMB.periodes.shift();
-
-								//			console.log(parseInt(rSMB.periodes[Iper].chrono)-parseInt(rSMB.buts[J].chrono)+" , Iper: "+Iper+", J: "+J);
-
 								if (parseInt(rSMB.periodes[Iper].chrono) < parseInt(rSMB.buts[J].chrono)) {
+									maPer = rSMB.periodes[Iper];
 									perStop = ajoutePeriode(document.getElementById('rangeeTitreSommaireButs').parentNode, rSMB.periodes[Iper].numero);
 									Iper++;
+									
+									if (Iper < rSMB.periodes.length) {
+										if (parseInt(rSMB.periodes[Iper].chrono) > parseInt(rSMB.buts[J].chrono)) {
+										///Cas où le but visé est avant la prochaine période
+											perStop = true;
+										}else{perStop=false;}
+									} else {
+									//inutile
+										perStop = true;
+									}									
+									
 								} else {
+								
+								///Cas où le but visé est après la prochaine période, donc période vide. 
+								if (Iper < rSMB.periodes.length) {
+										perStop = ajoutePeriode(document.getElementById('rangeeTitreSommaireButs').parentNode, rSMB.periodes[Iper].numero+"");}
+										Iper++;
 									perStop = true;
 								}
 
@@ -1143,12 +1179,12 @@ function afficheFusillade(rJSON) {
 						}
 
 					}
-					while (Iper <= rSMB.periodes.length) {
+					while (Iper < rSMB.periodes.length) {
 						//                  maPer = rSMB.periodes.shift();
 
 						//          console.log(parseInt(rSMB.periodes[Iper].chrono)-parseInt(rSMB.buts[J].chrono)+" , Iper: "+Iper+", J: "+J);
 
-						perStop = ajoutePeriode(document.getElementById('rangeeTitreSommaireButs').parentNode, rSMB.periodes[Iper]);
+						perStop = ajoutePeriode(document.getElementById('rangeeTitreSommaireButs').parentNode, rSMB.periodes[Iper].numero);
 						Iper++;
 
 					}
@@ -1236,27 +1272,14 @@ function afficheFusillade(rJSON) {
 					}
 					var Iper = 0;
 					for (var J = 0; J < rSMB.clips.length; J = J + 1) {
-						//                      try {
 						var perStop = false;
 						if (rSMB.periodes.length > 0) {
-							//if (parseInt(rSMB.periodes[Iper].chrono) < parseInt(rSMB.buts[J].chrono)) {
 							while (Iper < rSMB.periodes.length && !perStop) {
-								//                  maPer = rSMB.periodes.shift();
-
-								//   console.log(parseInt(rSMB.periodes[Iper].chrono)-parseInt(rSMB.buts[J].chrono)+" , Iper: "+Iper+", J: "+J);
-
 								if (parseInt(rSMB.periodes[Iper].chrono) < parseInt(rSMB.clips[J].chrono)) {
 									maPer = rSMB.periodes[Iper];
 
 									$('#rangeeTitreHighlights').parent().append($('<TR></TR>').addClass("periode").append($('<TD></TD>').attr("colSpan", "5").addClass("rangeeTitre periode").text(window.tl_match_periode + " " + maPer.numero)));
-									//									amettrePer = document.getElementById('rangeeTitreHighlights');
-									//								amettrePer.parentNode.appendChild(rangeePer);
-									//									cPer = document.createElement('TD');
-									//									cPer.setAttribute("colSpan", "2")
-									//									cPer.setAttribute("class", "rangeeTitre")
-									//									tPer = document.createTextNode();
-									//									cPer.appendChild(tPer);
-									//									rangeePer.appendChild(cPer);
+									
 									Iper++;
 									if (Iper < rSMB.periodes.length) {
 										if (parseInt(rSMB.periodes[Iper].chrono) > parseInt(rSMB.clips[J].chrono)) {
