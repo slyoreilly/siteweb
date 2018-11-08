@@ -47,7 +47,7 @@ function gereLangue() {
 function gereLangue_mob() {
 	langue = (getCookie("langue") == undefined) ? "fr" : getCookie("langue");
 	document.write('<script type="text/javascript" charset="utf-8" src="/scripts/texte_' + langue + '.js"></script>');
-	document.write('<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>');
+    document.write('<script src=""https://code.jquery.com/jquery-3.3.1.js" integrity = "sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin = "anonymous""></script>');
 
 }
 
@@ -90,38 +90,25 @@ console.log("Z");
 		}
 	}
 	
-console.log("N");
-	divLangueSel = $('<select></select>').attr("id", "divLangue").on("change",function() {
-		console.log("P");
-		if ($(this).val() == 'en' && window.langue == "fr") {
-			setCookie("langue", "en", 3000);
-			window.location.reload(true);
-			// Do something for option "b"
-		} else if ($(this).val() == 'fr' && window.langue == "en") {
-			setCookie("langue", "fr", 3000);
-			window.location.reload(true);
-		}
-	});
-console.log("O");
-try{
-$('#divLangue').append($('<option></option>').text("EN").val('en'), $('<option></option>').text("FR").val('fr'));
-}catch(err){console.log(err.message);}
-console.log("Q");
+//console.log("N");
+	
+
+//console.log("Q");
 
 
 
 	divContact = document.createElement('DIV');
 	divContact.innerHTML = "Contact: <a href=\"mailto:info&#64syncstats.com\" class=\"lien\">info" + "@" + "syncstats.com</a>";
-console.log("V "+$('#divTitreDoc').length);
+//console.log("V "+$('#divTitreDoc').length);
 //try{
-console.log("Y");
+//console.log("Y");
 //demandeInfoLigue();
 $('#divTitreDoc').append($("<div></div>").attr('id', 'divBoiteID').addClass("optionHautDroit"));
-console.log("X");
+//console.log("X");
 $('#divBoiteID').append($('<ul></ul>').attr('id', 'menuBoiteID'));
-console.log("W");
+//console.log("W");
 	if (usager1 === undefined || usager1 === null) {
-console.log("R");
+//console.log("R");
 		/*toLog = document.createElement('H2');
 		// toLog.style.width='20%';
 		toLog.id = 'toLog';
@@ -151,30 +138,40 @@ console.log("R");
 			connexion();
 		};*/
 		//toLog.appendChild(lien2);
-		$('#divTitreDoc').append($('<div></div>').attr("id","affUser").addClass("optionHautDroit").css("text-align","right").append(
-			$('<p></p>').attr("id","toLog").css("text-align","right").css("padding","0 2px").append(
+        $('#menuBoiteID').append($('<li></li>')/*.attr("id","affUser").addClass("optionHautDroit").css("text-align","right")*/.append(
+			$('<div></div>').attr("id","toLog").css("text-align","right").css("padding","0 2px").append(
 				$('<a></a>').text(window.tl_general_signin).addClass("cliquable").attr("href",'/zuser/inscription.html'),
 				$('<span></span>').text(" | "),
-				$('<a></a>').text(window.tl_general_login).addClass("cliquable").on("click",function(){connexion(); }),
-				$('#divLangue')				
+                $('<a></a>').text(window.tl_general_login).addClass("cliquable").on("click", function () { connexion(); })
+               
+                /*,
+				$('#divLangue')				*/
 			)
-		));
-		console.log("T");
+        ));
+       
+		//console.log("T");
 		/*affUserJS = document.createElement('div');
 		affUserJS.id = "affUser";
 		affUserJS.textAlign = "right";
 		affUserJS.className = "optionHautDroit";
 		affUserJS.appendChild(toLog);
 		toLog.style.padding = "0 2px";
-		
-		$(toLog).append($('#divLangue'));*/
+		*/
+       // $('#affUser').append($('#divLangue'));
 //$("#affUser"));
 //		divTitre.appendChild(affUserJS);
-console.log("U");
-		$("toLog").prepend($('<div id="divSearch"></div>').hide().append($('<img></img>').attr("src", "/images/icones/delete.png").attr("id", "iconeDelete").css({
-			"width" : "24px",
-			"height" : "24px"
-		}), $('<input></input>').attr("type", "text").attr("id", "editSearch"), $('<i class="fas fa-search"></i>').attr("id", "iconeSearch")));
+        console.log("U");
+        $('#menuBoiteID').prepend($('<li></li>').append(
+       // $('#affUser').prepend(
+            $('<div id="divSearch"></div>').css("float","right").append(
+                $('<img></img>').attr("src", "/images/icones/delete.png").attr("id", "iconeDelete").css({
+			    "width" : "24px",
+			    "height" : "24px"
+                }),
+                $('<input></input>').attr("type", "text").attr("id", "editSearch").hide(),
+                $('<i class="fas fa-search"></i>').attr("id", "iconeSearch"))
+        ));
+        console.log("U2");
 
 		//////////////////////////////////////////
 		////  Boîte de recherche
@@ -245,10 +242,22 @@ console.log("U");
 
 		boiteRecherche();
 
-		$('#menuBoiteID').append($('<li></li>').append($('#divLangue')));
+		
 
 	}// fin du else
-
+    $('#menuBoiteID').append($('<li></li>').append(
+        $("<select></select>").attr("id", "divLangue").on("change", function () {
+            //console.log("P");
+            if ($(this).val() == 'en' && window.langue == "fr") {
+                setCookie("langue", "en", 3000);
+                window.location.reload(true);
+                // Do something for option "b"
+            } else if ($(this).val() == 'fr' && window.langue == "en") {
+                setCookie("langue", "fr", 3000);
+                window.location.reload(true);
+            }
+        }).append($('<option></option>').text("EN").val('en'), $('<option></option>').text("FR").val('fr'))
+    ));
 	genereMenu_dev();
 	//	barreTitreContexte();
 //	afficheLigueId();
@@ -256,9 +265,9 @@ console.log("U");
 
 function boiteRecherche(){
 	$(function() {
-			$('#divSearch').hide();
+            $('#editSearch').hide();
 			$('#iconeSearch').hover(function() {
-				$('#divSearch').show(400);
+                $('#editSearch').show(400);
 				
 			});
 		});

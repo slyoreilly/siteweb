@@ -713,9 +713,44 @@ var flag=0;
 					else{
 					var loc = window.logoOverrideLoc;
 					var t = window.logoOverrideT;
-					}
-					window.open('http://www.facebook.com/sharer.php?u='+encodeURIComponent(loc)+'&t='+encodeURIComponent(t),'sharer','status=0,width=626,height=436, top='+($(window).height()/2 - 225) +', left='+($(window).width()/2 - 313 ) +', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
-					});
+                    }
+                    var mSource = $('#vidPrincId').attr("src");
+                   
+                    var feed = {
+                        method: 'share_open_graph',
+                        href:loc+'?type=video'
+                       /* picture: 'http://www.syncstats.com/images/logoSeul.png',
+                        link: loc,
+                        name: 'SyncStats',
+                        description: 'DESCRIPTION',
+                        source: mSource,
+                        type: 'video',*/
+                    };
+
+                    function callback(response) {
+                        if (response && response.post_id !== undefined) {
+                            alert('published');
+                        }
+                    }
+                     
+                    //FB.ui(feed, callback);
+                    FB.ui({
+                        method: 'share_open_graph',
+                        action_type: 'video.other',
+                        action_properties: JSON.stringify({
+                            object: loc,
+                        })
+                    }, function (response) { });
+
+
+
+
+                 //  window.open('http://www.facebook.com/sharer.php?u=' + encodeURIComponent(mSource) + '&t=' + encodeURIComponent(t), 'sharer', 'status=0,width=626,height=436, top=' + ($(window).height() / 2 - 225) + ', left=' + ($(window).width() / 2 - 313) + ', toolbar=0, location=0, menubar=0, directories=0, scrollbars=0');
+
+
+
+
+                });
 				$('#googleLogo').click(function(e) {
   					 e.preventDefault();  //stop the browser from following
   				 	e.stopPropagation();
