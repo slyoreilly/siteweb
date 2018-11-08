@@ -122,9 +122,9 @@
 				    $('#tabAttribueJoueurs tbody').append(
 				        $('<tr></tr>').append(
 				            $('<th></th>').attr("scope",'row').text(K+1),
-				            $('<td></td>').append(
+				          /*  $('<td></td>').append(
     				             $('<input></input>').attr('type','checkbox')   
-				            ),
+				            ),*/
                             $('<td></td>').addClass("p-3").append(
 				                $('<i class="fa fa-edit m-1"></i>').on("click",{jId:joueurs[K].joueurId},function(event){
 				                    window.location.href = '/admin/entreprofil.html?joueurId=' + event.data.jId + '&ligueId=' + getCookie('ligueId') + '&code=41';
@@ -137,7 +137,7 @@
                             $('<td></td>').text(joueurs[K].position),     
                             $('<td></td>').text(joueurs[K].noJoueur),     
                             $('<td></td>').text(joueurs[K].nomJoueur),     
-                            $('<td></td>').text(joueurs[K].nomEquipe).on("click",{jId:joueurs[K].joueurId,eId:joueurs[K].equipeId},function(event){
+                            $('<td></td>').text(joueurs[K].nomEquipe).css("cursor","pointer").on("click",{jId:joueurs[K].joueurId,eId:joueurs[K].equipeId},function(event){
                                  $(this).text("");
                                 $('#choisisEquipeEnCour').parent().text($('#choisisEquipeEnCour').find(":selected").text());
                                 $('#choisisEquipeEnCour').remove();
@@ -294,7 +294,7 @@ $('#divTitreDoc').prepend(
                     $('<thead></thead>').append(
                         $('<tr></tr>').append(
                             $('<th></th>').attr('scope','col'),
-                            $('<th></th>').attr('scope','col').text("Actions"),
+                           /* $('<th></th>').attr('scope','col').text("Actions"),*/
                             $('<th></th>').attr('scope','col').text("Options"),
                             $('<th></th>').attr('scope','col').addClass("cliquable").text("Position").on("click",function(){
                                 classePosition();
