@@ -267,6 +267,7 @@ function boiteRecherche(){
 	$(function() {
             $('#editSearch').hide();
 			$('#iconeSearch').hover(function() {
+                $('#divSearch').show(400);
                 $('#editSearch').show(400);
 				
 			});
