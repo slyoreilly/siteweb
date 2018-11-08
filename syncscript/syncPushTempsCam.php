@@ -279,8 +279,6 @@ if($IC==0){
 	$mSleep = sleep(5);
 	flush();
 	$cpt = $cpt+5000;
-
-	
 }
 
 //$repSite['IC'] =$IC;
