@@ -374,14 +374,15 @@
 				videNoeud('divCentrale');
 				                        var defP = false;
                         try {
-                            if (window.vecLigue.Ligue.cleValeur.reglements.classement == "lnh2013") {
+                            if (window.vecLigue.Ligue.cleValeur.reglements.classement == "lnh2013"||
+                            window.vecLigue.Ligue.cleValeur.reglements.otl) {
                                 defP = true;
                             }
                         } catch(err) {
                         }
                         var ptsDisc = false;
                         try {
-                            if (window.vecLigue.Ligue.cleValeur.reglements.ptsDisc == "true") {
+                            if (window.vecLigue.Ligue.cleValeur.reglements.ptsDisc == true) {
                                 ptsDisc = true;
                             }
                         } catch(err) {

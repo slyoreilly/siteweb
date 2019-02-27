@@ -14,19 +14,15 @@ $tableUser = 'TableUser';
 $ligueId = $_POST['ligueId'];
 $equipeId = $_POST['equipeId'];
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
-	
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+mysqli_set_charset($conn, "utf8");
 
 $ligueSelect = array();
 $equipeSelect = array();
@@ -37,11 +33,11 @@ $Iligue = 0;
 $Iequipe = 0;
 
 
-				$resultLigue = mysql_query("SELECT * 
+				$resultLigue = mysqli_query($conn,"SELECT * 
 												FROM Ligue 
 													WHERE ID_Ligue={$ligueId}")
-				or die(mysql_error());  
-				while($rangeeLigue=mysql_fetch_array($resultLigue))
+				or die(mysqli_error($conn));  
+				while($rangeeLigue=mysqli_fetch_array($resultLigue))
 					{$nomLigue = $rangeeLigue['Nom_Ligue'];}
 
 	
@@ -66,15 +62,15 @@ $Iequipe = 0;
 				$rangeeEquipe=null;
 				$resultEquipe = NULL;
 				$joueurs = array();
-				$resultEquipe = mysql_query("SELECT * 
+				$resultEquipe = mysqli_query($conn,"SELECT * 
 												FROM {$tableEq} 
 												JOIN abonEquipeLigue
 													ON (TableEquipe.equipe_id=abonEquipeLigue.equipeId)
 													WHERE ligueId={$ligueId} 
 													AND abonEquipeLigue.debutAbon<=NOW()
 													AND abonEquipeLigue.finAbon>=NOW()")// Inclure durée de l'abonnement
-				or die(mysql_error());  
-				while($rangeeEquipe=mysql_fetch_array($resultEquipe))
+				or die(mysqli_error($conn));  
+				while($rangeeEquipe=mysqli_fetch_array($resultEquipe))
 					{
 //					if($rangeeEquipe['ligue_equipe_ref']==$rangeeLigue['ID_Ligue'])
 //						{
@@ -86,17 +82,17 @@ $Iequipe = 0;
 						$maRep['equipe'][$Ieq]['couleur1']=$rangeeEquipe['couleur1'];
 						$maRep['equipe'][$Ieq]['joueur']=array();
 						
-						$resultJoueur = mysql_query("SELECT * 
+						$resultJoueur = mysqli_query($conn,"SELECT * 
 													FROM {$tableJoueur}
 													JOIN abonJoueurEquipe
 														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
 														WHERE equipeId={$rangeeEquipe['equipe_id'] }
 														AND debutAbon<=NOW()
 														AND finAbon>NOW()")
-						or die(mysql_error());  
+						or die(mysqli_error($conn));  
 						$rangeeJoueur=0;
 						$Ij=0;
-						while($rangeeJoueur=mysql_fetch_array($resultJoueur))
+						while($rangeeJoueur=mysqli_fetch_array($resultJoueur))
 							{if($rangeeJoueur['equipeId']==$rangeeEquipe['equipe_id'])
 								{
 								$maRep['equipe'][$Ieq]['joueur'][$Ij]=array();
@@ -136,17 +132,17 @@ $Iequipe = 0;
 						$maRep['equipe'][$Ieq]['logo']="rien";
 						$maRep['equipe'][$Ieq]['couleur1']="CCCCCC";
 						$maRep['equipe'][$Ieq]['joueur']=array();
-						$resultJoueur3 = mysql_query("SELECT * 
+						$resultJoueur3 = mysqli_query($conn,"SELECT * 
 													FROM abonJoueurLigue
 														JOIN TableJoueur
 															ON (TableJoueur.joueur_id=abonJoueurLigue.joueurId)
 																WHERE ligueId={$ligueId}
 																AND debutAbon<=NOW()
 														AND finAbon>NOW()")
-						or die(mysql_error());  
+						or die(mysqli_error($conn));  
 						$rangeeJoueur=0;
 						$Ij=0;
-						while($rangeeJoueur=mysql_fetch_array($resultJoueur3))
+						while($rangeeJoueur=mysqli_fetch_array($resultJoueur3))
 								{
 										if(in_array($rangeeJoueur['joueur_id'],$joueurs)==false)
 										{
@@ -163,12 +159,12 @@ $Iequipe = 0;
 								}//Fin du scan des joueurs
 								
 								
-								$resultJoueur2 = mysql_query("SELECT * 
+								$resultJoueur2 = mysqli_query($conn,"SELECT * 
 													FROM TableJoueur
 																WHERE Ligue={$ligueId}")
-						or die(mysql_error());  
+						or die(mysqli_error($conn));  
 						$rangeeJoueur=0;
-						while($rangeeJoueur=mysql_fetch_array($resultJoueur2))
+						while($rangeeJoueur=mysqli_fetch_array($resultJoueur2))
 								{
 										if(in_array($rangeeJoueur['joueur_id'],$joueurs)==false)
 										{
@@ -190,10 +186,12 @@ $qIndJDom =	"SELECT evalue,AVG(valeur)
 						FROM EvaluationJoueurs
 						 WHERE ligueId=$ligueId
 						 GROUP BY evalue";
-$mEval = mysql_query($qIndJDom)or die(mysql_error().$qIndJDom);	
+$mEval = mysqli_query($conn,$qIndJDom)or die(mysqli_error($conn).$qIndJDom);	
 
 $b=0;
-while($r = mysql_fetch_array($mEval)) {
+$vecEval=Array();
+while($r = mysqli_fetch_array($mEval)) {
+	$vecEval[$b]=Array();
     $vecEval[$b][0] = $r[0];
 	    $vecEval[$b][1] = $r[1];
 	
@@ -264,8 +262,8 @@ unset($vec);
 
 ////////////////////  Reste � faire le mapping des ID de ligue vers des noms0 de ligues.	
 
-
+mysqli_close($conn);
 
 
 ?>
-<?php  ?>
+

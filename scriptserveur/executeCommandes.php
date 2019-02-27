@@ -31,7 +31,7 @@ $retour1 = mysqli_query($conn,"SELECT * FROM TacheShell
 		if(mysqli_num_rows($retour1)>0)			
 		{while($rangee = mysqli_fetch_assoc($retour1)){
 			$ret = shell_exec($rangee['commande']);
-			$nouvEssai= intval($ret['essais'])+1;
+			$nouvEssai= intval($rangee['essais'])+1;
 			mysqli_query($conn,"UPDATE TacheShell SET statut=1, retour='{$ret}', essais='{$nouvEssai}'  WHERE commande = '{$rangee['commande']}'");
 		}
 		

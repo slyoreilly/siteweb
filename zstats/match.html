@@ -24,25 +24,33 @@
  <script type="text/javascript" charset="utf-8">
             gereLangue();
         </script>
-         <script src="/scripts/jquery.mCustomScrollbar.js"></script>
-        <script src="/scripts/visionneuse_bs.js"></script>
-        <script src="/scripts/jquery.raty.js"></script>              
                            
         <script type="text/javascript" charset="utf-8">
          if(getValue('m')!='1'){
-             document.write('<link rel="alternate" media="only screen and (max-width: 800px)" href="https://syncstats.com/mobile/m_match.html">');
+             document.write('<link rel="alternate" media="only screen and (max-width: 800px)" href="http://syncstats.com/mobile/m_match.html">');
         }
              var mUrl="/style/ligues/"+getValue("ligueId")+"/perso.css";
              document.write('<link rel="stylesheet" href='+mUrl+' type="text/css"</link>');
-            </script>
+			</script>
+			         <script src="/scripts/jquery.mCustomScrollbar.js"></script>
+					 <script src="/scripts/visionneuse_bs.js"></script>
+					 <script src="/scripts/jquery.raty.js"></script>              
+			 
              <link rel='stylesheet' type='text/css' href='/style/visionneuse.css' />
         <link rel='stylesheet' type='text/css' href='/style/jquery.raty.css' />
         <link rel="stylesheet" type='text/css' href="/style/jquery.mCustomScrollbar.css">
 
         <script type="text/javascript" charset="utf-8">
 			if (screen.width <= 800 && getValue('m')!=1) {
-				window.location = "https://www.syncstats.com/mobile/m_match.html?match=" + getValue('match');
+				window.location = "http://www.syncstats.com/mobile/m_match.html?match=" + getValue('match');
 			}
+		/*	if(getValue('m')==1){
+				var isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
+				if(isSafari){
+					window.open("http://www.syncstats.com/mobile/m_match.html?match=" + getValue('match'));
+    				}		
+			
+			}*/
 
 			function getJSONJoueursEquipes(equipeId, ligueId)//  Fonction similaire utilisée dans zeroconfig.html
 			{
@@ -796,7 +804,7 @@ function afficheFusillade(rJSON) {
 						
 						$('#adminButsModal .modal-title').text("What do you want to do?");
 						$('#adminButsModal .modal-body').append(
-						    $('<table></table>').attr("id", "tableAdminCams").append(
+						    $('<table></table>').attr("id", "tableAdminCams").append($('<thead></thead>').append(
 						        $('<th></th>').attr("id", "colCam").append(
 						            $('<h3></h3>').text("Cam")), 
 						            $('<th></th>').attr("id", "colAction").append(
@@ -804,8 +812,10 @@ function afficheFusillade(rJSON) {
 						                $('<th></th>').attr("id", "colCondition").append(
 						                    $('<h3></h3>').text("Condition")
 						                    )
+						                    ),
+											$('<tbody></tbody>')
 						                    )
-						                    );
+						);
 						var arrayCam = [];
 						for (var a = 0; a < rJSON_loc.buts.length; a++) {
 							//				console.log("but"+a);
@@ -820,14 +830,16 @@ function afficheFusillade(rJSON) {
 						for (var a = 0; a < arrayCam.length; a++) {
 							//$('<div></div>').attr("id", "ligneCam_" + a).appendTo(dial);
 							$('<tr></tr>').appendTo(
-							    $('#tableAdminCams')).append(
+							    $('#tableAdminCams tbody')).append(
 							        $('<td></td>').text("Camera #" + arrayCam[a]).append(
-							            $('<input></input>').attr("type", "hidden").val(arrayCam[a])), 
-							            $('<td></td>').append($('<select></select>').css("width", "100%").append(
+							            $('<input></input>').attr("type", "hidden").val(arrayCam[a])),
+
+							        $('<td></td>').append($('<select></select>').css("width", "100%").append(
 							                $('<option></option>').val(0).text(window.tl_match_aucun),
 							                $('<option></option>').val(1).text("Open"), 
-							                $('<option></option>').val(2).text("Delete"))), 
-							                $('<td></td>').append($('<select></select>').css("width", "100%").append(
+							                $('<option></option>').val(2).text("Delete"))),
+
+							        $('<td></td>').append($('<select></select>').css("width", "100%").append(
 							                    $('<option></option>').val(0).text("All"), 
 							                    $('<option></option>').val(1).text(infoMatch.equipeNomDom + " only"), 
 							                    $('<option></option>').val(2).text(infoMatch.equipeNomVis + " only"))));
@@ -836,16 +848,17 @@ function afficheFusillade(rJSON) {
 						$('#adminButsModal .modal-footer').append($('<button></button>').attr("type", "button").addClass("btn btn-primary").text("Apply").on("click", function() {
 							for (var a = 0; a < arrayCam.length; a++) {
 								var ind = a + 1;
-								str1 = '#tableAdminCams tr:nth-child(' + ind + ') td:nth-child(' + 2 + ') option:selected';
-								str2 = '#tableAdminCams tr:nth-child(' + ind + ') td:nth-child(' + 3 + ') option:selected';
+								str1 = '#tableAdminCams tr:nth-child(' + ind + ') td:nth-child(' + 2 + ') select option:selected';
+								str2 = '#tableAdminCams tr:nth-child(' + ind + ') td:nth-child(' + 3 + ') select option:selected';
 								var b = $('#tableAdminCams tr:nth-child(' + ind + ') td:nth-child(' + 1 + ') input').val();
+								console.log("Choisi: " +'#tableAdminCams tr:nth-child(' + ind + ') td:nth-child(' + 2 + ') select option:selected'+" , parsée: "+parseInt($(str1).val()));
 								if (parseInt($(str1).val()) == 2) {///  Efface								    
 								    fics = [];
-//console.log(rSMB.buts.length);
+console.log(rSMB.buts.length);
                                     for (var d = 0; d < rSMB.buts.length; d++) {
-//console.log(rSMB.buts[d].video.length);
+console.log(rSMB.buts[d].video.length);
                                         for (var e = 0; e < rSMB.buts[d].video.length; e++) {
-    //                                      console.log(rSMB.buts[d].video[e].cam);
+                                        console.log(rSMB.buts[d].video[e].cam);
                                             if (rSMB.buts[d].video[e].cam == arrayCam[a]) {
                                                 if (parseInt($(str2).val()) == 0)
                                                 {
@@ -893,13 +906,16 @@ function afficheFusillade(rJSON) {
 											if (rSMB.buts[d].video[e].cam == arrayCam[a]) {
 											    if (parseInt($(str2).val()) == 0)
 											    {
-											    fics.push(rSMB.buts[d].video[e].emplacement + "/lookatthis/" + rSMB.buts[d].video[e].fic);
+													place = !strcmp(rSMB.buts[d].video[e].emplacement,"5.39.81.14")?"syncstats.ca":rSMB.buts[d].video[e].emplacement;
+
+											    fics.push(place + "/lookatthis/" + rSMB.buts[d].video[e].fic);
                                                    
 											    }
 											    else {
 											        if(parseInt($(str2).val()) == 1 && rSMB.buts[d].equipe==infoMatch.equipeNomDom ||parseInt($(str2).val()) == 2 && rSMB.buts[d].equipe==infoMatch.equipeNomVis)
 											             {
-                                                        fics.push(rSMB.buts[d].video[e].emplacement + "/lookatthis/" + rSMB.buts[d].video[e].fic);
+															place = !strcmp(rSMB.buts[d].video[e].emplacement,"5.39.81.14")?"syncstats.ca":rSMB.buts[d].video[e].emplacement;
+                                                        fics.push(place + "/lookatthis/" + rSMB.buts[d].video[e].fic);
                                                         }
 											    }  
 
@@ -1018,9 +1034,10 @@ function afficheFusillade(rJSON) {
 								
 								///Cas où le but visé est après la prochaine période, donc période vide. 
 								if (Iper < rSMB.periodes.length) {
-										perStop = ajoutePeriode(document.getElementById('rangeeTitreSommaireButs').parentNode, rSMB.periodes[Iper].numero+"");}
-										Iper++;
+									//	perStop = ajoutePeriode(document.getElementById('rangeeTitreSommaireButs').parentNode, rSMB.periodes[Iper].numero+"");
+									//	Iper++;
 									perStop = true;
+									}
 								}
 
 							}
@@ -1092,11 +1109,12 @@ function afficheFusillade(rJSON) {
 
 							pVids.appendChild(imgVid);
 							//				pVids.innerHTML= " Video Replay ";
-							place = mBut.video[0].emplacement;
+							place = !strcmp(mBut.video[0].emplacement,"5.39.81.14")?"syncstats.ca":mBut.video[0].emplacement;
+
 							if (place == null || !strcmp(place, "")) {
 								place = "syncstats.com";
 							}
-							pVids.id = "http://" + place + "/lookatthis/" + mBut.video[0].fic;
+							pVids.id = "https://" + place + "/lookatthis/" + mBut.video[0].fic;
 							pVids.className = "cliquable";
 							$(pVids).on("click",{mBut:mBut},function(event){
 
@@ -1114,13 +1132,13 @@ function afficheFusillade(rJSON) {
                                     place = event.data.mBut.video[0].emplacement;
                                     if (place == null || !strcmp(place, "")) {
                                         place = "syncstats.com";
-                                        document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + event.data.mBut.video[0].fic;
+                                      //  document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + event.data.mBut.video[0].fic;
 
                                     } else {
-                                        document.getElementsByTagName('SOURCE')[0].src = "http://" + place + "/lookatthis/" + event.data.mBut.video[0].fic;
+                                      //  document.getElementsByTagName('SOURCE')[0].src = "https://" + place + "/lookatthis/" + event.data.mBut.video[0].fic;
                                     }
                                     //console.log(document.getElementsByTagName('SOURCE')[0].src );
-                                    //document.getElementsByTagName('SOURCE')[0].src = "http://"+place+"/lookatthis/" + mBut.video[0].fic;
+                                    //document.getElementsByTagName('SOURCE')[0].src = "https://"+place+"/lookatthis/" + mBut.video[0].fic;
                                     document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
                                     /*$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
                                         "opacity" : "1",
@@ -1359,11 +1377,12 @@ function afficheFusillade(rJSON) {
 												monOverlay.id = "ecranSombre";
 												document.getElementsByTagName('BODY')[0].appendChild(monOverlay);*/
 												$('.media-box').show();
-												place = mBut.video[0].emplacement;
+												place = !strcmp(mBut.video[0].emplacement,"5.39.81.14")?"syncstats.ca":mBut.video[0].emplacement;
+//												place = mBut.video[0].emplacement;
 												if (place == null || !strcmp(place, "")) {
 													place = "syncstats.com";
 												}
-												document.getElementsByTagName('SOURCE')[0].src = "http://" + place + "/lookatthis/" + mBut.video[0].fic;
+												document.getElementsByTagName('SOURCE')[0].src = "https://" + place + "/lookatthis/" + mBut.video[0].fic;
 												document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
 												$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
 													"opacity" : "1",
@@ -1605,11 +1624,11 @@ function afficheFusillade(rJSON) {
 												monOverlay.id = "ecranSombre";
 												document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
 												$('.media-box').show();
-												place = mBut.video[0].emplacement;
+												place = !strcmp(mBut.video[0].emplacement,"5.39.81.14")?"syncstats.ca":mBut.video[0].emplacement;
 												if (place == null || !strcmp(place, "")) {
 													place = "syncstats.com";
 												}
-												document.getElementsByTagName('SOURCE')[0].src = "http://" + place + "/lookatthis/" + mBut.video[0].fic;
+												document.getElementsByTagName('SOURCE')[0].src = "https://" + place + "/lookatthis/" + mBut.video[0].fic;
 												document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
 												/*$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
 													"opacity" : "1",
@@ -2590,24 +2609,24 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 
 			function getInfoVid(vidIndex, mBut) {
 				//console.log("getInfoVid "+videofile);
+				var place = !strcmp(mBut.video[vidIndex].emplacement,"5.39.81.14")?"syncstats.ca":mBut.video[vidIndex].emplacement;
 
-				var place = mBut.video[vidIndex].emplacement;
 				if (place == null || !strcmp(place, "")) {
                                         place = "syncstats.com";
                                        // document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + event.data.mBut.video[0].fic;
 
                                     }
                                      /*else {
-                                        document.getElementsByTagName('SOURCE')[0].src = "http://" + place + "/lookatthis/" + event.data.mBut.video[0].fic;
+                                        document.getElementsByTagName('SOURCE')[0].src = "https://" + place + "/lookatthis/" + event.data.mBut.video[0].fic;
                                     }
                                     //console.log(document.getElementsByTagName('SOURCE')[0].src );
-                                    //document.getElementsByTagName('SOURCE')[0].src = "http://"+place+"/lookatthis/" + mBut.video[0].fic;
+                                    //document.getElementsByTagName('SOURCE')[0].src = "https://"+place+"/lookatthis/" + mBut.video[0].fic;
                                     document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
 */
 				if ((navigator.userAgent.indexOf('iPhone') != -1) || (navigator.userAgent.indexOf('iPod') != -1) || (navigator.userAgent.indexOf('iPad') != -1)) {
 					//console.log($('source').attr('src'));
 
-					document.location = "http://" + place + "/lookatthis/" + mBut.video[vidIndex].fic;
+					document.location = "https://" + place + "/lookatthis/" + mBut.video[vidIndex].fic;
 				}
 				
 				
@@ -2618,41 +2637,22 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 					'playerWidth' : 1,
 					'videoClass' : 'video'
 				});
-				/*mediaPlayer = document.getElementById('media-video');
-				 if (mediaPlayer != null) {
-				 $('.close-btn').click(function() {
-				 $('#ecranSombre').remove();
+				
+				 var url = "/scriptsphp/getVideoUnique.php";
 
-				 mediaPlayer.pause();
-				 try {
-				 mediaPlayer.currentTime = 0;
-				 } catch(err) {
-				 }
-				 $('.media-box').hide();
-				 $(".play-btn").show();
-				 $('.play-pause').addClass('play').removeClass('pause');
 
-				 });
-				 }*/
-
-				var requete_ajax = new XMLHttpRequest();
-				var url = "/scriptsphp/getVideoUnique.php";
-				var pVF = String(mBut.video[vidIndex].fic);
+				 var pVF = String(mBut.video[vidIndex].fic);
 
 				var sVF = pVF.split(".");
 				var strVid = "videofile=" + sVF[0];
-				params = strVid;
-				url = url + "?" + params;
-				requete_ajax.open('POST', url, true);
-				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-				requete_ajax.send(params);
-				if (mBut != undefined && mBut != "") {
-					chargeListeCote(vidIndex, mBut);
-				}
-				requete_ajax.onreadystatechange = function() {
-					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 
-						infoVid = eval('(' + requete_ajax.responseText + ')');
+				 $.ajax({url: url, 
+					type: 'POST',
+					data: strVid,
+					success: function(result){
+   					 
+						infoVid = eval('(' +result + ')');
+						//console.log(result);
 						$('#rateSpan').text("RATING: " + infoVid.eval + " / 5");
 						if(parseInt(infoVid.nbVues)>=5){
                         $('#nbVuesSpan').text("Vue " + infoVid.nbVues + " fois");
@@ -2665,7 +2665,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                                         url : "/scriptsphp/effaceVideo.php",
                                         type : "POST",
                                         data : {
-                                            fic : fic
+                                            fic : event.data.fic
                                         },
                                         dataType : "html",
                                         success : function(response) {
@@ -2682,23 +2682,29 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 								score : evalBut
 							});
 						} else {
+							console.log("pre click Raty");
+							try {
 							$('#rating-star').raty({
 								click : function(score, evt) {
 								    console.log("click Raty");
 									$.post('/scriptsphp/evalueVid.php', {
 										videoId : infoVid.videoId,
 										evalBut : score
-									});
+									},function(result){console.log("resultat eval: "+result)});
 									setCookie('videoId_eval_' + infoVid.videoId, score, 1000);
-								}
-							});
+									}
+								});
+							}
+							catch(err) {
+								console.log("erreur Raty" + err.message);
+							}
 
 						}
 
 						//$('#video-info').append($('<div></div>').text('TEST!'));//.append($('<ins></ins>').addClass('adsbygoogle')));
 						$('#pub-google').append($('<ins></ins>').addClass('adsbygoogle').css("display", "inline-block").css("width", "234px").css("height", "60px").attr("data-ad-slot", "9551625935").attr("data-ad-client", "ca-pub-2263794877114969"));
 
-						//console.log(vidIndex);
+						console.log(vidIndex);
 						vidSuite(vidIndex, mBut);
 						//console.log(vidIndex);
 						try {
@@ -2727,10 +2733,16 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 							});
 						});
 
-					}
-				};
-			}
+  				}});
 
+			
+				if (mBut != undefined && mBut != "") {
+					chargeListeCote(vidIndex, mBut);
+				}
+				
+
+			}
+			
 			function getInfoVid_videofile(videofile) {
 				//console.log("getInfoVid "+videofile);
 
@@ -2799,13 +2811,16 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                             }));
                         }
 						evalBut = getCookie('videoId_eval_' + infoVid.videoId);
+						console.log("evalBut: "+evalBut);
 						if (evalBut != null) {
 							$('#rating-star').raty({
 								score : evalBut
 							});
 						} else {
+							console.log("pre click Raty");
 							$('#rating-star').raty({
 								click : function(score, evt) {
+									console.log("click Raty");
 									$.post('/scriptsphp/evalueVid.php', {
 										videoId : infoVid.videoId,
 										evalBut : score
@@ -2854,15 +2869,17 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 					$('<ul id="play-list"></ul>'));
 
 					for (var a = 0; a < mBut.video.length; a++) {
-						place = mBut.video[a].emplacement;
+						place = !strcmp(mBut.video[a].emplacement,"5.39.81.14")?"syncstats.ca":mBut.video[a].emplacement;
 						if (place == null || !strcmp(place, "")) {
 							place = "syncstats.com";
 						}
-						mVid = "http://" + place + "/lookatthis/" + mBut.video[vidIndex].fic;
+						if(a==vidIndex){
+							mVid = "https://" + place + "/lookatthis/" + mBut.video[vidIndex].fic;
+						}
 						//console.log(vidsAlt.video[a].fic);
 						strThumb = "/images/icones/movie.png";
 						if (mBut.video[a].thumbnail != null) {
-							strThumb = "http://" + place + "/thumbnails/" + mBut.video[a].thumbnail;
+							strThumb = "https://" + place + "/thumbnails/" + mBut.video[a].thumbnail;
 						}
 						$('#play-list').append($('<li></li>').append(
 
@@ -2905,12 +2922,12 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 				$('.erreur').parent().css('background', '#000');
 
 				if (mBut != "") {
+					place = !strcmp(mBut.video[vidIndex].emplacement,"5.39.81.14")?"syncstats.ca":mBut.video[vidIndex].emplacement;
 
-					place = mBut.video[vidIndex].emplacement;
 					if (place == null || !strcmp(place, "")) {
 						place = "syncstats.com";
 					}
-					mVid = "http://" + place + "/lookatthis/" + mBut.video[vidIndex].fic;
+					mVid = "https://" + place + "/lookatthis/" + mBut.video[vidIndex].fic;
 					//titreCam
 					$('#modalVideoBut .modal-title').text("Cam "+mBut.video[vidIndex].cam);
 					
@@ -2969,8 +2986,8 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 					logoOverrideT = "Vidéo";
 
 				} else {
-					place = "5.39.81.14";
-					mVid = "http://" + place + "/lookatthis/" + getValue('videofile');
+					place = "syncstats.ca";
+					mVid = "https://" + place + "/lookatthis/" + getValue('videofile');
 					//console.log(mVid);
 					$('#vidPrincId').attr("src", mVid);
 					$('#parent-erreur').remove();
@@ -3041,7 +3058,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                     id : "media-video",
                     width : "480",
                     height : "320",
-                    preload : "auto",
+                    preload : "none",
                     autoplay : "true"
                 }).append($('<source/>').attr({
                     id : "vidPrincId",
@@ -3190,6 +3207,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                 
 
 				matchID = getValue('match');
+				console.log("Match: "+matchID);
 				vecTab = ['tabResume', 'tabButs', 'tabPun', 'tabStatsDom'/*, 'tabStatsVis'*/];
 				vecNomTab = [window.tl_match_Resume, window.tl_stats_Buts, window.tl_match_Penalites, window.tl_stats_Statistiques/*, window.tl_resultats_Visiteur*/];
 				//			console.log('sti');
@@ -3246,7 +3264,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 						document.getElementsByTagName('BODY')[0].appendChild(monOverlay);*/
                         construitVid();
                         $('.media-box').show();
-                        document.getElementsByTagName('SOURCE')[0].src = "http://5.39.8.14/lookatthis/" + getValue('videofile');
+                        document.getElementsByTagName('SOURCE')[0].src = "https://syncstats.ca/lookatthis/" + getValue('videofile');
                         document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
 
                         /*	$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({

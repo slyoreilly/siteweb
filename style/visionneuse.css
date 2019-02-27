@@ -529,6 +529,9 @@ span.thumbnail-content:hover {
 	opacity:1;
 	cursor:pointer;
 }
+.rating-star{
+	margin-left:-30px;
+}
 .rating{
 	background-image:url(../images/rating.png);
 	height:16px;
@@ -561,7 +564,8 @@ span.thumbnail-content:hover {
     float: left;
     min-width:200px;
     text-align:left;
-    position: absolute;
+	position: absolute;
+	margin: -10px 0 0 -30px
 }
 
 .sharing{
@@ -594,9 +598,9 @@ span.thumbnail-content:hover {
 }
 .share-modal2 {
   
-    opacity: 0;
+	display:none;
     float: left;
-    margin: -32px -78px;
+    margin: -50px -0px;
     position: absolute;
     -webkit-transition: all 1s ease-in-out;
     -moz-transition: all 1s ease-in-out;

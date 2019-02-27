@@ -18,60 +18,60 @@ $arbitreId = $_POST['arbitreId'];
 $ligueId = $_POST['ligueId'];
 $username = $_POST['username'];
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-	die("Can't connect to database");
 
-if (!mysql_select_db($database)) {
-	echo "<h1>Database: {$database}</h1>";
-	echo "<h1>Table: {$table}</h1>";
-	die("Can't select database");
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
 
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+
 
 $retAbon=null;
 
 if ($username != undefined && $username != null) {
-	$retour = mysql_query("SELECT TableArbitre.*, TableUser.*
+	$retour = mysqli_query($conn,"SELECT TableArbitre.*, TableUser.*
 						FROM TableArbitre
 						LEFT JOIN TableUser
 							ON (TableArbitre.userId=TableUser.noCompte)
-						 WHERE TableUser.username='{$username}'") or die(mysql_error());
+						 WHERE TableUser.username='{$username}'") or die(mysqli_error($conn));
 } else {
 
 	if ($arbitreId != undefined && $arbitreId != null) {
 		
 		if ($ligueId != undefined && $ligueId != null) {
-			$retour = mysql_query("SELECT TableArbitre.*, TableUser.*
+			$retour = mysqli_query($conn,"SELECT TableArbitre.*, TableUser.*
 						FROM TableArbitre
 						LEFT JOIN TableUser
 							ON (TableArbitre.userId=TableUser.noCompte)
 						WHERE TableArbitre.arbitreId='{$arbitreId}'
-						") or die(mysql_error());			
+						") or die(mysqli_error($conn));			
 						
-			$retAbon = mysql_query("SELECT abonArbitreLigue.*
+			$retAbon = mysqli_query($conn,"SELECT abonArbitreLigue.*
 						FROM abonArbitreLigue
 						WHERE abonArbitreLigue.ligueId='{$ligueId}'
 						AND abonArbitreLigue.arbitreId='{$arbitreId}'
 						AND debutAbon<=NOW()
-						AND finAbon>Now()") or die(mysql_error());					
+						AND finAbon>Now()") or die(mysqli_error($conn));					
 			
 		}
 		
 		else{
-		$retour = mysql_query("SELECT TableArbitre.*, TableUser.*, abonArbitreLigue.*
+		$retour = mysqli_query($conn,"SELECT TableArbitre.*, TableUser.*, abonArbitreLigue.*
 						FROM TableArbitre
 						LEFT JOIN TableUser
 							ON (TableArbitre.userId=TableUser.noCompte)
 						LEFT JOIN abonArbitreLigue
 							ON (TableArbitre.arbitreId=abonArbitreLigue.arbitreId)
-						 WHERE TableArbitre.arbitreId='{$arbitreId}'") or die(mysql_error());
+						 WHERE TableArbitre.arbitreId='{$arbitreId}'") or die(mysqli_error($conn));
 		}
 	} else {
 
 		if ($ligueId != undefined && $ligueId != null) {
-			$retour = mysql_query("SELECT TableArbitre.*, TableUser.*,abonArbitreLigue.*
+			$retour = mysqli_query($conn,"SELECT TableArbitre.*, TableUser.*,abonArbitreLigue.*
 						FROM TableArbitre
 						LEFT JOIN TableUser
 							ON (TableArbitre.userId=TableUser.noCompte)
@@ -79,20 +79,20 @@ if ($username != undefined && $username != null) {
 							ON (TableArbitre.arbitreId=abonArbitreLigue.arbitreId)
 						WHERE abonArbitreLigue.ligueId='{$ligueId}'
 						AND debutAbon<=NOW()
-						AND finAbon>Now()") or die(mysql_error());
+						AND finAbon>Now()") or die(mysqli_error($conn));
 
 		} else {
-			$retour = mysql_query("SELECT TableArbitre.arbitreId, TableUser.prenom,	TableUser.nom
+			$retour = mysqli_query($conn,"SELECT TableArbitre.arbitreId, TableUser.prenom,	TableUser.nom
 						FROM TableArbitre
 						LEFT JOIN TableUser
 							ON (TableArbitre.userId=TableUser.noCompte)
-						 WHERE 1") or die(mysql_error());
+						 WHERE 1") or die(mysqli_error($conn));
 
 		}
 	}
 }
 $vecMatch = array();
-while ($r = mysql_fetch_assoc($retour)) {
+while ($r = mysqli_fetch_assoc($retour)) {
 	$vecMatch[] = $r;
 }
 $adomper = stripslashes(json_encode($vecMatch));
@@ -101,9 +101,12 @@ $adomper = str_replace('"[', '[', $adomper);
 $adomper = str_replace(']"', ']', $adomper);
 
 $vecAbon= array();
-while ($rAbon = mysql_fetch_assoc($retAbon)) {
-	$vecAbon[] = $rAbon;
+if($retAbon!=null){
+	while ($rAbon = mysqli_fetch_assoc($retAbon)) {
+		$vecAbon[] = $rAbon;
+	}
 }
+
 $adompAbon = stripslashes(json_encode($vecAbon));
 
 $adompAbon = str_replace('"[', '[', $adompAbon);
@@ -116,6 +119,7 @@ else {
 	echo "{\"profil\":".$adomper.",\"abonnements\":".$adompAbon."}";
 }
 
+mysqli_close($conn);
 //		header("HTTP/1.1 200 OK");
 ?>
 

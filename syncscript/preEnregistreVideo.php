@@ -67,7 +67,10 @@ if(!empty($nomFic))
 					$reference=$cv['reference'];
 				}
 			}
-			$esSimple=$params[$a]['video']['esSimple'];
+			$esSimple=null;
+			if(isset($params[$a]['video']['esSimple'])){
+				$esSimple=$params[$a]['video']['esSimple'];
+			}
 			if(file_exists('http://'.$emplacement.'/lookatthis/'.$nomFic))
 			{
 				if($esSimple!=12){
@@ -118,7 +121,7 @@ if(!empty($nomFic))
 		
 		
 		///////  Section Forfait, pas achevé.
-
+/*
 		$qForfait="SELECT cleValeur FROM Ligue 
 			
 			WHERE ID_Ligue='{$rangSel['ligueRef']}'";	
@@ -133,7 +136,7 @@ if(!empty($nomFic))
 		$_SESSION['forfaitId'] = $forfaitId;
 		$_SESSION['nomFichier'] = $nomFic;
 		$_SESSION['ligueId'] = $rangSel['ligueRef'];
-	
+	*/
 		// include 'gestionnaireVideoSJHT.php';
 
 		

@@ -122,7 +122,8 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 
 
 //{
-$qVids = 	"SELECT nomFichier,camId,chrono,eval,nbVues,etat,videoId,emplacement, nomThumbnail  FROM Video  WHERE nomMatch = '{$matchID}'  OR nomMatch = '{$matchPourVideos}' ORDER BY nomMatch, angleOk DESC";
+$qVids = 	"SELECT nomFichier,camId,chrono,eval,nbVues,etat,videoId,emplacement, nomThumbnail 
+ FROM Video  WHERE nomMatch = '{$matchID}'  OR nomMatch = '{$matchPourVideos}' ORDER BY nomMatch, angleOk DESC";
 $resultVids = mysqli_query($conn, $qVids)
 or die(mysqli_error($conn).$qVids);  	
 $mesVids=array();
@@ -204,7 +205,8 @@ while($rangeeClips=mysqli_fetch_array($resultClips))
 			}
 		
 $JSONstring .= "\"clips\": ".json_encode($clips).",";
-$qEv="SELECT TableEvenement0.*,TableJoueur.* FROM TableEvenement0 JOIN TableJoueur ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id) WHERE match_event_id = '{$matchID}' AND code = 0 ORDER BY chrono";
+$qEv="SELECT TableEvenement0.*,TableJoueur.* FROM TableEvenement0 JOIN TableJoueur
+ ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id) WHERE match_event_id = '{$matchID}' AND code = 0 ORDER BY chrono";
 $JSONstring .="\"qEv\": \"".$qEv."\",";
 $resultEvent = mysqli_query($conn,$qEv) or die(mysqli_error($conn));  	
 

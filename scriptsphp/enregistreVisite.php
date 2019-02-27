@@ -15,26 +15,23 @@ $location = $_POST['location'];
 $referrer = $_POST['referrer'];
 
 
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
+
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
-	mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
 
 if($usager!=""){
-$resultUser = mysql_query("SELECT noCompte FROM TableUser where username='$usager'")
-or die(mysql_error());  
-$rangUser=mysql_num_rows($resultUser);
+$resultUser = mysqli_query($conn,"SELECT noCompte FROM TableUser where username='$usager'")
+or die(mysqli_error($conn));  
+$rangUser=mysqli_num_rows($resultUser);
 if($rangUser>0)
-{$tmpUsr=mysql_fetch_row($resultUser);
+{$tmpUsr=mysqli_fetch_row($resultUser);
 $userId=$tmpUsr[0];}
 else {
 	
@@ -49,16 +46,16 @@ $userId=0;
 if($fakeId==""){
 	$qMaxFake = "SELECT MAX(fakeId) FROM Visites"; 
 	 
-$resMaxFake = mysql_query($qMaxFake) or die(mysql_error());
-$tmpMax=mysql_fetch_row($resMaxFake);
+$resMaxFake = mysqli_query($conn, $qMaxFake) or die(mysqli_error($conn));
+$tmpMax=mysqli_fetch_row($resMaxFake);
 $fakeId=$tmpMax[0]+1;
 }
 	
 	
 		$query = "INSERT INTO Visites (userId,fakeId,ligueId,location,referrer,date) ".
 		"VALUES ('{$userId}','{$fakeId}','{$ligueId}','{$location}','{$referrer}','{$heure}')";
-		mysql_query($query) or die("Erreur: "+$query+"\n"+mysql_error());
+		mysqli_query($conn, $query) or die("Erreur: "+$query+"\n"+mysqli_error($conn));
 		
 		echo $fakeId;
-	mysql_close();
+	mysqli_close($conn);
 ?>

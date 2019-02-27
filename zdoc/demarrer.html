@@ -23,6 +23,10 @@ font-size:small;
 	color:#555;
 }
 
+#divCentrale p{
+	margin: 0 5% ;
+}
+
 
 h2 {
 	font-weight:italic;
@@ -37,6 +41,36 @@ font-size:95%;
 	
 }
 
+.note{
+	background-color: #99BBFF;
+	margin:20px 10% ;
+	text-align: center;
+	border-style:solid;
+}
+.astuce{
+	background-color: #AAFFBB;
+	text-align: center;
+	margin:20px 10%;
+	border-style:solid;
+
+}
+
+
+
+#divCentrale table{
+	margin:20px 10%;
+}
+
+#divGauche{
+    width: 20%;
+    height: 1000px;
+    overflow-y: scroll;
+    overflow-x:hidden;
+}
+#divCentrale{
+	max-width:80%;
+}
+
 </style>
 		<script type="text/javascript" charset="utf-8">
 function gereAffichage() {
@@ -44,60 +78,72 @@ function gereAffichage() {
 
 			vecSujet = ["Site Web", "App Mobile SyncStats", "App Mobile SyncCam"];
 
+			$('#divGauche').append($('<ul></ul>').append(
+				$('<li></li>').append($('<h2></h2>').text("Guides")).append(
+					$('<ul></ul>').append(
+						$('<li></li>').attr("id","demarrage").append($('<h3></h3>').text("Démarrage")),
+						$('<li></li>').attr("id","prepMatch").append($('<h3></h3>').text("Préparer un match")),
+						$('<li></li>').attr("id","jouerMatch").append($('<h3></h3>').text("Jouer un match")),
+						$('<li></li>').attr("id","corriger").append($('<h3></h3>').text("Corriger")),
+						$('<li></li>').attr("id","guideSimple").append($('<h3></h3>').text("Guide simplifié pour arbitre"))
+						)
+				),
+				$('<li></li>').append($('<h2></h2>').text("Dépannage")).append(
+					$('<ul></ul>').append(
+						$('<li></li>').attr("id","butsManquants").append($('<h3></h3>').text("Buts manquants")),
+						$('<li></li>').attr("id","videosManquants").append($('<h3></h3>').text("Vidéos manquants"))
+						)
+				),
+				$('<li></li>').append($('<h2></h2>').text("Références")).append(
+					$('<ul></ul>').append(
+						$('<li></li>').attr("id","siteWeb").append($('<h3></h3>').text("Site web")),
+						$('<li></li>').attr("id","appSyncstats").append($('<h3></h3>').text("App mobile SyncStats")),
+						$('<li></li>').attr("id","appSynccam").append($('<h3></h3>').text("App mobile SyncCam"))
+						)
+				),
+				$('<li></li>').append($('<h2></h2>').text("Bonnes Pratiques")).append(
+					$('<ul></ul>').append(
+						$('<li></li>').attr("id","arbitreTelephone").append($('<h3></h3>').text("L'arbitre et le téléphone")),
+						$('<li></li>').attr("id","configurerFacilement").append($('<h3></h3>').text("Configurer facilement"))
+						)
+				),
+				$('<li></li>').append($('<h2></h2>').text("Présentations"))));
+
 			for (var a = 0; a < vecSujet.length; a++) {
 				divSai = document.createElement('Div');
-				divSai.className = 'repliable';
+				divSai.className = 'repliable sujet';
 				divSai.id = 'sujet_' + a;
 				tDivSai = document.createElement('h3');
 				tDivSai.innerHTML = vecSujet[a];
-				btnExpSai = document.createElement('DIV');
-				btnExpSai.className = 'lien btnExp';
-				btnExpSai.innerHTML = '[-]';
-				btnExpSai.id = 'btnSujet_' + a;
+				//btnExpSai = document.createElement('DIV');
+				//btnExpSai.className = 'lien btnExp';
+				//btnExpSai.innerHTML = '[-]';
+				//btnExpSai.id = 'btnSujet_' + a;
 				
 				corps = document.createElement('Div');
-		//		corps.className = 'corps cache';
+				//		corps.className = 'corps cache';
 				corps.id = 'corpsSujet_' + a;
 
 				parent.appendChild(divSai);
-				divSai.appendChild(btnExpSai);
+				//divSai.appendChild(btnExpSai);
 				divSai.appendChild(tDivSai);
-				$(btnExpSai).css('float','left').css('padding-right','20px');
+				//$(btnExpSai).css('float','left').css('padding-right','20px');
 				
 				
 				$(divSai).append($('#corpsSujet_'+a));
 				
-				$('#corpsSujet_'+a +' > h2').before($('<DIV></DIV>').addClass('lien btnExp').text('[+]').css('float','left').css('padding-right','20px').css('padding-left','20px'));
-				
-				
-				
-
-
+				//$('#corpsSujet_'+a +' > h2').before($('<DIV></DIV>').addClass('lien btnExp').text('[+]').css('float','left').css('padding-right','20px').css('padding-left','20px'));
+				$(divSai).hide();
 			}// Fin du for des repliables
-
+/*
 			$("#divCentrale > div:nth-child(1) > .tabs h2").eq(0).after($("<div></div>").css('padding-left','80px').append($("<a></a>").attr("href","preparerMatch.pdf").text("Download")).append($("<span></span>").text(" | ")).append($("<a></a>").attr("href","https://youtu.be/Gp1BidfBWC4").text("Video")));
 			$("#divCentrale > div:nth-child(1) > .tabs h2").eq(1).after($("<div></div>").css('padding-left','80px').append($("<a></a>").attr("href","preparerMatch.pdf").text("Download")).append($("<span></span>").text(" | ")).append($("<a></a>").attr("href","https://youtu.be/Gp1BidfBWC4").text("Video")));
 			$("#divCentrale > div:nth-child(1) > .tabs h2").eq(2).after($("<div></div>").css('padding-left','80px').append($("<a></a>").attr("href","preparerMatch.pdf").text("Download")).append($("<span></span>").text(" | ")).append($("<a></a>").attr("href","https://youtu.be/Gp1BidfBWC4").text("Video")));
 			$("#divCentrale > div:nth-child(1) > .tabs h2").eq(3).after($("<div></div>").css('padding-left','80px').append($("<a></a>").attr("href","https://youtu.be/5pgxf0BJJ_0").text("Video")));
-
-
-
-//
-
-
-								//$(".repliable h3").next().hide();
-				/*$(".repliable h3").prev().click(function(event){
-					$(event.target).next().next().slideToggle(200);
-					iH=event.target.innerHTML;
-					if(iH=='[+]')
-					{event.target.innerHTML='[-]';}
-					else
-					{event.target.innerHTML='[+]';}
-					});
 */
 
-								$("section").hide();
-				$(".btnExp").click(function(event){
+							//	$("section").hide();
+				/*$(".btnExp").click(function(event){
 					if($(event.target).siblings("h3")>0){
 					$(event.target).nextUntil(".tabs").next().slideToggle(200);
 					} else{
@@ -109,7 +155,7 @@ function gereAffichage() {
 					{event.target.innerHTML='[-]';}
 					else
 					{event.target.innerHTML='[+]';}
-					});
+					});*/
 				$("h3").css("fontSize","large");
 				$("h2").css("fontSize","medium");
 					$("h2").parent().css("padding-top","10px");
@@ -118,8 +164,7 @@ function gereAffichage() {
 					$("h2").parent().children().css("padding-top","3px");
 					$("h2").css("margin-top","0px");
 					$("h2").css("margin-bottom","0px");
-			  
-				}
+		}
 
 		</script>
 
@@ -132,8 +177,67 @@ function gereAffichage() {
 
 
  <DIV ID="divCentrale" >
+		<div class="tabs" id="sec_demarrage">Section à venir</DIV>
+			<div class="tabs" id="sec_prepMatch">Section à venir</DIV>
+				<div class="tabs" id="sec_jouerMatch">Section à venir</DIV>
+					<div class="tabs" id="sec_guideSimple">Section à venir</DIV>
+						<div class="tabs" id="sec_butsManquants">Section à venir</DIV>
+							<div class="tabs" id="sec_videosManquants">Section à venir</DIV>
+								<div class="tabs" id="sec_appSynccam">Section à venir</DIV>
+									<div class="tabs" id="sec_arbitreTelephone">Section à venir</DIV>
+										<div class="tabs" id="sec_configurerFacilement">Section à venir</DIV>
+				
+						<div class="tabs" id="sec_corriger">
+			<h2>Réajuster le temps d\'une vidéo</h2>
+			<p>
+				Si, pour une raison ou une autre, le vidéo sur le site web est mal synchronisé, i.e. qu’on voit une séquence pleine longueur, mais la video ne montre pas de but, il est possible d’ajuster.
+			</p>
+				<div class="note">
+					<h3>Note</h3>
+					<p>
+						Pour pouvoir savoir de combien de temps reculer (ou avancer) le video, on doit avoir des indices! En général, si l’on voit la mise en jeu suivant le but ou quelque chose semblable, on peut savoir environ de combien de temps reculer le video. Si l’on n’a aucun repère,on doit alors visionner le film et calculer de combien de seconde l’on doit déplacer le video. Beaucoup plus compliqué…
+					</p>
+				</div>	
+<p>
+	Aller sur le site web et trouver la bonne séquence (bon but, bonne caméra). 
+</p>
+<p><img src="/zdoc/video_corriger1.png"/>
+</p>
+<p>Sur le video, faites clique droit, « Enregistrer le video sous » (peut varier, selon Mac ou Win, anglais ou français, etc.) Notez le nom du fichier video.
+</p>
+<p><img src="/zdoc/video_corriger4.png"/>
+</p>
+<div class="astuce">
+	<h3>Astuce</h3>
+	<p>
+		Pour pouvoir savoir de combien de temps reculer (ou avancer) le video, on doit avoir des indices! En général, si l’on voit la mise en jeu suivant le but ou quelque chose semblable, on peut savoir environ de combien de temps reculer le video. Si l’on n’a aucun repère,on doit alors visionner le film et calculer de combien de seconde l’on doit déplacer le video. Beaucoup plus compliqué…
+	</p>
+</div>		
 
-<div class="tabs" id="corpsSujet_0">
+<p>Allez ensuite sur la bonne camera (dans l’exemple, la « 58 »). Allez dans « Videos d’un match », puis aller au match souhaité. Vous voyez la liste des videos. Si vous appuyez 2 secondes sur l’un d’eux, un dialogue affiche « Que vouslez-vous faire de 155XXXXXXXXX_YY.mp4? ». Si ce nom de fichier correspond à celui que vous avez notez, vous êtes à la bonne place. Sinon, essayer un autre vidéo.</p>
+<table>
+	<tr>
+		<td>
+				<img src="/zdoc/video_corriger2.png"/>
+			</td>	
+			<td>
+					<img src="/zdoc/video_corriger3.png"/>
+				</td>	
+		</tr>
+</table>
+<p>
+		Prenez l’option « Recut » et entrer le nombre de secondes que vous voulez reculer. Si sur la séquence initiale le but venait tout juste de se produire (la grande majorité des cas), entrer le nombre de seconde (par exemple « 30 » pour 30 secondes). Si par contre le but ne s’était pas encore produit, ou vous souhaitez voir plus de célébration et moins de préparation de but, mettez un signe négatif devant (par exemple « -10 » pour 10 secondes).
+	</p>
+	<p>
+				Appuyez sur la flèche verte de synchronisation.
+			</p>
+			<p>
+						Vous voudrez ensuite allez voir en ligne si le video a été correctement mise à jour. Cependant, votre navigateur aura en mémoire le video initial que vous aviez téléchargé. Vous devrez force votre navigateur à le mettre à jour. Vous pouvez vider le cache ou encore (c’est ce que je préfère faire) télécharger le video sur votre bureau. Il ira alors chercher la dernière version. 
+</p>
+
+		
+	</DIV>
+	<div class="tabs" id="sec_siteWeb">
 				<h2><a href="#tabSWInsc" id="CS0aTab1"></a></h2>
 				<section id="tabSWInsc">
 					
@@ -180,9 +284,9 @@ function gereAffichage() {
 				<section id="tabSWGerer">
 				
 				</section>
-			</div>
+		</div>
 
-			<div class="tabs" id="corpsSujet_1">
+		<div class="tabs" id="sec_appSyncstats">
 				<h2><a href="#tabDocInsc" id="aTab1"></a></h2>
 				<section id="tabDocInsc">
 					
@@ -260,7 +364,7 @@ function gereAffichage() {
 				<div id="divDroite"></div>
 		<script type="text/javascript" charset="utf-8">
 				 		developper(19);
-				 		detruitDivGauche();
+				 		//detruitDivGauche();
 				 			
 		////////////////// Section Site Web		 			
 				 			
@@ -418,8 +522,20 @@ function gereAffichage() {
 			ulol3.appendChild(ulol3li3);
 
 			gereAffichage();
-
+			$('#divCentrale .tabs').hide();
 			
 		</script>
 </body>
 </html>
+
+<script type="text/javascript" charset="utf-8">
+//$('#divGauche').parent().append($('<iframe></iframe>').append($('#divGauche')));
+$('#divGauche li ul li').on("click",function(event){
+//	console.log(event.data.idclick);
+//	console.log($(this).attr('id'));
+	$('#divCentrale .tabs').hide();
+	$('#sec_'+$(this).attr('id')).show();
+//	$('#sec_'+$(this).attr('id') +' section').show();
+	}
+	);
+</script>

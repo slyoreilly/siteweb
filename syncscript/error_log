@@ -1,0 +1,85 @@
+[31-Jan-2019 10:20:04 America/Denver] PHP Warning:  json_decode() expects parameter 1 to be string, array given in /home1/syncsta1/public_html/syncscript/dechargeMatchs_2.php on line 550
+[31-Jan-2019 10:20:32 America/Denver] PHP Warning:  json_decode() expects parameter 1 to be string, array given in /home1/syncsta1/public_html/syncscript/dechargeMatchs_2.php on line 550
+[31-Jan-2019 14:57:59 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[31-Jan-2019 14:58:00 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[31-Jan-2019 14:58:01 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/syncInfoComptes.php on line 44
+[31-Jan-2019 14:58:01 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/traiteSync.php on line 98
+[31-Jan-2019 14:58:02 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[31-Jan-2019 14:58:03 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[31-Jan-2019 14:58:04 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[31-Jan-2019 14:58:05 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[31-Jan-2019 14:58:05 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/syncInfoComptes.php on line 44
+[31-Jan-2019 14:58:06 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/traiteSync.php on line 98
+[31-Jan-2019 17:46:47 America/Denver] PHP Notice:  Undefined variable: vielledateMAV in /home1/syncsta1/public_html/syncscript/dechargeMAV.php on line 16
+[31-Jan-2019 17:46:47 America/Denver] PHP Notice:  Undefined property: stdClass::$dernierMAJ in /home1/syncsta1/public_html/syncscript/traiteSync.php on line 294
+[31-Jan-2019 20:14:58 America/Denver] PHP Notice:  Undefined variable: vielledateMAV in /home1/syncsta1/public_html/syncscript/dechargeMAV.php on line 16
+[01-Feb-2019 02:58:20 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[01-Feb-2019 02:58:21 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[01-Feb-2019 02:58:21 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/syncInfoComptes.php on line 44
+[01-Feb-2019 02:58:22 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/traiteSync.php on line 98
+[01-Feb-2019 02:58:23 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[01-Feb-2019 02:58:25 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[01-Feb-2019 02:58:27 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[01-Feb-2019 02:58:27 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[01-Feb-2019 02:58:28 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/syncInfoComptes.php on line 44
+[01-Feb-2019 02:58:28 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/traiteSync.php on line 98
+[01-Feb-2019 11:09:59 America/Denver] PHP Notice:  Undefined variable: vielledateMAV in /home1/syncsta1/public_html/syncscript/dechargeMAV.php on line 16
+[01-Feb-2019 14:58:42 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[01-Feb-2019 14:58:43 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[01-Feb-2019 14:58:44 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/syncInfoComptes.php on line 44
+[01-Feb-2019 14:58:44 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/traiteSync.php on line 98
+[01-Feb-2019 14:58:45 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[01-Feb-2019 14:58:46 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[01-Feb-2019 14:58:48 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[01-Feb-2019 14:58:49 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[01-Feb-2019 14:58:49 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/syncInfoComptes.php on line 44
+[01-Feb-2019 14:58:50 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/traiteSync.php on line 98
+[01-Feb-2019 16:49:16 America/Denver] PHP Warning:  json_decode() expects parameter 1 to be string, array given in /home1/syncsta1/public_html/syncscript/dechargeMatchs_2.php on line 550
+[01-Feb-2019 16:49:26 America/Denver] PHP Warning:  json_decode() expects parameter 1 to be string, array given in /home1/syncsta1/public_html/syncscript/dechargeMatchs_2.php on line 550
+[01-Feb-2019 16:49:39 America/Denver] PHP Warning:  json_decode() expects parameter 1 to be string, array given in /home1/syncsta1/public_html/syncscript/dechargeMatchs_2.php on line 550
+[01-Feb-2019 16:49:58 America/Denver] PHP Warning:  json_decode() expects parameter 1 to be string, array given in /home1/syncsta1/public_html/syncscript/dechargeMatchs_2.php on line 550
+[02-Feb-2019 02:59:01 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[02-Feb-2019 02:59:02 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[02-Feb-2019 02:59:02 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/syncInfoComptes.php on line 44
+[02-Feb-2019 02:59:03 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/traiteSync.php on line 98
+[02-Feb-2019 02:59:04 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[02-Feb-2019 02:59:05 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[02-Feb-2019 02:59:08 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[02-Feb-2019 02:59:08 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[02-Feb-2019 02:59:09 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/syncInfoComptes.php on line 44
+[02-Feb-2019 02:59:10 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/traiteSync.php on line 98
+[02-Feb-2019 14:59:11 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[02-Feb-2019 14:59:13 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[02-Feb-2019 14:59:13 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/syncInfoComptes.php on line 44
+[02-Feb-2019 14:59:14 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/traiteSync.php on line 98
+[02-Feb-2019 14:59:15 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[02-Feb-2019 14:59:16 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[02-Feb-2019 14:59:17 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[02-Feb-2019 14:59:18 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[02-Feb-2019 14:59:18 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/syncInfoComptes.php on line 44
+[02-Feb-2019 14:59:20 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/traiteSync.php on line 98
+[03-Feb-2019 03:00:47 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[03-Feb-2019 03:00:48 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[03-Feb-2019 03:00:49 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/syncInfoComptes.php on line 44
+[03-Feb-2019 03:00:50 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/traiteSync.php on line 98
+[03-Feb-2019 03:00:50 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[03-Feb-2019 03:00:52 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[03-Feb-2019 03:00:53 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[03-Feb-2019 03:00:54 America/Denver] PHP Notice:  Undefined index: telId in /home1/syncsta1/public_html/syncscript/monitoringUpload.php on line 19
+[03-Feb-2019 03:00:54 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/syncInfoComptes.php on line 44
+[03-Feb-2019 03:00:55 America/Denver] PHP Notice:  Undefined variable: userSelect in /home1/syncsta1/public_html/syncscript/traiteSync.php on line 98
+[03-Feb-2019 12:29:53 America/Denver] PHP Notice:  Undefined variable: vielledateMAV in /home1/syncsta1/public_html/syncscript/dechargeMAV.php on line 16
+[03-Feb-2019 12:31:32 America/Denver] PHP Notice:  Undefined variable: vielledateMAV in /home1/syncsta1/public_html/syncscript/dechargeMAV.php on line 16
+[03-Feb-2019 12:31:33 America/Denver] PHP Notice:  Undefined property: stdClass::$dernierMAJ in /home1/syncsta1/public_html/syncscript/traiteSync.php on line 294
+[03-Feb-2019 12:38:39 America/Denver] PHP Notice:  Undefined variable: vielledateMAV in /home1/syncsta1/public_html/syncscript/dechargeMAV.php on line 16
+[03-Feb-2019 12:38:39 America/Denver] PHP Notice:  Undefined property: stdClass::$dernierMAJ in /home1/syncsta1/public_html/syncscript/traiteSync.php on line 294
+[05-Feb-2019 14:27:36 America/Denver] PHP Warning:  json_decode() expects parameter 1 to be string, array given in /home1/syncsta1/public_html/syncscript/dechargeMatchs_2.php on line 550
+[05-Feb-2019 16:22:46 America/Denver] PHP Warning:  json_decode() expects parameter 1 to be string, array given in /home1/syncsta1/public_html/syncscript/dechargeMatchs_2.php on line 550
+[05-Feb-2019 17:09:10 America/Denver] PHP Notice:  Undefined variable: vielledateMAV in /home1/syncsta1/public_html/syncscript/dechargeMAV.php on line 16
+[05-Feb-2019 17:37:00 America/Denver] PHP Notice:  Undefined variable: vielledateMAV in /home1/syncsta1/public_html/syncscript/dechargeMAV.php on line 16
+[05-Feb-2019 17:38:33 America/Denver] PHP Notice:  Undefined variable: vielledateMAV in /home1/syncsta1/public_html/syncscript/dechargeMAV.php on line 16
+[05-Feb-2019 21:36:03 America/Denver] PHP Warning:  json_decode() expects parameter 1 to be string, array given in /home1/syncsta1/public_html/syncscript/dechargeMatchs_2.php on line 550
+[05-Feb-2019 21:36:21 America/Denver] PHP Warning:  json_decode() expects parameter 1 to be string, array given in /home1/syncsta1/public_html/syncscript/dechargeMatchs_2.php on line 550
+[05-Feb-2019 21:36:47 America/Denver] PHP Warning:  json_decode() expects parameter 1 to be string, array given in /home1/syncsta1/public_html/syncscript/dechargeMatchs_2.php on line 550
+[05-Feb-2019 21:37:21 America/Denver] PHP Warning:  json_decode() expects parameter 1 to be string, array given in /home1/syncsta1/public_html/syncscript/dechargeMatchs_2.php on line 550
+[05-Feb-2019 21:37:58 America/Denver] PHP Warning:  json_decode() expects parameter 1 to be string, array given in /home1/syncsta1/public_html/syncscript/dechargeMatchs_2.php on line 550

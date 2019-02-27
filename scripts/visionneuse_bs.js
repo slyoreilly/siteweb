@@ -124,7 +124,7 @@ var flag=0;
                      + '<i id="rate-btn" class="fas fa-star" title="rate"></i>'
                       + '<div class="rate-modal2">'
 					 		
-							+ '<span class="bg-dark"> <div id="rating-star" style="cursor: pointer;"></div> </span>'
+							+ '<div id="rating-star" style="cursor: pointer;"></div>'
 					 + '</div>'		
                      + '</div>'
 					
@@ -174,8 +174,11 @@ var flag=0;
 				  ).appendTo($('.video'));
 				$('i').addClass("text-info");
 				}
-				$('#rate-div').hover(function(){
+				$('#rate-btn').hover(function(){
 					$('.rate-modal2').show();
+				},function(){
+				});
+				$('.rate-modal2').hover(function(){
 				},function(){
 					$('.rate-modal2').hide();
 				});
@@ -184,10 +187,15 @@ var flag=0;
 				},function(){
 					$('.flag-modal').hide();
                     });
-                $('#share-div').hover(function () {
-                    $('.share-modal').show();
+                $('#share-btn').hover(function () {
+                    $('.share-modal2').show();
                 }, function () {
-                    $('.share-modal').hide();
+                   
+				});
+				$('.share-modal2').hover(function () {
+                    
+                }, function () {
+                    $('.share-modal2').hide();
                 });
 				//$('#rating-star').raty();
 				// Width of the video

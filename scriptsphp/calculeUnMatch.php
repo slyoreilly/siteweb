@@ -58,9 +58,9 @@ $rPeriode = mysqli_query($conn, "SELECT MAX(souscode) as sc
 
 if (mysqli_num_rows($rPeriode) > 0) {
 	$statutAr = mysqli_fetch_row($rPeriode);
-	if ($statutAr['sc'] < 10) {$statut = $statutAr['sc'];
+	if ($statutAr[0] < 10) {$statut = $statutAr[0];
 	} else {
-		$statut = $statutAr['sc'] % 10;
+		$statut = $statutAr[0] % 10;
 		$statut = $statut . 'P';
 	}
 } else {

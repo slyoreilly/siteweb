@@ -13,17 +13,15 @@ $avanceServeur = time() * 1000 - $heure;
 $rSServ = $recentSync + $avanceServeur;
 //rrs2: Plus recent sync du telephone corrigé àa l'heure serveur et boosté de 1 s.
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-	die("Can't connect to database");
-
-if (!mysql_select_db($database)) {
-	echo "<h1>Database: {$database}</h1>";
-	echo "<h1>Table: {$table}</h1>";
-	die("Can't select database");
-
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
 }
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+
+mysqli_query($conn,"SET NAMES 'utf8'");
+mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 unset($chronoRetour);
 unset($resultChrono);
 unset($rangeeChrono);
@@ -72,10 +70,10 @@ $qClips = "SELECT chrono,TableMatch.matchIdRef,TableMatch.eq_dom,TableMatch.eq_v
 					
 					$qTot = $qMatch." ORDER BY chrono DESC";
 					
-						mysql_query("SET SQL_BIG_SELECTS=1");
-					$resultMatch = mysql_query($qTot) or die(mysql_error() . $qTot);					
+						mysqli_query($conn ,"SET SQL_BIG_SELECTS=1");
+					$resultMatch = mysqli_query($conn ,$qTot) or die(mysqli_error($conn) . $qTot);					
 					
-$qLigues = "SELECT * FROM Ligue
+$qLigues = "SELECT ID_Ligue, nomLigue,  FROM Ligue
 			INNER JOIN AbonnementLigue
 				ON (Ligue.ID_Ligue=AbonnementLigue.ligueid)
 			INNER JOIN TableUser
@@ -84,16 +82,15 @@ $qLigues = "SELECT * FROM Ligue
 					
 				
 					
-						mysql_query("SET SQL_BIG_SELECTS=1");
-					$resultLigues = mysql_query($qLigues) or die(mysql_error() . $qLigues);							
+						mysqli_query($conn,"SET SQL_BIG_SELECTS=1");
+					$resultLigues = mysqli_query($conn,$qLigues) or die(mysqli_error($conn) . $qLigues);							
 
 					$vecLigues = array();
 					$IL2=0;
-while($r = mysql_fetch_array($resultLigues)) {
-
-    $vecLigues[]=$r;
+while($r = mysqli_fetch_array($resultLigues)) {
     $vecLigues[$IL2]['ligueId']=$r['ID_Ligue'];
-    $vecLigues[$IL2]['nomLigue']=$r['Nom_Ligue'];
+	$vecLigues[$IL2]['nomLigue']=$r['Nom_Ligue'];
+	$vecLigues[$IL2]['cleValeur']=$r['cleValeur'];
     $IL2++;
     }
 					
@@ -116,7 +113,7 @@ $matchs = array();
 //////////////////////////////		On trouve les buts marqués
 
 
-while ($rangeeMatch = mysql_fetch_array($resultMatch)){// && !$trouve) {
+while ($rangeeMatch = mysqli_fetch_array($resultMatch)){// && !$trouve) {
 	$matchOK[$IM] = $rangeeMatch[1];
 	//if(!in_array($rangeeMatch['ligueRef'], $Ligues))
 	//{
@@ -132,8 +129,10 @@ while ($rangeeMatch = mysql_fetch_array($resultMatch)){// && !$trouve) {
 	if(!in_array($rangeeMatch['eq_dom'], $Equipes))
 	{		$qSelEqDom="SELECT * From TableEquipe
 						WHERE equipe_id='{$rangeeMatch['eq_dom']}'";
-		$resEqDom = mysql_query($qSelEqDom) or die(mysql_error() . $qSelEqDom);
-		$nomEqDom = mysql_result($resEqDom, 0,'nom_equipe');				
+		$resEqDom = mysqli_query($conn,$qSelEqDom) or die(mysqli_error($conn) . $qSelEqDom);
+		while($rangDom = mysqli_fetch_array($resEqDom)){
+			$nomEqDom =$rangDom['nom_equipe'];
+		}				
 		$Equipes[$IE]['equipeId']=$rangeeMatch['eq_dom'];
 		$Equipes[$IE]['nomEquipe']=$nomEqDom;
 		$IE++;
@@ -141,8 +140,10 @@ while ($rangeeMatch = mysql_fetch_array($resultMatch)){// && !$trouve) {
 	if(!in_array($rangeeMatch['eq_vis'], $Equipes))
 	{		$qSelEqVis="SELECT * From TableEquipe
 						WHERE equipe_id='{$rangeeMatch['eq_vis']}'";
-		$resEqVis = mysql_query($qSelEqVis) or die(mysql_error() . $qSelEqVis);
-		$nomEqVis = mysql_result($resEqVis, 0,'nom_equipe');				
+		$resEqVis = mysqli_query($conn,$qSelEqVis) or die(mysqli_error($conn) . $qSelEqVis);
+		while($rangVis = mysqli_fetch_array($resEqVis)){
+			$nomEqVis =$rangVis['nom_equipe'];
+		}						
 		$Equipes[$IE]['equipeId']=$rangeeMatch['eq_vis'];
 		$Equipes[$IE]['nomEquipe']=$nomEqVis;
 		$IE++;
@@ -151,9 +152,11 @@ while ($rangeeMatch = mysql_fetch_array($resultMatch)){// && !$trouve) {
 	{
 		$qSelArena="SELECT * From TableArena
 						WHERE arenaId='{$rangeeMatch['arenaId']}'";
-		$resArena = mysql_query($qSelArena) or die(mysql_error() . $qSelEqVis);
-		$nomArena = mysql_result($resArena, 0,'nomArena');					
-		$nomGlace = mysql_result($resArena, 0,'nomGlace');	
+		$resArena = mysqli_query($conn,$qSelArena) or die(mysqli_error($conn) . $qSelEqVis);
+		while($rangAr = mysqli_fetch_array($resArena)){
+			$nomArena=$rangAr['nomArena'];
+			$nomGlace=$rangAr['nomGlace'];
+		}	
 		$matchs[$IM2]['arena']=$nomArena." / ".$nomGlace;	
 		$matchs[$IM2]['arenaId']=$rangeeMatch['arenaId'];	
 		$matchs[$IM2]['ligueId']=$rangeeMatch['ligueRef'];
@@ -164,17 +167,17 @@ while ($rangeeMatch = mysql_fetch_array($resultMatch)){// && !$trouve) {
 		$matchs[$IM2]['date']=$rangeeMatch['date'];
 				$IM2++;
 	}
-					$qChron = "SELECT event_id,chrono,match_event_id,TableMatch.match_id,TableMatch.ligueRef,TableMatch.eq_dom,TableMatch.eq_vis FROM TableEvenement0 
+					$qChron = "SELECT event_id,chrono,match_event_id,equipe_event_id,TableMatch.match_id,TableMatch.ligueRef,TableMatch.eq_dom,TableMatch.eq_vis FROM TableEvenement0 
 							INNER JOIN TableMatch
 								ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)
 			
 							WHERE TableEvenement0.chrono>$rrs2 
 								AND TableEvenement0.code=0 
 								AND match_event_id='{$matchOK[$IM]}' ORDER BY TableEvenement0.chrono ASC LIMIT 0,50";
-		mysql_query("SET SQL_BIG_SELECTS=1");
+		mysqli_query($conn,"SET SQL_BIG_SELECTS=1");
 								
-		$resultChrono = mysql_query($qChron) or die(mysql_error() . $qChron);
-		while ($rangeeChrono = mysql_fetch_array($resultChrono)) {
+		$resultChrono = mysqli_query($conn,$qChron) or die(mysqli_error($conn) . $qChron);
+		while ($rangeeChrono = mysqli_fetch_array($resultChrono)) {
 			//			array_push($chronoRetour, $rangeeChrono['chrono']);
 			$chronoRetour[$IC] = $rangeeChrono[1];
 			$matchRetour[$IC] = $rangeeChrono[2];
@@ -182,21 +185,23 @@ while ($rangeeMatch = mysql_fetch_array($resultMatch)){// && !$trouve) {
 			$video[$IC]['reference'] = $rangeeChrono['event_id'];
 			$video[$IC]['type'] = 0;
 			$video[$IC]['chrono'] = $rangeeChrono['chrono'];
+			$video[$IC]['equipe'] = $rangeeChrono['equipe_event_id'];			
+				
 /*			$video[$IC]['ligueId'] = $rangeeChrono['ligueRef'];
 			$video[$IC]['eqDom'] = $rangeeChrono['eq_dom'];
 			$video[$IC]['eqVis'] = $rangeeChrono['eq_vis'];*/
 			$IC++;
 		}
-			$qClips = "SELECT clipId,chrono,Clips.matchId,TableMatch.match_id,TableMatch.ligueRef,TableMatch.eq_dom,TableMatch.eq_vis FROM Clips 
+			$qClips = "SELECT clipId,chrono,Clips.matchId,Clips.scoringEnd,TableMatch.match_id,TableMatch.ligueRef,TableMatch.eq_dom,TableMatch.eq_vis FROM Clips 
 							INNER JOIN TableMatch
 								ON (Clips.matchId=TableMatch.matchIdRef)
 			
 							WHERE Clips.chrono>$rrs2 
 								AND Clips.matchId='{$matchOK[$IM]}' ORDER BY Clips.chrono ASC LIMIT 0,50";
-		mysql_query("SET SQL_BIG_SELECTS=1");
+		mysqli_query($conn,"SET SQL_BIG_SELECTS=1");
 								
-		$resultClips = mysql_query($qClips) or die(mysql_error() . $qClips);
-		while ($rangeeClips = mysql_fetch_array($resultClips)) {
+		$resultClips = mysqli_query($conn,$qClips) or die(mysqli_error($conn) . $qClips);
+		while ($rangeeClips = mysqli_fetch_array($resultClips)) {
 			//			array_push($chronoRetour, $rangeeChrono['chrono']);
 			$chronoRetour[$IC] = $rangeeClips[1];
 			$matchRetour[$IC] = $rangeeClips[2];
@@ -204,6 +209,7 @@ while ($rangeeMatch = mysql_fetch_array($resultMatch)){// && !$trouve) {
 			$video[$IC]['reference'] = $rangeeClips['clipId'];
 			$video[$IC]['type'] = 5;
 			$video[$IC]['chrono'] = $rangeeClips['chrono'];
+			$video[$IC]['equipe'] = $rangeeClips['scoringEnd'];
 /*			$video[$IC]['ligueId'] = $rangeeChrono['ligueRef'];
 			$video[$IC]['eqDom'] = $rangeeChrono['eq_dom'];
 			$video[$IC]['eqVis'] = $rangeeChrono['eq_vis'];*/
@@ -251,7 +257,7 @@ $repSite['matchs'] = $matchs;
 
 //echo json_encode($Sommaire);
 echo json_encode($repSite);
-mysql_close();
+mysqli_close($conn);
 //	header("HTTP/1.1 200 OK");
 
 ?>	

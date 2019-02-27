@@ -351,7 +351,10 @@ function getValue(varname)
     return getCookie(varname);
   }
   var query = qparts[1];
-  var vars = query.split("&");
+  var tmpNoHash = query.split("#");
+  var noHash= tmpNoHash[0];
+  var vars = noHash.split("&");
+  //var vars = query.split("&");
   var value = "";
   for (i=0;i<vars.length;i++)
   {
@@ -381,7 +384,10 @@ function getValueNoCookie(varname)
     return null;
   }
   var query = qparts[1];
-  var vars = query.split("&");
+ var tmpNoHash = query.split("#");
+ var noHash= tmpNoHash[0];
+ var vars = noHash.split("&");
+ //var vars = query.split("&");
   var value = "";
   for (i=0;i<vars.length;i++)
   {

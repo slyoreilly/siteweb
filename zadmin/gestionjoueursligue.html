@@ -215,9 +215,15 @@
 			
 			function classeParEquipes()
 			{
+				window.eqToggle =window.eqToggle*-1;
 			    equipeId=0;
 					joueurs.sort(function(a, b) {
-						return ((parseInt(a.equipeId)-equipeId)*(parseInt(a.equipeId)-equipeId)-(parseInt(b.equipeId)-equipeId)*(parseInt(b.equipeId)-equipeId));
+						if(a.equipeId==0){return 1*window.eqToggle;}
+						if(b.equipeId==0){return -1*window.eqToggle;}
+						if(a.nomEquipe.toLowerCase()>b.nomEquipe.toLowerCase()){return 1*window.eqToggle;}
+						return -1*window.eqToggle;
+
+						//return ((parseInt(a.equipeId)-equipeId)*(parseInt(a.equipeId)-equipeId)-(parseInt(b.equipeId)-equipeId)*(parseInt(b.equipeId)-equipeId));
 					});
 					 $('tbody').empty();
 					contenuTableau();
@@ -286,7 +292,7 @@
 
 $('#divTitreDoc').prepend(
                     $('<a></a>').attr("href","/zstats/accueilligue.html").append($('<i class="fas fa-home"></i>'),$('<h3></h3>').text( " "+window.tl_index_accueil+" / ").css("display","inline")),
-                    $('<a></a>').attr("href","/zstats/zuser/monprofil.html").append($('<h3></h3>').text( " "+window.tl_profil_mProfil).css("display","inline"))
+                    $('<a></a>').attr("href","/zuser/monprofil.html").append($('<h3></h3>').text( " "+window.tl_profil_mProfil).css("display","inline"))
                     );
 
             $('#divCentrale').append(
@@ -316,6 +322,7 @@ $('#divTitreDoc').prepend(
 
 			perm = verifiePermission();
 			ligueId = getValue("ligueId");
+			eqToggle=-1;
 
 			ligueId = null;
 			if (getCookie('ligueId') != null) {

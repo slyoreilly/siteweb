@@ -147,8 +147,12 @@ function trouveGardiens($match, $array_gard) {
 	foreach ($array_gard as $valeur) {
 		if ($valeur['match'] == $match) {
 			$gardiens = array();
-			$gardiens['dom'] = $valeur['gDom'];
-			$gardiens['vis'] = $valeur['gVis'];
+			if(isset( $valeur['gDom'])){
+				$gardiens['dom'] = $valeur['gDom'];
+			}
+			if(isset( $valeur['gVis'])){
+				$gardiens['vis'] = $valeur['gVis'];
+			}
 			return $gardiens;
 		}
 	}
@@ -530,7 +534,7 @@ $Ine++;
 $jsRetour= array();
 $jsRetour['matchs'] = $mesMatchs;
 echo json_encode($jsRetour);
-
+mysqli_close($conn);
 
 ?>
 

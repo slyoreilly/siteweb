@@ -18,26 +18,21 @@ $tableEquipe = 'TableEquipe';
 
 $ligueId = $_POST['ligueId'];
 
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
 
 ////////////////////////////////////////////////////////////
 //
 // 	Connections à la base de données
 //
 ////////////////////////////////////////////////////////////
-
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-	die("Can't connect to database");
-
-if (!mysql_select_db($database)) {
-	echo "<h1>Database: {$database}</h1>";
-	die("Can't select database");
-
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
 
-	mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+mysqli_set_charset($conn, "utf8");
 
 ///////////////////////////////////////////////////////////
 //
@@ -46,10 +41,10 @@ mysql_query("SET CHARACTER SET 'utf8'");
 ///////////////////////////////////////////////////////////
 
 $equipeIds = array();
-$rLigue = mysql_query("SELECT Ligue.*
+$rLigue = mysqli_query($conn,"SELECT Ligue.*
 								FROM  Ligue
-								WHERE Ligue.ID_Ligue='$ligueId'") or die(mysql_error());
-$aLigue = mysql_fetch_assoc($rLigue);
+								WHERE Ligue.ID_Ligue='$ligueId'") or die(mysqli_error($conn));
+$aLigue = mysqli_fetch_assoc($rLigue);
 
 //////////////////////////////////////////////////
 //
@@ -66,7 +61,7 @@ $JSONstring .= "\"cleValeur\": " . $aLigue['cleValeur'] . ",";
 $JSONstring .= "\"saisons\": ";
 
 $j2=$JSONstring;
-$rSaison = mysql_query("SELECT TableSaison.*, abonEquipeLigue.*
+$rSaison = mysqli_query($conn,"SELECT TableSaison.*, abonEquipeLigue.*
 								FROM TableSaison
 								LEFT JOIN abonEquipeLigue
 									ON TableSaison.ligueRef=abonEquipeLigue.ligueId
@@ -75,13 +70,13 @@ $rSaison = mysql_query("SELECT TableSaison.*, abonEquipeLigue.*
 								finAbon>=premierMatch
 								AND debutAbon<=dernierMatch
 								ORDER BY dernierMatch DESC
-								") or die(mysql_error());
+								") or die(mysqli_error($conn));
 $mSai = 0;
 $eqIdsLoc=array();
 $jsonSai=array();		
 			$Is=0;
 $JSONEquipes = "\"equipes\": [";
-while ($aSaison = mysql_fetch_assoc($rSaison)) {
+while ($aSaison = mysqli_fetch_assoc($rSaison)) {
 	if ($aSaison['saisonId'] != $mSai) {
 		if($mSai!=0)
 			{$Is++;}// Cas de la 1re iteration
@@ -104,11 +99,11 @@ while ($aSaison = mysql_fetch_assoc($rSaison)) {
 	if (in_array($aSaison['equipeId'], $equipeIds) == false) {
 		array_push($equipeIds, $aSaison['equipeId']);
 		// Entrer d'Array et faire un JSON d'equipe.4
-		$rEquipe = mysql_query("SELECT *
+		$rEquipe = mysqli_query($conn,"SELECT *
 								FROM TableEquipe
 								WHERE equipe_id='{$aSaison['equipeId']}'
-								") or die(mysql_error());
-		while ($aEquipe = mysql_fetch_assoc($rEquipe)) {
+								") or die(mysqli_error($conn));
+		while ($aEquipe = mysqli_fetch_assoc($rEquipe)) {
 			$JSONEquipes .= "{\"equipeId\": \"" . $aEquipe['equipe_id'] . "\",";
 			$JSONEquipes .= "\"nom\": \"" . $aEquipe['nom_equipe'] . "\",";
 			$JSONEquipes .= "\"ville\": \"" . $aEquipe['ville'] . "\",";
@@ -124,13 +119,13 @@ while ($aSaison = mysql_fetch_assoc($rSaison)) {
 		
 
 
-$rSaisonSeul = mysql_query("SELECT TableSaison.*
+$rSaisonSeul = mysqli_query($conn,"SELECT TableSaison.*
 								FROM TableSaison
 								WHERE ligueRef='$ligueId'
 								ORDER BY dernierMatch DESC
-								") or die(mysql_error());
+								") or die(mysqli_error($conn));
 
-while ($aSaisonSeul = mysql_fetch_assoc($rSaisonSeul)) 
+while ($aSaisonSeul = mysqli_fetch_assoc($rSaisonSeul)) 
 {
 $Is=count($jsonSai);								
 	$trouve=0;
@@ -168,14 +163,14 @@ echo ",".$JSONEquipes;
 
 
 	$arenas= array();
-$rArena = mysql_query("SELECT abonLigueArena.*
+$rArena = mysqli_query($conn,"SELECT abonLigueArena.*
 								FROM abonLigueArena
 								WHERE ligueId='$ligueId'
 								AND finAbon>=NOW()
 								AND debutAbon<=NOW()
-								") or die(mysql_error());
+								") or die(mysqli_error($conn));
 
-while ($aArena = mysql_fetch_assoc($rArena)) 
+while ($aArena = mysqli_fetch_assoc($rArena)) 
 {
 	$Ia=0;
 
@@ -186,7 +181,7 @@ while ($aArena = mysql_fetch_assoc($rArena))
 echo ", \"Arenas\":".json_encode($arenas);
 
 echo "}";
-mysql_close();
+mysqli_close($conn);
 
 ?>
 	

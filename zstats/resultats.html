@@ -4,7 +4,7 @@
         <title>Résultats des matchs</title>
         <script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
         <script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
-        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
 
         <script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
         <script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
@@ -80,7 +80,8 @@
 								getMatchsdeLigueID(this.options[this.selectedIndex].value);
 								getEtoiles(this.options[this.selectedIndex].value);
 							};
-							var maSai =null// getValue("saisonId");
+							//var maSai =null// 
+							maSai = getValueNoCookie("saisonId");
 							console.log("saisonId: "+maSai);
 							for (var K = 0; K < vecEquipe.Ligue.saisons.length; K = K + 1) {
 							    console.log("for: "+K);
@@ -246,8 +247,10 @@
                         vecAbonApp= eval('(' + requete_ajax.responseText + ')');
                         if(vecAbonApp!=null){
                             if($('#titreAppareils').length==0){
-                            $('#modalModifMatch .modal-body').append($('<h2></h2>').text('Appareils disponibles').attr('id','titreAppareils'),$('<h3></h3>').text('Cameras').attr('id','titreCam')).append($('<div></div>').attr('id','divAppareils'));
-                            
+								
+                            $('#advanced').append($('<h2></h2>').text('Appareils disponibles').attr('id','titreAppareils'),$('<h3></h3>').text('Cameras').attr('id','titreCam')).append($('<div></div>').attr('id','divAppareils'));
+							}
+							$('#divAppareils').empty();
                             if(vecAbonApp.cams!=null){
                                 for(var a=0; a<vecAbonApp.cams.length;a++){
                                     role=parseInt(vecAbonApp.cams[a].role)!=0?true:false;
@@ -259,11 +262,14 @@
                                         
                                         )
                                     );
-                                    $("#divAppareils select").val(vecAbonApp.cams[a].role);
+                                    $("#divAppareils select").last().val(vecAbonApp.cams[a].role);
                                     
                                 }
                             }
-                            $('#modalModifMatch .modal-body').append($('<h3></h3>').text('Télécommandes').attr('id','titreTel')).append($('<div></div>').attr('id','divAppareils2'));
+							if($('#titreTel').length==0){
+                            $('#advanced').append($('<h3></h3>').text('Télécommandes').attr('id','titreTel')).append($('<div></div>').attr('id','divAppareils2'));
+							}
+							$('#divAppareils2').empty();
                             if(vecAbonApp.remotes!=null){
                                 for(var a=0; a<vecAbonApp.remotes.length;a++){
                                     role=parseInt(vecAbonApp.remotes[a].role)!=0?true:false;
@@ -274,9 +280,9 @@
                                         $('<select></select>'). append($('<option value="1">Maître</option>'),$('<option value="3">Arbitre</option>'),$('<option value="11">Équipe domicile</option>'),$('<option value="12">Équipe visiteur</option>'),$('<option value="13">Équipe à spécifier</option>'))
                                         )
                                     );
-                                    $("#divAppareils2 select").val(vecAbonApp.remotes[a].role);
+                                    $("#divAppareils2 select").last().val(vecAbonApp.remotes[a].role);
                                 }
-                            }
+                            
                             }
                         }
 
@@ -683,16 +689,34 @@
                 var valeurHeure = no == 1000000 ? "20:00" : window.matchsDsSaison[no].date.split(' ')[1];
 
              $('#modalModifMatch .modal-body').append(
-                 $('<div></div>').addClass("formGauche").text('Date (AAAA-MM-JJ):'),
-                 $('<input></input').attr("type","text").attr("id","inDateMatch").addClass("formDroite").val(valeurDate),
-                   $('<div></div>').addClass("formGauche").text('Heure (HH:MM):'),
-                 $('<input></input').attr("type","text").attr("id","inHeureMatch").addClass("formDroite").val(valeurHeure),
-                 $('<div></div>').addClass("formGauche").text('Arena: '),
-                 $('<select></select').addClass("formDroite").attr("id","selArena"),
-                 $('<div></div>').addClass("formGauche").text('Equipe Domicile :'),
-                 $('<select></select').addClass("formDroite").attr("id","selDomicile"),
-                 $('<div></div>').addClass("formGauche").text('Equipe Visiteur :'),
-                 $('<select></select').addClass("formDroite").attr("id","selVisiteur")
+					$('<ul></ul>').addClass("nav nav-tabs").attr("role","tablist").append(
+						$('<li></li>').addClass("nav-item").append(
+							$('<a></a>').addClass("nav-link active").attr("href","#basic").attr("role","tab").attr("data-toggle","tab").text("Basic")
+						),
+						$('<li></li>').addClass("nav-item").append(
+							$('<a></a>').addClass("nav-link").attr("href","#advanced").attr("role","tab").attr("data-toggle","tab").text("Advanced")
+						)
+					),
+					$('<div></div>').addClass("tab-content").append(
+						$('<div></div>').addClass("tab-pane active").attr("id","basic").attr("role","tabpanel").append(
+							$('<div></div>').addClass("formGauche").text('Date (AAAA-MM-JJ):'),
+                 			$('<input></input').attr("type","text").attr("id","inDateMatch").addClass("formDroite").val(valeurDate),
+                   			$('<div></div>').addClass("formGauche").text('Heure (HH:MM):'),
+                 			$('<input></input').attr("type","text").attr("id","inHeureMatch").addClass("formDroite").val(valeurHeure),
+                 			$('<div></div>').addClass("formGauche").text('Arena: '),
+                 			$('<select></select').addClass("formDroite").attr("id","selArena"),
+                 			$('<div></div>').addClass("formGauche").text('Equipe Domicile :'),
+                 			$('<select></select').addClass("formDroite").attr("id","selDomicile"),
+                 			$('<div></div>').addClass("formGauche").text('Equipe Visiteur :'),
+                 			$('<select></select').addClass("formDroite").attr("id","selVisiteur")
+						),
+					
+						$('<div></div>').addClass("tab-pane fade").attr("role","tabpanel").attr("id","advanced")
+					)
+
+
+
+                
                  
                
                  );
@@ -715,7 +739,13 @@
                      getAppareilsAbonne(window.matchsDsSaison[no].arenaId, window.matchsDsSaison[no].mavId);
                       $('#selDomicile').val(window.matchsDsSaison[no].eqDomId);
                        $('#selVisiteur').val(window.matchsDsSaison[no].eqVisId);
-                    }
+                    }else{
+						getAppareilsAbonne($('#selArena').val(),null);
+					}
+
+					$('#selArena').on("change",function(){
+						getAppareilsAbonne(this.value,null);
+					});
 			
 				
 				//////////////////////
@@ -1581,6 +1611,9 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 				else{
 				var mois=	parseInt(getValue('mois'))-1;
 				}
+
+
+				
 				//console.log(mois);
 				enveloppeTableMois('tableResultats', d.getFullYear(),mois , 0);
 				
