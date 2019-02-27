@@ -1116,44 +1116,7 @@ console.log(rSMB.buts[d].video.length);
 							}
 							pVids.id = "https://" + place + "/lookatthis/" + mBut.video[0].fic;
 							pVids.className = "cliquable";
-							$(pVids).on("click",{mBut:mBut},function(event){
-
-                                    $("#contVids").empty();
-                                    construitVid();
-                                    //console.log("Construit vids");
-                                    vidIndex = 0;
-
-                                    strV = event.data.mBut.video[vidIndex];
-                                    //monOverlay = document.createElement('DIV');
-                                    //monOverlay.id = "ecranSombre";
-                                    //document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
-                                    $('.media-box').show();
-
-                                    place = event.data.mBut.video[0].emplacement;
-                                    if (place == null || !strcmp(place, "")) {
-                                        place = "syncstats.com";
-                                      //  document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + event.data.mBut.video[0].fic;
-
-                                    } else {
-                                      //  document.getElementsByTagName('SOURCE')[0].src = "https://" + place + "/lookatthis/" + event.data.mBut.video[0].fic;
-                                    }
-                                    //console.log(document.getElementsByTagName('SOURCE')[0].src );
-                                    //document.getElementsByTagName('SOURCE')[0].src = "https://"+place+"/lookatthis/" + mBut.video[0].fic;
-                                    document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
-                                    /*$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
-                                        "opacity" : "1",
-                                        "position" : "fixed",
-                                        "left" : "100px",
-                                        "top" : "100px",
-                                        "z-index" : "2000"
-                                    }));
-*/
-
-                                    getInfoVid(vidIndex, event.data.mBut);
-
-
-                                
-							});
+							$(pVids).on("click",{mBut:mBut},montreVideo);
 						}// Fin du If video
 
 						var lesLiens = new Array();
@@ -1364,7 +1327,9 @@ console.log(rSMB.buts[d].video.length);
 										//              pVids.innerHTML= " Video Replay ";
 										pVids.id = "../lookatthis/" + mBut.fic;
 										pVids.className = "cliquable";
-										pVids.onclick = (function(mBut) {
+										$(pVids).on("click",{mBut:mBut},montreVideo);
+
+										/*pVids.onclick = (function(mBut) {
 											return function() {
 												//                  window.location="../lookatthis/" + strV.fic;
 												$("#contVids").empty();
@@ -1373,9 +1338,7 @@ console.log(rSMB.buts[d].video.length);
 												vidIndex = 0;
 
 												strV = mBut.video[vidIndex];
-												/*monOverlay = document.createElement('DIV');
-												monOverlay.id = "ecranSombre";
-												document.getElementsByTagName('BODY')[0].appendChild(monOverlay);*/
+												
 												$('.media-box').show();
 												place = !strcmp(mBut.video[0].emplacement,"5.39.81.14")?"syncstats.ca":mBut.video[0].emplacement;
 //												place = mBut.video[0].emplacement;
@@ -1395,7 +1358,7 @@ console.log(rSMB.buts[d].video.length);
 												getInfoVid(vidIndex, mBut);
 
 											};
-										})(mBut);
+										})(mBut);*/
 									}
 								}
 								var lesLiens = new Array();
@@ -1611,7 +1574,8 @@ console.log(rSMB.buts[d].video.length);
 										//              pVids.innerHTML= " Video Replay ";
 										pVids.id = "../lookatthis/" + mBut.fic;
 										pVids.className = "cliquable";
-										pVids.onclick = (function(mBut) {
+										$(pVids).on("click",{mBut:mBut},montreVideo);
+										/*pVids.onclick = (function(mBut) {
 											return function() {
 												//                  window.location="../lookatthis/" + strV.fic;
 											//("#contVids").empty();
@@ -1630,18 +1594,12 @@ console.log(rSMB.buts[d].video.length);
 												}
 												document.getElementsByTagName('SOURCE')[0].src = "https://" + place + "/lookatthis/" + mBut.video[0].fic;
 												document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
-												/*$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
-													"opacity" : "1",
-													"position" : "fixed",
-													"left" : "100px",
-													"top" : "100px",
-													"z-index" : "2000"
-												}));*/
+											
 
 												getInfoVid(vidIndex, mBut);
 
 											};
-										})(mBut);
+										})(mBut);*/
 									}
 								}
 								var lesLiens = new Array();
@@ -2517,7 +2475,36 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                     detruitDialogue("modalNouvellePun");
                 }));
                
-            }
+			}
+			
+			function montreVideo(event){
+				$("#contVids").empty();
+				construitVid();
+				//console.log("Construit vids");
+			vidIndex = 0;
+
+			strV = event.data.mBut.video[vidIndex];
+				//monOverlay = document.createElement('DIV');
+				//monOverlay.id = "ecranSombre";
+				//document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
+			$('.media-box').show();
+
+			place = event.data.mBut.video[0].emplacement;
+				if (place == null || !strcmp(place, "")) {
+					place = "syncstats.com";
+					  //  document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + event.data.mBut.video[0].fic;
+
+				} else {
+				  //  document.getElementsByTagName('SOURCE')[0].src = "https://" + place + "/lookatthis/" + event.data.mBut.video[0].fic;
+				}
+			document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
+
+
+			getInfoVid(vidIndex, event.data.mBut);
+
+
+
+			}
 
 
 			function nouveauFusillade(domVis) {
