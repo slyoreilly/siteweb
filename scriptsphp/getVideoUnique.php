@@ -18,18 +18,15 @@ $database = 'syncsta1_900';
 // 	Connections � la base de donn�es
 //
 ////////////////////////////////////////////////////////////
-
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 
 
@@ -51,11 +48,11 @@ $reqFic = "SELECT *
 				ON (Video.tagPrincipal = TableJoueur.joueur_id)	
 			WHERE nomFichier='{$videofile}'";
 
-$rFic = mysql_query($reqFic)
-or die(mysql_error());  
+$rFic = mysqli_query($conn, $reqFic)
+or die(mysqli_error($conn));  
 $leVid=array();
-$leVid = mysql_fetch_assoc($rFic);
-if(strcmp(json_encode($leVid),"false")==0){
+$leVid = mysqli_fetch_assoc($rFic);
+if(strcmp(json_encode($leVid),"false")==0||strcmp(json_encode($leVid),"null")==0){
 	
 	$reqFic = "SELECT * 
 			FROM Video
@@ -65,10 +62,10 @@ if(strcmp(json_encode($leVid),"false")==0){
 				ON (Video.tagPrincipal = TableJoueur.joueur_id)	
 			WHERE nomFichier='{$videofile}'";
 
-$rFic = mysql_query($reqFic)
-or die(mysql_error());  
+$rFic = mysqli_query($conn,$reqFic)
+or die(mysqli_error($conn));  
 $leVid=array();
-$leVid = mysql_fetch_assoc($rFic);
+$leVid = mysqli_fetch_assoc($rFic);
 	
 }else{
 
@@ -83,7 +80,7 @@ $reqAltAngles = "SELECT *
 
 echo json_encode($leVid);
 
-	
+mysqli_close($conn);	
 
 
 ?>

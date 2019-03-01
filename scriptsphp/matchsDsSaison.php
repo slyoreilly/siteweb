@@ -64,31 +64,6 @@ function trouveIDParNomLigue($nomLi) {
 	return $LigueID;
 }
 
-/////////////////////////////////////////////////////
-//
-//   Trouve Nom de l'equipe é partir du ID.
-//
-////////////////////////////////////////////////////
-function trouveNomParIDEquipe($IEq) {
-	$resultEquipe2 = mysqli_query($conn, "SELECT * FROM TableEquipe WHERE equipe_id='{$IEq}'") or die(mysqli_error($conn) . " dans trouveNomParIDEquipe");
-	while ($rangeeEquipe2 = mysqli_fetch_array($resultEquipe2)) {
-
-		if ($rangeeEquipe2['equipe_id'] == $IEq) {
-			$NomEquipe = $rangeeEquipe2['nom_equipe'];
-			// Ce sont de INT
-		}
-	}
-	return $NomEquipe;
-}
-
-/////////////////////////////////////////////////////////////
-//
-//
-
-function trouveSaisonActiveDeLigueId($ID) {
-	$rfSaison = mysqli_query($conn,"SELECT saisonId FROM TableSaison WHERE ligueRef = '{$ID}' and saisonActive=1") or die(mysqli_error($conn) . " trouveSaisonActiveDeLigueId");
-	return (mysqli_result($rfSaison, 0));
-}
 
 function trouveJoueur($joueurId, $array_joueur) {
 	foreach ($array_joueur as $valeur) {
@@ -169,6 +144,20 @@ function trouveGardiens($match, $array_gard) {
 //	if(!isset($ligueId))
 //	$ligueId=3;
 //	$ligueId = trouveIDParNomLigue($monGet);
+
+	
+if($saisonId=="null"||$saisonId=="undefined"||$saisonId=="")// Sp�cifie par la saison
+	{
+		$rfSaison = mysqli_query($conn,"SELECT saisonId FROM TableSaison WHERE ligueRef = '{$ligueId}' ORDER BY premierMatch DESC LIMIT 0,1")
+or die(mysqli_error($conn)." Select saisonId"); 
+
+while($rangeeSaison=mysqli_fetch_array($rfSaison))
+{
+	$saisonId= $rangeeSaison['saisonId'];
+	
+}
+		
+		}
 
 $qMatchSai = "SELECT premierMatch,dernierMatch FROM TableSaison where saisonId ='{$saisonId}'";
 

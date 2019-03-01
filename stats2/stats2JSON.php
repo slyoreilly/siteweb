@@ -28,34 +28,15 @@ $matchId = $_POST['matchId'];
 //
 ////////////////////////////////////////////////////////////
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error($conn));
 }
 
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
-
-
-/////////////////////////////////////////////////////////////
-// 
-//
-
-function trouveNomJoueurParID($ID){ 
-unset($resultJoueur);
-$resultJoueur = mysql_query("SELECT * FROM TableJoueur WHERE joueur_id = '{$ID}'")
-or die(mysql_error()."SELECT * FROM TableJoueur WHERE joueur_id = '{$ID}'");  
-while($rangeeJoueur=mysql_fetch_array($resultJoueur))
-	{if(strcmp($rangeeJoueur['NomJoueur'],"null"))
-		  {return ($rangeeJoueur['NomJoueur']);}
-	else { return ("Anonyme"); }}		   
- return ("Anonyme"); 
-} 
+mysqli_query($conn,"SET NAMES 'utf8'");
+mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 
 
 
@@ -66,9 +47,9 @@ while($rangeeJoueur=mysql_fetch_array($resultJoueur))
 //
 ////////////////////////////////////////////////////
 
-$resultLigue = mysql_query("SELECT * FROM {$tableLigue}")
-or die(mysql_error());  
-while($rangeeLigue=mysql_fetch_array($resultLigue))
+$resultLigue = mysqli_query($conn,"SELECT * FROM {$tableLigue}")
+or die(mysqli_error($conn));  
+while($rangeeLigue=mysqli_fetch_array($resultLigue))
 {
 		if(!strcmp($rangeeLigue['Nom_Ligue'],$ligue))
 	{$ligueSelect =$rangeeLigue['ID_Ligue'];
@@ -84,20 +65,20 @@ while($rangeeLigue=mysql_fetch_array($resultLigue))
 
 
 if($equipe=='H')
-{$rMatchEquipe= mysql_query("SELECT eq_dom FROM TableMatch where matchIdRef = '$matchId'")
-or die(mysql_error()."SELECT eq_dom FROM TableMatch where matchIdRef = '$matchId'");  
-$rangEq=mysql_fetch_row($rMatchEquipe);
+{$rMatchEquipe= mysqli_query($conn,"SELECT eq_dom FROM TableMatch where matchIdRef = '$matchId'")
+or die(mysqli_error($conn)."SELECT eq_dom FROM TableMatch where matchIdRef = '$matchId'");  
+$rangEq=mysqli_fetch_row($rMatchEquipe);
 $equipeID=$rangEq[0];
 }
 else if($equipe=='V')
-{$rMatchEquipe= mysql_query("SELECT eq_vis FROM TableMatch where matchIdRef = '$matchId'")
-or die(mysql_error()."SELECT eq_vis FROM TableMatch where matchIdRef = '$matchId'");  
-$rangEq=mysql_fetch_row($rMatchEquipe);
+{$rMatchEquipe= mysqli_query($conn,"SELECT eq_vis FROM TableMatch where matchIdRef = '$matchId'")
+or die(mysqli_error($conn)."SELECT eq_vis FROM TableMatch where matchIdRef = '$matchId'");  
+$rangEq=mysqli_fetch_row($rMatchEquipe);
 $equipeID=$rangEq[0];}
 else {
-$resultEquipe = mysql_query("SELECT * FROM {$tableEquipe}")
-or die(mysql_error());  
-while($rangeeEquipe=mysql_fetch_array($resultEquipe))
+$resultEquipe = mysqli_query($conn,"SELECT * FROM {$tableEquipe}")
+or die(mysqli_error($conn));  
+while($rangeeEquipe=mysqli_fetch_array($resultEquipe))
 {
 		if(!strcmp($rangeeEquipe['nom_equipe'],$equipe))
 	{$equipeID =$rangeeEquipe['equipe_id'];// Ce sont de INT
@@ -109,11 +90,11 @@ while($rangeeEquipe=mysql_fetch_array($resultEquipe))
 
 
 	// Retrieve all the data from la table
-$resultEvent = mysql_query("SELECT * FROM TableEvenement0 WHERE equipe_event_id = '$equipeID' AND code <9 AND match_event_id = '$matchId'")
-or die(mysql_error()."SELECT * FROM TableEvenement0 WHERE equipe_event_id = '$equipeID' AND code <9 AND match_event_id = '$matchId'");  
+$resultEvent = mysqli_query($conn,"SELECT * FROM TableEvenement0 WHERE equipe_event_id = '$equipeID' AND code <9 AND match_event_id = '$matchId'")
+or die(mysqli_error($conn)."SELECT * FROM TableEvenement0 WHERE equipe_event_id = '$equipeID' AND code <9 AND match_event_id = '$matchId'");  
 $I0=0;
 $JoueurSommeEvenement = array();
-while($rangeeEv=mysql_fetch_array($resultEvent))
+while($rangeeEv=mysqli_fetch_array($resultEvent))
 	{
 		if($rangeeEv['equipe_event_id']==$equipeID)
 			{
@@ -159,9 +140,9 @@ $NbEntre=count($JoueurSommeEvenement);
 ///////////////////////////
 //////  tests...
 
-$resultJoueur = mysql_query("SELECT * FROM TableJoueur WHERE joueur_id = '{$ligneEvent1}'")
-or die(mysql_error()."SELECT * FROM TableJoueur WHERE joueur_id = '{$ligneEvent1}'");  
-$rangeeJoueur=mysql_fetch_assoc($resultJoueur);
+$resultJoueur = mysqli_query($conn,"SELECT * FROM TableJoueur WHERE joueur_id = '{$ligneEvent1}'")
+or die(mysqli_error($conn)."SELECT * FROM TableJoueur WHERE joueur_id = '{$ligneEvent1}'");  
+$rangeeJoueur=mysqli_fetch_assoc($resultJoueur);
 //while($rangeeJoueur=mysql_fetch_array($resultJoueur))
 //	{if(strcmp($rangeeJoueur['NomJoueur'],"null"))
 //		  {return ($rangeeJoueur['NomJoueur']);}
@@ -272,6 +253,6 @@ switch($rangeeStats[$Ievent][5]){
 echo json_encode($joueurs);
 //echo $JSONstring;
 		
-
+mysqli_close($conn);
 
 ?>

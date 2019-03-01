@@ -25,32 +25,28 @@ $joueurId = $_GET['joueurId'];
 //
 ////////////////////////////////////////////////////////////
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
 
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
-
-
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+mysqli_set_charset($conn, "utf8");
 ////////////////////////////////////////
 ///	Sélectionne les ligues du joueur.
 
-$rJoueur = mysql_query("SELECT abonJoueurLigue.*,Ligue.* FROM abonJoueurLigue 
+$rJoueur = mysqli_query($conn, "SELECT abonJoueurLigue.*,Ligue.* FROM abonJoueurLigue 
 								JOIN Ligue
 									ON (Ligue.ID_Ligue=abonJoueurLigue.ligueId)
 								WHERE joueurId = '$joueurId'
-								GROUP BY ID_Ligue")or die(mysql_error());
+								GROUP BY ID_Ligue")or die(mysqli_error($conn));
 $IL=0;
 $listeLigue=Array();
 $maLigue=null;
-while($maLigue=mysql_fetch_array($rJoueur))
+while($maLigue=mysqli_fetch_array($rJoueur))
 {
 	$listeLigue[$IL]=Array();
 	$listeLigue[$IL]['ligueId']=$maLigue['ligueId'];
@@ -59,14 +55,14 @@ while($maLigue=mysql_fetch_array($rJoueur))
 	$IL++;
 }
 
-$rJoueur2 = mysql_query("SELECT abonEquipeLigue.*, Ligue.*,abonJoueurEquipe.* 
+$rJoueur2 = mysqli_query($conn, "SELECT abonEquipeLigue.*, Ligue.*,abonJoueurEquipe.* 
 								FROM abonEquipeLigue 
 								JOIN abonJoueurEquipe
 									ON (abonJoueurEquipe.equipeId=abonEquipeLigue.equipeId)
 								JOIN Ligue
 									ON (Ligue.ID_Ligue=abonEquipeLigue.ligueId)
-								WHERE joueurId = '$joueurId'")or die(mysql_error());
-while($maLigue2 = mysql_fetch_array($rJoueur2))
+								WHERE joueurId = '$joueurId'")or die(mysqli_error($conn));
+while($maLigue2 = mysqli_fetch_array($rJoueur2))
 {
 	
 		$trouve=false;
@@ -92,10 +88,10 @@ while($maLigue2 = mysql_fetch_array($rJoueur2))
 for($a=0;$a<count($listeLigue);$a++)
 {
 	$ISai=0;
-$rSai = mysql_query("SELECT * 
+$rSai = mysqli_query($conn,"SELECT * 
 								FROM TableSaison 
-								WHERE ligueRef = '{$listeLigue[$a]['ligueId']}'")or die(mysql_error());
-while($rangSai=mysql_fetch_array($rSai))
+								WHERE ligueRef = '{$listeLigue[$a]['ligueId']}'")or die(mysqli_error($conn));
+while($rangSai=mysqli_fetch_array($rSai))
 	{
 	$listeLigue[$a]['saisons'][$ISai]=Array();
 	$listeLigue[$a]['saisons'][$ISai]['saisonId']=$rangSai['saisonId'];
@@ -116,11 +112,11 @@ while($rangSai=mysql_fetch_array($rSai))
 		 			AND chrono<=(UNIX_TIMESTAMP('{$listeLigue[$a]['saisons'][$ISai]['dm']}')*1000) 
 		 			AND TableMatch.ligueRef='{$listeLigue[$a]['ligueId']}'
 		 			ORDER BY equipe_event_id";
-mysql_query("SET SQL_BIG_SELECTS=1");
-	$rMatch = mysql_query($reqMatchs)or die(mysql_error()." reqMatchs");
+mysqli_query($conn,"SET SQL_BIG_SELECTS=1");
+	$rMatch = mysqli_query($conn,$reqMatchs)or die(mysqli_error($conn)." reqMatchs");
 	$IE = -1;
 	$eqId=0;
-	while($rangMatch=mysql_fetch_array($rMatch))
+	while($rangMatch=mysqli_fetch_array($rMatch))
 	{
 		if($rangMatch['equipe_event_id']!=$eqId)
 		{
@@ -158,6 +154,6 @@ mysql_query("SET SQL_BIG_SELECTS=1");
 echo "{\"Ligues\":".json_encode($listeLigue)."}";
 
 		
-
+mysqli_close($conn);
 
 ?>
