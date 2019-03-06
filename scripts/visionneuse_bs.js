@@ -70,8 +70,6 @@ var flag=0;
 				$( "#btn-play-centre" ).hide();
 				$(".fa-play").addClass('fa-pause').removeClass('fa-play');
 			var $that = $this.parent('.'+$settings.videoClass);
-			console.log($this.prop("tagName")+" is this");
-			console.log($that.prop("tagName")+" is that, on cherchait "+'.'+$settings.videoClass);
 			if($('.video').length<1){
 				// Wrap the video in a div with the class of your choosing
 				$this.wrap('<div class="'+$settings.videoClass+'"></div>');
@@ -114,8 +112,11 @@ var flag=0;
 					+ '<div class="flag-div flex-fill flex-grow-1">'
                      + '<i id="flag-btn" class="fas fa-flag" title="flag"></i>'
                      + '<div class="flag-modal">'
+					 		+ '<span class="top-triangle"></span>'
+							+ '<span class="modal-bg">'
 								+ '<img id="drapeauVert" src="/images/green-flag.png" style="margin: 0 10px 0 0;">'
 								+ '<img id="drapeauRouge" src="/images/red-flag.png">'
+							+ '</span>'
 					 + '</div>'		
                      + '</div>'
 					 			 
@@ -168,7 +169,7 @@ var flag=0;
 					 + '</div>'					 
 					
 					  + '</div>'
-					 
+					 +'<!--div id="progress"></div-->'
 				   + '</div>'
 				  ).appendTo($('.video'));
 				$('i').addClass("text-info");
@@ -181,7 +182,7 @@ var flag=0;
 				},function(){
 					$('.rate-modal2').hide();
 				});
-				$('.flag-div').hover(function(){
+				$('#flag-div').hover(function(){
 					$('.flag-modal').show();
 				},function(){
 					$('.flag-modal').hide();
@@ -197,15 +198,13 @@ var flag=0;
                     $('.share-modal2').hide();
                 });
 				//$('#rating-star').raty();
-				// Width of the 
-				console.log('aa');
+				// Width of the video
 				$videoWidth = $this.width();
 				$that.width($videoWidth+'px');
 				// Set width of the player based on previously noted settings
 				//$that.find('.player').css({'width' : ($settings.playerWidth*100)+'%', 'left' : ((100-$settings.playerWidth*100)/2)+'%'}).show();
 
 				// Video information
-				console.log('ab');
 				var $spc = $(this)[0], // Specific video
 					$duration =$spc.duration, // Video Duration
 					$volume = $spc.volume, // Video volume
@@ -220,7 +219,7 @@ var flag=0;
 				    $playing = false, 
 				    $drop = false,
 				    $begin = false,
-				    $draggingProgress = false,
+				    $draggingProgess = false,
 				    $storevol,	
 				    x = 0, 
 				    y = 0, 
@@ -239,10 +238,9 @@ var flag=0;
 				
 				//alert(progWidth);
 				
-				console.log('aC');
 
 				var bufferLength = function() {
-					//console.log('Buffer: '+$spc.buffered);
+				
 					// The buffered regions of the video
 					var buffered = $spc.buffered;
 					
@@ -280,24 +278,24 @@ var flag=0;
 				if(!progWidth>0){
 					progWidth=340;
 				}
-					//console.log("Courant le temps haut-date IGNORE: "+$ignore);
+					//console.log("Courant le temps haut-date");
 					
 					// The current time of the video based on progress bar position
 					var time = Math.round(($('.progress-bar').width() / progWidth) * $duration);
 					
+					//console.log(time+"---"+$('.progress-bar').width()+"---"+progWidth+"---"+$duration+"---");
 					// The 'real' time of the video
 					var curTime = $spc.currentTime;
-					console.log(time+"---"+$('.progress-bar').width()+"---"+progWidth+"---"+$duration+"---");
 					
 					// Seconds are set to 0 by default, minutes are the time divided by 60
 					// tminutes and tseconds are the total mins and seconds.
 					var seconds = 0,
-						minutes = Math.floor(curTime / 60),
+						minutes = Math.floor(time / 60),
 						tminutes = Math.floor(($duration) / 60),
 						tseconds = Math.floor(($duration) - (tminutes*60));
 					
 					// If time exists (well, video time)
-					//if(time) {
+					if(time) {
 						// seconds are equal to the time minus the minutes
 						seconds = Math.round(time) - (60*minutes);
 						
@@ -311,11 +309,10 @@ var flag=0;
 							}
 						}
 						
-					//} 
+					} 
 					
 					// Updated progress width
 					updProgWidth = (curTime / $duration) * progWidth;
-					//console.log(updProgWidth+"--"+curTime+"--"+ $duration+"--"+progWidth+"--");
 					
 					// Set a zero before the number if its less than 10.
 					if(seconds < 10) { seconds = '0'+seconds; }
@@ -324,7 +321,6 @@ var flag=0;
 					// A variable set which we'll use later on
 					if($ignore != true) {
 						$that.find('.progress-bar').css({'width' : updProgWidth+'px'});
-						console.log($that.find('.progress-bar').css('width')+" la progresse barre, devrait etre"+ updProgWidth+'px');
 						$that.find('.progress-button').css({'left' : (updProgWidth-$that.find('.progress-button').width())+'px'});
 					}
 					
@@ -346,8 +342,7 @@ var flag=0;
 				// When the user clicks play, bind a click event	
 				$('.fa-play,.fa-pause , #media-video, .play-btn , .thumbnail-content').off('click').on('click', function(){arreteDemarre();});
 				//$('#media-video').off('click').on('click', function(){arreteDemarre();});
-				console.log('aD');
-
+				
 				function arreteDemarre(){
 					console.log("arrete demarre");
 					$( "#btn-play-centre" ).hide();
@@ -377,7 +372,7 @@ var flag=0;
 					}
 						if ((navigator.userAgent.indexOf('iPhone') != -1) || (navigator.userAgent.indexOf('iPod') != -1) || (navigator.userAgent.indexOf('iPad') != -1)) {
 					//alert($('source').attr('src'));
-						document.location = $('source').attr('src');
+						document.location = $('source').attr('src');//"http://www.syncstats.com/lookatthis/" + getValue('videofile');
 						} 
 					
 					}
@@ -798,4 +793,58 @@ var flag=0;
 	
 	
 })(jQuery);
+/*
+		//define a progress abstraction
+		function onprogress(vidSource)
+		{
+			
+			var media = document.getElementsByTagName('video')[0];
+//			$('.player').append($('<div></div>').attr("id", "progress"));
 
+			var progress = document.getElementById('progress');
+			//get the buffered ranges data
+			var ranges = [];
+			for(var i = 0; i < media.buffered.length; i ++)
+			{
+				ranges.push([
+					media.buffered.start(i),
+					media.buffered.end(i)
+					]);
+			}
+			
+			//get the current collection of spans inside the container
+			var spans = progress.getElementsByTagName('span');
+			
+			//then add or remove spans so we have the same number as time ranges
+			while(spans.length < media.buffered.length)
+			{
+				progress.appendChild(document.createElement('span'));
+			}
+			while(spans.length > media.buffered.length)
+			{
+				progress.removeChild(progress.lastChild);
+			}
+				
+			//now iterate through the ranges and convert each set of timings
+			//to a percentage position and width for the corresponding span
+			for(var i = 0; i < media.buffered.length; i ++)
+			{
+				spans[i].style.left = Math.round
+				(
+					(100 / media.duration) //the width of 1s
+					* 
+					ranges[i][0]
+				) 
+				+ '%';
+				
+				spans[i].style.width = Math.round
+				(
+					(100 / media.duration) //the width of 1s
+					* 
+					(ranges[i][1] - ranges[i][0])
+				) 
+				+ '%';
+			}
+		}
+		
+*/

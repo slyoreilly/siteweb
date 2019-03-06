@@ -1129,8 +1129,7 @@ div#gradTitre
 	z-index:1;
 }
 
-
-
+
 div#divTitreDoc
 {
 color:#000;
@@ -3190,7 +3189,8 @@ background-color:#888c;
 #video-info > div{
 	float:left; 
 	padding:0 0 5px 0; 
-		width:100%;
+	border-bottom:1px solid #CCC; 
+	width:100%;
 }
 #info-img{
 	float:left; 
