@@ -1116,44 +1116,7 @@ console.log(rSMB.buts[d].video.length);
 							}
 							pVids.id = "https://" + place + "/lookatthis/" + mBut.video[0].fic;
 							pVids.className = "cliquable";
-							$(pVids).on("click",{mBut:mBut},function(event){
-
-                                    $("#contVids").empty();
-                                    construitVid();
-                                    //console.log("Construit vids");
-                                    vidIndex = 0;
-
-                                    strV = event.data.mBut.video[vidIndex];
-                                    //monOverlay = document.createElement('DIV');
-                                    //monOverlay.id = "ecranSombre";
-                                    //document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
-                                    $('.media-box').show();
-
-                                    place = event.data.mBut.video[0].emplacement;
-                                    if (place == null || !strcmp(place, "")) {
-                                        place = "syncstats.com";
-                                      //  document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + event.data.mBut.video[0].fic;
-
-                                    } else {
-                                      //  document.getElementsByTagName('SOURCE')[0].src = "https://" + place + "/lookatthis/" + event.data.mBut.video[0].fic;
-                                    }
-                                    //console.log(document.getElementsByTagName('SOURCE')[0].src );
-                                    //document.getElementsByTagName('SOURCE')[0].src = "https://"+place+"/lookatthis/" + mBut.video[0].fic;
-                                    document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
-                                    /*$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
-                                        "opacity" : "1",
-                                        "position" : "fixed",
-                                        "left" : "100px",
-                                        "top" : "100px",
-                                        "z-index" : "2000"
-                                    }));
-*/
-
-                                    getInfoVid(vidIndex, event.data.mBut);
-
-
-                                
-							});
+							$(pVids).on("click",{mBut:mBut},montreVideo);
 						}// Fin du If video
 
 						var lesLiens = new Array();
@@ -1364,38 +1327,8 @@ console.log(rSMB.buts[d].video.length);
 										//              pVids.innerHTML= " Video Replay ";
 										pVids.id = "../lookatthis/" + mBut.fic;
 										pVids.className = "cliquable";
-										pVids.onclick = (function(mBut) {
-											return function() {
-												//                  window.location="../lookatthis/" + strV.fic;
-												$("#contVids").empty();
-												construitVid();
-												//console.log("Construit vids clips");
-												vidIndex = 0;
+										$(pVids).on("click",{mBut:mBut},montreVideo);
 
-												strV = mBut.video[vidIndex];
-												/*monOverlay = document.createElement('DIV');
-												monOverlay.id = "ecranSombre";
-												document.getElementsByTagName('BODY')[0].appendChild(monOverlay);*/
-												$('.media-box').show();
-												place = !strcmp(mBut.video[0].emplacement,"5.39.81.14")?"syncstats.ca":mBut.video[0].emplacement;
-//												place = mBut.video[0].emplacement;
-												if (place == null || !strcmp(place, "")) {
-													place = "syncstats.com";
-												}
-												document.getElementsByTagName('SOURCE')[0].src = "https://" + place + "/lookatthis/" + mBut.video[0].fic;
-												document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
-												$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
-													"opacity" : "1",
-													"position" : "fixed",
-													"left" : "100px",
-													"top" : "100px",
-													"z-index" : "2000"
-												}));
-
-												getInfoVid(vidIndex, mBut);
-
-											};
-										})(mBut);
 									}
 								}
 								var lesLiens = new Array();
@@ -1611,37 +1544,8 @@ console.log(rSMB.buts[d].video.length);
 										//              pVids.innerHTML= " Video Replay ";
 										pVids.id = "../lookatthis/" + mBut.fic;
 										pVids.className = "cliquable";
-										pVids.onclick = (function(mBut) {
-											return function() {
-												//                  window.location="../lookatthis/" + strV.fic;
-											//("#contVids").empty();
-												construitVid();
-												//console.log("Construit vids clips");
-												vidIndex = 0;
-
-												strV = mBut.video[vidIndex];
-												monOverlay = document.createElement('DIV');
-												monOverlay.id = "ecranSombre";
-												document.getElementsByTagName('BODY')[0].appendChild(monOverlay);
-												$('.media-box').show();
-												place = !strcmp(mBut.video[0].emplacement,"5.39.81.14")?"syncstats.ca":mBut.video[0].emplacement;
-												if (place == null || !strcmp(place, "")) {
-													place = "syncstats.com";
-												}
-												document.getElementsByTagName('SOURCE')[0].src = "https://" + place + "/lookatthis/" + mBut.video[0].fic;
-												document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
-												/*$('#divCentrale').append($('#contVids').addClass("divDialogue").addClass("visible").css({
-													"opacity" : "1",
-													"position" : "fixed",
-													"left" : "100px",
-													"top" : "100px",
-													"z-index" : "2000"
-												}));*/
-
-												getInfoVid(vidIndex, mBut);
-
-											};
-										})(mBut);
+										$(pVids).on("click",{mBut:mBut},montreVideo);
+									
 									}
 								}
 								var lesLiens = new Array();
@@ -2517,7 +2421,35 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                     detruitDialogue("modalNouvellePun");
                 }));
                
-            }
+			}
+			
+			function montreVideo(event){
+				$("#contVids").empty();
+				construitVid();
+				//console.log("Construit vids");
+				vidIndex = 0;
+
+				strV = event.data.mBut.video[vidIndex];
+				//$('.media-box').show();
+
+				place = event.data.mBut.video[0].emplacement;
+				if (place == null || !strcmp(place, "")) {
+					place = "syncstats.com";
+					  //  document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + event.data.mBut.video[0].fic;
+
+				} else {
+				  //  document.getElementsByTagName('SOURCE')[0].src = "https://" + place + "/lookatthis/" + event.data.mBut.video[0].fic;
+				}
+				console.log(vidIndex);
+						vidSuite(vidIndex, event.data.mBut);
+				document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
+
+
+				getInfoVid(vidIndex, event.data.mBut);
+
+
+
+			}
 
 
 			function nouveauFusillade(domVis) {
@@ -2616,13 +2548,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                                        // document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + event.data.mBut.video[0].fic;
 
                                     }
-                                     /*else {
-                                        document.getElementsByTagName('SOURCE')[0].src = "https://" + place + "/lookatthis/" + event.data.mBut.video[0].fic;
-                                    }
-                                    //console.log(document.getElementsByTagName('SOURCE')[0].src );
-                                    //document.getElementsByTagName('SOURCE')[0].src = "https://"+place+"/lookatthis/" + mBut.video[0].fic;
-                                    document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
-*/
+                                  
 				if ((navigator.userAgent.indexOf('iPhone') != -1) || (navigator.userAgent.indexOf('iPod') != -1) || (navigator.userAgent.indexOf('iPad') != -1)) {
 					//console.log($('source').attr('src'));
 
@@ -2645,7 +2571,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 
 				var sVF = pVF.split(".");
 				var strVid = "videofile=" + sVF[0];
-
+				$('#media-video').get(0).addEventListener('loadedmetadata', function() {
 				 $.ajax({url: url, 
 					type: 'POST',
 					data: strVid,
@@ -2659,6 +2585,9 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 						}
 						$('.video-info p').text("Marqueur: " + infoVid.NomJoueur);
 						if(vPerm<15){
+							///////////////
+							//
+							//	Efface Video
 						    $('#video-info input').remove();
 						    $('#video-info').append($("<input></input>").attr("type","button").val("Effacer ce video").on("click",{fic:mBut.video[vidIndex].fic} ,function(event){
 						      $.ajax({
@@ -2704,8 +2633,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 						//$('#video-info').append($('<div></div>').text('TEST!'));//.append($('<ins></ins>').addClass('adsbygoogle')));
 						$('#pub-google').append($('<ins></ins>').addClass('adsbygoogle').css("display", "inline-block").css("width", "234px").css("height", "60px").attr("data-ad-slot", "9551625935").attr("data-ad-client", "ca-pub-2263794877114969"));
 
-						console.log(vidIndex);
-						vidSuite(vidIndex, mBut);
+
 						//console.log(vidIndex);
 						try {
 						$('ins').each(function() {
@@ -2733,12 +2661,15 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 							});
 						});
 
-  				}});
+				  }});
 
-			
-				if (mBut != undefined && mBut != "") {
+				  if (mBut != undefined && mBut != "") {
 					chargeListeCote(vidIndex, mBut);
 				}
+				});
+
+			
+				
 				
 
 			}
@@ -2885,13 +2816,16 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 
 						// $('<video></video>').addClass('play-item').attr('src',vidsAlt.video[a].fic),
 						$('<div></div>').addClass('thumbnail-wrap').append(/*$('<span></span>').addClass('thumbnail-title').text(vidsAlt.video[a].cam),*/
-						$('<br />'), $('<span></span>').addClass('thumbnail-content').text("Cam " + vidsAlt.video[a].cam), $('<img></img>').addClass('thumbnail-content').attr("src", strThumb).attr("alt", "Video"))).on("click"
+						$('<br />'), $('<span></span>').addClass('thumbnail-content').text("Cam " + vidsAlt.video[a].cam), $('<img></img>').addClass('thumbnail-content').attr("src", strThumb).attr("alt", "Video")))
+						.on("click"
 						,
 						{
 							vids : a,
 							but : mBut
 						},
 						 function(event) {console.log("click thumbnail");
+						 vidSuite(event.data.vids, event.data.but);
+
 							getInfoVid(event.data.vids, event.data.but);
 						}
 						)
@@ -2911,12 +2845,6 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 				vidSVC.load();
 
 				rang = 0;
-				//    console.log(document.getElementById('divCentrale'));
-				//           document.getElementById('divCentrale').appendChild(document.getElementById('contVids'));
-				//console.log("Simone");
-				//				var media = document.getElementsByTagName('video')[0];
-				//$('video').attr('preload', 'auto');
-				//console.log(vidIndex);
 
 				$('.media-box > img, .erreur').remove();
 				$('.erreur').parent().css('background', '#000');
@@ -2934,10 +2862,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 					//console.log(mVid);
 					$('#vidPrincId').attr("src", mVid);
 					$('#parent-erreur').remove();
-					//$('#vidPrincId')  .error(function() {
-					//$( this ).before($('<img></img>').attr("src", "/images/icones/warning.png" ));
-					//	 })
-					//	 .attr( "src", mVid );
+
 
 					for ( a = 0; a < mBut.video.length; a++) {
 						if (a == vidIndex) {
@@ -2994,25 +2919,6 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 
 				}
 
-				/*
-				$("a[rel='load-content']").click(function(e){
-				e.preventDefault();
-				var url=$(this).attr("href");
-				$.get(url,function(data){
-				$(".content .mCSB_container").append(data); //load new content inside .mCSB_container
-				//scroll-to appended content
-				$(".content").mCustomScrollbar("scrollTo","h2:last");
-				});
-				});
-
-				$(".content").delegate("a[href='top']","click",function(e){
-				e.preventDefault();
-				$(".content").mCustomScrollbar("scrollTo",$(this).attr("href"));
-				});
-				*/
-				//////////////////////
-				// FB Override
-
 			};
 
 			function construitVid0() {
@@ -3022,23 +2928,17 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 				})
 				, $('<video/>').attr({
 					id : "media-video",
-					width : "480",
-					height : "320",
+					
 					preload : "auto",
 					autoplay : "true"
 				}).append($('<source/>').attr({
 					id : "vidPrincId",
 					type : "video/mp4"
-				})), $('<div/>').attr('id', 'video-info').addClass('video-info').append($('<div/>').append($('<img>').attr({
-					id : 'info-img',
-					src : "/images/info-img.png"
-				}), $('<span/>').text('Video Info').addClass('title')), $('<p>').addClass('video-content').text('Aimez-vous cette nouvelle interface?')/*,     $('<div>').addClass('share').append($('<img/>').attr('src', "/images/fb.png"), $('<img/>').attr('src', "/images/tweet.png"), $('<img/>').attr('src', "/images/google.png"), $('<img/>').attr('src', "/images/youtube.png"))*/, 
-				$('<span/>').attr('id', 'rateSpan').text('RATING : 3.5 / 5 '), $('<span/>').attr('id', 'nbVuesSpan').text(''), $('<div/>').attr('id', 'pub-google')/*, $('<button/>').attr('type', 'button').addClass('btn-style').append($('<span/>').addClass('comment').text('Write a comment'))*/)/*, $('<span/>').addClass('play-btn').attr("id", "btn-play-centre").append($('<img/>').attr('src', '/images/main-play.png'))*/
+				})), $('<div/>').attr('id', 'video-info').addClass('video-info text-info').append($('<div/>').append( 
+					$('<span/>').text('Video Info').css({"text-transform":"uppercase"}).addClass('title text-info')), $('<p>').addClass('video-content').text('Aimez-vous cette nouvelle interface?')/*,     $('<div>').addClass('share').append($('<img/>').attr('src', "/images/fb.png"), $('<img/>').attr('src', "/images/tweet.png"), $('<img/>').attr('src', "/images/google.png"), $('<img/>').attr('src', "/images/youtube.png"))*/, 
+				$('<span/>').attr('id', 'rateSpan').addClass('text-info').text('RATING : 3.5 / 5  '), $('<span/>').attr('id', 'nbVuesSpan').text(''), $('<div/>').attr('id', 'pub-google')/*, $('<button/>').attr('type', 'button').addClass('btn-style').append($('<span/>').addClass('comment').text('Write a comment'))*/)/*, $('<span/>').addClass('play-btn').attr("id", "btn-play-centre").append($('<img/>').attr('src', '/images/main-play.png'))*/
 				).appendTo('#contVids');
-				// fin de div.append
-				/*
-
-				 */
+			
 				
 			};
 			
@@ -3050,31 +2950,49 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                   $('#modalVideoBut .modal-title').text("Video d'un But");
                   
                   
-			    $('#modalVideoBut .modal-body').append($('<div/>').addClass('media-box').append($('<span/>').addClass('close-btn'), $('<div/>').attr({
-                    id : "media-play-list",
-                    'class' : 'content mCustomScrollbar'
-                })
-                , $('<video/>').attr({
-                    id : "media-video",
-                    width : "480",
-                    height : "320",
-                    preload : "none",
-                    autoplay : "true"
-                }).append($('<source/>').attr({
-                    id : "vidPrincId",
-                    type : "video/mp4"
-                })), $('<div/>').attr('id', 'video-info').addClass('video-info').append($('<div/>').append($('<img>').attr({
-                    id : 'info-img',
-                    src : "/images/info-img.png"
-                }), $('<span/>').text('Video Info').addClass('title')), $('<p>').addClass('video-content').text('Aimez-vous cette nouvelle interface?')/*,     $('<div>').addClass('share').append($('<img/>').attr('src', "/images/fb.png"), $('<img/>').attr('src', "/images/tweet.png"), $('<img/>').attr('src', "/images/google.png"), $('<img/>').attr('src', "/images/youtube.png"))*/, 
-                $('<span/>').attr('id', 'rateSpan').text('RATING : 3.5 / 5 '), $('<span/>').attr('id', 'nbVuesSpan').text(''), $('<div/>').attr('id', 'pub-google')/*, $('<button/>').attr('type', 'button').addClass('btn-style').append($('<span/>').addClass('comment').text('Write a comment'))*/)/*, $('<span/>').addClass('play-btn').attr("id", "btn-play-centre").append($('<img/>').attr('src', '/images/main-play.png'))*/
-                ));
+			    $('#modalVideoBut .modal-body').append(
+					$('<div/>').addClass('media-box video').append(
+						$('<span/>').addClass('close-btn'), 
+						$('<div/>').attr({
+                    		id : "media-play-list",
+                    		'class' : 'content mCustomScrollbar'
+                		}),
+                 		$('<video/>').attr({
+                    		id : "media-video",
+                   			width : "100%",
+                    		preload : "none",
+                    		autoplay : "true"
+                			}).append(
+								$('<source/>').attr({
+                    				id : "vidPrincId",
+                    				type : "video/mp4"
+								})
+							) 
+						
+					),
+					$('<div/>').attr('id', 'video-info').addClass('video-info').append(
+							$('<div/>').append(
+								
+								$('<span/>').text('Video Info').addClass('title text-info').css({"text-transform":"uppercase"})
+											), 
+							$('<p>').addClass('video-content text-info').text('Aimez-vous cette nouvelle interface?'), 
+							$('<span/>').attr('id', 'rateSpan').text('RATING : 3.5 / 5 ').addClass("text-info"), 
+							$('<span/>').attr('id', 'nbVuesSpan').addClass("text-info").text(''), 
+							$('<div/>').attr('id', 'pub-google')
+					)
+						
+				);
                 
-                $('.media-box').addClass("bg-secondary border-dark");
+                $('.media-box').addClass("border-0");
 			}
 			
 			function detruitVid() {
-			     $('#modalVideoBut').modal("hide");
+				 $('#modalVideoBut').modal("hide");
+				 var videoElement = document.getElementById('media-video');
+				videoElement.pause();
+				videoElement.removeAttribute('src'); // empty source
+				videoElement.load();
+				 
 //				$('#contVids').empty();
 			};
 
@@ -3257,7 +3175,8 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 
                 if (getValue('videofile') != "" && getValue('videofile') != undefined) {
                     if (getValue('but') != "" && getValue('but') != undefined && getValue('vidIndex') != "" && getValue('vidIndex') != undefined) {
-                        getInfoVid(getValue('vidIndex'), getValue('but'));
+						vidSuite(getValue('vidIndex'), getValue('but'));
+						getInfoVid(getValue('vidIndex'), getValue('but'));
                     } else {
 						/*monOverlay = document.createElement('DIV');
 						monOverlay.id = "ecranSombre";
@@ -3281,7 +3200,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 
 
 
-				$('#modalVideoBut .modal-content').css("background-color","#666").addClass("border border-dark");
+				$('#modalVideoBut .modal-content').css("background-color","#000").addClass("border-0 ");
 				$('#modalVideoBut .modal-title').addClass("text-info");
                 $('#modalVideoBut .modal-header').addClass("border-0");
                 $('#modalVideoBut .modal-footer').addClass("border-0");
