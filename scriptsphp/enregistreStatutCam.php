@@ -35,7 +35,7 @@ mysqli_query($conn,"SET NAMES 'utf8'");
 mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 	
 
-$dt = new DateTime("now", new DateTimeZone('America/Toronto'));
+$dt = new DateTime("now", new DateTimeZone('GMT'));
 
 $mTemps= $dt->format('Y-m-d H:i:s');
 
