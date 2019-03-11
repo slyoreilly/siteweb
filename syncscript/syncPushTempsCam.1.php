@@ -7,12 +7,15 @@ $database = 'syncsta1_900';
 
 $username = $_POST['username'];
 $recentSync = $_POST['recentSync'];
-$dernierMatch = $_POST['nomMatch'];
+//$dernierMatch = $_POST['nomMatch'];
+$arena = $_POST['arenaId'];
 $heure = $_POST['heure'];
+$maxSec = $_POST['timeout'];
 $avanceServeur = time() * 1000 - $heure;
 $rSServ = $recentSync + $avanceServeur;
 //rrs2: Plus recent sync du telephone corrigé àa l'heure serveur et boosté de 1 s.
 
+// Create connection
 $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
 // Check connection
 if (!$conn) {
@@ -28,13 +31,20 @@ unset($resultChrono);
 unset($rangeeChrono);
 
 $rrs2 = $rSServ + 1000;
+$cpt=0;
+
+
+//echo $rrs2."  ";
+//echo $maxSec."  ";
+//echo $heure."  ";
 
 ////////////////////  Sortir tous les matchs récents de l'utilisateur.
 //
 ///					Pour les évènements, voir plus bas.
 
+do {
 
-
+//echo " -- ". $cpt." -- ";
 
 $chronoRetour = array();
 $matchRetour = array();
@@ -45,27 +55,21 @@ $qMatch = "SELECT * FROM (
     SELECT TableEvenement0.event_id, chrono,TableMatch.matchIdRef,TableMatch.eq_dom,TableMatch.eq_vis,TableMatch.ligueRef,TableMatch.match_id,
 		TableMatch.arenaId,TableMatch.date, '0' as 'type', TableEvenement0.equipe_event_Id as scoringEnd , TableEvenement0.code,TableEvenement0.souscode
 	FROM TableEvenement0 
-	INNER JOIN TableMatch
+			INNER JOIN TableMatch
 				ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)
-			INNER JOIN AbonnementLigue
-				ON (TableMatch.ligueRef=AbonnementLigue.ligueid)
-			INNER JOIN TableUser
-				ON (AbonnementLigue.userid=TableUser.noCompte)
-			WHERE TableEvenement0.chrono>$rrs2 
-				AND TableEvenement0.code=0 
-				AND TableUser.username='{$username}'
+
+			WHERE ((TableEvenement0.chrono>$rrs2 
+				AND (TableEvenement0.code=0 OR TableEvenement0.code=10))
+				)
+				AND TableMatch.arenaId='{$arena}'
 UNION ALL
 	SELECT Clips.clipId, chrono,TableMatch.matchIdRef,TableMatch.eq_dom,TableMatch.eq_vis,TableMatch.ligueRef,TableMatch.match_id,
 		TableMatch.arenaId,TableMatch.date, '5' as 'type', Clips.scoringEnd, '5' as 'code', '0' as 'souscode' 
 	FROM Clips 
-	INNER JOIN TableMatch
+			INNER JOIN TableMatch
 				ON (Clips.matchId=TableMatch.matchIdRef)
-			INNER JOIN AbonnementLigue
-				ON (TableMatch.ligueRef=AbonnementLigue.ligueid)
-			INNER JOIN TableUser
-				ON (AbonnementLigue.userid=TableUser.noCompte)
 			WHERE Clips.chrono>$rrs2 
-				AND TableUser.username='{$username}' ) t
+				AND TableMatch.arenaId='{$arena}') t 
 
 
 ORDER BY  matchIdRef, chrono";
@@ -192,51 +196,7 @@ foreach($matchPeriode as $key=>$unMatch){
 }
 
 
-				
-					
-$qLigues = "SELECT * FROM Ligue
-			INNER JOIN AbonnementLigue
-				ON (Ligue.ID_Ligue=AbonnementLigue.ligueid)
-			INNER JOIN TableUser
-				ON (AbonnementLigue.userid=TableUser.noCompte)
-			WHERE  TableUser.username='{$username}'";
-					
-				
-					
-						mysqli_query($conn,"SET SQL_BIG_SELECTS=1");
-					$resultLigues = mysqli_query($conn, $qLigues) or die(mysqli_error($conn) . $qLigues);							
 
-					$vecLigues = array();
-					$IL2=0;
-while($r = mysqli_fetch_array($resultLigues)) {
-
-    $vecLigues[]=$r;
-    $vecLigues[$IL2]['ligueId']=$r['ID_Ligue'];
-    $vecLigues[$IL2]['nomLigue']=$r['Nom_Ligue'];
-    $IL2++;
-    }
-					
-										
-$IM = 0;
-$IC = 0;
-$IL =0;// compteur ligue
-$IE =0;// conpteur équipe
-$IM2 =0;// compteur match
-$trouve = false;
-
-
-$matchOK = array();
-$Ligues = array();
-$Equipes = array();
-$matchs = array();
-			$video=array();
-//////////////////////////////     Pour les matchs qu'on vient de trouver
-//////////////////////////////		On classe quelques infos: équipes, ligues, ....
-//////////////////////////////		On trouve les buts marqués
-
-
-//$nouveauxTemps = array();
-$nouveauxIndices = array();
 $repSite = array();
 
 	$repSite['match']=array();
@@ -244,11 +204,28 @@ $repSite = array();
 	$repSite['video']=array();
 
 
-
 $repSite['heure'] = time();
+$repSite['matchPeriode'] = $matchPeriode;
+//$repSite['ligues'] = $Ligues;
+//$repSite['ligues'] =$vecLigues;
+//$repSite['equipes'] = $Equipes;
+$repSite['matchs'] = $matchs;
+//$repSite['info']=$resultMatch;
+if($IC==0){
+	$mSleep = sleep(5);
+	flush();
+	$cpt = $cpt+5000;
 
-$repSite['matchPeriode'] =$matchPeriode;
-$repSite['ligues'] =$vecLigues;
+	
+}
+
+//$repSite['IC'] =$IC;
+//$repSite['cpt'] =$cpt;
+//echo " -!- ". $maxSec." -!- ";
+
+$comp =$maxSec-30000;
+}
+ while (($IC==0)&&($cpt<$comp));
 
 
 //echo json_encode($Sommaire);
