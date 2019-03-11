@@ -139,22 +139,8 @@ $strQuery = "
 SELECT TableEvenement0.*, TableEquipe.nom_equipe,TableEquipe.ficId, 								
 								 TableJoueur.NomJoueur, TableJoueur.NumeroJoueur ,TableJoueur.ficIdPortrait 
 				FROM TableEvenement0 				
-								
-								
-					INNER JOIN ( 			
-						SELECT equipeId,joueurId FROM abonJoueurEquipe		
-						WHERE		
-						debutAbon<='{$dateAbon}'		
-							AND finAbon>'{$dateAbon}') AS abJoEq	
-						 ON (TableEvenement0.joueur_event_ref=abJoEq.joueurId)		
-					INNER JOIN ( 			
-						SELECT equipeId,ligueId, permission FROM abonEquipeLigue 		
-						WHERE		
-						debutAbon<='{$dateAbon}'		
-							AND finAbon>'{$dateAbon}' AND permission<31) AS abEqLi	
-						 ON (abJoEq.equipeId=abEqLi.equipeId AND TableEvenement0.equipe_event_id=abEqLi.equipeId)		
 					INNER JOIN TableEquipe			
-						 ON (abJoEq.equipeId=TableEquipe.equipe_id) 		
+						 ON (TableEvenement0.equipe_event_id=TableEquipe.equipe_id) 		
 						 	INNER JOIN TableMatch 	
 						 ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)		
 					INNER JOIN TableJoueur 			
@@ -166,6 +152,21 @@ SELECT TableEvenement0.*, TableEquipe.nom_equipe,TableEquipe.ficId,
 						AND code<10		
 						GROUP BY event_id		
 ";
+/*
+					INNER JOIN ( 			
+						SELECT equipeId,joueurId FROM abonJoueurEquipe		
+						WHERE		
+						debutAbon<='{$dateAbon}'		
+							AND finAbon>'{$dateAbon}') AS abJoEq	
+						 ON (TableEvenement0.joueur_event_ref=abJoEq.joueurId)		
+					INNER JOIN ( 			
+						SELECT equipeId,ligueId, permission FROM abonEquipeLigue 		
+						WHERE		
+						debutAbon<='{$dateAbon}'		
+							AND finAbon>'{$dateAbon}' AND permission<31) AS abEqLi	
+						 ON (abJoEq.equipeId=abEqLi.equipeId AND TableEvenement0.equipe_event_id=abEqLi.equipeId)	
+*/
+
 //echo $strQuery;
 
 mysqli_query($conn,"SET SQL_BIG_SELECTS=1");
