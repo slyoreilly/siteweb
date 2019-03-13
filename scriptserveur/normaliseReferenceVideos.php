@@ -78,6 +78,37 @@ or die(mysqli_error($conn));
 
 }
 
+$rVideo = mysqli_query($conn, "SELECT * FROM Video
+where reference =0 and type=0 ORDER By videoId ASC LIMIT 0,10
+") 
+//WHERE (equipe_event_id = 5 or equipe_event_id =6 or equipe_event_id =10) and tempChrono>10000")
+or die(mysqli_error($conn));
+ while($video=mysqli_fetch_array($rVideo))
+{
+       $rEvent = mysqli_query($conn, "
+           SELECT * FROM TableEvenement0
+           INNER JOIN TableMatch
+           on (TableEvenement0.match_event_id=TableMatch.matchIdRef)
+                where match_id='{$Video['nomMatch']}' AND reference =0 and type=0 AND chrono<'{$Video['chrono']}' ORDER BY chrono DESC Limit 0,1
+        ") ;
+
+
+
+    while($event=mysqli_fetch_array($rEvent))
+    {
+
+        if(abs($event['chrono']-$Video['chrono'])<20000){
+                mysqli_query($conn, "
+                UPDATE `Video` SET `reference`='{$event['event_id']} where videoId='{$Video['videoId']}"
+                );
+
+        }
+
+	    echo $Video['videoId']."</br>";
+    }
+
+}
+
 ?>
 
 
