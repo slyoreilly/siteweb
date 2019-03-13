@@ -136,15 +136,21 @@ $dmts = strtotime($dernierMatch)*1000;
 //	 match_event_id = '{$lesMatchs[$Im]}' AND
 $strQuery = "
 
-SELECT TableEvenement0.*, TableEquipe.nom_equipe,TableEquipe.ficId, 								
+SELECT TableEvenement0.*, abJoEq.nom_equipe,abJoEq.ficId, 								
 								 TableJoueur.NomJoueur, TableJoueur.NumeroJoueur ,TableJoueur.ficIdPortrait 
-				FROM TableEvenement0 				
-					INNER JOIN TableEquipe			
-						 ON (TableEvenement0.equipe_event_id=TableEquipe.equipe_id) 		
-						 	INNER JOIN TableMatch 	
-						 ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)		
+				FROM TableEvenement0 		
+					INNER JOIN TableMatch 	
+						 ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)
 					INNER JOIN TableJoueur 			
-						 ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id)		
+						 ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id)	
+					LEFT JOIN ( 			
+						SELECT equipeId,joueurId, TableEquipe.nom_equipe, TableEquipe.ficId FROM abonJoueurEquipe
+                        LEFT JOIN TableEquipe			
+							ON (abonJoueurEquipe.equipeId=TableEquipe.equipe_id)
+						WHERE		
+							debutAbon<='{$dateAbon}'		
+								AND finAbon>'{$dateAbon}') AS abJoEq	
+					ON (TableJoueur.joueur_id=abJoEq.joueurId)			
 						WHERE		
 						  TableMatch.ligueRef = 	{$getLigue}		
 						AND chrono>'{$pmts}'		
