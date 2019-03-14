@@ -2129,7 +2129,17 @@ console.log(rSMB.buts[d].video.length);
 				trouveM = 0;
 				trouveP1 = 0;
 				trouveP2 = 0;
-				lequipe.joueurs.sort(function(a,b){if( b.numero==a.numero){return b.nom-a.nom}else{return b.numero-a.numero}});
+				lequipe.joueurs.sort(
+					function(a,b){if(parseInt(a.numero) == parseInt(b.numero))  //Si les numeros sont différents
+									{
+										return a.nom.toString().toLowerCase().localeCompare(b.nom.toString().toLowerCase());
+									}
+								else
+									{return parseInt(a.numero)- parseInt(b.numero);}
+						}
+						);
+
+
 				for ( a = 0; a < lequipe.joueurs.length; a++) {
 					opt = $('<option></option>').val(lequipe.joueurs[a].joueurId).text( lequipe.joueurs[a].numero + " - " + lequipe.joueurs[a].nom);
 					//	vecMarqId[a]=lequipe.joueurs[a].joueurId;
