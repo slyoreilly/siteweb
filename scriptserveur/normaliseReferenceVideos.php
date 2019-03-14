@@ -50,7 +50,7 @@ mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 
 $rVideo = mysqli_query($conn, "SELECT * FROM Video
-where reference =0 and type=0 ORDER By chrono ASC LIMIT 0,10000
+where reference =0 and type<>5 ORDER By chrono ASC LIMIT 0,10000
 ") 
 //WHERE (equipe_event_id = 5 or equipe_event_id =6 or equipe_event_id =10) and tempChrono>10000")
 or die(mysqli_error($conn));
@@ -58,12 +58,17 @@ or die(mysqli_error($conn));
 {
        $rEvent = mysqli_query($conn, "
            SELECT * FROM TableEvenement0
-                where (match_event_id='{$Video['nomMatch']}')  AND chrono<('{$Video['chrono']}'+20000) ORDER BY chrono DESC Limit 0,1
+           INNER JOIN TableMatch
+           on (TableEvenement0.match_event_id=TableMatch.matchIdRef)
+                where (match_id='{$Video['nomMatch']}')  AND chrono<('{$Video['chrono']}'+20000) ORDER BY chrono DESC Limit 0,1
         ") or die(mysqli_error($conn)) ;
 
         echo mysqli_num_rows( $rEvent)." dans ".$Video['nomMatch']."</br>";
 if(mysqli_num_rows( $rEvent)==0){
-    echo (abs($event['chrono']-$Video['chrono']))." BAD : noevent at first</br>";
+    echo ( $Video['chrono'])." BAD : noevent at first</br>";
+    mysqli_query($conn, "
+    UPDATE `Video` SET `reference`=null where videoId='{$Video['videoId']}'"
+    );
 }
     else{
 
@@ -72,7 +77,7 @@ if(mysqli_num_rows( $rEvent)==0){
         echo 'processing...'."</br>";
         if(abs($event['chrono']-$Video['chrono'])<20000){
                 mysqli_query($conn, "
-                UPDATE Video SET reference='{$event['event_id']}' where videoId='{$Video['videoId']}'"
+                UPDATE Video SET reference='{$event['event_id']}', type=0 where videoId='{$Video['videoId']}'"
                 ) or die(mysqli_error($conn));
                 echo (abs($event['chrono']-$Video['chrono']))." GOOD</br>";
         
@@ -90,7 +95,7 @@ if(mysqli_num_rows( $rEvent)==0){
     }
     }
 
-}
+}/*
 
 $rVideo = mysqli_query($conn, "SELECT * FROM Video
 where reference =0 and type=0 ORDER By chrono ASC LIMIT 0,10000
@@ -115,8 +120,8 @@ or die(mysqli_error($conn));
             else{
         
 
-    while($event=mysqli_fetch_array($rEvent))
-    {
+         while($event=mysqli_fetch_array($rEvent))
+         {
         echo 'processing.^.^.'."{$event['match_event_id']}"."</br>";
 
         if(abs($event['chrono']-$Video['chrono'])<20000){
@@ -124,11 +129,11 @@ or die(mysqli_error($conn));
                 UPDATE `Video` SET `reference`='{$event['event_id']}' where videoId='{$Video['videoId']}'"
                 );
                 echo (abs($event['chrono']-$Video['chrono']))." GOOD</br>";
-        }else{
-            mysqli_query($conn, "
-            UPDATE `Video` SET `reference`=null where videoId='{$Video['videoId']}'"
-            );
-            echo (abs($event['chrono']-$Video['chrono']))." BAD</br>";
+                }else{
+                     mysqli_query($conn, "
+                     UPDATE `Video` SET `reference`=null where videoId='{$Video['videoId']}'"
+                    );
+                     echo (abs($event['chrono']-$Video['chrono']))." BAD</br>";
         }
 
 	    echo $Video['videoId']."</br>";
@@ -136,10 +141,10 @@ or die(mysqli_error($conn));
 }
 
 }
-echo 'YOYO!!'; 
+echo 'YOYO!!'; */
 
 $rVideo = mysqli_query($conn, "SELECT * FROM Video
-where reference  is NULL  or (reference<1 and type=5) ORDER By chrono ASC LIMIT 0,10000
+where (reference<1 and type=5) or (reference is null) ORDER By chrono ASC LIMIT 0,1000
 ") 
 //WHERE (equipe_event_id = 5 or equipe_event_id =6 or equipe_event_id =10) and tempChrono>10000")
 or die(mysqli_error($conn));
@@ -156,14 +161,14 @@ or die(mysqli_error($conn));
             mysqli_query($conn, "
             UPDATE `Video` SET `reference`=-1 where videoId='{$Video['videoId']}'"
             );
-            echo (abs($event['chrono']-$Video['chrono']))." BAD : noevent at first</br>";
+            echo ($Video['chrono'])." BAD : noevent at first</br>";
         }
             else{
         
 
     while($event=mysqli_fetch_array($rEvent))
     {
-        echo 'processing.^.^.'."{$event['match_event_id']}"."</br>";
+        echo 'processing.^.^.'."{$event['matchId']}"."</br>";
 
         if(abs($event['chrono']-$Video['chrono'])<20000){
                 mysqli_query($conn, "

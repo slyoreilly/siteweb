@@ -2868,7 +2868,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 						if (a == vidIndex) {
 							if (strcmp(mBut.video[a].etat, "archive") == 0) {
 								$('#vidPrincId').parent().before($('<div id="parent-erreur"></div>').append($('<p class="erreur"></p>').text("This video has been put in the archive. It can be automaticaly restored in 24h if you wish to proceed.")).append($('<input type="button" value="Proceed?"></input>').click({
-									videoId : vidsAlt.video[a].videoId,
+									videoId : mBut.video[a].videoId,
 									fic : mBut.video[a].fic
 								}, function(event) {
 									$.post("../scriptserveur/demandeRestoreVideo.php", {

@@ -95,9 +95,9 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 	
 //{
 $qVids = "
-	SELECT nomFichier,camId,Clips.chrono,eval,nbVues,etat,videoId,emplacement, nomThumbnail 
+	SELECT nomFichier,camId,Clips.chrono,eval,nbVues,etat,videoId,emplacement, nomThumbnail,reference 
 		 FROM Video 
-		 LEFT JOIN Clips
+		 INNER JOIN Clips
 		 	ON (Clips.clipId=Video.reference)
   	WHERE (nomMatch = '{$matchID}'  OR nomMatch = '{$matchPourVideos}') AND Video.type=5 ORDER BY clipId, angleOk DESC";
 $resultVids = mysqli_query($conn, $qVids)
@@ -111,21 +111,29 @@ while($rangeeVids=mysqli_fetch_array($resultVids))
 			$unClip=array();
 			$unClip['chrono']=$rangeeVids['chrono'];
 			$unClip['video']=array();
+			
 			array_push($clips,$unClip);
 			
 		}
 		$unVideo=array();
 
 		$unVideo['fic']=$rangeeVids['nomFichier'];
-		$unVideo['cam']=$rangeeVids['cam'];
+		$unVideo['cam']=$rangeeVids['camId'];
 		$unVideo['eval']=$rangeeVids['eval'];
 		$unVideo['nbVues']=$rangeeVids['nbVues'];
 		$unVideo['etat']=$rangeeVids['etat'];
 		$unVideo['videoId']=$rangeeVids['videoId'];
 		$unVideo['emplacement']=$rangeeVids['emplacement'];
 		$unVideo['thumbnail']=$rangeeVids['nomThumbnail'];
-
+		array_push($unClip['video'],$unVideo);
+//		array_push($clips,$unClip);
 		$bufEvent=$rangeeVids['reference'];
+//		array_push($unClip['video'],$unVideo);
+		end($clips);
+		$key = key($clips);
+		$clips[$key]=$unClip;
+		reset($clips);
+
 		}
 
 
@@ -134,6 +142,7 @@ $Sommaire = array();
 $Sommaire['clips']=$clips;
 $Ibuts = 0;
 $Sommaire['matchID']=$matchID;
+$Sommaire['matchId']=$matchPourVideos;
 $Sommaire['date']=$mDate;
 $Sommaire['eqDom']=$mEqDom;
 $Sommaire['eqVis']=$mEqVis;
@@ -145,8 +154,9 @@ $Sommaire['eqVisId']=$mEqVisId;
 	TableEvenement0.event_id,
     TableEvenement0.souscode,
     TableEvenement0.chrono,
-    TableEvenement0.souscode,
+    TableEvenement0.joueur_event_ref,
     TableEquipe.nom_equipe,
+    TableEquipe.equipe_id,
     Passeur1.joueur_event_ref AS passeur1Id,
     Passeur1.NomJoueur AS passeur1,
     Passeur1.NumeroJoueur AS noPasseur1,
@@ -256,14 +266,21 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 		$unVideo=array();
 
 
-		$unVideo['fic']=$rangeeVids['nomFichier'];
-		$unVideo['cam']=$rangeeVids['cam'];
-		$unVideo['eval']=$rangeeVids['eval'];
-		$unVideo['nbVues']=$rangeeVids['nbVues'];
-		$unVideo['etat']=$rangeeVids['etat'];
-		$unVideo['videoId']=$rangeeVids['videoId'];
-		$unVideo['emplacement']=$rangeeVids['emplacement'];
-		$unVideo['thumbnail']=$rangeeVids['nomThumbnail'];
+		$unVideo['fic']=$rangeeEv['nomFichier'];
+		$unVideo['cam']=$rangeeEv['camId'];
+		$unVideo['eval']=$rangeeEv['eval'];
+		$unVideo['nbVues']=$rangeeEv['nbVues'];
+		$unVideo['etat']=$rangeeEv['etat'];
+		$unVideo['videoId']=$rangeeEv['videoId'];
+		$unVideo['emplacement']=$rangeeEv['emplacement'];
+		$unVideo['thumbnail']=$rangeeEv['nomThumbnail'];
+
+		array_push($unBut['video'],$unVideo);
+		end($buts);
+		$key = key($buts);
+		$buts[$key]=$unBut;
+		reset($buts);
+		
 
 	}
 
@@ -274,7 +291,6 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 //////////////////////////////////////////////
 // Section Pun.
 $SomPun = array();
-$JSONstring .="\"punitions\": ";
 $IPun=0;
 $resultPun = mysqli_query($conn,
 "SELECT TableEvenement0.*, TableJoueur.NomJoueur, TableEquipe.nom_equipe 
