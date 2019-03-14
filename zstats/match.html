@@ -2129,6 +2129,7 @@ console.log(rSMB.buts[d].video.length);
 				trouveM = 0;
 				trouveP1 = 0;
 				trouveP2 = 0;
+				lequipe.joueurs.sort(function(a,b){if( b.numero==a.numero){return b.nom-a.nom}else{return b.numero-a.numero}});
 				for ( a = 0; a < lequipe.joueurs.length; a++) {
 					opt = $('<option></option>').val(lequipe.joueurs[a].joueurId).text( lequipe.joueurs[a].numero + " - " + lequipe.joueurs[a].nom);
 					//	vecMarqId[a]=lequipe.joueurs[a].joueurId;
@@ -2868,7 +2869,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 						if (a == vidIndex) {
 							if (strcmp(mBut.video[a].etat, "archive") == 0) {
 								$('#vidPrincId').parent().before($('<div id="parent-erreur"></div>').append($('<p class="erreur"></p>').text("This video has been put in the archive. It can be automaticaly restored in 24h if you wish to proceed.")).append($('<input type="button" value="Proceed?"></input>').click({
-									videoId : vidsAlt.video[a].videoId,
+									videoId : mBut.video[a].videoId,
 									fic : mBut.video[a].fic
 								}, function(event) {
 									$.post("../scriptserveur/demandeRestoreVideo.php", {
