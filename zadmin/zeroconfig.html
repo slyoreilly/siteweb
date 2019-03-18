@@ -20,34 +20,34 @@
 			gereLangue();
 		</script>
 		<script type="text/javascript">
+
+
+
+
+		/////////////////////////////////// Model-View-Controller.
+
+
+
+		//MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+		//
+		//		Model
+		//
+		//
+
+
+
 			function getJSONJoueursEquipes(equipeId, ligueId) {
-				//			return function(){
 
-				var requete_ajax = new XMLHttpRequest();
-
-				var url = "/stats2/joueursEquipeLigue2JSON.php";
-
-				var strEquipeId = "equipeId=" + equipeId;
-				var strLigueId = "ligueId=" + ligueId;
-				params = strLigueId + '&' + strEquipeId;
-				url = url + "?" + params;
-				//requete_ajax.send(null);
-				//	return requete_ajax.responseText;
-
-				requete_ajax.open('POST', url, false);
-				//				requete_ajax.send(null);
-
-				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				requete_ajax.setRequestHeader("Content-length", params.length);
-				requete_ajax.setRequestHeader("Connection", "close");
-
-				requete_ajax.send(params);
-				//				requete_ajax.send(null);
-
-				//				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
-				//					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-
-				cJSON = eval('(' + requete_ajax.responseText + ')');
+				$.ajax({
+                                        url : "/stats2/joueursEquipeLigue2JSON.php",
+                                        type : "POST",
+                                        data : {
+                                            equipeId :equipeId,
+											ligueId:window.ligueId
+                                        },
+                                        dataType : "html",
+                                        success : function(response) {
+                                            cJSON = eval('(' + response + ')');
 				divLigne2=document.createElement('DIV');
 				selAltJS = document.createElement('SELECT');
 				selAltJS.id = "selAlt";
@@ -67,11 +67,10 @@
 				selAltJS.onchange = function() {
 					boiteAlt(window.cJSON.equipe[selAltJS.options[selAltJS.selectedIndex].value]);
 				}
-				//				}
-				//				}
-				//				alert(JSON.stringify(listeMatch));
-				//	return vecMAV;
-				//				}
+                                        }
+                            });
+
+
 			}
 
 			function setMatchAVenir(demandeRecharge) {
@@ -104,21 +103,10 @@
 
 				requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-						//alert(requete_ajax.responseText);
-						tmpMavId = window.mavId;
-						window.mavId = requete_ajax.responseText;
-						if (tmpMavId == -1) {
-							boiteAlt(window.cJSON.equipe[window.cJSON.equipe.length - 1]);
-							getMatchAVenir();
-							//alert("tmpMavId=-1, vecMav: " + JSON.stringify(window.vecMAV));
-							//							creerListeMatchs(window.vecMAV, requete_ajax.responseText);
-
+						if(demandeRecharge){
 							RMMatchEnCours();
-
-						} else {
-							getMAVAsync(demandeRecharge);
 						}
-						//window.location.reload(true);
+
 					}
 				};
 				requete_ajax.send(params);
@@ -130,29 +118,22 @@
 			}
 
 			function getMatchAVenir() {
-				//			return function(){
 
-				var requete_ajax = new XMLHttpRequest();
+				$.ajax({
+                                        url : "/stats2/getMatchAVenir.php",
+                                        type : "POST",
+                                        data : {
+                                            mavId :window.mavId,
+											ligueId: window.ligueId
+                                        },
+                                        dataType : "html",
+                                        success : function(response) {
+                                            window.vecMAV = eval('(' + response + ')');
+                                            window.match=vecMAV[0];
+											RMMatchEnCours();
+                                        }
+                            });
 
-				var url = "/stats2/getMatchAVenir.php";
-
-				//var strMAVId = "mavId=" + window.mavId;
-				var strLigueId = "ligueId=" + window.ligueId;
-				//params = strMAVId + '&' + strLigueId;
-				params = strLigueId;
-				requete_ajax.open('POST', url, false);
-				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				requete_ajax.send(params);
-				window.vecMAV = eval('(' + requete_ajax.responseText + ')');
-				var k = 0;
-				listeMatch = new Array();
-				while (k < vecMAV.length) {
-					listeMatch[k] = vecMAV[k].mavId;
-					k++;
-				}
-				//				alert(JSON.stringify(listeMatch));
-				//	return vecMAV;
-				//}
 			}
 
 			function getArbitres() {
@@ -398,296 +379,13 @@ function getEvaluation(joueurId){
 				
 			}
 			
+//VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV
+//
+//	View
+//
+//
 
-function trouveEval(critereId){
-	
-	for(var a=0;a<lesEvals.length;a++)
-	{
-		if(lesEvals[a].critereId==critereId&&window.usager.id==lesEvals[a].evaluateur)
-		{return lesEvals[a].valeur;}
-		
-	}
-	return "";
-}
-
-			function evaluer(joueurId) {
-//					alert('Doh');
-					parent=document.getElementById('divDialogue');
-					parent.className="visible";
-					listeCrit = document.getElementById('listeCriteres');
-					for(var a=0;a<lesCriteres.length;a++)
-					{
-						unJ = getJoueurDeJId(joueurId);
-						contexteStr="joueur";
-						if(unJ.position.toLowerCase()=='a'||unJ.position.toLowerCase()=='d')
-						{contexteStr="joueur";}
-						if(unJ.position.toLowerCase()=='g')
-						{contexteStr="gardien";}
-//						alert(lesCriteres[a].contexte);
-						if(lesCriteres[a].contexte==contexteStr)
-						{
-						divSimpleCrit=document.createElement('DIV');
-						divSimpleCrit.className="critere";	
-						pA = document.createElement('P');
-						pA.innerHTML=lesCriteres[a].nom_fr+ " : (" +lesCriteres[a].echelleBas+" à "+lesCriteres[a].echelleHaut+")";
-						inA=document.createElement('INPUT');
-						inA.type="text";
-						inA.id="input_"+lesCriteres[a].critereId;
-						inA.value=trouveEval(lesCriteres[a].critereId);
-						//alert(lesCriteres[a].nom_fr);
-						divSimpleCrit.appendChild(pA);
-
-//						divSimpleCrit.appendChild(document.createElement('BR'));
-						divSimpleCrit.appendChild(inA);
-						
-						listeCrit.appendChild(divSimpleCrit);
-						}
-					}
-				}
-			function construitEquipeDAlignement(tMavId) {
-				//	return function(){
-				var k = 0;
-				boule = 0;
-				//	alert("On construit!");
-				while (k < window.vecMAV.length && boule == 0) {
-					if (window.vecMAV[k].mavId == tMavId) {
-						boule = 1;
-					} else {
-						k++;
-					}
-				}
-				//					alert("Match non trouvé!");
-				//	alert(JSON.stringify(window.cJSON));
-
-				window.jsonEqDom = new Array();
-				window.jsonEqVis = new Array();
-
-				if (!boule && tMavId == -1) {
-					window.jsonEqDom = JSON.parse(JSON.stringify(window.cJSON.equipe[0]));
-					window.jsonEqVis = JSON.parse(JSON.stringify(window.cJSON.equipe[1]));
-				} else {
-					var iDom = 0;
-					var iVis = 0;
-					for ( i = 0; i < window.cJSON.equipe.length; i++) {
-						if (window.vecMAV[k].eqDom == window.cJSON.equipe[i].equipeId) {
-							window.jsonEqDom = JSON.parse(JSON.stringify(window.cJSON.equipe[i]));
-							iDom = i;
-						}
-						if (window.vecMAV[k].eqVis == window.cJSON.equipe[i].equipeId) {
-							window.jsonEqVis = JSON.parse(JSON.stringify(window.cJSON.equipe[i]));
-							iVis = i;
-						}
-					}
-				}
-
-				//		alert("Equipes assignées!");
-				var presence;
-				var vM = JSON.parse(JSON.stringify(window.vecMAV));
-
-				window.jsonEqDom.joueur = new Array();
-				var m = 0;
-				var dansAlign = false;
-				//				alert(iDom);
-				//				alert(JSON.stringify(window.cJSON.equipe[iDom]));
-
-				while (m < window.cJSON.equipe[iDom].joueur.length) {
-					var n = 0;
-					dansAlign = false;
-					while (n < vM[k].alignementDom.length && dansAlign == false) {
-						if (vM[k].alignementDom[n] == window.cJSON.equipe[iDom].joueur[m].joueurId) {
-							dansAlign = true;
-							window.jsonEqDom.joueur.push(window.cJSON.equipe[iDom].joueur[m]);
-							window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = "present";
-						}
-						n++;
-					}
-					if (dansAlign == false) {
-						window.jsonEqDom.joueur.push(window.cJSON.equipe[iDom].joueur[m]);
-						window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = "absent";
-					}
-					m++;
-				}
-
-				var n = 0;
-				dansAlign = false;
-				while (n < vM[k].alignementDom.length) {
-					m = 0
-					dansAlign = false;
-					while (m < window.jsonEqDom.joueur.length && dansAlign == false) {
-						if (vM[k].alignementDom[n] == window.jsonEqDom.joueur[m].joueurId) {
-							dansAlign = true;
-						}
-						m++;
-					}
-					if (!dansAlign) {
-
-						for ( j = 0; j < window.cJSON.equipe.length; j++) {
-							m = 0;
-							while (m < window.cJSON.equipe[j].joueur.length) {
-								if (window.cJSON.equipe[j].joueur[m].joueurId == vM[k].alignementDom[n]) {
-									window.jsonEqDom.joueur.push(window.cJSON.equipe[j].joueur[m]);
-									window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = "remplace";
-								}
-								m++;
-							}
-						}
-
-					}
-					n++;
-				}
-				//	strJDom=window.vecMAV[k].alignementDom;
-				//////////////////////////////////  Fin Domicile, début visiteur.
-
-				window.jsonEqVis.joueur = new Array();
-				var m = 0;
-				var dansAlign = false;
-				while (m < window.cJSON.equipe[iVis].joueur.length) {
-					var n = 0;
-					dansAlign = false;
-					while (n < vM[k].alignementVis.length && dansAlign == false) {
-						if (vM[k].alignementVis[n] == window.cJSON.equipe[iVis].joueur[m].joueurId) {
-							dansAlign = true;
-							window.jsonEqVis.joueur.push(window.cJSON.equipe[iVis].joueur[m]);
-							window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = "present";
-						}
-						n++;
-					}
-					if (dansAlign == false) {
-						window.jsonEqVis.joueur.push(window.cJSON.equipe[iVis].joueur[m]);
-						window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = "absent";
-					}
-					m++;
-				}
-
-				var n = 0;
-				dansAlign = false;
-				while (n < vM[k].alignementVis.length) {
-					m = 0
-					dansAlign = false;
-					while (m < window.jsonEqVis.joueur.length && dansAlign == false) {
-						if (vM[k].alignementVis[n] == window.jsonEqVis.joueur[m].joueurId) {
-							dansAlign = true;
-						}
-						m++;
-					}
-					if (!dansAlign) {
-
-						for ( j = 0; j < window.cJSON.equipe.length; j++) {
-							m = 0;
-							while (m < window.cJSON.equipe[j].joueur.length) {
-								if (window.cJSON.equipe[j].joueur[m].joueurId == vM[k].alignementVis[n]) {
-									window.jsonEqVis.joueur.push(window.cJSON.equipe[j].joueur[m]);
-									window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = "remplace";
-								}
-								m++;
-							}
-						}
-
-					}
-					n++;
-				}
-
-				//alert(JSON.stringify(window.jsonEqDom));
-				//alert(JSON.stringify(window.jsonEqVis));
-
-				//}
-			}
-
-			function getEquipeActive() {
-				//liste d'equipeId ainsi constituée: équipe active, eqDom, eqVis, eqAlt.
-
-				if (document.getElementById("divSpinDom").className == "actif") {//alert(window.eq[0]);
-					return window.eq[0];
-				} else {//alert(window.eq[1]);
-					return window.eq[1];
-				}
-			}
-
-			function JoueurAEquipe(joueurIn) {
-				// On vient de grandir le vecteur...
-				if (getEquipeActive() == window.eq[0]) {
-					window.jsonEqDom.joueur[window.jsonEqDom.joueur.length] = JSON.parse(joueurIn);
-					window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = 'remplace';
-					boiteDomVis2(1, window.jsonEqDom);
-				} else {
-					window.jsonEqVis.joueur[window.jsonEqVis.joueur.length] = JSON.parse(joueurIn);
-					window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = 'remplace';
-					boiteDomVis2(2, window.jsonEqVis);
-				}
-				boiteAlt(getEquipeDEqId(window.eq[2]));
-				setMatchAVenir(false);
-				//}
-			}
-			
-				function JoueurAEquipeDefinie(joueurIn,domVis) {
-				// On vient de grandir le vecteur...
-				if (domVis == 1) {
-					window.jsonEqDom.joueur[window.jsonEqDom.joueur.length] = JSON.parse(joueurIn);
-					window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = 'remplace';
-					boiteDomVis2(1, window.jsonEqDom);
-				} else {
-					window.jsonEqVis.joueur[window.jsonEqVis.joueur.length] = JSON.parse(joueurIn);
-					window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = 'remplace';
-					boiteDomVis2(2, window.jsonEqVis);
-				}
-				boiteAlt(getEquipeDEqId(window.eq[2]));
-				setMatchAVenir(false);
-				//}
-			}
-
-			function classeJoueursNom(vecJoueurs) {
-				//				return function() {
-				vecJoueurs.sort(function(a, b) {
-					return ((a.nomJoueur == b.nomJoueur) ? 0 : ((a.nomJoueur.toLowerCase() > b.nomJoueur.toLowerCase()) ? 1 : -1 ));
-				});
-				//			}
-			};
-
-			function toggleJoueur(joueurOut, equipe, boiteOut) {
-				return function() {
-					presence = equipe.joueur[joueurOut].presence
-					if (presence == 'remplace') {
-						switch(boiteOut) {
-							case 1:
-								window.jsonEqDom.joueur.splice(joueurOut, 1)
-								break;
-							case 2:
-								window.jsonEqVis.joueur.splice(joueurOut, 1)
-								break;
-
-						}
-					} else if (presence == 'present') {
-						switch(boiteOut) {
-							case 1:
-								window.jsonEqDom.joueur[joueurOut].presence = 'absent';
-								break;
-							case 2:
-								window.jsonEqVis.joueur[joueurOut].presence = 'absent';
-								break;
-
-						}
-					} else if (presence == 'absent') {
-						switch(boiteOut) {
-							case 1:
-								window.jsonEqDom.joueur[joueurOut].presence = 'present';
-								break;
-							case 2:
-								window.jsonEqVis.joueur[joueurOut].presence = 'present';
-								break;
-
-						}
-					}
-					boiteDomVis2(boiteOut, equipe);
-					setMatchAVenir(false);
-
-					//	alert(joueurIn);
-				}
-			}
-
-			function RotateSpinner(spinnerId, up) {
-				document.getElementById(spinnerId).value = up ? parseInt(document.getElementById(spinnerId).value) + 1 : parseInt(document.getElementById(spinnerId).value) - 1;
-			}
-
+/*
 			function RMMatchEnCours() {
 				var trouve = false;
 				for (var a = 0; a < window.vecMAV.length; a++) {
@@ -701,18 +399,18 @@ function trouveEval(critereId){
 
 				}
 
-			}
+			}*/
 
-			function RafraichiMatch2(mUnitVecMAV) {
+			function RMMatchEnCours(/*mUnitVecMAV*/) {
 				//alert("MAV RM2: " + JSON.stringify(mUnitVecMAV));
 
 				jMAV = new Array();
 				gardien = new Array();
 				eq = new Array();
-				mavEnCours = mUnitVecMAV;
+				mavEnCours = match;
 				//				alert(JSON.stringify(mavEnCours));
 				//				return function(){
-				mavId = mUnitVecMAV.mavId;
+				mavId = mavEnCours.mavId;
 				//				creerListeMatchs(window.vecMAV, mavId);
 
 				construitEquipeDAlignement(mavId);
@@ -771,8 +469,8 @@ function trouveEval(critereId){
 				logoEquipe2.src = "/admin/afficheImage.php?ficId=" + mEqVis.ficId;
 				divEquipe2.appendChild(logoEquipe2);
 
-				document.getElementById("dateDeb").value = mUnitVecMAV.date;
-				document.getElementById("dateFin").value = mUnitVecMAV.dateFin;
+				document.getElementById("dateDeb").value = mavEnCours.date;
+				document.getElementById("dateFin").value = mavEnCours.dateFin;
 
 				divArbJS = document.getElementById('divArb');
 				/*pArb = document.createElement('P');
@@ -819,432 +517,7 @@ function trouveEval(critereId){
 
 			}
 
-			/*
-			 function effaceMatch(aEffacer) {
 
-			 var requete_ajax = new XMLHttpRequest();
-
-			 var url = "/scriptsphp/effaceMatchAVenir.php";
-			 var strMAVId = "mavId=" + window.mavId;
-			 var params = strMAVId;
-			 //alert("Params a setMatchAVenir" + params);
-			 requete_ajax.open('POST', url, true);
-
-			 //Send the proper header information along with the request
-			 requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			 requete_ajax.setRequestHeader("Content-length", params.length);
-			 requete_ajax.setRequestHeader("Connection", "close");
-
-			 requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
-			 if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-
-			 //alert(requete_ajax.responseText);
-
-			 getMAVAsync(true);
-			 RMMatchEnCours();
-
-			 }
-			 }
-			 requete_ajax.send(params);
-
-			 if (window.listeMatch.length > 0) {
-			 RafraichiMatch2(window.vecMAV[window.vecMAV.length - 1]);
-			 //if (window.perm < 19)
-			 //	optionsEdit(false);
-
-			 }
-			 }
-			 */
-			/*
-			 function optionsEdit(editable) {
-			 try {
-			 detruitNoeud('modDate');
-			 detruitNoeud('selDom');
-			 detruitNoeud('selVis');
-			 detruitNoeud('inFiltreId');
-			 //document.getElementById('tFiltreId').innerHTML = "";
-			 } catch(err) {
-			 }
-			 if (editable) {
-			 divDateJS = document.getElementById('divDate');
-			 modDateJS = document.createElement('INPUT');
-			 modDateJS.type = "button";
-			 modDateJS.value = "...";
-			 modDateJS.id = "modDate";
-			 //					modDateJS.onclick=displayCalendar(document.getElementById('dateDeb'),'yyyy/mm/dd hh:ii',this,true);
-			 modDateJS.onclick = function() {
-			 displayCalendar(document.getElementById('dateDeb'), 'yyyy/mm/dd', this, false);
-			 }
-
-			 divDateJS.appendChild(modDateJS);
-			 videNoeud('divSpinDom');
-			 videNoeud('divSpinVis');
-			 //					divEqDomJS = document.getElementById("divEqDom");
-			 divSpinDomJS = document.getElementById("divSpinDom");
-			 divSpinVisJS = document.getElementById("divSpinVis");
-
-			 selDomJS = document.createElement('SELECT');
-			 selDomJS.id = "selDom";
-			 selDomJS.style.width = "50%";
-			 divSpinDomJS.parentNode.insertBefore(selDomJS, divSpinDomJS);
-			 selVisJS = document.createElement('SELECT');
-			 selVisJS.id = "selVis";
-			 selVisJS.style.width = "50%";
-			 divSpinVisJS.parentNode.insertBefore(selVisJS, divSpinDomJS);
-
-			 opt1 = document.createElement('OPTION');
-			 opt1.innerHTML = window.tl_bouton_Choisir + "...";
-			 opt1.value = -1;
-			 opt2 = document.createElement('OPTION');
-			 opt2.innerHTML = window.tl_bouton_Choisir + "...";
-			 opt2.value = -1;
-
-			 selDomJS.appendChild(opt1);
-			 selVisJS.appendChild(opt2);
-			 //alert(window.eq[0]+"   "+window.eq[1]);
-			 for ( a = 0; a < window.cJSON.equipe.length; a++) {
-			 opt1 = document.createElement('OPTION');
-			 opt1.innerHTML = window.cJSON.equipe[a].nomEquipe;
-			 if (window.cJSON.equipe[a].equipeId == window.eq[0]) {
-			 opt1.selected = true;
-			 dSD = document.getElementById("divSpinDom");
-			 dSD.innerHTML = window.cJSON.equipe[a].nomEquipe;
-			 }
-			 opt1.value = a;
-			 opt2 = document.createElement('OPTION');
-			 if (window.cJSON.equipe[a].equipeId == window.eq[1]) {
-			 opt2.selected = true;
-			 dSV = document.getElementById("divSpinVis");
-			 dSV.innerHTML = window.cJSON.equipe[a].nomEquipe;
-			 }
-			 opt2.innerHTML = window.cJSON.equipe[a].nomEquipe;
-			 opt2.value = a;
-
-			 selDomJS.appendChild(opt1);
-			 selVisJS.appendChild(opt2);
-			 }
-
-			 selDomJS.onchange = function(ev1) {
-			 //					ev1.stopPropagation();
-			 //boiteDomVis2(1, window.cJSON.equipe[selDomJS.options[selDomJS.selectedIndex].value]);
-
-			 document.getElementById("divSpinDom").className = "actif";
-			 document.getElementById("divSpinVis").className = "inactif";
-			 videNoeud('logoDom');
-			 divEquipe = document.getElementById('logoDom');
-			 logoEquipe = document.createElement('IMG');
-			 logoEquipe.id = "imgLogoDom";
-			 logoEquipe.src = "/admin/afficheImage.php?ficId=" + window.cJSON.equipe[selDomJS.options[selDomJS.selectedIndex].value].ficId;
-			 //				divEquipe.onclick = (function(mEq) {return function(){
-			 //					boiteDomVis2(1,mEq);};})(window.jsonEqDom);
-
-			 window.eq[0] = window.cJSON.equipe[selDomJS.options[selDomJS.selectedIndex].value].equipeId;
-			 divEquipe.appendChild(logoEquipe);
-			 setMatchAVenir(true);
-			 }
-			 selVisJS.onchange = function(ev2) {
-			 //					ev2.stopPropagation();
-			 //boiteDomVis2(2, window.cJSON.equipe[selVisJS.options[selVisJS.selectedIndex].value]);
-			 document.getElementById("divSpinVis").className = "actif";
-			 document.getElementById("divSpinDom").className = "inactif";
-			 videNoeud('logoVis');
-			 divEquipe = document.getElementById('logoVis');
-			 logoEquipe = document.createElement('IMG');
-			 logoEquipe.id = "imgLogoVis";
-			 //					divEquipe.onclick = function() {alert('Hey!'); return function(){
-			 //						boiteDomVis2(2,window.jsonEqVis);};};
-			 logoEquipe.src = "/admin/afficheImage.php?ficId=" + window.cJSON.equipe[selVisJS.options[selVisJS.selectedIndex].value].ficId;
-			 divEquipe.appendChild(logoEquipe);
-			 window.eq[1] = window.cJSON.equipe[selVisJS.options[selVisJS.selectedIndex].value].equipeId;
-			 setMatchAVenir(true);
-
-			 }
-			 }// Fin du if editable
-
-			 inFiltre = document.createElement('INPUT');
-			 //tFiltre.id = "tFiltreId";
-			 //document.getElementById('menuEquipeAlt').appendChild(tFiltre);
-			 document.getElementById('menuEquipeAlt').appendChild(inFiltre);
-			 inFiltre.type = "text";
-			 inFiltre.id = "inFiltreId";
-
-			 jQuery(function($) {
-			 $("#inFiltreId").Watermark("Chercher...");
-			 });
-
-			 inFiltre.onkeyup = function() {
-			 var mEq = jQuery.extend(true, {}, getEquipeDEqId(window.eq[2]));
-			 //alert(JSON.stringify(mEq));
-			 //alert(document.getElementById('inFiltreId').value);
-			 var a = 0;
-			 while (a < mEq.joueur.length) {
-			 if (mEq.joueur[a].nomJoueur.toLowerCase().indexOf(document.getElementById('inFiltreId').value.toLowerCase()) == -1)
-			 mEq.joueur.splice(a, 1);
-			 else
-			 a++;
-
-			 }
-			 boiteAlt(mEq);
-			 }
-			 }
-
-			 */
-			/*
-			 function NouveauMatch() {
-			 optionsEdit(true);
-			 window.mavId = -1;
-			 window.jsonEqDom = new Array();
-			 window.jsonEqVis = new Array();
-			 selDomJS = document.getElementById("selDom");
-			 selVisJS = document.getElementById("selVis");
-			 selDomJS.firstChild.selected = true;
-			 selVisJS.firstChild.selected = true;
-			 jMAV = new Array();
-			 gardien = new Array();
-			 eq = new Array();
-
-			 // Les agents libres
-			 //				boiteDomVis(1);
-			 //				boiteDomVis(2);
-			 boiteAlt(window.cJSON.equipe[window.cJSON.equipe.length - 1]);
-
-			 //   RafraichiBoite(3);
-			 //    RafraichiBoite(4);
-			 //				leNom = document.getElementById("matchId");
-			 //				leNom.innerHTML = "Match no" + mavId;
-			 setMatchAVenir(true);
-
-			 }
-			 */
-			function getInfoEquipe(equipe){
-				stats={nbAvant:0,nbDef:0,nbGardien:0,moyEval:0};
-				nbEval=0;
-				totalEval=0;
-				for(i=0;i<equipe.joueur.length;i++)
-				{
-					if(equipe.joueur[i].position.substring(0,1).toLowerCase()=='a'&&(equipe.joueur[i].presence=='present'||equipe.joueur[i].presence=='remplace'))
-					{stats.nbAvant=stats.nbAvant+1;
-						if(equipe.joueur[i].eval!=null)
-						{nbEval++;
-							totalEval+=parseFloat(equipe.joueur[i].eval);}
-					}
-					if(equipe.joueur[i].position.substring(0,1).toLowerCase()=='d'&&(equipe.joueur[i].presence=='present'||equipe.joueur[i].presence=='remplace'))
-					{stats.nbDef++;
-						if(equipe.joueur[i].eval!=null)
-						{nbEval++;
-							totalEval+=parseFloat(equipe.joueur[i].eval);}
-					}
-					if(equipe.joueur[i].position.toLowerCase()=='g'&&(equipe.joueur[i].presence=='present'||equipe.joueur[i].presence=='remplace'))
-					{stats.nbGardien++;
-						if(equipe.joueur[i].eval!=null)
-						{nbEval+=3;
-							totalEval+=3*parseFloat(equipe.joueur[i].eval);}
-					}
-					
-				}
-				stats.moyEval=10*totalEval/nbEval;
-//				alert(totalEval+' '+JSON.stringify(stats));
-				return stats;
-				
-			}
-			
-			function getEquipeDEqId(equipeId) {
-				for ( a = 0; a < window.cJSON.equipe.length; a++) {
-					if (window.cJSON.equipe[a].equipeId == equipeId) {
-						//alert(JSON.stringify())
-						return window.cJSON.equipe[a];
-					}
-				}
-			}
-			
-			function getJoueurDeJId(joueurId) {
-				for ( a = 0; a < window.cJSON.equipe.length; a++) 
-					for ( b = 0; b < window.cJSON.equipe[a].joueur.length; b++) {
-					if (window.cJSON.equipe[a].joueur[b].joueurId == joueurId) {
-						//alert(JSON.stringify())
-						return window.cJSON.equipe[a].joueur[b];
-					}
-				}
-			}
-
-
-			/*			function creerListeMatchs(mVecMAV, mavId) {
-			 var centre = 0;
-			 //alert("mavId: " + mavId + "Dans cLM: " + JSON.stringify(mVecMAV));
-			 mVecMAV.sort(function(a, b) {
-			 var d1 = new Date(a.date);
-			 var d2 = new Date(b.date);
-			 return (d2 - d1)
-			 });
-
-			 var trouve = false;
-			 for ( a = 0; a < mVecMAV.length; a++) {
-			 if (mVecMAV[a].mavId == mavId) {
-			 centre = a;
-			 //alert("Le bon mavId: " + JSON.stringify(mVecMAV[a]));
-			 trouve = true;
-			 }
-			 }
-			 //if (!trouve)
-			 //	alert("Crisse... pas trouvé.");
-			 lM = document.getElementById("listeMatchs");
-			 videNoeud('listeMatchs');
-			 titreLM = document.createElement('P');
-			 titreLM.innerHTML = window.tl_zc_listeMatch;
-			 lM.appendChild(titreLM);
-			 ind = centre;
-			 cBtn = 0;
-			 var ind = ind + 2;
-			 while (cBtn <= 5 && (ind >= (centre - 2))) {
-
-			 if (ind < mVecMAV.length && ind >= 0) {
-			 mBtn = document.createElement('DIV');
-			 divDate = document.createElement('DIV');
-			 divOpt = document.createElement('DIV');
-
-			 //mBtn.type = "BUTTON";
-			 mBtn.id = "btnLM" + ind;
-			 mBtn.style.display = "table";
-			 divDate.id = "divDate" + ind;
-			 divDate.style.cssFloat = "left";
-			 divDate.style.display = "table-cell";
-			 divTDate = document.createElement('p');
-			 divTDate.innerHTML = mVecMAV[ind].date.split(' ')[0];
-			 divTDate.style.margin = "0px";
-			 divDate.appendChild(divTDate);
-			 //						divDate.innerHTML= mVecMAV[ind].date.split(' ')[0];
-			 divOpt.id = "divOpt" + ind;
-			 divOpt.style.display = "table-cell";
-			 divOpt.style.cursor = "pointer";
-			 divOpt.style.marginLeft = "5px";
-			 //divOpt.style.display="block";
-			 divOpt.innerHTML = "&#9660";
-			 if (ind == centre) {
-			 mBtn.className = "btnLMActif";
-			 if (window.perm < 19)
-			 mBtn.style.width = "50%";
-			 } else {
-			 mBtn.className = "btnListeMatchs";
-			 if (window.perm < 19)
-			 mBtn.style.width = "50%";
-			 }
-			 //alert("centre: "+centre+", longueur: "+mVecMAV.length+"ind: "+ind+", vec: "+JSON.stringify( mVecMAV[ind]));
-			 aEnvoyer = mVecMAV[ind];
-			 divDate.onclick = (function(aEnvoyer) {
-			 return function() {
-			 optionsEdit(false);
-			 RafraichiMatch2(aEnvoyer);
-			 };
-			 })(aEnvoyer);
-			 //					 var mDelegue = function(mUnitVecMAV) {RafraichiMatch2(mUnitVecMAV);
-			 // }
-
-			 // mBtn.onclick=function(){mDelegue(mVecMAV[ind]);}
-			 cBtn++;
-			 lM.appendChild(mBtn);
-			 mBtn.appendChild(divDate);
-
-			 if (window.perm <= 19) {
-
-			 divOptPress = document.createElement('DIV');
-			 divOptPress.style.position = "absolute";
-			 divOptPress.style.right = "-25%";
-			 divOptPress.style.top = "-15px";
-			 //divOptPress.style.cursor="pointer";
-			 divOptPress.style.backgroundColor = "#eee";
-			 divOptPress.id = "divOptPress" + ind;
-
-			 divOptPress.style.visibility = "hidden";
-			 divOptPress.style.display = "block";
-			 divOptPress.style.padding = "8px";
-			 divOptPress.style.paddingTop = "15px";
-			 divOptDel = document.createElement('DIV');
-			 divOptDel.style.cursor = "pointer";
-			 divOptEdit = document.createElement('DIV');
-			 divOptEdit.style.cursor = "pointer";
-			 divFerme = document.createElement('DIV');
-			 divFerme.id = "divFerme" + ind;
-			 divFerme.style.cursor = "pointer";
-			 divFerme.style.position = "absolute";
-			 divFerme.style.right = "12%";
-			 divFerme.style.top = "0";
-
-			 divFerme.innerHTML = "X";
-			 divOptPress.appendChild(divFerme);
-			 divOptPress.appendChild(divOptEdit);
-			 divOptPress.appendChild(divOptDel);
-
-			 mBtn.appendChild(divOpt);
-
-			 aEnvoyer = mVecMAV[ind];
-			 mBtn.appendChild(divOptPress);
-			 divOpt.onclick = (function(ind) {
-			 return function() {
-			 document.getElementById("divOptPress" + ind).style.visibility = "visible";
-			 document.getElementById("divOptPress" + ind).style.display = "block";
-			 //detruitNoeud("divOptPress"+ind);
-			 };
-			 })(ind);
-			 divFerme.onclick = (function(ind) {
-			 return function() {
-			 //alert(document.getElementById("divOptPress"+ind).style.visibility);
-			 document.getElementById("divOptPress" + ind).style.visibility = "hidden";
-			 document.getElementById("divOptPress" + ind).style.display = "none";
-			 //alert(document.getElementById("divOptPress"+ind).style.visibility);
-			 //detruitNoeud("divOptPress"+ind);
-			 };
-			 })(ind);
-
-			 divOptEdit.innerHTML = "Modifier";
-			 divOptEdit.onclick = (function(aEnvoyer) {
-			 return function() {
-			 optionsEdit(false);
-			 optionsEdit(true);
-			 RafraichiMatch2(aEnvoyer);
-			 //document.getElementById("divOptPress"+ind).style.display="none";
-			 };
-			 })(aEnvoyer);
-			 divOptDel.innerHTML = "Effacer";
-
-			 divOptDel.onclick = (function(aEnvoyer) {
-			 return function() {
-			 lM = document.getElementById("listeMatchs");
-			 divConf = document.createElement('DIV');
-			 divConf.innerHTML = window.tl_zc_confEfface;
-			 divConf.id = "divConfId";
-			 btnOui = document.createElement("INPUT");
-			 btnOui.type = 'BUTTON';
-			 btnOui.value = tl_bouton_Oui;
-			 btnOui.onclick = (function(aEnvoyer) {
-			 return function() {
-			 detruitNoeud('divConfId')
-			 optionsEdit(false);
-			 effaceMatch(aEnvoyer);
-			 }
-			 })(aEnvoyer);
-
-			 btnNon = document.createElement("INPUT");
-			 btnNon.type = 'BUTTON';
-			 btnNon.value = window.tl_bouton_Non;
-			 btnNon.onclick = function() {
-			 detruitNoeud('divConfId')
-			 };
-			 divConf.appendChild(btnOui);
-			 divConf.appendChild(btnNon);
-			 lM.appendChild(divConf);
-			 //document.getElementById("divOptPress"+ind).style.display="none";
-
-			 };
-			 })(aEnvoyer);
-
-			 }
-
-			 }
-
-			 ind = ind - 1;
-			 }
-			 }
-			 */
 
 			function boiteDomVis2(domVis, equipe) {
 				//		return function(){
@@ -1621,6 +894,7 @@ function trouveEval(critereId){
 					aFG.className="cliquable";					
 					aFG.style.fontSize="10 em";
 					aFG.style.color="#AAAAAA";
+					console.log("equipeId:"+window.eq[0]);
 					var coul1="#"+getEquipeDEqId(window.eq[0]).couleur1;
 					aFG.style.backgroundColor=coul1;
 					
@@ -1708,106 +982,171 @@ function trouveEval(critereId){
 						}
 					}
 				cellTab.appendChild(rangee);
-/*
-					celluleNo = document.createElement('div');
-					celluleNo.innerHTML = equipe.joueur[K].noJoueur;
-					celluleNo.className = "cellTableCourt";
 
-					cellulePos = document.createElement('div');
-					cellulePos.innerHTML = equipe.joueur[K].position.toUpperCase();
-					cellulePos.className = "cellTableCourt";
-
-					celluleEval = document.createElement('div');
-					celluleEval.innerHTML = equipe.joueur[K].eval == null ? '' : Math.round(equipe.joueur[K].eval * 10) + '%';
-					celluleEval.className = "cellTableCourt";
-
-					//			aFG.href='#';
-					texteRang = document.createTextNode(equipe.joueur[K].nomJoueur);
-					cellule.appendChild(texteRang);
-					rangee.appendChild(cellule);
-					cellTab.appendChild(rangee);
-
-					rangee.appendChild(celluleNo);
-					rangee.appendChild(cellulePos);
-					rangee.appendChild(celluleEval);*/
 
 				}
 
-				function classeNom(equipe) {
-					return function() {
-						equipe.joueur.sort(function(a, b) {
-							if (b.nomJoueur == null)
-								return -1;
-							else if (a.nomJoueur == null)
-								return 1;
-							else
-								return ((a.nomJoueur == b.nomJoueur) ? 0 : ((a.nomJoueur.toLowerCase() > b.nomJoueur.toLowerCase()) ? togouleNomAlt : -togouleNomAlt ));
-						});
-						togouleNomAlt = -1 * togouleNomAlt;
-						//		videNoeud(strParent);
-						boiteAlt(equipe);
-						document.getElementById('btnClasse_1').className = (togouleNomAlt == 1) ? "btnClasse haut" : "btnClasse bas";
-						//		alert(document.getElementById('btnClasse_2').className);
-						//tbody=document.getElementById('meneurs_tbody_'+code);
-						//for(a=2;a<tbody.childNodes.length;a++)
-						//{tbody.childNodes[a].childNodes[2].className="colChoisie";}
-					}
-				};
 
-				function classePos(equipe) {
-					return function() {
-						equipe.joueur.sort(function(a, b) {
-							if (b.position == null)
-								return -1;
-							else if (a.position == null)
-								return 1;
-							else
-								return ((a.position == b.position) ? 0 : ((a.position.toLowerCase() > b.position.toLowerCase()) ? togoulePosAlt : -togoulePosAlt ));
-						});
-						togoulePosAlt = -1 * togoulePosAlt;
-						//		videNoeud(strParent);
-						boiteAlt(equipe);
-						document.getElementById('btnClasse_3').className = (togoulePosAlt == 1) ? "btnClasse haut" : "btnClasse bas";
-					}
-				};
+				function faitOnglet_1() {
 
-				function classeNo(equipe) {
-					return function() {
-						equipe.joueur.sort(function(a, b) {
-							if (b.noJoueur == null)
-								return -1;
-							else if (a.noJoueur == null)
-								return 1;
-							else
-								return ((a.noJoueur == b.noJoueur) ? 0 : ((a.noJoueur > b.noJoueur) ? togouleNoAlt : -togouleNoAlt ));
-						});
-						togouleNoAlt = -1 * togouleNoAlt;
-						//		videNoeud(strParent);
-						boiteAlt(equipe);
-						document.getElementById('btnClasse_2').className = (togouleNoAlt == 1) ? "btnClasse haut" : "btnClasse bas";
-					}
-				};
+divBGC = document.createElement('DIV');
+divBGC.id = 'blocGaucheCorps';
+divLL = document.createElement('DIV');
+divLL.id = 'lesLogos';
+divLD = document.createElement('DIV');
+divLD.id = 'logoDom';
+divLV = document.createElement('DIV');
+divLV.id = 'logoVis';
 
-				function classeEval(equipe) {
-					return function() {
-						equipe.joueur.sort(function(a, b) {
-							if (b.eval == null)
-								return -1;
-							else if (a.eval == null)
-								return 1;
-							else
-								return ((a.eval == b.eval) ? 0 : ((a.eval > b.eval) ? togouleEvalAlt : -togouleEvalAlt ));
-						});
-						togouleNoAlt = -1 * togouleNoAlt;
-						//		videNoeud(strParent);
-						boiteAlt(equipe);
-						document.getElementById('btnClasse_4').className = (togouleEvalAlt == 1) ? "btnClasse haut" : "btnClasse bas";
-					}
-				};
+divBGC.appendChild(divLL);
+divLL.appendChild(divLD);
+divLL.appendChild(divLV);
+divBGC.style.padding = "10px";
+//divBGC.style.width="25%";
+divBGC.style.cssFloat = "left";
+divLL.style.width = "100%";
+divLL.style.cssFloat = "none";
+divLD.style.width = "50%";
+divLD.style.cssFloat = "left";
+divLD.style.height = "auto";
+divLD.onclick = function() {
+	boiteDomVis2(1, window.jsonEqDom);
+}
+divLV.style.width = "50%";
+divLV.style.cssFloat = "left";
+divLV.style.height = "auto";
+divLV.onclick = function() {
+	boiteDomVis2(2, window.jsonEqVis);
+}
+divDateJS = document.createElement('DIV');
+divDateJS.id = "divDate";
+divDateJS.style.cssFloat = "none";
+divDateJS.style.marginLeft = "0";
+divDateJS.style.display = "table";
+
+divBGC.appendChild(divDateJS);
+
+inDate = document.createElement('input');
+inDate.id = "dateDeb";
+inDate.name = "deb";
+inDate.value = "AAAA/MM/JJ";
+inDate.type = "text";
+inDate.onchange = function() {
+	setMatchAVenir(true);
+}
+divDateJS.appendChild(inDate);
+
+inFin = document.createElement('input');
+inFin.id = "dateFin";
+inFin.name = "fin";
+inFin.value = "2030/01/01 0:0";
+inFin.type = "hidden";
+divDateJS.appendChild(inFin);
+
+divArbJS = document.createElement('div');
+divArbJS.id = "divArb";
+divArbJS.style.cssFloat = "none";
+divArbJS.style.marginLeft = "0";
+divArbJS.style.display = "block";
+
+h2Arb = document.createElement('h2');
+h2Arb.id = "match";
+h2Arb.className = "titreSection";
+divArbJS.appendChild(h2Arb);
+
+divBGC.appendChild(divArbJS);
+
+//					<!--input type="button" value="Modifier" onclick="displayCalendar(document.getElementById('dateDeb'),'yyyy/mm/dd hh:ii',this,true)"-->
+
+document.getElementById('onglet_1').appendChild(divBGC);
+
+}
+
+function faitOnglet_0() {
+divRemp = document.createElement('DIV');
+divRemp.id = 'divEqAlt';
+divRemp.className = "boiteAlignement";
+document.getElementById('onglet_0').appendChild(divRemp);
+
+divCont = document.createElement('div');
+
+divRemp.appendChild(divCont);
+divCont.style.display="block";
+divCont.style.position="static";
+divCont.style.paddingBottom="20px";
+
+inSpinEq21 = document.createElement('input');
+inSpinEq21.type = "hidden";
+inSpinEq21.id = "spinEq21";
+inSpinEq21.name = "usager";
+inSpinEq21.value = "1";
+divTitreSpin = document.createElement('div');
+divTitreSpin.className = "titreEtSpinneur";
+divTitreSpin.id = "menuEquipeAlt";
+divTableEqAlt = document.createElement('div');
+divTableEqAlt.id = "tableEqAlt";
+aCreerJoueur = document.createElement('IMG');
+aCreerJoueur.id = "creerJoueur";
+aCreerJoueur.className="iconeCliquable";
+
+aParamColJS = document.createElement('IMG');
+aParamColJS.id = "imgParamCol";
+aParamColJS.alt = "Paramètres Colonnes";
+aParamColJS.src="/images/icones/settings.ico";
+aParamColJS.className="iconeCliquable";
+aParamColJS.onclick=function(){paramsColonnes();};
+//divTableEqAlt.style.width="350px";
+
+divCont.appendChild(inSpinEq21);
+divCont.appendChild(divTitreSpin);
+//			divCont.appendChild(aCreerJoueur);
+
+divRemp.appendChild(divTableEqAlt);
+
+inFiltre = document.createElement('INPUT');
+//tFiltre.id = "tFiltreId";
+//document.getElementById('menuEquipeAlt').appendChild(tFiltre);
+document.getElementById('menuEquipeAlt').appendChild(inFiltre);
+document.getElementById('menuEquipeAlt').appendChild(aCreerJoueur);
+document.getElementById('menuEquipeAlt').appendChild(aParamColJS);
+inFiltre.type = "text";
+inFiltre.id = "inFiltreId";
+
+jQuery(function($) {
+	$("#inFiltreId").Watermark("Chercher...");
+});
+
+inFiltre.onkeyup = function() {
+	var mEq = jQuery.extend(true, {}, getEquipeDEqId(window.eq[2]));
+	//alert(JSON.stringify(mEq));
+	//alert(document.getElementById('inFiltreId').value);
+	var a = 0;
+	while (a < mEq.joueur.length) {
+		if (mEq.joueur[a].nomJoueur.toLowerCase().indexOf(document.getElementById('inFiltreId').value.toLowerCase()) == -1)
+			mEq.joueur.splice(a, 1);
+		else
+			a++;
+
+	}
+	boiteAlt(mEq);
+}
+}
+
+function selectOnglet(a) {
+for (var b = 0; b < window.vecTab.length; b++) {
+	if (a == b) {
+		document.getElementById(window.vecTab[a]).className = 'visible';
+		document.getElementById('dTitre_' + a).className = 'titreOnglet actif';
+	} else {
+		document.getElementById(window.vecTab[b]).className = 'cache';
+		document.getElementById('dTitre_' + b).className = 'titreOnglet passif';
+	}
+}
+
 }
 
 
-			function paramsColonnes() {
+function paramsColonnes() {
 				enf = document.getElementById('aParamCol');
 				construitDialogue();
 				dialEdit=document.getElementById('divDialogue');
@@ -2014,163 +1353,434 @@ function trouveEval(critereId){
 
 			}
 
-			function faitOnglet_1() {
 
-				divBGC = document.createElement('DIV');
-				divBGC.id = 'blocGaucheCorps';
-				divLL = document.createElement('DIV');
-				divLL.id = 'lesLogos';
-				divLD = document.createElement('DIV');
-				divLD.id = 'logoDom';
-				divLV = document.createElement('DIV');
-				divLV.id = 'logoVis';
+//CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+//
+//	Controller
+//
+//
 
-				divBGC.appendChild(divLL);
-				divLL.appendChild(divLD);
-				divLL.appendChild(divLV);
-				divBGC.style.padding = "10px";
-				//divBGC.style.width="25%";
-				divBGC.style.cssFloat = "left";
-				divLL.style.width = "100%";
-				divLL.style.cssFloat = "none";
-				divLD.style.width = "50%";
-				divLD.style.cssFloat = "left";
-				divLD.style.height = "auto";
-				divLD.onclick = function() {
-					boiteDomVis2(1, window.jsonEqDom);
+function trouveEval(critereId){
+	
+	for(var a=0;a<lesEvals.length;a++)
+	{
+		if(lesEvals[a].critereId==critereId&&window.usager.id==lesEvals[a].evaluateur)
+		{return lesEvals[a].valeur;}
+		
+	}
+	return "";
+}
+
+			function evaluer(joueurId) {
+//					alert('Doh');
+					parent=document.getElementById('divDialogue');
+					parent.className="visible";
+					listeCrit = document.getElementById('listeCriteres');
+					for(var a=0;a<lesCriteres.length;a++)
+					{
+						unJ = getJoueurDeJId(joueurId);
+						contexteStr="joueur";
+						if(unJ.position.toLowerCase()=='a'||unJ.position.toLowerCase()=='d')
+						{contexteStr="joueur";}
+						if(unJ.position.toLowerCase()=='g')
+						{contexteStr="gardien";}
+//						alert(lesCriteres[a].contexte);
+						if(lesCriteres[a].contexte==contexteStr)
+						{
+						divSimpleCrit=document.createElement('DIV');
+						divSimpleCrit.className="critere";	
+						pA = document.createElement('P');
+						pA.innerHTML=lesCriteres[a].nom_fr+ " : (" +lesCriteres[a].echelleBas+" à "+lesCriteres[a].echelleHaut+")";
+						inA=document.createElement('INPUT');
+						inA.type="text";
+						inA.id="input_"+lesCriteres[a].critereId;
+						inA.value=trouveEval(lesCriteres[a].critereId);
+						//alert(lesCriteres[a].nom_fr);
+						divSimpleCrit.appendChild(pA);
+
+//						divSimpleCrit.appendChild(document.createElement('BR'));
+						divSimpleCrit.appendChild(inA);
+						
+						listeCrit.appendChild(divSimpleCrit);
+						}
+					}
 				}
-				divLV.style.width = "50%";
-				divLV.style.cssFloat = "left";
-				divLV.style.height = "auto";
-				divLV.onclick = function() {
+			function construitEquipeDAlignement(tMavId) {
+				//	return function(){
+				var k = 0;
+				boule = 0;
+				//	alert("On construit!");
+				while (k < window.vecMAV.length && boule == 0) {
+					if (window.vecMAV[k].mavId == tMavId) {
+						boule = 1;
+					} else {
+						k++;
+					}
+				}
+				//					alert("Match non trouvé!");
+				//	alert(JSON.stringify(window.cJSON));
+
+				window.jsonEqDom = new Array();
+				window.jsonEqVis = new Array();
+
+				if (!boule && tMavId == -1) {
+					window.jsonEqDom = JSON.parse(JSON.stringify(window.cJSON.equipe[0]));
+					window.jsonEqVis = JSON.parse(JSON.stringify(window.cJSON.equipe[1]));
+				} else {
+					var iDom = 0;
+					var iVis = 0;
+					for ( i = 0; i < window.cJSON.equipe.length; i++) {
+						if (window.vecMAV[k].eqDom == window.cJSON.equipe[i].equipeId) {
+							window.jsonEqDom = JSON.parse(JSON.stringify(window.cJSON.equipe[i]));
+							iDom = i;
+						}
+						if (window.vecMAV[k].eqVis == window.cJSON.equipe[i].equipeId) {
+							window.jsonEqVis = JSON.parse(JSON.stringify(window.cJSON.equipe[i]));
+							iVis = i;
+						}
+					}
+				}
+
+				//		alert("Equipes assignées!");
+				var presence;
+				var vM = JSON.parse(JSON.stringify(window.vecMAV));
+
+				window.jsonEqDom.joueur = new Array();
+				var m = 0;
+				var dansAlign = false;
+				//				alert(iDom);
+				//				alert(JSON.stringify(window.cJSON.equipe[iDom]));
+
+				while (m < window.cJSON.equipe[iDom].joueur.length) {
+					var n = 0;
+					dansAlign = false;
+					while (n < vM[k].alignementDom.length && dansAlign == false) {
+						if (vM[k].alignementDom[n] == window.cJSON.equipe[iDom].joueur[m].joueurId) {
+							dansAlign = true;
+							window.jsonEqDom.joueur.push(window.cJSON.equipe[iDom].joueur[m]);
+							window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = "present";
+						}
+						n++;
+					}
+					if (dansAlign == false) {
+						window.jsonEqDom.joueur.push(window.cJSON.equipe[iDom].joueur[m]);
+						window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = "absent";
+					}
+					m++;
+				}
+
+				var n = 0;
+				dansAlign = false;
+				while (n < vM[k].alignementDom.length) {
+					m = 0
+					dansAlign = false;
+					while (m < window.jsonEqDom.joueur.length && dansAlign == false) {
+						if (vM[k].alignementDom[n] == window.jsonEqDom.joueur[m].joueurId) {
+							dansAlign = true;
+						}
+						m++;
+					}
+					if (!dansAlign) {
+
+						for ( j = 0; j < window.cJSON.equipe.length; j++) {
+							m = 0;
+							while (m < window.cJSON.equipe[j].joueur.length) {
+								if (window.cJSON.equipe[j].joueur[m].joueurId == vM[k].alignementDom[n]) {
+									window.jsonEqDom.joueur.push(window.cJSON.equipe[j].joueur[m]);
+									window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = "remplace";
+								}
+								m++;
+							}
+						}
+
+					}
+					n++;
+				}
+				//	strJDom=window.vecMAV[k].alignementDom;
+				//////////////////////////////////  Fin Domicile, début visiteur.
+
+				window.jsonEqVis.joueur = new Array();
+				var m = 0;
+				var dansAlign = false;
+				while (m < window.cJSON.equipe[iVis].joueur.length) {
+					var n = 0;
+					dansAlign = false;
+					while (n < vM[k].alignementVis.length && dansAlign == false) {
+						if (vM[k].alignementVis[n] == window.cJSON.equipe[iVis].joueur[m].joueurId) {
+							dansAlign = true;
+							window.jsonEqVis.joueur.push(window.cJSON.equipe[iVis].joueur[m]);
+							window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = "present";
+						}
+						n++;
+					}
+					if (dansAlign == false) {
+						window.jsonEqVis.joueur.push(window.cJSON.equipe[iVis].joueur[m]);
+						window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = "absent";
+					}
+					m++;
+				}
+
+				var n = 0;
+				dansAlign = false;
+				while (n < vM[k].alignementVis.length) {
+					m = 0
+					dansAlign = false;
+					while (m < window.jsonEqVis.joueur.length && dansAlign == false) {
+						if (vM[k].alignementVis[n] == window.jsonEqVis.joueur[m].joueurId) {
+							dansAlign = true;
+						}
+						m++;
+					}
+					if (!dansAlign) {
+
+						for ( j = 0; j < window.cJSON.equipe.length; j++) {
+							m = 0;
+							while (m < window.cJSON.equipe[j].joueur.length) {
+								if (window.cJSON.equipe[j].joueur[m].joueurId == vM[k].alignementVis[n]) {
+									window.jsonEqVis.joueur.push(window.cJSON.equipe[j].joueur[m]);
+									window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = "remplace";
+								}
+								m++;
+							}
+						}
+
+					}
+					n++;
+				}
+
+				//alert(JSON.stringify(window.jsonEqDom));
+				//alert(JSON.stringify(window.jsonEqVis));
+
+				//}
+			}
+
+			function getEquipeActive() {
+				//liste d'equipeId ainsi constituée: équipe active, eqDom, eqVis, eqAlt.
+
+				if (document.getElementById("divSpinDom").className == "actif") {//alert(window.eq[0]);
+					return window.eq[0];
+				} else {//alert(window.eq[1]);
+					return window.eq[1];
+				}
+			}
+
+			function JoueurAEquipe(joueurIn) {
+				// On vient de grandir le vecteur...
+				if (getEquipeActive() == window.eq[0]) {
+					window.jsonEqDom.joueur[window.jsonEqDom.joueur.length] = JSON.parse(joueurIn);
+					window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = 'remplace';
+					boiteDomVis2(1, window.jsonEqDom);
+				} else {
+					window.jsonEqVis.joueur[window.jsonEqVis.joueur.length] = JSON.parse(joueurIn);
+					window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = 'remplace';
 					boiteDomVis2(2, window.jsonEqVis);
 				}
-				divDateJS = document.createElement('DIV');
-				divDateJS.id = "divDate";
-				divDateJS.style.cssFloat = "none";
-				divDateJS.style.marginLeft = "0";
-				divDateJS.style.display = "table";
-
-				divBGC.appendChild(divDateJS);
-
-				inDate = document.createElement('input');
-				inDate.id = "dateDeb";
-				inDate.name = "deb";
-				inDate.value = "AAAA/MM/JJ";
-				inDate.type = "text";
-				inDate.onchange = function() {
-					setMatchAVenir(true);
+				boiteAlt(getEquipeDEqId(window.eq[2]));
+				setMatchAVenir(false);
+				//}
+			}
+			
+				function JoueurAEquipeDefinie(joueurIn,domVis) {
+				// On vient de grandir le vecteur...
+				if (domVis == 1) {
+					window.jsonEqDom.joueur[window.jsonEqDom.joueur.length] = JSON.parse(joueurIn);
+					window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = 'remplace';
+					boiteDomVis2(1, window.jsonEqDom);
+				} else {
+					window.jsonEqVis.joueur[window.jsonEqVis.joueur.length] = JSON.parse(joueurIn);
+					window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = 'remplace';
+					boiteDomVis2(2, window.jsonEqVis);
 				}
-				divDateJS.appendChild(inDate);
-
-				inFin = document.createElement('input');
-				inFin.id = "dateFin";
-				inFin.name = "fin";
-				inFin.value = "2030/01/01 0:0";
-				inFin.type = "hidden";
-				divDateJS.appendChild(inFin);
-
-				divArbJS = document.createElement('div');
-				divArbJS.id = "divArb";
-				divArbJS.style.cssFloat = "none";
-				divArbJS.style.marginLeft = "0";
-				divArbJS.style.display = "block";
-
-				h2Arb = document.createElement('h2');
-				h2Arb.id = "match";
-				h2Arb.className = "titreSection";
-				divArbJS.appendChild(h2Arb);
-
-				divBGC.appendChild(divArbJS);
-
-				//					<!--input type="button" value="Modifier" onclick="displayCalendar(document.getElementById('dateDeb'),'yyyy/mm/dd hh:ii',this,true)"-->
-
-				document.getElementById('onglet_1').appendChild(divBGC);
-
+				boiteAlt(getEquipeDEqId(window.eq[2]));
+				setMatchAVenir(false);
+				//}
 			}
 
-			function faitOnglet_0() {
-				divRemp = document.createElement('DIV');
-				divRemp.id = 'divEqAlt';
-				divRemp.className = "boiteAlignement";
-				document.getElementById('onglet_0').appendChild(divRemp);
-
-				divCont = document.createElement('div');
-
-				divRemp.appendChild(divCont);
-				divCont.style.display="block";
-				divCont.style.position="static";
-				divCont.style.paddingBottom="20px";
-
-				inSpinEq21 = document.createElement('input');
-				inSpinEq21.type = "hidden";
-				inSpinEq21.id = "spinEq21";
-				inSpinEq21.name = "usager";
-				inSpinEq21.value = "1";
-				divTitreSpin = document.createElement('div');
-				divTitreSpin.className = "titreEtSpinneur";
-				divTitreSpin.id = "menuEquipeAlt";
-				divTableEqAlt = document.createElement('div');
-				divTableEqAlt.id = "tableEqAlt";
-				aCreerJoueur = document.createElement('IMG');
-				aCreerJoueur.id = "creerJoueur";
-				aCreerJoueur.className="iconeCliquable";
-
-				aParamColJS = document.createElement('IMG');
-				aParamColJS.id = "imgParamCol";
-				aParamColJS.alt = "Paramètres Colonnes";
-				aParamColJS.src="/images/icones/settings.ico";
-				aParamColJS.className="iconeCliquable";
-				aParamColJS.onclick=function(){paramsColonnes();};
-				//divTableEqAlt.style.width="350px";
-
-				divCont.appendChild(inSpinEq21);
-				divCont.appendChild(divTitreSpin);
-				//			divCont.appendChild(aCreerJoueur);
-
-				divRemp.appendChild(divTableEqAlt);
-
-				inFiltre = document.createElement('INPUT');
-				//tFiltre.id = "tFiltreId";
-				//document.getElementById('menuEquipeAlt').appendChild(tFiltre);
-				document.getElementById('menuEquipeAlt').appendChild(inFiltre);
-				document.getElementById('menuEquipeAlt').appendChild(aCreerJoueur);
-				document.getElementById('menuEquipeAlt').appendChild(aParamColJS);
-				inFiltre.type = "text";
-				inFiltre.id = "inFiltreId";
-
-				jQuery(function($) {
-					$("#inFiltreId").Watermark("Chercher...");
+			function classeJoueursNom(vecJoueurs) {
+				//				return function() {
+				vecJoueurs.sort(function(a, b) {
+					return ((a.nomJoueur == b.nomJoueur) ? 0 : ((a.nomJoueur.toLowerCase() > b.nomJoueur.toLowerCase()) ? 1 : -1 ));
 				});
+				//			}
+			};
 
-				inFiltre.onkeyup = function() {
-					var mEq = jQuery.extend(true, {}, getEquipeDEqId(window.eq[2]));
-					//alert(JSON.stringify(mEq));
-					//alert(document.getElementById('inFiltreId').value);
-					var a = 0;
-					while (a < mEq.joueur.length) {
-						if (mEq.joueur[a].nomJoueur.toLowerCase().indexOf(document.getElementById('inFiltreId').value.toLowerCase()) == -1)
-							mEq.joueur.splice(a, 1);
-						else
-							a++;
+			function toggleJoueur(joueurOut, equipe, boiteOut) {
+				return function() {
+					presence = equipe.joueur[joueurOut].presence
+					if (presence == 'remplace') {
+						switch(boiteOut) {
+							case 1:
+								window.jsonEqDom.joueur.splice(joueurOut, 1)
+								break;
+							case 2:
+								window.jsonEqVis.joueur.splice(joueurOut, 1)
+								break;
 
+						}
+					} else if (presence == 'present') {
+						switch(boiteOut) {
+							case 1:
+								window.jsonEqDom.joueur[joueurOut].presence = 'absent';
+								break;
+							case 2:
+								window.jsonEqVis.joueur[joueurOut].presence = 'absent';
+								break;
+
+						}
+					} else if (presence == 'absent') {
+						switch(boiteOut) {
+							case 1:
+								window.jsonEqDom.joueur[joueurOut].presence = 'present';
+								break;
+							case 2:
+								window.jsonEqVis.joueur[joueurOut].presence = 'present';
+								break;
+
+						}
 					}
-					boiteAlt(mEq);
+					boiteDomVis2(boiteOut, equipe);
+					setMatchAVenir(false);
+
+					//	alert(joueurIn);
 				}
 			}
 
-			function selectOnglet(a) {
-				for (var b = 0; b < window.vecTab.length; b++) {
-					if (a == b) {
-						document.getElementById(window.vecTab[a]).className = 'visible';
-						document.getElementById('dTitre_' + a).className = 'titreOnglet actif';
-					} else {
-						document.getElementById(window.vecTab[b]).className = 'cache';
-						document.getElementById('dTitre_' + b).className = 'titreOnglet passif';
+			function RotateSpinner(spinnerId, up) {
+				document.getElementById(spinnerId).value = up ? parseInt(document.getElementById(spinnerId).value) + 1 : parseInt(document.getElementById(spinnerId).value) - 1;
+			}
+
+
+			
+			function getInfoEquipe(equipe){
+				stats={nbAvant:0,nbDef:0,nbGardien:0,moyEval:0};
+				nbEval=0;
+				totalEval=0;
+				for(i=0;i<equipe.joueur.length;i++)
+				{
+					if(equipe.joueur[i].position.substring(0,1).toLowerCase()=='a'&&(equipe.joueur[i].presence=='present'||equipe.joueur[i].presence=='remplace'))
+					{stats.nbAvant=stats.nbAvant+1;
+						if(equipe.joueur[i].eval!=null)
+						{nbEval++;
+							totalEval+=parseFloat(equipe.joueur[i].eval);}
+					}
+					if(equipe.joueur[i].position.substring(0,1).toLowerCase()=='d'&&(equipe.joueur[i].presence=='present'||equipe.joueur[i].presence=='remplace'))
+					{stats.nbDef++;
+						if(equipe.joueur[i].eval!=null)
+						{nbEval++;
+							totalEval+=parseFloat(equipe.joueur[i].eval);}
+					}
+					if(equipe.joueur[i].position.toLowerCase()=='g'&&(equipe.joueur[i].presence=='present'||equipe.joueur[i].presence=='remplace'))
+					{stats.nbGardien++;
+						if(equipe.joueur[i].eval!=null)
+						{nbEval+=3;
+							totalEval+=3*parseFloat(equipe.joueur[i].eval);}
+					}
+					
+				}
+				stats.moyEval=10*totalEval/nbEval;
+//				alert(totalEval+' '+JSON.stringify(stats));
+				return stats;
+				
+			}
+			
+			function getEquipeDEqId(equipeId) {
+				for ( a = 0; a < window.cJSON.equipe.length; a++) {
+					if (window.cJSON.equipe[a].equipeId == equipeId) {
+						//alert(JSON.stringify())
+						return window.cJSON.equipe[a];
 					}
 				}
-
 			}
+			
+			function getJoueurDeJId(joueurId) {
+				for ( a = 0; a < window.cJSON.equipe.length; a++) 
+					for ( b = 0; b < window.cJSON.equipe[a].joueur.length; b++) {
+					if (window.cJSON.equipe[a].joueur[b].joueurId == joueurId) {
+						//alert(JSON.stringify())
+						return window.cJSON.equipe[a].joueur[b];
+					}
+				}
+			}
+
+
+			
+
+				function classeNom(equipe) {
+					return function() {
+						equipe.joueur.sort(function(a, b) {
+							if (b.nomJoueur == null)
+								return -1;
+							else if (a.nomJoueur == null)
+								return 1;
+							else
+								return ((a.nomJoueur == b.nomJoueur) ? 0 : ((a.nomJoueur.toLowerCase() > b.nomJoueur.toLowerCase()) ? togouleNomAlt : -togouleNomAlt ));
+						});
+						togouleNomAlt = -1 * togouleNomAlt;
+						//		videNoeud(strParent);
+						boiteAlt(equipe);
+						document.getElementById('btnClasse_1').className = (togouleNomAlt == 1) ? "btnClasse haut" : "btnClasse bas";
+						//		alert(document.getElementById('btnClasse_2').className);
+						//tbody=document.getElementById('meneurs_tbody_'+code);
+						//for(a=2;a<tbody.childNodes.length;a++)
+						//{tbody.childNodes[a].childNodes[2].className="colChoisie";}
+					}
+				};
+
+				function classePos(equipe) {
+					return function() {
+						equipe.joueur.sort(function(a, b) {
+							if (b.position == null)
+								return -1;
+							else if (a.position == null)
+								return 1;
+							else
+								return ((a.position == b.position) ? 0 : ((a.position.toLowerCase() > b.position.toLowerCase()) ? togoulePosAlt : -togoulePosAlt ));
+						});
+						togoulePosAlt = -1 * togoulePosAlt;
+						//		videNoeud(strParent);
+						boiteAlt(equipe);
+						document.getElementById('btnClasse_3').className = (togoulePosAlt == 1) ? "btnClasse haut" : "btnClasse bas";
+					}
+				};
+
+				function classeNo(equipe) {
+					return function() {
+						equipe.joueur.sort(function(a, b) {
+							if (b.noJoueur == null)
+								return -1;
+							else if (a.noJoueur == null)
+								return 1;
+							else
+								return ((a.noJoueur == b.noJoueur) ? 0 : ((a.noJoueur > b.noJoueur) ? togouleNoAlt : -togouleNoAlt ));
+						});
+						togouleNoAlt = -1 * togouleNoAlt;
+						//		videNoeud(strParent);
+						boiteAlt(equipe);
+						document.getElementById('btnClasse_2').className = (togouleNoAlt == 1) ? "btnClasse haut" : "btnClasse bas";
+					}
+				};
+
+				function classeEval(equipe) {
+					return function() {
+						equipe.joueur.sort(function(a, b) {
+							if (b.eval == null)
+								return -1;
+							else if (a.eval == null)
+								return 1;
+							else
+								return ((a.eval == b.eval) ? 0 : ((a.eval > b.eval) ? togouleEvalAlt : -togouleEvalAlt ));
+						});
+						togouleNoAlt = -1 * togouleNoAlt;
+						//		videNoeud(strParent);
+						boiteAlt(equipe);
+						document.getElementById('btnClasse_4').className = (togouleEvalAlt == 1) ? "btnClasse haut" : "btnClasse bas";
+					}
+				};
+}
+
+
+
+			
 			function sauvegardeCookies(){
 				setCookie('afficheNo',trouveRadio('rad_0'),100000);
 				setCookie('affichePos',trouveRadio('rad_1'),100000);
@@ -2253,6 +1863,8 @@ function trouveEval(critereId){
 			jMAV = new Array();
 			gardien = new Array();
 			eq = new Array();
+			window.eq = new Array(3);
+			window.gardien = new Array(2);
 
 			perm = verifiePermission();
 
@@ -2268,14 +1880,17 @@ function trouveEval(critereId){
 			faitEntete();
 			selectOnglet(0);
 						getCritere();
-
+			
 			mavId = (getValue('mavId') != "") ? getValue('mavId') : 1;
+			
+			console.log("mavId: "+getValue('mavId')+" / "+mavId);
 			getJSONJoueursEquipes(null, ligueId);
 
 			getMatchAVenir();
 			///  N'est pas asynchrone.
 
 			getArbitres();
+			/*
 			var k = 0;
 			mInd = -1;
 			var trouve = false;
@@ -2285,9 +1900,9 @@ function trouveEval(critereId){
 					trouve = true;
 				}
 				k++;
-			}
-			window.eq = new Array(3);
-			window.gardien = new Array(2);
+			}*/
+
+			/*
 			//alert("1");
 			if ((trouve == false) && (window.listeMatch.length > 0)) {// Si pas trouvé de match mais des matchs existent, démarrer le dernier.
 				//alert(trouve);
@@ -2303,7 +1918,7 @@ function trouveEval(critereId){
 				//if (window.perm < 19)
 				//	optionsEdit(false);
 
-			}
+			}*/
 			//			if (window.listeMatch.length <= 0)
 			//				NouveauMatch();
 

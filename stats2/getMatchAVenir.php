@@ -17,45 +17,38 @@ $tableUser = 'TableUser';
 $mavId = $_POST['mavId'];
 $ligueId = $_POST['ligueId'];
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
+////////////////////////////////////////////////////////////
+//
+// 	Connections � la base de donn�es
+//
+////////////////////////////////////////////////////////////
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
-	
-		mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
-//$jDom = json_decode($jDomJSON, true);
-//$jVis = json_decode($jVisJSON, true);
-// Ancienne requête:SELECT MatchAVenir.*	
-//						FROM MatchAVenir
-//						LEFT JOIN abonEquipeLigue
-//							ON (MatchAVenir.ligueId=abonEquipeLigue.ligueId)
-//						 WHERE MatchAVenir.ligueId='{$ligueId}'
-//						 	AND abonEquipeLigue.finAbon>NOW()
-//						 	AND (abonEquipeLigue.equipeId =MatchAVenir.eqDom OR abonEquipeLigue.equipeId =MatchAVenir.eqVis)
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
+
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 //						 GROUP BY MatchAVenir.mavId
 
 // Faudrait refaire en cadrant par rapport à la saison en cours plutôt qu'aux équipes abonnées.
 $strRetour.=$mavId;
-$retour = mysql_query("SELECT MatchAVenir.*	
-						FROM MatchAVenir
+$retour = mysqli_query($conn, "SELECT TableMatch.*	
+						FROM TableMatch
 						LEFT JOIN TableSaison
-							ON (MatchAVenir.ligueId=TableSaison.ligueRef)
-						 WHERE MatchAVenir.ligueId='{$ligueId}'
+							ON (TableMatch.ligueRef=TableSaison.ligueRef)
+						 WHERE TableMatch.ligueRef='{$ligueId}'
 						
 						 	
-						 GROUP BY MatchAVenir.mavId")or die(mysql_error());	
+						 GROUP BY TableMatch.mavId")or die(mysqli_error($conn));	
 						 /* AND MatchAVenir.date > (NOW()-INTERVAL 30 DAY) AND TableSaison.dernierMatch>NOW()*/
-$strRetour.= mysql_num_rows($retour);
+$strRetour.= mysqli_num_rows($retour);
 
 $vecMatch = array();
 $IM=0;
-while($r = mysql_fetch_assoc($retour)) {
+while($r = mysqli_fetch_assoc($retour)) {
 	
 	if(!is_numeric($mavId)||$r['mavId']==$mavId)
 	{
@@ -77,8 +70,8 @@ while($r = mysql_fetch_assoc($retour)) {
 	$qAlDom= "SELECT joueur_id,NomJoueur,NumeroJoueur,position		
 						FROM TableJoueur
 						 WHERE joueur_id='{$alDom[$a]}'";
-	$rAlDom = mysql_query($qAlDom)or die(mysql_error());
-	while($rangAlDom = mysql_fetch_assoc($rAlDom)) {
+	$rAlDom = mysqli_query($conn,$qAlDom)or die(mysqli_error($conn));
+	while($rangAlDom = mysqli_fetch_assoc($rAlDom)) {
 		$vecMatch[$IM]['alDom'][$a]=$rangAlDom;
     	 }
 	}
@@ -89,8 +82,8 @@ while($r = mysql_fetch_assoc($retour)) {
 	$qAlVis= "SELECT joueur_id,NomJoueur,NumeroJoueur,position		
 						FROM TableJoueur
 						 WHERE joueur_id='{$alVis[$a]}'";
-	$rAlVis = mysql_query($qAlVis)or die(mysql_error());
-	while($rangAlVis = mysql_fetch_assoc($rAlVis)) {
+	$rAlVis = mysqli_query($conn,$qAlVis)or die(mysqli_error($conn));
+	while($rangAlVis = mysqli_fetch_assoc($rAlVis)) {
 		$vecMatch[$IM]['alVis'][$a]=$rangAlVis;
     	 }
 	}
@@ -98,15 +91,15 @@ while($r = mysql_fetch_assoc($retour)) {
 		$qGDom= "SELECT joueur_id,NomJoueur,NumeroJoueur,position		
 						FROM TableJoueur
 						 WHERE joueur_id='{$r['gardienDom']}'";
-	$rGDom = mysql_query($qGDom)or die(mysql_error());
-	while($rangGDom = mysql_fetch_assoc($rGDom)) {
+	$rGDom = mysqli_query($conn,$qGDom)or die(mysqli_error($conn));
+	while($rangGDom = mysqli_fetch_assoc($rGDom)) {
 		$vecMatch[$IM]['gDom']=$rangGDom;
 	}
 		$qGVis= "SELECT joueur_id,NomJoueur,NumeroJoueur,position		
 						FROM TableJoueur
 						 WHERE joueur_id='{$r['gardienVis']}'";
-	$rGVis = mysql_query($qGVis)or die(mysql_error());
-	while($rangGVis = mysql_fetch_assoc($rGVis)) {
+	$rGVis = mysqli_query($conn,$qGVis)or die(mysqli_error($conn));
+	while($rangGVis = mysqli_fetch_assoc($rGVis)) {
 		$vecMatch[$IM]['gVis']=$rangGVis;
 	}
 	
