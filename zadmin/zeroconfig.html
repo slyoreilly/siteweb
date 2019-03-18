@@ -19,6 +19,68 @@
 		<script type="text/javascript" charset="utf-8">
 			gereLangue();
 		</script>
+		<style>
+
+
+		#divEqDom{
+			padding : 1%;
+				width : 48%;
+				float : left;
+				display : inline;
+
+		}
+
+		#divEqVis{
+				width : 47%;
+				float : left;
+				display : inline;
+
+		}
+
+		#blocGaucheCorps{
+			padding: 10px;
+			width:25%;
+			float:left;
+		}
+
+		#lesLogos{
+			width:100%;
+			float:none;
+
+		}
+
+		#logoDom{
+			width:50%;
+			float:left;
+			height:auto;
+		}
+
+		#logoVis{
+			width:50%;
+			float:left;
+			height:auto;
+		}
+
+		#divDate{
+			float:none;
+			margin-left:0;
+			display:table;
+		}
+
+		#divArb{
+			float :none;
+			margin-left:0;
+			display: block;
+		}
+
+		#divSpinDom > p, #divSpinVis > p{
+
+		width:50%;
+				display:inline;
+				float:left;
+		}
+
+			</style>
 		<script type="text/javascript">
 
 
@@ -413,105 +475,36 @@ function getEvaluation(joueurId){
 				mavId = mavEnCours.mavId;
 				//				creerListeMatchs(window.vecMAV, mavId);
 
-				construitEquipeDAlignement(mavId);
-				mEqDom = window.jsonEqDom;
-				mEqVis = window.jsonEqVis;
+				construitEquipeDAlignement();
 
-				dSD = document.getElementById("divSpinDom");
-				dSD.innerHTML = mEqDom.nom;
-				dSD.onclick = function(mEqDom) {
-					//return function() {
-					boiteDomVis2(1, window.jsonEqDom);
-					//}
-				};
-				//)(mEqDom);
+				$('#divSpinDom').append($('<p></p>'),text(window.jsonEqDom.nomEquipe));
+				$('#divSpinVis').append($('<p></p>').text(window.jsonEqVis.nomEquipe));
 
-				dSV = document.getElementById("divSpinVis");
-				dSV.innerHTML = mEqVis.nom;
-				dSV.onclick = function(mEqVis) {
-					//return function() {
-					boiteDomVis2(2, window.jsonEqVis);
-					//}
-				};
-				//)(mEqVis);
+				$('#logoDom').empty().append($(
+					$('<img/>').attr("id","imgLogoDom").src("/admin/afficheImage.php?ficId=" + window.jsonEqDom.ficId)
+				))
+				$('#logoVis').empty().append($(
+					$('<img/>').attr("id","imgLogoDom").src("/admin/afficheImage.php?ficId=" + window.jsonEqVis.ficId)
+				))
 
-				pDom = document.createElement('P');
-				pDom.style.width="50%";
-				pDom.style.display="inline";
-				pDom.style.cssFloat="left";
+				$('#dateDeb').val(mavEnCours.date);
+				$('#dateFin').val(mavEnCours.dateFin);
+
+				$('#divArb').empty().append($('<select></select>').attr('id','selArbId').on("change",function(){
+					setMatchAVenir(true);
+				}))
 				
-				pVis = document.createElement('P');
-				pVis.style.width="50%";
-				pVis.style.display="inline";
-				pVis.style.cssFloat="left";
-				try {
-					dSD.replaceChild(pDom, dSD.firstChild);
-				} catch(err) {
-				}
-				try {
-					dSV.replaceChild(pVis, dSV.firstChild);
-				} catch(err) {
-				}
-				pDom.innerHTML = mEqDom.nomEquipe;
-				pVis.innerHTML = mEqVis.nomEquipe;
-
-				videNoeud('logoDom');
-				divEquipe = document.getElementById('logoDom');
-				logoEquipe = document.createElement('IMG');
-				logoEquipe.id = "imgLogoDom";
-				logoEquipe.src = "/admin/afficheImage.php?ficId=" + mEqDom.ficId;
-				divEquipe.appendChild(logoEquipe);
-
-				videNoeud('logoVis');
-				divEquipe2 = document.getElementById('logoVis');
-				logoEquipe2 = document.createElement('IMG');
-				logoEquipe2.id = "imgLogoVis";
-				logoEquipe2.src = "/admin/afficheImage.php?ficId=" + mEqVis.ficId;
-				divEquipe2.appendChild(logoEquipe2);
-
-				document.getElementById("dateDeb").value = mavEnCours.date;
-				document.getElementById("dateFin").value = mavEnCours.dateFin;
-
-				divArbJS = document.getElementById('divArb');
-				/*pArb = document.createElement('P');
-				 if(window.vecMAV.arbitreId==null)
-				 {pArb.innerHTML="Non défini";}
-				 divArbJS.appendChild(pArb);*/
-				try {
-					detruitNoeud('selArbId');
-				} catch(err) {
-				}
-				selArb = document.createElement('SELECT');
-				selArb.id = 'selArbId';
-				trouve = false;
 				if (window.listeArbitres != undefined) {
 					for (var a = 0; a < window.listeArbitres.length; a++) {
-						opt = document.createElement('OPTION')
-						opt.innerHTML = window.listeArbitres[a].prenom + " " + window.listeArbitres[a].nom;
-						opt.value = window.listeArbitres[a].arbitreId;
-						selArb.appendChild(opt);
-						//			alert(mUnitVecMAV.arbitreId);
-						if (mUnitVecMAV.arbitreId == window.listeArbitres[a].arbitreId) {
-							trouve = true;
-							opt.selected = true;
-						}
+						$('selArbId').append(
+							$('<option></option>').text( window.listeArbitres[a].prenom + " " + window.listeArbitres[a].nom).val(window.listeArbitres[a].arbitreId).selected(mUnitVecMAV.arbitreId == window.listeArbitres[a].arbitreId));
 					}
 				}
-				selArb.onchange = function() {
-					setMatchAVenir(true);
-				}
-				opt = document.createElement('OPTION')
-				opt.innerHTML = "Non défini";
-				opt.value = 0;
-				selArb.appendChild(opt);
-				if (!trouve) {
-					opt.selected = true;
-				}
+				$('selArbId').append(
+							$('<option></option>').text("Non défini").val(0).selected(false));
 
-				divArbJS.appendChild(selArb);
-
-				boiteDomVis2(2, mEqVis);
-				boiteDomVis2(1, mEqDom);
+				boiteDomVis2(2, window.jsonEqVis);
+				boiteDomVis2(1, window.jsonEqDom);
 				boiteAlt(window.cJSON.equipe[window.cJSON.equipe.length - 1]);
 				//alert("jsonEqVis " + JSON.stringify(mEqVis));
 
@@ -520,13 +513,7 @@ function getEvaluation(joueurId){
 
 
 			function boiteDomVis2(domVis, equipe) {
-				//		return function(){
-				/*for ( a = 0; a < window.cJSON.equipe.length; a++) {
-				 if (window.cJSON.equipe[a].equipeId == equipe.equipeId) {
-				 //alert(JSON.stringify())
-				 window.cJSON.equipe[a]=equipe;
-				 }
-				 }*/
+				
 
 				if (domVis == 1) {
 					window.jsonEqDom = equipe;
@@ -549,150 +536,24 @@ function getEvaluation(joueurId){
 					}
 				}
 
-				if (domVis == 1) {
-					document.getElementById("divSpinDom").className = "actif";
-					document.getElementById("divSpinVis").className = "inactif";
-					try {
-						//							alert(JSON.stringify(equipe));
-
-						selDomJS = document.getElementById("selDom");
-						for (var a = 0; a < selDomJS.options.length; a++) {
-							//	alert(equipe.nom+" "+selDomJS.options[a].innerHTML);
-
-							if (equipe.nomEquipe == selDomJS.options[a].innerHTML)
-								selDomJS.options[a].selected = true;
-							else
-								selDomJS.options[a].selected = false;
-
-						}
-					} catch(err) {
-					}
-					//					videNoeud('logoDom');
-
-					//			document.getElementById('logoDom').style.width = "60%";
-					//			document.getElementById('logoVis').style.width = "35%";
-					document.getElementById('imgLogoDom').className = "grayscale.disabled";
-					document.getElementById('imgLogoVis').className = "grayscale";
-					// logoEquipe = document.createElement('IMG');
-					// logoEquipe.id = "imgLogoDom";
-				} else {
-					document.getElementById("divSpinDom").className = "inactif";
-					document.getElementById("divSpinVis").className = "actif";
-					//			document.getElementById('logoDom').style.width = "35%";
-					//			document.getElementById('logoVis').style.width = "60%";
-					document.getElementById('imgLogoDom').className = "grayscale";
-					document.getElementById('imgLogoVis').className = "grayscale.disabled";
-					try {
-						selVisJS = document.getElementById("selVis");
-						for (var a = 0; a < selVisJS.options.length; a++) {
-							//alert(equipe.equipeId+" "+selVisJS.options[a].value);
-							if (equipe.nomEquipe == selVisJS.options[a].innerHTML)
-								selVisJS.options[a].selected = true;
-							else
-								selVisJS.options[a].selected = false;
-						}
-					} catch(err) {
-					}
-
-				}
-				//				logoEquipe.src = "/admin/afficheImage.php?ficId=" + equipe.ficId;
-				//				divEquipe.appendChild(logoEquipe);
+				
 				window.jMAV[domVis - 1] = new Array();
 				window.eq[domVis - 1] = equipe.equipeId;
 				//classeJoueursNom(equipe.joueur);
 
-				rangee = document.createElement('TR');
+				$(cellTab).append($('<tr></tr>').append(
+					$('<td></td>').text("Action"),
+					$('<td></td>').text("Joueur"),
+					$('<td></td>').text("#"),
+					$('<td></td>').text("Pos"),
+					$('<td></td>').text( "Eval") ));
 
-				cellRetire = document.createElement('TD');
-				cellRetire.innerHTML = "Action";
-				cellule = document.createElement('TD');
-				cellule.innerHTML = "Joueur";
-				celluleNo = document.createElement('TD');
-				celluleNo.innerHTML = "#";
-				cellulePos = document.createElement('TD');
-				cellulePos.innerHTML = "Pos";
-				celluleEval = document.createElement('TD');
-				celluleEval.innerHTML = "Eval";
-
-				rangee.appendChild(cellRetire);
-				rangee.appendChild(cellule);
-				rangee.appendChild(celluleNo);
-				rangee.appendChild(cellulePos);
-				rangee.appendChild(celluleEval);
-				cellTab.appendChild(rangee);
-
-				for ( K = 0; K < equipe.joueur.length; K = K + 1) {
-					//				window.jMAV[boiteId-1]=window.jMAV[boiteId-1]+window.cJSON.equipe[indiceEquipe].joueur[K].joueurId+',';
+					for ( K = 0; K < equipe.joueur.length; K = K + 1) {
 
 					//////////// section tableau.
 
 					var strJ = JSON.stringify(equipe.joueur[K].joueurId);
 					var strValBut;
-					rangee = document.createElement('TR');
-
-					cellRetire = document.createElement('TD');
-					cellule = document.createElement('TD');
-					celluleNo = document.createElement('TD');
-					celluleNo.innerHTML = equipe.joueur[K].noJoueur;
-					cellulePos = document.createElement('TD');
-					cellulePos.className="cliquable";
-					cellulePos.innerHTML = equipe.joueur[K].position.toUpperCase();
-					cellulePos.id="pos_"+equipe.joueur[K].joueurId;
-					cellulePos.onclick=(function(a) {
-						return function() {
-							mTd=document.getElementById("pos_"+a.joueurId);
-							posInit=mTd.innerHTML;
-							videNoeud("pos_"+a.joueurId);
-							selPos=document.createElement('SELECT');
-							mTd.appendChild(selPos);
-							var tPos=["Attaquant","Centre","Aile Gauche","Aile Droite","Défenseur","Gardien"];
-							var vPos=["A","AC","AG","AD","D","G"];
-							trouve=false;
-							for(var b=0;b<tPos.length;b++)
-							{
-								mOpt=document.createElement('OPTION');
-								mOpt.innerHTML=tPos[b];
-								mOpt.value=vPos[b];
-								if(vPos[b]==posInit)
-								{mOpt.selected=true;
-									trouve=true;}
-									selPos.appendChild(mOpt);
-								
-							}
-							if(!trouve)
-							{selPos.options[0].selected=true;}
-							mInd = selPos.options[selPos.selectedIndex].value;
-							selPos.onchange=(function(a,b) {
-							return function() {
-								setPosition(a.joueurId,selPos.options[selPos.selectedIndex].value);
-								
-								};})(a,mInd);
-							
-					};
-					})(equipe.joueur[K]);
-					celluleEval = document.createElement('TD');
-					celluleEval.className="cliquable";
-					celluleEval.innerHTML = equipe.joueur[K].eval == null ? '-' : Math.round(equipe.joueur[K].eval * 10) + '%';
-					celluleEval.onclick=(function(a) {
-						return function() {
-							construitDialogue();
-							parDial = document.getElementById('divDialogue');
-							h1Titre=document.createElement('H1');
-							h1Titre.innerHTML="Grille d'évaluation";
-							parDial.appendChild(h1Titre);
-							listeCr=document.createElement('DIV');
-							listeCr.id="listeCriteres";
-							dSave=document.createElement('DIV');
-							dSave.id="divSave";
-							dSave.innerHTML="Sauvegarder";
-							dSave.onclick=(function(a) {
-							return	function(){sauvegardeEval(a);
-													detruitDialogue();};})(a);
-							parDial.appendChild(listeCr);
-							parDial.appendChild(dSave);
-							getEvaluation(a);
-						};
-					})(equipe.joueur[K].joueurId);
 
 					if (equipe.joueur[K].presence == 'present') {
 						window.jMAV[domVis - 1].push(equipe.joueur[K].joueurId);
@@ -718,25 +579,63 @@ function getEvaluation(joueurId){
 						strValBut = '';
 					}
 
-					if (strValBut != '') {
-						bRet = document.createElement('INPUT')
-						bRet.value = strValBut;
-						bRet.type = "button";
-						bRet.onclick = toggleJoueur(K, equipe, domVis);
-						if (window.perm < 19)
-							cellRetire.appendChild(bRet);
-					}
 
-					texteRang = document.createTextNode(equipe.joueur[K].nomJoueur);
-					cellule.appendChild(texteRang);
-					if (window.mavId != -1) {
-						rangee.appendChild(cellRetire);
-					}
-					rangee.appendChild(cellule);
-					rangee.appendChild(celluleNo);
-					rangee.appendChild(cellulePos);
-					rangee.appendChild(celluleEval);
-					cellTab.appendChild(rangee);
+					$(cellTab).append($('<tr></tr>').append(
+						$('<td></td>').append($('<input/>').type("button").val(strValBut).on("click"),{K:K,equipe:equipe,domVis:domVis},function(event){
+							if (window.perm < 19){
+							toggleJoueur(event.data.K, event.data.equipe, event.data.domVis);}
+						}),
+						$('<td></td>').text(equipe.joueur[K].nomJoueur),
+						$('<td></td>').text(equipe.joueur[K].noJoueur),
+						$('<td></td>').text(equipe.joueur[K].position.toUpperCase()).addClass("cliquable").attr("id","pos_"+equipe.joueur[K].joueurId).on("click",{a:equipe.joueur[K]},function(event){
+							mTd=document.getElementById("pos_"+event.data.a.joueurId);
+							posInit=mTd.innerHTML;
+							videNoeud("pos_"+event.data.a.joueurId);
+							selPos=document.createElement('SELECT');
+							mTd.appendChild(selPos);
+							var tPos=["Attaquant","Centre","Aile Gauche","Aile Droite","Défenseur","Gardien"];
+							var vPos=["A","AC","AG","AD","D","G"];
+							trouve=false;
+							for(var b=0;b<tPos.length;b++)
+							{
+								mOpt=document.createElement('OPTION');
+								mOpt.innerHTML=tPos[b];
+								mOpt.value=vPos[b];
+								if(vPos[b]==posInit)
+								{mOpt.selected=true;
+									trouve=true;}
+									selPos.appendChild(mOpt);
+								
+							}
+							if(!trouve)
+							{selPos.options[0].selected=true;}
+							mInd = selPos.options[selPos.selectedIndex].value;
+							selPos.onchange=(function(a,b) {
+							return function() {
+								setPosition(a.joueurId,selPos.options[selPos.selectedIndex].value);
+								
+								};})(event.data.a,mInd);
+						}),
+						$('<td></td>').addClass("cliquable").text(equipe.joueur[K].eval == null ? '-' : Math.round(equipe.joueur[K].eval * 10) + '%').on("click",{a:equipe.joueur[K].joueurId},function(event){
+							construitDialogue();
+							parDial = document.getElementById('divDialogue');
+							h1Titre=document.createElement('H1');
+							h1Titre.innerHTML="Grille d'évaluation";
+							parDial.appendChild(h1Titre);
+							listeCr=document.createElement('DIV');
+							listeCr.id="listeCriteres";
+							dSave=document.createElement('DIV');
+							dSave.id="divSave";
+							dSave.innerHTML="Sauvegarder";
+							dSave.onclick=(function(a) {
+							return	function(){sauvegardeEval(a);
+													detruitDialogue();};})(event.data.a);
+							parDial.appendChild(listeCr);
+							parDial.appendChild(dSave);
+							getEvaluation(event.data.a);
+
+						})
+					))
 
 				}
 				//				leNom = document.getElementById(nomEq);
@@ -989,76 +888,28 @@ function getEvaluation(joueurId){
 
 				function faitOnglet_1() {
 
-divBGC = document.createElement('DIV');
-divBGC.id = 'blocGaucheCorps';
-divLL = document.createElement('DIV');
-divLL.id = 'lesLogos';
-divLD = document.createElement('DIV');
-divLD.id = 'logoDom';
-divLV = document.createElement('DIV');
-divLV.id = 'logoVis';
-
-divBGC.appendChild(divLL);
-divLL.appendChild(divLD);
-divLL.appendChild(divLV);
-divBGC.style.padding = "10px";
-//divBGC.style.width="25%";
-divBGC.style.cssFloat = "left";
-divLL.style.width = "100%";
-divLL.style.cssFloat = "none";
-divLD.style.width = "50%";
-divLD.style.cssFloat = "left";
-divLD.style.height = "auto";
-divLD.onclick = function() {
-	boiteDomVis2(1, window.jsonEqDom);
-}
-divLV.style.width = "50%";
-divLV.style.cssFloat = "left";
-divLV.style.height = "auto";
-divLV.onclick = function() {
-	boiteDomVis2(2, window.jsonEqVis);
-}
-divDateJS = document.createElement('DIV');
-divDateJS.id = "divDate";
-divDateJS.style.cssFloat = "none";
-divDateJS.style.marginLeft = "0";
-divDateJS.style.display = "table";
-
-divBGC.appendChild(divDateJS);
-
-inDate = document.createElement('input');
-inDate.id = "dateDeb";
-inDate.name = "deb";
-inDate.value = "AAAA/MM/JJ";
-inDate.type = "text";
-inDate.onchange = function() {
-	setMatchAVenir(true);
-}
-divDateJS.appendChild(inDate);
-
-inFin = document.createElement('input');
-inFin.id = "dateFin";
-inFin.name = "fin";
-inFin.value = "2030/01/01 0:0";
-inFin.type = "hidden";
-divDateJS.appendChild(inFin);
-
-divArbJS = document.createElement('div');
-divArbJS.id = "divArb";
-divArbJS.style.cssFloat = "none";
-divArbJS.style.marginLeft = "0";
-divArbJS.style.display = "block";
-
-h2Arb = document.createElement('h2');
-h2Arb.id = "match";
-h2Arb.className = "titreSection";
-divArbJS.appendChild(h2Arb);
-
-divBGC.appendChild(divArbJS);
-
+					$('#onglet_1').append($('<div></div>').attr("id","blocGaucheCorps").append(
+						$('<div></div>').attr("id","lesLogos").append(
+							$('<div></div>').attr("id",'logoDom').on("click",{domvis:1,equipe:window.jsonEqDom},function(event){
+								boiteDomVis2(event.data.domVis, event.data.equipe);
+							}),
+							$('<div></div>').attr("id",'logoVis').on("click",{domvis:2,equipe:window.jsonEqVis},function(event){
+								boiteDomVis2(event.data.domVis, event.data.equipe);
+							})
+							
+						),
+						$('<div></div>').attr('id','divDate').append(
+							$('<input></input>').attr('id','dateDeb').attr('name','deb').val("AAAA/MM/JJ").type("text").on("change",function(){
+								setMatchAVenir(true);
+							}),
+							$('<input></input>').attr('id','dateFin').attr('name','fin').val("2030/01/01 0:0").type("hidden")
+							
+							),
+							$('<div></div>').attr("id","divArb").append(
+								$('<h2></h2>').attr("id","match").addClass("titreSection")
+							)
+					));
 //					<!--input type="button" value="Modifier" onclick="displayCalendar(document.getElementById('dateDeb'),'yyyy/mm/dd hh:ii',this,true)"-->
-
-document.getElementById('onglet_1').appendChild(divBGC);
 
 }
 
@@ -1257,21 +1108,13 @@ function paramsColonnes() {
 				dEqDom = document.createElement('div');
 				dEqDom.id = "divEqDom";
 				//				dEqDom.style.height="300px";
-				dEqDom.style.padding = "1%";
-				dEqDom.style.width = "48%";
-				dEqDom.style.cssFloat = "left";
-				dEqDom.style.display = "inline";
+
 
 				divG.appendChild(dEqDom);
 
 				dEqVis = document.createElement('div');
 				dEqVis.id = "divEqVis";
-				//			dEqVis.style.height="300px";
-				dEqVis.style.padding = "1%";
-				dEqVis.style.width = "47%";
-				//				dEqVis.style.left="52%";
-				//				dEqVis.style.display="block";
-				dEqVis.style.cssFloat = "left";
+
 
 				divG.appendChild(dEqVis);
 
@@ -1280,7 +1123,7 @@ function paramsColonnes() {
 				dSpinDom.className = "actif";
 				dSpinVis = document.createElement('div');
 				dSpinVis.id = "divSpinVis";
-				dSpinVis.className = "inactif";
+				dSpinVis.className = "actif";
 
 				dEqDom.appendChild(dSpinDom);
 				dEqVis.appendChild(dSpinVis);
@@ -1405,41 +1248,24 @@ function trouveEval(critereId){
 						}
 					}
 				}
-			function construitEquipeDAlignement(tMavId) {
-				//	return function(){
-				var k = 0;
-				boule = 0;
-				//	alert("On construit!");
-				while (k < window.vecMAV.length && boule == 0) {
-					if (window.vecMAV[k].mavId == tMavId) {
-						boule = 1;
-					} else {
-						k++;
-					}
-				}
-				//					alert("Match non trouvé!");
-				//	alert(JSON.stringify(window.cJSON));
+			function construitEquipeDAlignement() {
 
 				window.jsonEqDom = new Array();
 				window.jsonEqVis = new Array();
 
-				if (!boule && tMavId == -1) {
-					window.jsonEqDom = JSON.parse(JSON.stringify(window.cJSON.equipe[0]));
-					window.jsonEqVis = JSON.parse(JSON.stringify(window.cJSON.equipe[1]));
-				} else {
 					var iDom = 0;
 					var iVis = 0;
 					for ( i = 0; i < window.cJSON.equipe.length; i++) {
-						if (window.vecMAV[k].eqDom == window.cJSON.equipe[i].equipeId) {
-							window.jsonEqDom = JSON.parse(JSON.stringify(window.cJSON.equipe[i]));
+						if (match.eqDom == window.cJSON.equipe[i].equipeId) {
+							window.jsonEqDom = window.cJSON.equipe[i];
 							iDom = i;
 						}
-						if (window.vecMAV[k].eqVis == window.cJSON.equipe[i].equipeId) {
-							window.jsonEqVis = JSON.parse(JSON.stringify(window.cJSON.equipe[i]));
+						if (match.eqVis == window.cJSON.equipe[i].equipeId) {
+							window.jsonEqVis = window.cJSON.equipe[i];
 							iVis = i;
 						}
 					}
-				}
+				
 
 				//		alert("Equipes assignées!");
 				var presence;
@@ -1454,8 +1280,8 @@ function trouveEval(critereId){
 				while (m < window.cJSON.equipe[iDom].joueur.length) {
 					var n = 0;
 					dansAlign = false;
-					while (n < vM[k].alignementDom.length && dansAlign == false) {
-						if (vM[k].alignementDom[n] == window.cJSON.equipe[iDom].joueur[m].joueurId) {
+					while (n < match.alignementDom.length && dansAlign == false) {
+						if (match.alignementDom[n] == window.cJSON.equipe[iDom].joueur[m].joueurId) {
 							dansAlign = true;
 							window.jsonEqDom.joueur.push(window.cJSON.equipe[iDom].joueur[m]);
 							window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = "present";
@@ -1471,11 +1297,11 @@ function trouveEval(critereId){
 
 				var n = 0;
 				dansAlign = false;
-				while (n < vM[k].alignementDom.length) {
+				while (n < match.alignementDom.length) {
 					m = 0
 					dansAlign = false;
 					while (m < window.jsonEqDom.joueur.length && dansAlign == false) {
-						if (vM[k].alignementDom[n] == window.jsonEqDom.joueur[m].joueurId) {
+						if (match.alignementDom[n] == window.jsonEqDom.joueur[m].joueurId) {
 							dansAlign = true;
 						}
 						m++;
@@ -1505,8 +1331,8 @@ function trouveEval(critereId){
 				while (m < window.cJSON.equipe[iVis].joueur.length) {
 					var n = 0;
 					dansAlign = false;
-					while (n < vM[k].alignementVis.length && dansAlign == false) {
-						if (vM[k].alignementVis[n] == window.cJSON.equipe[iVis].joueur[m].joueurId) {
+					while (n < match.alignementVis.length && dansAlign == false) {
+						if (match.alignementVis[n] == window.cJSON.equipe[iVis].joueur[m].joueurId) {
 							dansAlign = true;
 							window.jsonEqVis.joueur.push(window.cJSON.equipe[iVis].joueur[m]);
 							window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = "present";
@@ -1522,11 +1348,11 @@ function trouveEval(critereId){
 
 				var n = 0;
 				dansAlign = false;
-				while (n < vM[k].alignementVis.length) {
+				while (n < match.alignementVis.length) {
 					m = 0
 					dansAlign = false;
 					while (m < window.jsonEqVis.joueur.length && dansAlign == false) {
-						if (vM[k].alignementVis[n] == window.jsonEqVis.joueur[m].joueurId) {
+						if (match.alignementVis[n] == window.jsonEqVis.joueur[m].joueurId) {
 							dansAlign = true;
 						}
 						m++;
