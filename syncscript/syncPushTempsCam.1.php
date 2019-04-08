@@ -30,7 +30,7 @@ unset($chronoRetour);
 unset($resultChrono);
 unset($rangeeChrono);
 
-$rrs2 = $rSServ + 1000;
+$rrs2 = $rSServ;
 $cpt=0;
 
 
@@ -150,7 +150,7 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 				case 5:			
 				$mVideo= array();
 				$mVideo['match_id'] = $rangeeMatch['match_id'];
-				$mVideo['reference'] = $rangeeMatch['clipId'];
+				$mVideo['reference'] = $rangeeMatch['event_id'];
 				$mVideo['type'] = 5;
 				$mVideo['chrono'] = $rangeeMatch['chrono'];
 				$mVideo['ligueId'] = $rangeeMatch['ligueRef'];
@@ -211,7 +211,7 @@ $repSite['matchPeriode'] = $matchPeriode;
 //$repSite['equipes'] = $Equipes;
 $repSite['matchs'] = $matchs;
 //$repSite['info']=$resultMatch;
-if($IC==0){
+if($IM==0){
 	$mSleep = sleep(5);
 	flush();
 	$cpt = $cpt+5000;
@@ -225,7 +225,7 @@ if($IC==0){
 
 $comp =$maxSec-30000;
 }
- while (($IC==0)&&($cpt<$comp));
+ while (($IM==0)&&($cpt<$comp));
 
 
 //echo json_encode($Sommaire);

@@ -153,7 +153,7 @@ $Sommaire['eqVisId']=$mEqVisId;
 	$qEv="SELECT 
 	TableEvenement0.event_id,
     TableEvenement0.souscode,
-    TableEvenement0.chrono,
+    TableEvenement0.chrono as mChrono,
     TableEvenement0.joueur_event_ref,
     TableEquipe.nom_equipe,
     TableEquipe.equipe_id,
@@ -175,7 +175,7 @@ FROM
     TableJoueur ON (TableEvenement0.joueur_event_ref = TableJoueur.joueur_id)
         INNER JOIN
     TableEquipe ON (TableEquipe.equipe_id = TableEvenement0.equipe_event_id)
-        INNER JOIN
+        LEFT JOIN
     Video ON (Video.reference = TableEvenement0.event_id)
         AND nomMatch = '{$matchPourVideos}'
         LEFT JOIN
@@ -214,7 +214,7 @@ FROM
 WHERE
     (match_id = '{$matchPourVideos}')
         AND (TableEvenement0.code = 0)
-        AND Video.type = 0
+        AND (Video.type = 0 OR Video.type IS NULL)
 ORDER BY TableEvenement0.chrono , angleOk DESC";
 
 
@@ -227,7 +227,7 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 	{
 		if($rangeeEv['event_id']!=$bufEvent){
 			$unBut=array();
-			$unBut['chrono']=$rangeeEv['chrono'];
+			$unBut['chrono']=$rangeeEv['mChrono'];
 			$unBut['equipe']=$rangeeEv['nom_equipe'];
 			$unBut['equipeId']=$rangeeEv['equipe_id'];
 			
@@ -258,14 +258,16 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 			$qualif=$qualif+1;}
 
 
-
+			//if(!is_null($rangeeEv['videoId'])){
 			$unBut['video']=array();
+			//}
 			array_push($buts,$unBut);
+			
 			$bufEvent= $rangeeEv['event_id'];
 		}
 		$unVideo=array();
 
-
+		if(!is_null($rangeeEv['videoId'])){
 		$unVideo['fic']=$rangeeEv['nomFichier'];
 		$unVideo['cam']=$rangeeEv['camId'];
 		$unVideo['eval']=$rangeeEv['eval'];
@@ -275,7 +277,7 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 		$unVideo['emplacement']=$rangeeEv['emplacement'];
 		$unVideo['thumbnail']=$rangeeEv['nomThumbnail'];
 
-		array_push($unBut['video'],$unVideo);
+		array_push($unBut['video'],$unVideo);}
 		end($buts);
 		$key = key($buts);
 		$buts[$key]=$unBut;
