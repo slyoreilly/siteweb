@@ -421,11 +421,12 @@
 				switch(parseInt(saison.type)) {
 					case 1:
 					case 2:
+					case 3:
 
 						//	if(verifiePermission()<9)
 						//		alert(string2);
 						//var cJSON = eval('(' + string2 + ')');
-                          console.log("vic P "+window.vicP);
+                       //   console.log("vic P "+window.vicP);
                            
 
 						var titreClassement = new Array();
@@ -488,23 +489,39 @@
 						"BC",
 						"Diff"
 						];*/
+						var SD = [];
+						SD = [{"Nom":  window.tl_class_Classement}];
+						try{
+							SD = saison.structureDivision;
+							if(SD==null){
+								SD = [{"Nom":  window.tl_class_Classement,"Equipes":equipes}];
+							
+							}
+						}
+						catch(err){
 						
+						}
+							//alert(JSON.stringify(saison));
+							for (var a = 0; a < SD.length; a++) {
 						
 						
 						div1 = document.getElementById('divCentrale');
+
+
 						table1 = document.createElement('TABLE');
-						table1.id = "tableClassement";
+						table1.id = "tableClassement"+ "_div" + a;
 						table1.className = "table table-striped table-light table-hover";//"c_tableau contOuiJet";
 						tb = document.createElement('TBODY');
-						tb.id = "bodyTable";
+						tb.id = "bodyTable"+"_div"+a;
 						tr1 = document.createElement('TR');
-						tr1.id = "date2";
+						tr1.id = "date2"+ "_div" + a;
 						td1 = document.createElement('TD');
 						td1.className = "titreTableau";
 						td1.colSpan = titreClassement.length;
 						td1.innerHTML = window.tl_class_Classement;
+						td1.innerHTML = SD[a].Nom
 						tr2 = document.createElement('TR');
-						tr2.id = "rangeeTitreClassement";
+						tr2.id = "rangeeTitreClassement"+ "_div" + a;
 
 						for ( i = 0; i < titreClassement.length; i++) {
 							tdi = document.createElement('TD');
@@ -519,6 +536,12 @@
 						table1.appendChild(tb);
 						div1.appendChild(table1);
 
+					
+
+				
+
+
+							}
 						/////////////////////////////////////////////////////////////
 
 						////////////////////////////////////////////////////////////
@@ -528,10 +551,20 @@
 
 
 							for ( J = 0; J < equipes.length; J++) {
+
+								var noDiv = 0;
+								for (var b = 0; b < SD.length; b++) {
+									for (var c = 0; c < SD[b].Equipes.length; c++) {
+										if (SD[b].Equipes[c] == equipes[J].id) {
+											noDiv = b;
+										}
+									}
+								}
+
 								//	if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
 								rangee = document.createElement('TR');
 								rangee.id = "rangeeClasse_" + J;
-								amettre = document.getElementById('rangeeTitreClassement');
+								amettre = document.getElementById('rangeeTitreClassement' + '_div' + noDiv);
 								amettre.parentNode.appendChild(rangee);
 
 								var lesCols = new Array();
@@ -685,125 +718,7 @@
 
 						break;
 
-					case 3:
-						try {
-							var SD = saison.structureDivision;
-							//alert(JSON.stringify(saison));
-							for (var a = 0; a < SD.length; a++) {
-								var titreClassement = new Array();
-								titreClassement[0] = window.tl_match_Equipe;
-								titreClassement[1] = window.tl_class_PJ;
-								titreClassement[2] = window.tl_class_Vic;
-								titreClassement[3] = window.tl_class_Def;
-								titreClassement[4] = window.tl_class_Nul;
-								titreClassement[5] = "OT Loss";
-
-								titreClassement[6] = window.tl_class_Points;
-								titreClassement[7] = window.tl_class_BP;
-								titreClassement[8] = window.tl_class_BC;
-								titreClassement[9] = window.tl_class_Diff;
-								div1 = document.getElementById('divCentrale');
-								table1 = document.createElement('TABLE');
-								table1.id = "tableClassement" + "_div" + a;
-								table1.className = "c_tableau contOuiJet";
-								tb = document.createElement('TBODY');
-								tb.id = "bodyTable" + "_div" + a;
-								tr1 = document.createElement('TR');
-								tr1.id = "date2" + "_div" + a;
-								td1 = document.createElement('TD');
-								td1.className = "titreTableau";
-								td1.colSpan = titreClassement.length;
-								td1.innerHTML = SD[a].Nom
-								tr2 = document.createElement('TR');
-								tr2.id = "rangeeTitreClassement" + "_div" + a;
-
-								for ( i = 0; i < titreClassement.length; i++) {
-									tdi = document.createElement('TD');
-									tdi.className = "rangeeTitre";
-									tdi.innerHTML = titreClassement[i];
-									tr2.appendChild(tdi);
-								}
-
-								tr1.appendChild(td1);
-								tb.appendChild(tr1);
-								tb.appendChild(tr2);
-								table1.appendChild(tb);
-								div1.appendChild(table1);
-
-							}
-
-							for ( J = 0; J < equipes.length; J++) {
-								//	if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
-								var noDiv = 0;
-								for (var b = 0; b < SD.length; b++) {
-									for (var c = 0; c < SD[b].Equipes.length; c++) {
-										if (SD[b].Equipes[c] == equipes[J].id) {
-											noDiv = b;
-										}
-									}
-								}
-								rangee = document.createElement('TR');
-								rangee.id = "rangeeClasse_" + J;
-								amettre = document.getElementById('rangeeTitreClassement' + '_div' + noDiv);
-								amettre.parentNode.appendChild(rangee);
-
-								var lesCols = new Array();
-								lesCols[0] = equipes[J].nom;
-								lesCols[2] = parseInt(equipes[J].vicDom) + parseInt(equipes[J].vicVis);
-								lesCols[3] = parseInt(equipes[J].defDom) + parseInt(equipes[J].defVis);
-								lesCols[4] = parseInt(equipes[J].nulDom) + parseInt(equipes[J].nulVis);
-								lesCols[5] = parseInt(equipes[J].defPDom) + parseInt(equipes[J].defPVis);
-								lesCols[1] = lesCols[2] + lesCols[3] + lesCols[4] + lesCols[5];
-								basePoints = parseInt(2 * equipes[J].vicDom) + 2 * parseInt(equipes[J].vicVis) + parseInt(equipes[J].nulDom) + parseInt(equipes[J].nulVis);
-								lesCols[6] = defP ? basePoints + parseInt(equipes[J].defPDom) + parseInt(equipes[J].defPVis) : basePoints;
-								lesCols[7] = equipes[J].bp;
-								lesCols[8] = equipes[J].bc;
-								lesCols[9] = parseInt(equipes[J].bp) - parseInt(equipes[J].bc);
-
-								if (parseInt(window.ligueId) == 49 || parseInt(window.ligueId) == 50 || parseInt(window.ligueId) == 51) {
-									lesCols[6] = equipes[J].points;
-								}
-
-								var lesLiens = new Array();
-								lesLiens[0] = '/zstats/statsequipe.html?equipeId=' + equipes[J].id + '&m=' + window.m;
-								lesLiens[1] = null;
-								lesLiens[2] = null;
-								lesLiens[3] = null;
-								lesLiens[4] = null;
-								lesLiens[5] = null;
-								lesLiens[6] = null;
-								lesLiens[7] = null;
-								lesLiens[8] = null;
-								lesLiens[9] = null;
-
-								for ( K = 0; K < lesCols.length; K++) {
-									cellule = document.createElement('TD');
-									if (lesLiens[K] != null) {
-										lien = document.createElement('A');
-										lien.innerHTML = lesCols[K];
-										lien.href = lesLiens[K];
-										cellule.appendChild(lien);
-									} else {
-										texte = document.createTextNode(lesCols[K]);
-										cellule.appendChild(texte);
-									}
-									rangee.appendChild(cellule);
-								}
-								//J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
-
-							}
-
-							//	document.body.rangee.cellule.innerHTML ='yo';
-						} catch(err) {
-						}
-						if (!defP) {
-							$(document).ready(function() {
-								$('td:nth-child(6)').hide();
-							});
-						}
-
-						break;
-
+					
 				}// Fin switch type saison
 
 				//////////////////////////////////////////////////////////
