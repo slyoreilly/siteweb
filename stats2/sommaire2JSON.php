@@ -218,7 +218,7 @@ WHERE
 ORDER BY TableEvenement0.chrono , angleOk DESC";
 
 
-
+$setupMySql = mysqli_query($conn,"SET SQL_BIG_SELECTS=1" ) or die('Cannot complete SETUP BIG SELECTS because: ' . mysqli_error($conn));
 $resultEvent = mysqli_query($conn,$qEv) or die(mysqli_error($conn));  	
 $buts=array();
 $Sommaire['qEv']=$qEv;
