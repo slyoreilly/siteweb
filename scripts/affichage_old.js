@@ -855,7 +855,7 @@ function genereBoites() {
 	if (getCookie('ligueId') == 86)
 		faireBoite(1, 10);
 	else
-		faireBoite(1, 9);
+		faireBoite(1, 11);
 	//	genBoiteContexte(3);
 	//	genBoiteContexte(4);
 	//genBoiteContexte(5);
