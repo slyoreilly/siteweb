@@ -25,7 +25,7 @@ mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 
 
 $retour1 = mysqli_query($conn,"SELECT * FROM TacheShell 
-							WHERE  statut=0 AND essais<10");
+							WHERE  statut=0 AND essais<10  ORDER BY priorite DESC");
 								error_log("Nb Taches: " . mysqli_num_rows($retour1));
 							
 		if(mysqli_num_rows($retour1)>0)			

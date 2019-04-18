@@ -837,7 +837,8 @@ function afficheFusillade(rJSON) {
 							        $('<td></td>').append($('<select></select>').css("width", "100%").append(
 							                $('<option></option>').val(0).text(window.tl_match_aucun),
 							                $('<option></option>').val(1).text("Open"), 
-							                $('<option></option>').val(2).text("Delete"))),
+											$('<option></option>').val(2).text("Delete"),
+											$('<option></option>').val(3).text("Show Links"))),
 
 							        $('<td></td>').append($('<select></select>').css("width", "100%").append(
 							                    $('<option></option>').val(0).text("All"), 
@@ -846,12 +847,56 @@ function afficheFusillade(rJSON) {
 						}
 						
 						$('#adminButsModal .modal-footer').append($('<button></button>').attr("type", "button").addClass("btn btn-primary").text("Apply").on("click", function() {
+							ficsShow = [];
+							$('#adminButsModal .modal-body').append(
+										$('<div></div>').attr("id","linklist")
+									);
 							for (var a = 0; a < arrayCam.length; a++) {
 								var ind = a + 1;
 								str1 = '#tableAdminCams tr:nth-child(' + ind + ') td:nth-child(' + 2 + ') select option:selected';
 								str2 = '#tableAdminCams tr:nth-child(' + ind + ') td:nth-child(' + 3 + ') select option:selected';
 								var b = $('#tableAdminCams tr:nth-child(' + ind + ') td:nth-child(' + 1 + ') input').val();
 								console.log("Choisi: " +'#tableAdminCams tr:nth-child(' + ind + ') td:nth-child(' + 2 + ') select option:selected'+" , parsée: "+parseInt($(str1).val()));
+								
+								
+								if (parseInt($(str1).val()) == 3) {///  Montre liens			
+									
+									
+								     // console.log( arrayCam[a]);
+									
+//console.log(rSMB.buts.length);
+									for (var d = 0; d < rSMB.buts.length; d++) {
+
+										
+//console.log(rSMB.buts[d].video.length);
+										for (var e = 0; e < rSMB.buts[d].video.length; e++) {
+	//									    console.log(rSMB.buts[d].video[e].cam);
+											if (rSMB.buts[d].video[e].cam == arrayCam[a]) {
+											    if (parseInt($(str2).val()) == 0)
+											    {
+													place = !strcmp(rSMB.buts[d].video[e].emplacement,"5.39.81.14")?"syncstats.ca":rSMB.buts[d].video[e].emplacement;
+
+													ficsShow.push(place + "/lookatthis/" + rSMB.buts[d].video[e].fic);
+                                                   
+											    }
+											    else {
+											        if(parseInt($(str2).val()) == 1 && rSMB.buts[d].equipe==infoMatch.equipeNomDom ||parseInt($(str2).val()) == 2 && rSMB.buts[d].equipe==infoMatch.equipeNomVis)
+											             {
+															place = !strcmp(rSMB.buts[d].video[e].emplacement,"5.39.81.14")?"syncstats.ca":rSMB.buts[d].video[e].emplacement;
+															ficsShow.push(place + "/lookatthis/" + rSMB.buts[d].video[e].fic);
+                                                        }
+											    }  
+
+											}
+
+										}
+
+									}
+
+
+							}
+								
+								
 								if (parseInt($(str1).val()) == 2) {///  Efface								    
 								    fics = [];
 console.log(rSMB.buts.length);
@@ -949,6 +994,37 @@ console.log(rSMB.buts[d].video.length);
 
 								}
 							}
+							console.log(ficsShow);
+									ficsShow.sort();
+									console.log(ficsShow);
+									var strInput="";
+									var strChannel="";
+									for (var i = 0; i < ficsShow.length; i++) {
+										strInput=strInput+"-i "+"https://"+ficsShow[i]+" ";
+										strChannel=strChannel+"["+i+":v:0]["+i+":a:0]";
+
+										$('#linklist').append(
+											$('<p></p>').append(
+												$('<a></a>').html("https://" + ficsShow[i]).attr("href","https://" + ficsShow[i])));
+										
+									}
+
+									var strDeb = "ffmpeg ";
+									var strFin = "concat=n="+ficsShow.length +":v=1:a=1[outv][outa]\" -map \"[outv]\" -map \"[outa]\" /home/vidsCree/output.mp4";
+
+									var strTot = strDeb+strInput+" -filter_complex \""+strChannel+strFin;
+
+									$('#adminButsModal .modal-footer').append($('<button></button>').attr("type", "button").addClass("btn btn-primary").text("Produce Vid").hide().on("click", function() {
+										$.ajax({url : "https://syncstats.ca/syncscript/commandUpload.php", 
+					type: 'POST',
+					data: {command:strTot},
+					success: function(result){}}
+					);
+										
+									}));
+
+									console.log(strTot);	
+
 
 						}));
 					});   ///// Fin de admin des videos
