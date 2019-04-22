@@ -232,12 +232,31 @@ foreach ($leMatch as $evenement) {
 	}
 	if (!strcmp($evenement['type'],'clip')) {
 		$matchAEnr = parseMatchID($evenement['match_id']);
+		$retTypeClip=null;
 		if (isset($matchAEnr['ligueId'])) {$ligueId = $matchAEnr['ligueId'];
 		}
 		if (isset($heure)) {
 			$retClip = $evenement['chrono'];
 			// retourner le but, sans correction de chrono.
 			$evenement['chrono'] = $evenement['chrono'] + $heureServeur - $heure;
+		}
+		if (isset($evenement['typeClip']) ){
+			$strTypeClip = $evenement['typeClip'];
+			if(!strcmp($strTypeClip,'arret')){
+				$retTypeClip=5;
+			}else
+			if(!strcmp($strTypeClip,'verif')){
+				$retTypeClip=16;
+			}else
+			if(!strcmp($strTypeClip,'maj')){
+				$retTypeClip=13;
+			}else
+			if(!strcmp($strTypeClip,'mee')){
+				$retTypeClip=12;
+			}else
+			if(!strcmp($strTypeClip,'tir')){
+				$retTypeClip=7;
+			}
 		}
 		if (isset($evenement['noseq'])) {$noseq = $evenement['noseq'];
 		}else{$noseq=0;}
@@ -265,7 +284,7 @@ foreach ($leMatch as $evenement) {
 			//	break;		 NO BREAK!!!!!!!
 			case 12 :
 				if ($trouveClip == 0) {
-				$qInsM = "INSERT INTO Clips (matchId, chrono, scoringEnd) VALUES ('{$evenement['match_id']}','{$evenement['chrono']}','{$monEnd}')";
+				$qInsM = "INSERT INTO Clips (matchId, chrono, scoringEnd, type) VALUES ('{$evenement['match_id']}','{$evenement['chrono']}','{$monEnd}','{$retTypeClip}')";
 
 				mysqli_query($conn,$qInsM) or die(mysqli_error($conn) . $qInsM);
 				}
