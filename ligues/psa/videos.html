@@ -247,8 +247,13 @@ for (i=0;i<ARRcookies.length;i++)
                                      $('<td></td>').append($(divT)));
                                        jaiCam=new Array();
                                    for(var b=0;b<rJSON.buts[a].video.length;b++){
+                                       if(rJSON.buts[a].video[b].emplacement=="5.39.81.14"){
+                                           addr = "syncstats.ca";
+                                       }else{
+                                        addr = rJSON.buts[a].video[b].emplacement;
+                                       }
                                        if($.inArray(rJSON.buts[a].video[b].cam, jaiCam)){
-                                        $(tr).append($('<td></td>').append($('<a></a>').attr("target","_blank").attr("href","http://"+rJSON.buts[a].video[b].emplacement+"/lookatthis/"+rJSON.buts[a].video[b].fic).text("Voir")));
+                                        $(tr).append($('<td></td>').append($('<a></a>').attr("target","_blank").attr("href","https://"+addr+"/lookatthis/"+rJSON.buts[a].video[b].fic).text("Voir")));
                                          jaiCam.push(rJSON.buts[a].video[b].cam);
                                          }
                                     }
@@ -277,8 +282,13 @@ for (i=0;i<ARRcookies.length;i++)
                                     
                                        jaiCam=new Array();
                                    for(var b=0;b<rJSON.clips[a].video.length;b++){
+                                    if(rJSON.clips[a].video[b].emplacement=="5.39.81.14"){
+                                           addr = "syncstats.ca";
+                                       }else{
+                                        addr = rJSON.clips[a].video[b].emplacement;
+                                       }
                                        if($.inArray(rJSON.clips[a].video[b].cam, jaiCam)){
-                                        $(tr).append($('<td></td>').append($('<a></a>').attr("target","_blank").attr("href","http://"+rJSON.clips[a].video[b].emplacement+"/lookatthis/"+rJSON.clips[a].video[b].fic).text("Voir")));
+                                        $(tr).append($('<td></td>').append($('<a></a>').attr("target","_blank").attr("href","https://"+addr+"/lookatthis/"+rJSON.clips[a].video[b].fic).text("Voir")));
                                          jaiCam.push(rJSON.clips[a].video[b].cam);
                                          }
                                     }
