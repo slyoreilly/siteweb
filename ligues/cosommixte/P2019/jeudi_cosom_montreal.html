@@ -1,0 +1,341 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Horaire jeudi - Ligue amicale mixte de hockey cosom de Montréal</title>
+<meta name="keywords" content="hockey cosom, hockey cosom mixte montréal, hockey cosom montreal, ligue hockey cosom mixte Montréal, ligue hockey cosom Montreal, ligue hockey cosom, ball hockey, ligue amicale hockey cosom, hockey balle, hockey cosom mixte, hockey cosom ahuntsic, hockey cosom Régina Assumpta">
+<meta name="description" content="cosom, hockey, ligue, Montréal">
+<link href="http://cosommixte.org/_themes/css/templatemo_style.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="../../_themes/css/nivo-slider.css" type="text/css" media="screen" />
+        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+        <script src="http://syncstats.com/scripts/jquery.mCustomScrollbar.js"></script>
+        <script src="http://syncstats.com/scripts/visionneuse.js"></script>
+        <script src="http://syncstats.com/scripts/jquery.raty.js"></script>
+        <script src="http://syncstats.com/scripts/fonctions.js"></script>
+        <script src="ajoutsjs.js"></script>
+
+                <link rel='stylesheet' type='text/css' href='http://syncstats.com/style/visionneuse.css' />
+        <link rel='stylesheet' type='text/css' href='http://syncstats.com/style/jquery.raty.css' />
+        <link rel="stylesheet" type='text/css' href="http://syncstats.com/style/jquery.mCustomScrollbar.css">
+<script type="text/javascript">
+
+function MM_jumpMenu(targ,selObj,restore){ //v3.0
+  eval(targ+".location='"+selObj.options[selObj.selectedIndex].value+"'");
+  if (restore) selObj.selectedIndex=0;
+}
+
+</script>
+<style>
+
+.tr_ligne_heure,.tr_ligne_heure tbody  :hover{
+    background:#000000;
+}
+.tab_match:hover td {
+    background:#ccc  !important;
+    color:#000 !important;
+}
+#gradient-style tbody tr:hover td {
+    background: #000;
+    color: #8ba2c0;
+}
+
+#divDialogue
+{
+    position :absolute;
+    width :60%;
+    height :80%;
+    position :fixed;
+    left :20%;
+    top :10%;
+    background-color : #eee;
+    border: 2px solid #aaa;
+    display :block;
+    padding :20px;
+    z-index:2000;
+    overflow:scroll;
+}
+
+
+#divDialogue iframe
+{
+    border-style:none;
+    width:96%;
+    height:96%;
+    margin:2%;
+}
+
+
+#divDialogue table
+{
+    background-color:rgba(0,0,0,0);
+border-bottom-style:groove;
+border-bottom-width:2px;
+border-bottom-color:rgba(225,225,225,0.5);
+padding-bottom:5px;
+margin:20px 0 0 0 ;
+}
+#divDialogue tbody,#divDialogue tr,#divDialogue td{
+    background-color:rgba(0,0,0,0);
+margin:20px 0 0 0 ;
+}
+
+#divDialogue td{
+border-width:none;
+border-style:0px;
+padding:0px;
+margin:0px;
+
+}
+
+
+#divDialogue tr.titreTableau, #divDialogue td.titreTableau
+{
+    
+        text-align: left;
+font-family: "Arial black",arial,Georgia,"Times New Roman",serif;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 16px;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0px;
+
+    
+font-size:medium;
+font-weight:bold;
+color:#444;
+padding-left:0;
+}
+#divDialogue tr.rangeeTitre,#divDialogue div.rangeeTitre
+{font-size:small;
+font-weight:bold;
+color:#888;
+padding-bottom:5px;
+border-bottom-style:groove;
+border-bottom-width:2px;
+border-bottom-color:rgba(225,225,225,0.2);
+
+    background-color:rgba(0,0,0,0);
+}
+
+#divDialogue td.rangeeTitre
+{font-size:small;
+font-weight:bold;
+color:#888;
+padding-bottom:5px;
+border-bottom-style:groove;
+border-bottom-width:0 0 2px 0;
+border-bottom-color:rgba(225,225,225,0.2);
+
+    background-color:rgba(0,0,0,0);
+}
+
+#divDialogue #photoFiche
+{
+margin:0;
+}
+
+#divDialogue #descriptionFiche
+{
+margin:0 0 0 20px;
+}
+
+#divDialogue h1
+{
+margin:0;
+}
+
+#divDialogue .btnFerme
+{
+    cursor:pointer;
+color:red;
+padding:3px;
+        display:inline;
+        font-weight:bold;
+}
+
+#divDialogue #divFerme
+{
+    cursor:auto;
+text-align:right;
+position:absolute;
+padding:3px;
+top:0;
+right:0;
+}
+#divDialogue #texteFerme
+{
+    display:inline;
+float:left;
+}
+
+#divDialogue #blocGauche
+{
+    width:45%;
+    margin: 5% 0 5% 5%;
+    float:left;
+}
+#divDialogue .blocGauche
+{
+    width:45%;
+    margin: 5% 0 5% 5%;
+    float:left;
+    display:inline;
+    
+    
+}
+#divDialogue #blocDroit
+{
+    width:45%;
+    margin: 5% 5% 5% 0;
+    float:right;
+}
+#divDialogue .blocDroit
+{
+    width:45%;
+    margin: 5% 5% 5% 0;
+    float:right;
+    display:inline;
+    
+    
+}
+
+#ecranSombre{
+    opacity:0.7;
+    background-color:black;
+    position:fixed;
+    height:100%;
+    width:100%;
+    top:0;
+    left:0;
+    z-index:1000;
+    
+}
+
+.critere
+{
+    display:block;
+    
+}
+.critere p
+{
+    display:inline;
+    float:none;
+}
+.critere div
+{
+    display:inline;
+    float:left;
+    clear:left;
+}
+
+#divFerme
+{
+cursor : pointer;
+position :absolute;
+right : 50px;
+top :0;
+
+    
+}
+#divSave
+{
+cursor : pointer;
+position :absolute;
+right : 50px;
+bottom :0;
+
+    
+}
+
+</style>
+</head>
+<body>
+
+<div id="templatemo_header_wrapper">
+    <div id="templatemo_header">
+    
+        <div id="site_title">
+        <nobr>
+            <a href="http://www.cosommixte.org"><span><img src="../../../../images/facebook_100_100.gif" alt="banner" border="0" /><img src="../../../../images/templatemo_logo.png"/></span></a>
+        </nobr>
+        </div> <!-- end of site_title -->
+        
+        <div id="social_box">
+            
+            <a href="http://www.facebook.com/cosommixte"><img src="../../../../images/facebook.png" alt="facebook" /></a>
+            <!--<a href="#"><img src="../../../../images/twitter.png" alt="twitter" /></a>-->
+            <a href="mailto:liguemixtedecosom@gmail.com?bcc=jean.joly@jolywood.com&amp;subject=Informations Ligue de Hockey Cosom Mixte (www.cosommixte.org)"><img src="../../../../images/mailto.png" alt="Courriel" /></a>
+            
+        </div>
+        
+          <div id="templatemo_menu">
+            <ul id="topLiens">
+            </ul>       
+        </div> <!-- end of templatemo_menu -->
+    
+    </div> <!-- end of header -->
+</div> <!-- end of header wrapper -->
+
+<div id="templatemo_main_wrapper">
+    <!-- Début bloc principal -->
+    
+    <div id="templatemo_main">
+        <!-- Début bloc de gauche -->
+        <div id="templatemo_content_full">
+            <!-- Début automne 2012 new -->
+            
+                <div class="post_box_full_960">
+                    <h2><font color="#FA9B02">PRINTEMPS 2019</font></h2>
+                    <span style="line-height:2em;">
+                        <ul class="tmo_list">
+                            Saison hiver 2019
+
+                        
+                            
+                            <li><font color="#FFFFFF" size="3px"><b>Saison printemps 2019 </b>:  </font></li>
+                            <li><font color="#FFFFFF" size="3px"><b>Mardi du 30 avril au 11 juin</font></b></li>
+                            <li><font color="#FFFFFF" size="3px"><b>Jeudi du 25 avril au 13 juin</font></b></li>
+                            <li><font color="#FFFFFF" size="3px"><b><a href="http://www.cosommixte.org">COSOMMIXTE.ORG</a> est une ligue amicale auto-arbitrée et c'est la seule dans son genre. Vous désirez garder la forme et pratiquer votre sport préféré, c'est la ligue pour vous. Tous les jeudis soirs du hockey 4 contre 4 avec un mimimum de 3 filles par équipe dans la meilleure ligue de Montréal.</font></b></li>
+                        </ul>
+                    </span>     
+                    <div class="cleaner"></div>
+                </div>
+                <div class="cleaner"></div>
+            <!-- Fin automne 2012 new -->
+        </div><!-- Fin Bloc de gauche -->
+    <div class="cleaner"></div>
+    </div> <!-- Début bloc principal -->
+    
+    
+    
+  </div> <!-- end of main wrapper -->
+
+<div id="templatemo_footer_wrapper">
+    <div id="templatemo_footer">
+        <div class="footer_col_w300">
+            &nbsp;
+        </div>
+        <div class="footer_col_w300" align="center">
+            <p>Copyright ©printemps <a href="http://www.cosommixte.org">www.cosommixte.org</a> <br /> Designed by <a href="http://www.templatemo.com" target="_parent">Free CSS Templates</a></p>        
+        </div>
+        
+        <div class="footer_col_w300 last">
+            &nbsp;
+        </div>
+        <div class="cleaner"></div>
+    </div> <!-- end of templatemo_footer -->
+</div> <!-- end of templatemo_footer wrapper -->
+
+</body>
+<script type="text/javascript">
+base="";
+for(var a=0;a<topLiensJeudi.length;a++){
+ $('#topLiens').append($('<li></li>').append($('<a></a>').attr('href',base+topLiensJeudi[a].valeur).text(topLiensJeudi[a].texte)));   
+ if(topLiensJeudi[a]=="Jeudi"){
+     $('#topLiens li').last().addClass("current");
+ }
+}
+
+</script>
+</html>
