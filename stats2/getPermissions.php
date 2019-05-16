@@ -35,7 +35,7 @@ mysqli_query($conn,"SET NAMES 'utf8'");
 mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 
 
-function trouveIDParNomUser($user)
+function trouveIDParNomUser($user,$conn)
 {
 	 $noUser = -1;
 $fResultUser = mysqli_query($conn,"SELECT * FROM TableUser")
@@ -57,7 +57,7 @@ else{return -1;}
 
 $ligueId = $_GET['ligueId'];
 $inter=$_GET['userId'];
-$userId = trouveIDParNomUser($inter);
+$userId = trouveIDParNomUser($inter,$conn);
 
 
 
@@ -67,7 +67,8 @@ or die(mysqli_error($conn));
 
 if (mysqli_num_rows($result)>0)
 {
-echo mysqli_result($result,0,0);	
+$rangee= mysqli_data_seek($result,0);	
+echo $rangee[0];
 }
 else{echo "1000000";}
 mysqli_close($conn);
