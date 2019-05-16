@@ -14,7 +14,7 @@ $tableUser = 'TableUser';
 
 $equipeId = $_POST['equipeId'];
 $taJoueurs = $_POST['taJoueurs'];
-$lesJoueurs = explode(PHP_EOL, $taJoueurs);
+$lesJoueurs = preg_split('/\r\n|\r|\n/', $taJoueurs);
 
 
 // Create connection

@@ -1777,6 +1777,10 @@ console.log(rSMB.buts[d].video.length);
                $('#modalCorrigePresences .modal-body').append($('<div></div>').attr('id', 'divJoueursPresents').css("width", "50%").css("float", "left"), $('<div></div>').attr('id', 'boiteSelectDom').css("width", "50%").css("float", "right"), $('<div></div>').attr('id', 'boiteSelectVis').css("width", "50%").css("float", "right"));
 
 				lequipe = window.statsJSONHome;
+				lequipe.joueurs.sort(function(a, b) {                    
+                        return (a.nom.toLowerCase().localeCompare(b.nom.toLowerCase()));                            
+                    });
+
 				$('#divJoueursPresents').append($('<h1></h1>').text(window.rJSON.eqDom));
 				$('#divJoueursPresents').append($('<div id="jouDom"></div>').append($('<h3></h3>').text("Joueurs")));
 				for ( a = 0; a < lequipe.joueurs.length; a++) {
@@ -1848,6 +1852,9 @@ console.log(rSMB.buts[d].video.length);
 				$('#divJoueursPresents').append($('<h1></h1>').text(window.rJSON.eqVis));
 				$('#divJoueursPresents').append($('<div id="jouVis"></div>').append($('<h3></h3>').text("Joueurs")));
 				lequipe = window.statsJSONVis;
+				lequipe.joueurs.sort(function(a, b) {                    
+                        return (a.nom.toLowerCase().localeCompare(b.nom.toLowerCase()));                            
+                    });
 				for ( a = 0; a < lequipe.joueurs.length; a++) {
 
 					$('#jouVis').append($('<div></div>').css("display", "block").css("clear", "both").append($('<input class="cbpres" type="checkbox"></input>').attr("id", "cbpres_" + lequipe.joueurs[a].joueurId).css("float", "left").click({

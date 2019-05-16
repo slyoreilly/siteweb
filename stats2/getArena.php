@@ -94,6 +94,7 @@ if (($username !== 0) && ($username != null)) {
 				WHERE gabaritId='{$vecMatch[$IA]['gabaritId']}'	";
 			$retGab =mysqli_query($conn, $qGab) or die (mysqli_error($conn));
 			$IPG=0;
+			$vecMatch[$IA]['gabaritId']=array();
 			while ($rangGab = mysqli_fetch_assoc($retGab)) {
 				$vecMatch[$IA]['gabaritId'][$IPG]['posGabId'] = $rangGab['posGabId'];
 				$vecMatch[$IA]['gabaritId'][$IPG]['posX'] = $rangGab['posX'];
