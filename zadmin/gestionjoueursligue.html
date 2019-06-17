@@ -134,10 +134,10 @@
                                 }),
                                 $('<i class="fa fa-tshirt  m-1"></i>')
                                 ),
-                            $('<td></td>').text(joueurs[K].position),     
-                            $('<td></td>').text(joueurs[K].noJoueur),     
-                            $('<td></td>').text(joueurs[K].nomJoueur),     
-                            $('<td></td>').text(joueurs[K].nomEquipe).css("cursor","pointer").on("click",{jId:joueurs[K].joueurId,eId:joueurs[K].equipeId},function(event){
+                            $('<td></td>').addClass("position").text(joueurs[K].position),     
+                            $('<td></td>').addClass("numero").text(joueurs[K].noJoueur),     
+                            $('<td></td>').addClass("nomJoueur").text(joueurs[K].nomJoueur),     
+                            $('<td></td>').addClass("nomEquipe").attr("data-equipeId",joueurs[K].equipeId).text(joueurs[K].nomEquipe).css("cursor","pointer").on("click",{jId:joueurs[K].joueurId,eId:joueurs[K].equipeId},function(event){
                                  $(this).text("");
                                 $('#choisisEquipeEnCour').parent().text($('#choisisEquipeEnCour').find(":selected").text());
                                 $('#choisisEquipeEnCour').remove();
@@ -314,12 +314,71 @@ $('#divTitreDoc').prepend(
                             $('<th></th>').attr('scope','col').addClass("cliquable").text(window.tl_match_Equipe).on("click",function(){
                                 classeParEquipes();
                             })
-                            )
+							),
+							$('<tr></tr>').append(
+                            $('<th></th>').attr('scope','col'),
+                           /* $('<th></th>').attr('scope','col').text("Actions"),*/
+                            $('<th></th>').attr('scope','col').text("Filtres:"),
+                            $('<th></th>').attr('scope','col').append($('<input></input>').attr("type","text").attr("id","filtrePos").on("keyup",function(){
+									$("table tbody tr").each(function(){
+										if($('#filtrePos').val().length==0){$(this).fadeIn(200)}else{
+										if($(this).find("td.position").text().toLocaleLowerCase().localeCompare($('#filtrePos').val().toLocaleLowerCase())==0){$(this).fadeIn(200)}else{$(this).fadeOut(200);}
+										$('#filtreNo').val("");
+										$('#filtreNom').val("");
+										$('#filtreEquipe').val(-1);
+									
+									}
+									})
+
+							})),
+                            $('<th></th>').attr('scope','col').append($('<input></input>').attr("type","text").attr("id","filtreNo").on("keyup",function(){
+									$("table tbody tr").each(function(){
+										if($('#filtreNo').val().length==0){$(this).fadeIn(200)}else{
+										if($(this).find("td.numero").text().localeCompare($('#filtreNo').val())==0){$(this).fadeIn(200)}else{$(this).fadeOut(200);}
+										$('#filtrePos').val("");
+										$('#filtreNom').val("");
+										$('#filtreEquipe').val(-1);
+									}
+									})
+
+							})),
+                            $('<th></th>').attr('scope','col').append($('<input></input>').attr("type","text").attr("id","filtreNom").on("keyup",function(){
+									$("table tbody tr").each(function(){
+										if($('#filtreNom').val().length==0){$(this).fadeIn(200)}else{
+											
+
+
+										if($(this).find("td.nomJoueur").text().toLocaleLowerCase().includes($('#filtreNom').val().toLocaleLowerCase())){$(this).fadeIn(200)}else{$(this).fadeOut(200);}
+										$('#filtreNo').val("");
+										$('#filtrePos').val("");
+										$('#filtreEquipe').val(-1);
+									
+									}
+									})
+
+							})),
+                            $('<th></th>').attr('scope','col').append($('<select></select>').attr("id","filtreEquipe").on("change",function(){
+									$("table tbody tr").each(function(){
+										if($('#filtreEquipe option:selected').val()==-1){$(this).fadeIn(200)}else{
+											
+
+
+										if($(this).find("td.nomEquipe").attr("data-equipeId")==$('#filtreEquipe option:selected').val()){$(this).fadeIn(200)}else{$(this).fadeOut(200);}
+										$('#filtreNo').val("");
+										$('#filtrePos').val("");
+										$('#filtreNom').val("");
+									
+									}
+									})
+
+							}))
+							),
                         ),
                         $('<tbody></tbody>')
                         )
-                        );
-
+						);
+						
+						
 			perm = verifiePermission();
 			ligueId = getValue("ligueId");
 			eqToggle=-1;
@@ -358,7 +417,22 @@ $('#divTitreDoc').prepend(
                         return (a.nomEquipe.toLowerCase().localeCompare(b.nomEquipe.toLowerCase()));                            
                         }
                         } 
-                    });
+					});
+					$('#filtreEquipe').append(
+											$('<option></option>').text("Toutes").val(-1));
+					for(var a=0;a<jJSON2.equipe.length;a++){
+                                   
+                                        $('#filtreEquipe').append( 	
+                                    $('<option></option>')
+                                        .text(jJSON2.equipe[a].nomEquipe)
+                                        .val(jJSON2.equipe[a].equipeId)
+                                       
+                                );
+                                    
+                                    
+                                    
+                               
+                                }
 
 			dessineTableau(jJSON2, cJSON);
 

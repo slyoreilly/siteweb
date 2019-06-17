@@ -24,78 +24,21 @@ $tableEquipe = 'TableEquipe';
 
 if (!isset($deSyncMatch)) {
 
-	if (!mysql_connect($db_host, $db_user, $db_pwd))
-		die("Can't connect to database");
-
-	if (!mysql_select_db($database)) {
-		echo "<h1>Database: {$database}</h1>";
-		die("Can't select database");
-
-	}
-
-	mysql_query("SET NAMES 'utf8'");
-	mysql_query("SET CHARACTER SET 'utf8'");
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
 
-/////////////////////////////////////////////////////////////
-//
-//
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
-function trouveNomJoueurParID($ID) {
-
-	$resultJoueur = mysql_query("SELECT * FROM TableJoueur WHERE joueur_id = '{$ID}'") or die(mysql_error() . " dans trouveNomJoueurParID");
-	if ($rangeeJoueur = mysql_fetch_array($resultJoueur))
-		return ($rangeeJoueur['NomJoueur']);
-	else {
-		return ("Anonyme");
-	}
-}
-
-function ismidv4()//is MatchId version 4 variables
-{
-	$i1 = stripos($ID, '_');
-	$i2 = stripos($ID, '_', $i1 + 1);
-	$i3 = stripos($ID, '_', $i2 + 1);
-	if ($i3 == false) {
-		return false;
-	} else {
-		return true;
-	}
-}
-
-/////////////////////////////////////////////////////////////
-//
-//
-
-function parseMatchID($ID) {
-
-	//$monMatch['date'] = str_replace('/', '-', substr($ID,0,stripos($ID,'_')));
-	$i1 = stripos($ID, '_');
-	$i2 = stripos($ID, '_', $i1 + 1);
-	$i3 = stripos($ID, '_', $i2 + 1);
-	$monMatch['date'] = substr($ID, 0, $i1);
-	$i1 = stripos($ID, '_');
-
-	$longueur = strlen($monMatch['date']);
-	$monMatch['dom'] = substr($ID, $i1 + 1, $i2 - $i1 - 1);
-	if ($i3 != false)
-		$monMatch['vis'] = substr($ID, $i2 + 1, $i3 - $i2 - 1);
-	else {$monMatch['vis'] = substr($ID, $i2 + 1);
-	}
-	return $monMatch;
 }
 
 
-/////////////////////////////////////////////////////////////
-//
-//
 
-function trouveSaisonActiveDeLigueId($ID) {
-	$rfSaison = mysql_query("SELECT saisonId FROM TableSaison WHERE ligueRef = '{$ID}' and saisonActive=1") or die(mysql_error() . " trouveSaisonActiveDeLigueId");
-	return (mysql_result($rfSaison, 0));
-}
-
-function trouveJoueur($joueurId, $array_joueur) {
+function trouveJoueur($joueurId, $array_joueur,$conn) {
 	foreach ($array_joueur as $valeur) {
 		if ($valeur['joueur_id'] == $joueurId) {
 			return $valeur;

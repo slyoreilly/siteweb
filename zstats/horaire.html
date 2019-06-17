@@ -375,6 +375,11 @@
 					//strIn += "indice: " + a + ", valeur: " + opt.value + "\n ";
 				}
 				tdEnf.replaceChild(nTd, tdEnf.firstChild);
+
+
+				window.vecEquipe.sort(function(a, b) {
+					return  window.vecEquipe.equipes[a].nom.toLowerCase().localeCompare(window.vecEquipe.equipes[b].nom.toLowerCase());
+							});
 				///////////////
 				tdEnf = tdEnf.nextSibling;
 				nTd = document.createElement('SELECT');

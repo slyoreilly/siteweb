@@ -95,10 +95,12 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 	
 //{
 $qVids = "
-	SELECT nomFichier,camId,Clips.chrono,eval,nbVues,etat,videoId,emplacement, nomThumbnail,reference 
+	SELECT nomFichier,camId,Clips.chrono,eval,nbVues,etat,videoId,emplacement, nomThumbnail,reference , TypeClips.labelFrench, TypeClips.labelEnglish
 		 FROM Video 
 		 INNER JOIN Clips
-		 	ON (Clips.clipId=Video.reference)
+			 ON (Clips.clipId=Video.reference)
+		LEFT JOIN TypeClips 
+			ON (TypeClips.typeClipId = Clips.type)
   	WHERE (nomMatch = '{$matchID}'  OR nomMatch = '{$matchPourVideos}') AND Video.type=5 ORDER BY clipId, angleOk DESC";
 $resultVids = mysqli_query($conn, $qVids)
 or die(mysqli_error($conn).$qVids);  	
@@ -110,6 +112,8 @@ while($rangeeVids=mysqli_fetch_array($resultVids))
 		if($rangeeVids['reference']!=$bufEvent){
 			$unClip=array();
 			$unClip['chrono']=$rangeeVids['chrono'];
+			$unClip['labelFrench']=$rangeeVids['labelFrench'];
+			$unClip['labelEnglish']=$rangeeVids['labelEnglish'];
 			$unClip['video']=array();
 			
 			array_push($clips,$unClip);

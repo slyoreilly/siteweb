@@ -248,6 +248,7 @@ tl_resultats_ButsVis = "Buts - vis";
 	tl_stats_equipes = "equipes";
 	tl_stats_AvNum = "Av. Num.";
 	tl_stats_DesavNum = "Désav. Num.";	
+	tl_stats_Alignement = "Alignement";	
 ///////////  Meneurs.html;
 
 tl_meneurs_Meneurs = "Meneurs";

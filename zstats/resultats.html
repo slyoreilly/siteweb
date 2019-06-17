@@ -77,7 +77,9 @@
 
 							selSaisonJS = document.getElementById('selSaison');
 							selSaisonJS.onchange = function() {
+								rJSON=null;
 								getMatchsdeLigueID(this.options[this.selectedIndex].value);
+								getMatchsdeLigueIDLight(this.options[this.selectedIndex].value);
 								getEtoiles(this.options[this.selectedIndex].value);
 							};
 							//var maSai =null// 
@@ -95,8 +97,9 @@
 								if (vecEquipe.Ligue.saisons[K].saisonId == maSai) { {
 										opt.selected = "selected";
 										saisonId=vecEquipe.Ligue.saisons[K].saisonId;
-
+										rJSON=null;
 										getMatchsdeLigueID(vecEquipe.Ligue.saisons[K].saisonId);
+										getMatchsdeLigueIDLight(vecEquipe.Ligue.saisons[K].saisonId);
                                     getEtoiles(vecEquipe.Ligue.saisons[K].saisonId);
 										loadConditions++;
 										console.log("loadConditions: "+loadConditions);
@@ -105,8 +108,9 @@
 								if (K == vecEquipe.Ligue.saisons.length - 1 && (maSai == ""||maSai==null)) {
 									opt.selected = "selected";
 									 saisonId=vecEquipe.Ligue.saisons[K].saisonId;
-
+									 rJSON=null;
 									getMatchsdeLigueID(vecEquipe.Ligue.saisons[K].saisonId);
+									getMatchsdeLigueIDLight(vecEquipe.Ligue.saisons[K].saisonId);
 									getEtoiles(vecEquipe.Ligue.saisons[K].saisonId);
 									loadConditions++;
 									console.log("loadConditions: "+loadConditions);
@@ -390,14 +394,66 @@
                         contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
                         success : function(response) {
                         //    console.log(response);
+						if(rJSON==null){
+							loadConditions++;
+						}
+
                        rJSON = eval('(' + response + ')');
 
-                        loadConditions++;
-                                            console.log(loadConditions + " matrchsDsSaison");
+                                            console.log(loadConditions + " matchsDsSaison");
 
                         if (loadConditions >= window.nbloadTotal){
                               remplirTableau();
                         }
+                          
+                       
+                        //console.log(JSON.stringify(matchsDsSaison));
+                         
+                        },
+                        error : function(xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            console.log(err.Message + "  --  ereur lc2MS");
+                        }
+                    });
+    
+    
+    
+            
+			    
+				
+			}
+
+
+			function getMatchsdeLigueIDLight(saisonId) {
+			    ventOff=false;
+			    
+			        ventOff=true;
+			    
+			    
+			     $.ajax({
+                        url : "/scriptsphp/matchsDsSaisonLight.php"/*"http://syncstats.com/scriptsphp/listeEquipes.php"*/,
+                        datatype : 'json',
+                        contentType: "application/json",
+                        type : 'POST',
+                        data : JSON.stringify({
+                            saisonId : saisonId,
+                            ligueId : window.ligueId,
+                            ventOff : ventOff
+                        }),
+                        contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+                        success : function(response) {
+                        //    console.log(response);
+						if(rJSON==null){   //// On n'effecte pas dans le light si rJSON existe.
+							loadConditions++;
+							rJSON = eval('(' + response + ')');
+
+                                            console.log(loadConditions + " matchsDsSaisonLight");
+
+                       		 if (loadConditions >= window.nbloadTotal){
+                              	remplirTableau();
+                        	}
+						}
+                       
                           
                        
                         //console.log(JSON.stringify(matchsDsSaison));
@@ -726,12 +782,35 @@
 				    $('#selArena').append($("<option></option>").val(window.vecArena[a].arenaId).text(window.vecArena[a].nomArena + " - "+window.vecArena[a].nomGlace));
 					
 				}
-				    
+					console.log(JSON.stringify( vecEquipe.Ligue.saisons[document.getElementById("selSaison").selectedIndex]));
+				
+				window.vecEquipe.equipes.sort(function(a, b) {
+				//	console.log("a:"+a);
+					eqA = a.nom;
+					eqB =b.nom;
+					return  eqA.toLowerCase().localeCompare(eqB.toLowerCase());
+							});
+
                 for ( a = 0; a < window.vecEquipe.equipes.length; a++) {
-                    $('#selDomicile').append($("<option></option>").val(window.vecEquipe.equipes[a].equipeId).text(window.vecEquipe.equipes[a].nom));
-                    $('#selVisiteur').append($("<option></option>").val(window.vecEquipe.equipes[a].equipeId).text(window.vecEquipe.equipes[a].nom));
+					if(vecEquipe.Ligue.saisons[document.getElementById("selSaison").selectedIndex].equipes.indexOf(window.vecEquipe.equipes[a].equipeId)>=0){
+						$('#selDomicile').append($("<option></option>").val(window.vecEquipe.equipes[a].equipeId).text(window.vecEquipe.equipes[a].nom).show());
+					$('#selVisiteur').append($("<option></option>").val(window.vecEquipe.equipes[a].equipeId).text(window.vecEquipe.equipes[a].nom).show());
+					$('#selDomicile').val(window.vecEquipe.equipes[a].equipeId);
+					$('#selVisiteur').val(window.vecEquipe.equipes[a].equipeId);
+					}else{
+						$('#selDomicile').append($("<option></option>").val(window.vecEquipe.equipes[a].equipeId).text(window.vecEquipe.equipes[a].nom).hide());
+                    $('#selVisiteur').append($("<option></option>").val(window.vecEquipe.equipes[a].equipeId).text(window.vecEquipe.equipes[a].nom).hide());
+					}
+
                     
-                }
+				}
+				$('#selDomicile').append($("<option></option>").val(0).text("-- more --").show().on("click",function(){
+					$('#selDomicile option').show();
+
+				}));
+				$('#selVisiteur').append($("<option></option>").val(0).text("-- more --").show().on("click",function(){
+					$('#selVisiteur option').show();					
+				}));
 
 				
 				if (no != 1000000) {
@@ -1877,6 +1956,7 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 			}
 
 			function rempliFicheTermine(a) {
+				if(window.matchsDsSaison[a].ventDom!=undefined){
 				videNoeud('tableVent');
 				refaitEnteteTableVent();
 
@@ -1971,8 +2051,10 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 					window.bufClass = 0;
 				}
 			}
+			}
 
 			function rempliFicheAvenir(a) { 
+				if(window.matchsDsSaison[a].ventDom!=undefined){
 				window.pEqDom.innerHTML = window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[a].eqDomId)].nom;
 				window.pEqVis.innerHTML = window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[a].eqVisId)].nom;
 				window.pVilleDom.innerHTML = window.vecEquipe.equipes[extirpeEquipe(matchsDsSaison[a].eqDomId)].ville;
@@ -2048,7 +2130,7 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 				document.getElementById('valeurStats_0').innerHTML = (mArInd != -1) ? window.vecArena[mArInd].nomArena : window.tl_horaire_nonDef;
 				document.getElementById('valeurStats_1').innerHTML = (mArInd != -1) ? window.vecArena[mArInd].nomGlace : window.tl_horaire_nonDef;
 				document.getElementById('valeurStats_2').innerHTML = (mArbInd != -1) ? window.vecArbitres[mArbInd].prenom + " " + window.vecArbitres[mArbInd].nom : window.tl_horaire_nonDef;
-
+				}
 			}
 
         </script>
@@ -2076,7 +2158,7 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 			if (window.m != 1) {
 				ficheMatchs();
 			}
-
+			rJSON=null;
 			dSS = document.getElementById('divSelSaison');
 			if (dSS == null) {
 				dSS = document.createElement('SELECT');

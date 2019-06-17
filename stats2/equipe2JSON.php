@@ -100,7 +100,7 @@ while ($rangeeLiEq = mysqli_fetch_array($rLiEq))//  Pour chacun des abonnements 
 		//	echo "Q3: ".mysql_num_rows($rMatch)."\n";
 		$IE = -1;
 		$jId = 0;
-		while ($rangMatch = mysql_fetch_array($rMatch)) {
+		while ($rangMatch = mysqli_fetch_array($rMatch)) {
 			if ($rangMatch['joueur_id'] != $jId) {
 
 				$IE++;

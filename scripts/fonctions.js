@@ -685,7 +685,7 @@ function construitDialogue (id){
 		mId = "monModal";
 	}else{mId=id;}
 	
-	$('#divCentrale').append(
+	$('body').append(
 	$('<div></div>').attr("id",mId).addClass('modal').append(
 		
 			$('<div></div>')/*.attr('id','divDialogue')*/.addClass("divDialogue visible modal-dialog modal-lg").append(

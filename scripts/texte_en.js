@@ -259,7 +259,8 @@ tl_class_MinutesPunitions  = "Penalty Minutes";
 	tl_stats_Efficacite ="Efficiency";
 	tl_stats_equipes = "teams";
 		tl_stats_AvNum = "PP";
-	tl_stats_DesavNum = "PK";	
+	tl_stats_DesavNum = "PK";
+	tl_stats_Alignement = "Roster";		
 ///////////  Meneurs.html;
 
 tl_meneurs_Meneurs = "Leaders";

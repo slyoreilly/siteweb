@@ -34,41 +34,20 @@ if (!$conn) {
 mysqli_query($conn,"SET NAMES 'utf8'");
 mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 
-
-function trouveIDParNomUser($user,$conn)
-{
-	 $noUser = -1;
-$fResultUser = mysqli_query($conn,"SELECT * FROM TableUser")
-or die(mysqli_error($conn));  
-while($fRangeeUser=mysqli_fetch_array($fResultUser))
-{
-		if(!strcmp($fRangeeUser['username'],$user))
-	{$noUser =$fRangeeUser['noCompte'];// Ce sont de INT
-	}
-}
-if (mysqli_num_rows($fResultUser)>0)
-{
-return $noUser;
-}
-else{return -1;}
-
-}
-
-
 $ligueId = $_GET['ligueId'];
 $inter=$_GET['userId'];
-$userId = trouveIDParNomUser($inter,$conn);
 
 
-
-$result = mysqli_query($conn,"SELECT type FROM AbonnementLigue WHERE ligueid='{$ligueId}' AND userid='$userId'")
+$result = mysqli_query($conn,"SELECT AbonnementLigue.type FROM AbonnementLigue 
+	JOIN TableUser
+		ON (TableUser.noCompte = AbonnementLigue.userid)
+	WHERE ligueid='$ligueId' AND username='$inter'")
 or die(mysqli_error($conn));  
-
 
 if (mysqli_num_rows($result)>0)
 {
-$rangee= mysqli_data_seek($result,0);	
-echo $rangee[0];
+$type= mysqli_data_seek($result,0);	
+echo $type;
 }
 else{echo "1000000";}
 mysqli_close($conn);
