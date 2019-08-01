@@ -592,7 +592,7 @@ function afficheFusillade(rJSON) {
 				divNomEqVille = $('<div></div>').attr('id', 'nomEqVille').append(function() {
 
 					if (infoMatch.equipeVilleDom.length > 0) {
-						return $('<p></p>').attr('id', 'villeEqDom').text(infoMatch.equipeVilleDom).addClass("moyenTexte");
+						return $('<p></p>').attr('id', 'villeEqDom').text(infoMatch.equipeVilleDom+" ").addClass("moyenTexte");
 					}
 
 				}).append($('<p></p>').attr('id', 'nomEqDom').text(infoMatch.equipeNomDom).addClass('moyenTexte'));
@@ -601,7 +601,7 @@ function afficheFusillade(rJSON) {
 				divNomEqVilleVis = $('<div></div>').attr('id', 'nomEqVille').append(function() {
 
 					if (infoMatch.equipeVilleVis.length > 0) {
-						return $('<p></p>').attr('id', 'villeEqVis').text(infoMatch.equipeVilleVis).addClass("moyenTexte");
+						return $('<p></p>').attr('id', 'villeEqVis').text(infoMatch.equipeVilleVis+" ").addClass("moyenTexte");
 					}
 
 				}).append($('<p></p>').attr('id', 'nomEqVis').text(infoMatch.equipeNomVis).addClass('moyenTexte'));
@@ -2422,7 +2422,9 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 				}
 				console.log(vidIndex);
 						vidSuite(vidIndex, event.data.mBut);
-				document.getElementsByTagName('SOURCE')[0].type = "video/mp4";
+						try{
+				document.getElementsByTagName('SOURCE')[0].type = "video/mp4";}
+				catch(err){}
 
 
 				getInfoVid(vidIndex, event.data.mBut);
@@ -2642,13 +2644,18 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 						});
 
 				  }});
-
+				 /* console.log("But:"+JSON.stringify(mBut)+"...+..."+vidIndex);
 				  if (mBut != undefined && mBut != "") {
+					  
 					chargeListeCote(vidIndex, mBut);
-				}
+				}*/
 				});
 
-			
+				console.log("But:"+JSON.stringify(mBut)+"...+..."+vidIndex);
+				  if (mBut != undefined && mBut != "") {
+					  
+					chargeListeCote(vidIndex, mBut);
+				}
 				
 				
 
@@ -2884,7 +2891,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 						}
 
 					}
-
+					//console.log("Après vidsuite");
 					logoOverride = true;
 					logoOverrideLoc = document.location.href + "&videofile=" + encodeURIComponent(mBut.video[vidIndex].fic);
 					//+"&but="+encodeURIComponent(mBut);

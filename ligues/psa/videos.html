@@ -583,7 +583,7 @@ function getMatchsdeLigueID() {
                         var output = d.getFullYear() + '-' + (month<10 ? '0' : '') + month + '-' + (day<10 ? '0' : '') + day
                         +" "+(heure<10 ? '0' : '')+heure+":"+(minutes<10 ? '0' : '')+minutes+":"+(secondes<10 ? '0' : '')+secondes;
                         mFakeId =   getCookie("fakeId")==null ? "":getCookie("fakeId");
-                        mLigueId =   getCookie("ligueId")==null ? "":getCookie("ligueId");
+                        mLigueId =window.ligueId;
                         
                         $.post( "/scriptsphp/enregistreVisite.php", { userId: getCookie("userId"),  fakeId:mFakeId, ligueId:mLigueId , location:window.location.href, referrer:document.referrer,date:output  })
                          .done(function( data ) {
@@ -602,6 +602,10 @@ function getMatchsdeLigueID() {
                     <img src="/ligues/mtlhl/banniere-4-2000x680.png" style="margin: -100px 0 ; object-fit:cover"></img>
                 </div>
             </div>
+            <!--div class="row">
+                <h1>Nos serveurs éprouvent quelques légers soucis techniques. Vos derniers matchs seront disponibles très prochainement
+                    </h1>
+            </div-->
 
             <div class="row">
                 <div id="divCentrale" class="col-sm-12 container">
@@ -700,7 +704,7 @@ gestionBackEnd();
                         type : 'POST',
                         data : jQuery.param({
 //                            username : "MTLHL"
-                            ligueId:107
+                            ligueId:113
                         }),
                         contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
                         success : function(response) {

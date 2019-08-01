@@ -475,8 +475,8 @@ function peupleDivBas() {
 	menuAproposJS.id = 'menuApropos';
 	tApropos = document.createElement('A');
 	tContactez = document.createElement('A');
-	tApropos.innerHTML = "À propos de nous";
-	tApropos.href = "http://www.journaldestmichel.com/%C3%89conomie/Affaires/2013-04-24/article-3226532/strongstrongGrace-a-deux-Michelois-Larbitrage-au-hockey-simplifie-strongstrong/1";
+	tApropos.innerHTML = "Documentation";
+	tApropos.href = "/zdoc/demarrer.html";
 	tContactez.innerHTML = "Contactez-nous";
 	tContactez.href = "mailto:info" + "@" + "syncstats.com";
 	menuAproposJS.appendChild(tApropos);
@@ -635,7 +635,7 @@ function genereMenu_dev() {
 		menu_n1 = document.createElement('UL');
 		divMenuHautJS.appendChild(menu_n1);
 		menu_n1.id = 'menu';
-
+/*
 		for (var k = 0; k < hierarchie.length; k++) {
 			i_n1 = document.createElement('LI');
 			menu_n1.appendChild(i_n1);
@@ -667,7 +667,7 @@ function genereMenu_dev() {
 
 			}
 
-		}// Fin du for hierarchie
+		}// Fin du for hierarchie */
 	}
 }
 

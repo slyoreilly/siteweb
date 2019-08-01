@@ -345,11 +345,11 @@ $( document ).ready(function() {
 
 			</div>
 				
-			<div id="divProduitSurPli" style="width:100%;position:relative;padding-bottom: 0px;">
+			<div id="divProduitSurPli" style="min-height:400px; width:100%;position:relative;padding-bottom: 0px;">
 					
 					<div id="titreAvantages">Amazing Add-ons to boost-up your game</div>
 
-				<a href="/products/syncstats.html">
+				<a href="/products/syncstats.html"  >
 				<div id="divProdSyncStats" class="boiteProduit2">
 					<img     src="/images/icones/smartphone-2.png"></img><h1 id="h1ProdSyncStats">The Hockey App</h1>
 					<h2 id="h2ProdSyncStats"></h2>
@@ -380,9 +380,9 @@ $( document ).ready(function() {
 					</div>
 				</div>
 				</a>
-				<a href="/products/synccam.html">
+				<a href="/products/synccam.html"  >
 				
-				<div id="divProdSyncCam" class="boiteProduit2">
+				<div id="divProdSyncCam" class="boiteProduit2"> 
 					<img     src="/images/icones/video.png"></img>	
 									<h1 id="h1ProdSyncCam">AutoEdited Videos</h1>
 					<h2 id="h2ProdSyncCam"></h2>
@@ -399,7 +399,7 @@ $( document ).ready(function() {
 				</div>
 				
 								</a>
-				<a href="/products/syncboard.html">
+				<!--a href="/products/syncboard.html">
 
 				<div id="divSyncBoard" class="boiteProduit2">
 										<img     src="/images/icones/television.png"></img><h1 id="h1SyncBoard">Intelligent Scoreboard</h1>
@@ -414,8 +414,8 @@ $( document ).ready(function() {
 						
 					</div>
 				</div>
-				</a>
-								 	
+			</a-->
+			
 				
 			</div>
 
@@ -430,7 +430,8 @@ $( document ).ready(function() {
 				<h2>Base mobile app</h2>
 				<ul>
 					<li>
-						Keep track of score and statistics during the game
+						Keep t						$('#divProdSyncCam').hide(1000);
+						rack of score and statistics during the game
 					</li>
 					<li>
 						Eliminate paperwork and retyping, all synced online automaticaly
@@ -465,6 +466,10 @@ $( document ).ready(function() {
 				$('#divHaut').empty();
 				$('#divDroite').empty();
 			developper(28);
+
+			$('#divProdSyncCam').parent().hide();
+						$('#divProdSyncStats').parent().hide()
+						$('#divProdWebSite').parent().show();
 
 			detruitNoeud('divGauche');
 	//		detruitNoeud('dBC_1');
@@ -515,6 +520,29 @@ $( document ).ready(function() {
 			 document.getElementById('divSync').className="apresGauche";
 			 document.getElementById('divStats').className="apresDroite";
 			 }*/
+			 delai=300;
+			 compteur = -1;
+
+			setInterval(function(){
+				compteur=compteur+1;
+				switch(compteur%3){
+					case 0:
+						
+						$('#divProdWebSite').parent().fadeOut(delai).promise().done(function(){
+						$('#divProdSyncStats').parent().fadeIn(delai)});
+					break;
+					case 1:
+					$('#divProdSyncStats').parent().fadeOut(delai).promise().done(function(){
+						$('#divProdSyncCam').parent().fadeIn(delai)});
+					break;
+					case 2:
+					$('#divProdSyncCam').parent().fadeOut(delai).promise().done(function(){
+						$('#divProdWebSite').parent().fadeIn(delai)});
+					break;
+
+				}
+			},5000)
+
 
 		</script>
 	</body>

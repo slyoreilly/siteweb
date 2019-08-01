@@ -15,17 +15,16 @@
 
 		</style>
 </head>
-<body id="mbody">
+<body id="mbody" >
 
 				<div id="divHaut">
 		</div>
-		<div id="divGauche">
-		</div>
+		
 						<div id="divMenuHaut">
 
 
 						</div>
-		<div id="divCentrale">
+		<div class="container">
 				<div class="modal" id ="modalDeleteWarning" tabindex="-1" role="dialog">
 						<div class="modal-dialog" role="document">
 						  <div class="modal-content">
@@ -45,27 +44,69 @@
 						  </div>
 						</div>
 					  </div>
+			<ul  class="nav nav-tabs">
+					<li class="m-4" onclick="activateMenu(1)">
+							<a href='#'>Serveurs</a>
+					</li>
 
-				<div id="divDroite">
-					</div>
+				<li  class="m-4"  onclick="activateMenu(2)">
+						<a href='#'>Règles</a>
+				</li>
 
-			<div id="divAction">
-				<h2>Actions</h2>
+			<li  class="m-4" onclick="activateMenu(3)">
+					<a href='#'>Actions</a>
+				
 
 
-
-			</div>
-			<div id="divOutput">
-					<h2>Output</h2>
+			</li>
+			<li  class="m-4" onclick="activateMenu(4)">
+					<a href='#'>Output</a>
 	
+	
+	
+			</li>
+
+				</ul>
+				<div id="divRegle" class="page-panel"">
+						<a href='#'>Droite</a>
+				</div>
+
+				<div id="divGauche" class="page-panel">
+						<a href='#'>Gauche</a>
+				</div>
+				<div id="divAction" class="page-panel">
+						<a href='#'>Actions</a>
+					
 	
 	
 				</div>
-
+				<div id="divOutput" class="page-panel">
+						<a href='#'>Output</a>
+		
+		
+		
+				</div>
 
 		</div>
 		
-		 	<script type="text/javascript" charset="utf-8">
+			 <script type="text/javascript" charset="utf-8">
+			 $('#divRegle').append($('<div></div>').addClass('form-group').append($('<label></label>').attr('for','plusVieux').text('À partir de:'),
+			 $('<input></input>').attr('id','plusVieux').attr('type','text').addClass('form-control')));
+			 $('#divRegle').append($('<div></div>').addClass('form-group').append($('<label></label>').attr('for','plusNeuf').text("jusqu'à:"),
+			 $('<input></input>').attr('id','plusNeuf').attr('type','text').addClass('form-control')));
+
+			 $('#divRegle').append($('<div></div>').addClass('form-group').append($('<label></label>').attr('for','selPrem').text("Premier Serveur"),
+			 $('<select></select>').attr('id','selPrem').attr('type','text').addClass('form-control')));
+			 $('#divRegle').append($('<div></div>').addClass('form-group').append($('<label></label>').attr('for','selSec').text("Second Serveur"),
+			 $('<select></select>').attr('id','selSec').attr('type','text').addClass('form-control')));
+			 $('#divRegle').append($('<div></div>').addClass('form-group').append($('<label></label>').attr('for','selTiers').text("Tierce Serveur"),
+			 $('<select></select>').attr('id','selTiers').attr('type','text').addClass('form-control')));
+			 $('#divRegle').append(
+			 $('<input></input>').attr('id','btnOkHier').attr('type','button').addClass('form-control').val("Go!").on("click",function(){ applyServerHierarchy($('#plusVieux').val(),10);}));
+
+			
+
+
 		 		vecA=[];
 		 		vecB=[];
 		
@@ -83,7 +124,7 @@
 			 $('<div></div>').attr('id','resA')
 			));
 
-			$('#divCentrale').append($('<div></div>').append(
+			$('#divGauche').append($('<div></div>').append(
 				
 			 $('<p></p>').text('Serveur Destination: '),
 			 $('<select></select>').attr('id','idSelDest'),
@@ -120,10 +161,13 @@
 				for(var a=0; a<listeServeur.length;a++){
 					$('#idSelSource').append($('<option></option>').text(listeServeur[a].adresseCourte).val(a));
 					$('#idSelDest').append($('<option></option>').text(listeServeur[a].adresseCourte).val(a));
+					$('#selPrem').append($('<option></option>').text(listeServeur[a].adresseCourte).val(a));
+					$('#selSec').append($('<option></option>').text(listeServeur[a].adresseCourte).val(a));
+					$('#selTiers').append($('<option></option>').text(listeServeur[a].adresseCourte).val(a));
 				}
 
 
-				$('#divHaut').append($('<input></input>').attr('type','button').val("Démarrer l'analyse").on("click",function(){
+				$('#divAction').append($('<input></input>').attr('type','button').val("Démarrer l'analyse").on("click",function(){
 				
 				vecDouble=[];
 				vecSeulA=[];
@@ -161,13 +205,13 @@
 				}
 
 				if(grandVecA){
-					$('#divHaut').append(
+					$('#divAction').append(
 						$('<p></p>').text(vecDouble.length+' éléments sont doublés'),
 						$('<p></p>').text(vecSeulA.length+' ne sont que sur le serveur A'),
 						$('<p></p>').text(vecSeulB.length+' ne sont que sur le serveur B'),
 					)
 				}else{
-					$('#divHaut').append(
+					$('#divAction').append(
 						$('<p></p>').text(vecDouble.length+' éléments sont doublés'),
 						$('<p></p>').text(vecSeulA.length+' ne sont que sur le serveur A'),
 						$('<p></p>').text(vecSeulB.length+' ne sont que sur le serveur B'),
@@ -204,7 +248,53 @@
 				}));
 
 
+				function activateMenu(a){
+					$('.page-panel').hide();
 
+					switch(a){
+						case 1:
+						$('#divGauche').show();
+						break;
+						case 2:
+						$('#divRegle').show();
+						break;
+						case 3:
+						$('#divAction').show();
+						break;
+						case 4:
+						$('#divOutput').show();
+						break;
+					}
+				}
+
+				function applyServerHierarchy(plusVieux,maxTraite){
+console.log(plusVieux);
+console.log($('#plusNeuf').val());
+console.log($('#selPrem').val());
+console.log($('#selSec').val());
+console.log($('#selTiers').val());
+
+
+					$.ajax({url: "http://syncstats.ddns.net/scriptserveur/pointeursParHierarchie.php",
+									data: {plusVieux: plusVieux,
+										maxTraite: maxTraite,
+									plusNeuf:$('#plusNeuf').val(),
+									hierarchie:[listeServeur[$('#selPrem').val()].adresseCourte,listeServeur[$('#selSec').val()].adresseCourte,listeServeur[$('#selTiers').val()].adresseCourte]},
+									type: "POST",
+									 success: function(result){ 
+										 resApplyServer = eval('('+result+')');
+											$('#divOutput').append($('<div></div>').text("Next OK: "+resApplyServer.nextOK));
+											$('#divOutput').append($('<div></div>').text("Retour: "+resApplyServer.retour));
+											if(resApplyServer.continue){
+												applyServerHierarchy(resApplyServer.nextOK),maxTraite;
+											}
+									 }, error: function (jqXhr, textStatus, errorMessage) { // error callback 
+        							$('p').append('Error: ' + errorMessage);
+									    }
+									  });
+
+
+				}
 		 	
 		 	
 			
@@ -274,7 +364,7 @@
 							
 							);
 							$('#divOutput').append($('<table></table>').addClass("table table-striped table-bordered").append($('<tbody></tbody>')));
-								for(var a=0;a<lesFics.length&&a<100;a++){
+								for(var a=0;a<lesFics.length&&a<10000;a++){
 									$('#divOutput tbody').append($('<tr></tr>').append(
 										$('<td></td>').addClass("nomFichier").text(lesFics[a].nomFichier).append(
 											$('<input></input>').addClass("videoId").attr("type","hidden").val(lesFics[a].videoId)

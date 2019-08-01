@@ -12,6 +12,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
         <!--meta http-equiv="refresh" content="10" -->
         <style>
+			.grid-striped .row:nth-of-type(odd) {
+    background-color: rgba(0,0,0,.05);
+}
         </style>
         <script type="text/javascript" charset="utf-8">
 			gereLangue();
@@ -41,13 +44,281 @@
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 
 						repRap = eval('(' + requete_ajax.responseText + ')');
+						window.telId = repRap[0].telId;
+						/*var table = $.makeTable(repRap);
+						(table).appendTo("#equipements");*/
+						$('#equipements').empty();
+						$('#equipements').append($('<div></div>').addClass('container grid-striped').append(
+							$('<div></div>').addClass('row ').append(
+								$('<div></div>').addClass('col-6').append($('<strong></strong>').text('Capteur')),
+								$('<div></div>').addClass('col-6').append($('<strong></strong>').text('Valeur'))
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('TelId'),
+								$('<div></div>').addClass('col-6').text(repRap[0].telId)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('CamId'),
+								$('<div></div>').addClass('col-6').text(repRap[0].camId)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('Dernier MaJ'),
+								$('<div></div>').addClass('col-6').text(repRap[0].dernierMaJ)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('batterie'),
+								$('<div></div>').addClass('col-6').text(repRap[0].batterie+"%")
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('memoire'),
+								$('<div></div>').addClass('col-6').text(Math.round(parseInt(repRap[0].memoire)/1000000)+" Meg")
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('Temperature'),
+								$('<div></div>').addClass('col-6').text(repRap[0].temperature+" °C")
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('arenaId'),
+								$('<div></div>').addClass('col-6').text(repRap[0].arenaId)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('Version'),
+								$('<div></div>').addClass('col-6').text(repRap[0].version)
+							)
+							));
+							var lesSettings =JSON.parse(repRap[0].settings);
+							console.log(lesSettings);
+							$('#currentSettings').empty();
+							$('#currentSettings').append($('<div></div>').addClass('container grid-striped').append(
+							$('<div></div>').addClass('row ').append(
+								$('<div></div>').addClass('col-6').append($('<strong></strong>').text('Paramètre')),
+								$('<div></div>').addClass('col-6').append($('<strong></strong>').text('Valeur'))
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('connectivite'),
+								$('<div></div>').addClass('col-6').text(lesSettings.connectivite).on("click",function(){
+									$(this).text("").append($('<select></select>').append(
+										$('<option></option>').text('Local').val('local'),
+										$('<option></option>').text('Internet').val('internet'),
+										$('<option></option>').text('WiFi Direct').val('wifidirect')
+									));
 
-						var table = $.makeTable(repRap);
-						(table).appendTo("#equipements");
+								})
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('appChannel'),
+								$('<div></div>').addClass('col-6').text(lesSettings.appChannel).on("click",function(){
+									$(this).text("").append($('<select></select>').append(
+										$('<option></option>').text('Stable').val('stable'),
+										$('<option></option>').text('Beta').val('beta'),
+										$('<option></option>').text('Alpha').val('alpha')
+									));
 
+								})
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('decoupe'),
+								$('<div></div>').addClass('col-6').text(lesSettings.decoupe)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('extStorEnable'),
+								$('<div></div>').addClass('col-6').text(lesSettings.extStorEnable).on("click",function(){
+									$(this).text("").append($('<select></select>').append(
+										$('<option></option>').text('Enable').val(true),
+										$('<option></option>').text('Disable').val(false)
+									));
+
+								})
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('secondes'),
+								$('<div></div>').addClass('col-6').text(lesSettings.secondes)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('adresseSync'),
+								$('<div></div>').addClass('col-6').text(lesSettings.adresseSync).on("click",function(){
+									$(this).text("").append($('<select></select>').append(
+										$('<option></option>').text('www.syncstats.com').val('www.syncstats.com'),
+										$('<option></option>').text('syncstats.ca').val('syncstats.ca'),
+										$('<option></option>').text('syncstats.ddns.net').val('syncstats.ddns.net')
+									));
+
+								})
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('arena'),
+								$('<div></div>').addClass('col-6').text(lesSettings.arena.nomArena+" / "+lesSettings.arena.nomGlace)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('userSelectedWidth'),
+								$('<div></div>').addClass('col-6').text(lesSettings.userSelectedWidth)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('userSelectedHeight'),
+								$('<div></div>').addClass('col-6').text(lesSettings.userSelectedHeight)
+							),
+							$('<input></input>').attr("type", "button").addClass("bouton_2").attr("value", "Set As Default").on("click",{defaultSettings:lesSettings},function(event){
+								setDefaultSettings(window.telId ,event.data.defaultSettings);
+							}),
+								$('<input></input>').attr("type", "button").addClass("bouton_2").attr("value", "Load Default")
+							));
+
+
+							var pendingSettings =JSON.parse(repRap[0].settings);
+							console.log(pendingSettings);
+							try{
+								$('#pendingSettings').empty();
+							$('#pendingSettings').append($('<div></div>').addClass('container grid-striped').append(
+							$('<div></div>').addClass('row ').append(
+								$('<div></div>').addClass('col-6').append($('<strong></strong>').text('Paramètre')),
+								$('<div></div>').addClass('col-6').append($('<strong></strong>').text('Valeur'))
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('appChannel'),
+								$('<div></div>').addClass('col-6').append($('<select></select>').append(
+										$('<option></option>').text('Stable').val('stable'),
+										$('<option></option>').text('Beta').val('beta'),
+										$('<option></option>').text('Alpha').val('alpha')
+									).on("change",function(){
+									pendingSettings.appChannel = $(this).val();
+								})
+									)
+
+								
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('connectivite'),
+								$('<div></div>').addClass('col-6').append(
+									$('<select></select>').append(
+										$('<option></option>').text('Local').val('local'),
+										$('<option></option>').text('Internet').val('internet'),
+										$('<option></option>').text('WiFi Direct').val('wifidirect')
+									)
+
+								)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('decoupe'),
+								$('<div></div>').addClass('col-6').append($('<input></input>').attr("id","pendingDecoupe").attr("type","text").val(pendingSettings.decoupe).on("change",function(){
+									pendingSettings.decoupe = $(this).val();
+								}))
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('extStorEnable'),
+								$('<div></div>').addClass('col-6').append($('<select></select>').append(
+										$('<option></option>').text('Enable').val(true),
+										$('<option></option>').text('Disable').val(false)
+									)
+
+								)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('secondes'),
+								$('<div></div>').addClass('col-6').append($('<input></input>').attr("id","pendingDecoupe").attr("type","text").val(pendingSettings.secondes).on("change",function(){
+									pendingSettings.secondes = $(this).val();
+								}))
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('adresseSync'),
+								$('<div></div>').addClass('col-6').append($('<select></select>').append(
+										$('<option></option>').text('www.syncstats.com').val('www.syncstats.com'),
+										$('<option></option>').text('syncstats.ca').val('syncstats.ca'),
+										$('<option></option>').text('syncstats.ddns.net').val('syncstats.ddns.net')
+									).on("change",function(){
+									pendingSettings.adresseSync = $(this).val();
+								})
+
+								)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('arena'),
+								$('<div></div>').addClass('col-6').text(pendingSettings.arena.nomArena+" / "+pendingSettings.arena.nomGlace)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('userSelectedWidth'),
+								$('<div></div>').addClass('col-6').text(pendingSettings.userSelectedWidth)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('userSelectedHeight'),
+								$('<div></div>').addClass('col-6').text(pendingSettings.userSelectedHeight)
+							),
+							$('<input></input>').attr("type", "button").addClass("bouton_2").attr("value", "Set As Default"),
+								$('<input></input>').attr("type", "button").addClass("bouton_2").attr("value", "Load Default"),
+								$('<input></input>').attr("type", "button").addClass("bouton_2").attr("value", "Commit Changes").on("click",{pendingSettings:pendingSettings},function(event){
+								commitAllSettings(window.telId ,event.data.pendingSettings);
+							})
+							));}catch(err){}
+							var lesSettings =JSON.parse(repRap[0].defaultSettings);
+							console.log(lesSettings);
+							try{
+								$('#defaultSettings').empty();
+							$('#defaultSettings').append($('<div></div>').addClass('container grid-striped').append(
+							$('<div></div>').addClass('row ').append(
+								$('<div></div>').addClass('col-6').append($('<strong></strong>').text('Paramètre')),
+								$('<div></div>').addClass('col-6').append($('<strong></strong>').text('Valeur'))
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('connectivite'),
+								$('<div></div>').addClass('col-6').text(lesSettings.connectivite).on("click",function(){
+									$(this).text("").append($('<select></select>').append(
+										$('<option></option>').text('Local').val('local'),
+										$('<option></option>').text('Internet').val('internet'),
+										$('<option></option>').text('WiFi Direct').val('wifidirect')
+									));
+
+								})
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('decoupe'),
+								$('<div></div>').addClass('col-6').text(lesSettings.decoupe)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('extStorEnable'),
+								$('<div></div>').addClass('col-6').text(lesSettings.extStorEnable).on("click",function(){
+									$(this).text("").append($('<select></select>').append(
+										$('<option></option>').text('Enable').val(true),
+										$('<option></option>').text('Disable').val(false)
+									));
+
+								})
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('secondes'),
+								$('<div></div>').addClass('col-6').text(lesSettings.secondes)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('adresseSync'),
+								$('<div></div>').addClass('col-6').text(lesSettings.adresseSync).on("click",function(){
+									$(this).text("").append($('<select></select>').append(
+										$('<option></option>').text('www.syncstats.com').val('www.syncstats.com'),
+										$('<option></option>').text('syncstats.ca').val('syncstats.ca'),
+										$('<option></option>').text('syncstats.ddns.net').val('syncstats.ddns.net')
+									));
+
+								})
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('arena'),
+								$('<div></div>').addClass('col-6').text(lesSettings.arena.nomArena+" / "+lesSettings.arena.nomGlace)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('userSelectedWidth'),
+								$('<div></div>').addClass('col-6').text(lesSettings.userSelectedWidth)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('userSelectedHeight'),
+								$('<div></div>').addClass('col-6').text(lesSettings.userSelectedHeight)
+							),
+							
+								$('<input></input>').attr("type", "button").addClass("bouton_2").attr("value", "Load Default")
+							));}catch(err){}
 					}
 				};
 			}
+
+
+
+			
 
 			function getControles() {
 				var requete_ajax = new XMLHttpRequest();
@@ -72,13 +343,191 @@
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 
 						repRap = eval('(' + requete_ajax.responseText + ')');
-
+						$("#contentControl").empty();
 						var table = $.makeTable(repRap);
 						(table).appendTo("#controles");
+						$("#contentControl").append($('<input></input>').attr("type", "button").addClass('bouton_2').val("Ajouter").on("click", function() {
+							         $('#modalAjouteControle').modal("show");
+                $('#modalAjouteControle .modal-title').text("Ajouter un Controle");
+                $('#modalAjouteControle .modal-body').empty();
+                $('#modalAjouteControle .modal-footer').empty();
+							$("#modalAjouteControle .modal-body").append(
+								$('<h2></h2>').text('Commande'), 
+								$('<div></div').append(
+									$('<select></select>').attr('id', 'selArg0').append(
+										$('<option></option>').val('0').text('--- Choisir ---'), 
+										$('<option></option>').val('db').text('db'), 
+										$('<option></option>').val('settings').text('settings'), 
+										$('<option></option>').val('all').text('all'),
+										$('<option></option>').val('camera').text('Camera'),
+										$('<option></option>').val('memoire').text('Memoire')
+										).on("change",function(){
+											$('#inLevel1').empty();
+											$('#divLevel2').empty();
+											$('#divValeur').empty();
+											$('#divCleValeur').empty();
+											if($('#selArg0').val()=='settings'){
+												$('#inLevel1').append(
+													$('<select></select>').attr("id","inArg1").append(
+														$('<option></option>').val('0').text('--- Choisir ---'), 
+														$('<option></option>').val("delaiAutoSync").text("delaiAutoSync"),
+														$('<option></option>').val("secondes").text("secondes"),
+														$('<option></option>').val("decoupe").text("decoupe"),
+														$('<option></option>').val("offset").text("offset")													)
+												),
+												$('#divLevel2').append(
+													$('<input></input>').attr("id","inArg2").attr("type","hidden").val(0)
+												),
+												$('#divValeur').append(
+													$('<input></input>').attr("id","inVal").attr("type","text").val(0)
+												),
+												$('#divCleValeur').append(
+													$('<input></input>').attr("id","inCV").attr("type","hidden").val(0)
+												)
 
+
+
+
+
+											}
+											if($('#selArg0').val()=='db'){
+												$('#inLevel1').append(
+													$('<input></input>').attr("id","inArg1").attr("type","text")
+												),
+												$('#divLevel2').append(
+													$('<input></input>').attr("id","inArg2").attr("type","text").val(0)
+												),
+												$('#divValeur').append(
+													$('<input></input>').attr("id","inVal").attr("type","text").val(0)
+												),
+												$('#divCleValeur').append(
+													$('<input></input>').attr("id","inCV").attr("type","hidden").val(0)
+												)
+
+											}
+											if($('#selArg0').val()=='camera'){
+												$('#inLevel1').append(
+													$('<input></input>').attr("id","inArg1").attr("type","text")
+												),
+												$('#divLevel2').append(
+													$('<input></input>').attr("id","inArg2").attr("type","hidden").val(0)
+												),
+												$('#divValeur').append(
+													$('<input></input>').attr("id","inVal").attr("type","hidden").val(0)
+												),
+												$('#divCleValeur').append(
+													$('<input></input>').attr("id","inCV").attr("type","hidden").val(0)
+												)
+
+											}
+											if($('#selArg0').val()=='memoire'){
+												$('#inLevel1').append(
+													$('<input></input>').attr("id","inArg1").attr("type","text")
+												),
+												$('#divLevel2').append(
+													$('<input></input>').attr("id","inArg2").attr("type","hidden").val(0)
+												),
+												$('#divValeur').append(
+													$('<input></input>').attr("id","inVal").attr("type","hidden").val(0)
+												),
+												$('#divCleValeur').append(
+													$('<input></input>').attr("id","inCV").attr("type","hidden").val(0)
+												)
+
+											}
+
+										}),
+									$('<div></div>').attr("id","inLevel1"),
+									$('<div></div>').attr("id","divLevel2"),
+									$('<div></div>').attr("id","divValeur"),
+									$('<div></div>').attr("id","divCleValeur"),
+
+
+									),
+ 
+								$('<input></input>').attr("type", "button").addClass("bouton_2").attr("value", "Enregistrer").on("click", function() {
+								         valeur = {
+								         telId : window.telId,
+                                       arg0 : $('#selArg0').val(),
+                                       arg1 : $('#inArg1').val(),
+                                       arg2 : $('#inArg2').val(),
+									   valeur : $('#inVal').val(),
+										cleValeur:$('#inCV').val(),
+										etatSync:3
+									};
+								$.ajax({
+									url : "/scriptsphp/setGenerique.php",
+									type : 'POST',
+									data : jQuery.param({
+										table : "Controle",
+										valeur : JSON.stringify(valeur),
+										mode : "creer"
+									}),
+									contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+									success : function(response) {
+								//	    alert(response);
+								$('#modalAjouteControle').modal("hide");
+											getControles();									
+									},
+									error : function(xhr, status, error) {
+										var err = eval("(" + xhr.responseText + ")");
+										alert(err.Message);
+									}
+								});
+							}));
+							
+
+						}));
 					}
 				};
 			}
+
+			function setDefaultSettings(telId,defaultSettings)
+		{	
+			var requete_ajax = new XMLHttpRequest();
+
+			var url = "/scriptsphp/setCamDefaultSettings.php";
+			
+
+			var strValeur = "settings=" + JSON.stringify(defaultSettings);
+			var strCrit = "telId="+telId;
+			params = strValeur+ '&' + strCrit ;
+			requete_ajax.open('POST', url, true);
+			requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			requete_ajax.setRequestHeader("Content-length", params.length);
+			requete_ajax.setRequestHeader("Connection", "close");
+
+			requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+					getEquipements();
+				}
+			};
+			requete_ajax.send(params);
+		}
+
+		function commitAllSettings(telId,pendingSettings)
+		{	
+			var requete_ajax = new XMLHttpRequest();
+
+			var url = "/scriptsphp/commitAllSettings.php";
+			
+
+			var strValeur = "settings=" + JSON.stringify(pendingSettings);
+			var strCrit = "telId="+telId;
+			params = strValeur+ '&' + strCrit ;
+			requete_ajax.open('POST', url, true);
+			requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			requete_ajax.setRequestHeader("Content-length", params.length);
+			requete_ajax.setRequestHeader("Connection", "close");
+
+			requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+					getEquipements();
+				}
+			};
+			requete_ajax.send(params);
+		}
+
 
 			function getAppareilSurface() {
 				var requete_ajax = new XMLHttpRequest();
@@ -218,7 +667,24 @@ $.makeTable = function(mydata) {
                 return ($(table));
             };
 
+			function activateMenu(a){
+					$('.page-panel').hide();
+					$('#settings li').removeClass('active');
+					$('#settings li.nav-link:nth-child('+a+')').addClass('active');
 
+					switch(a){
+						case 1:
+						$('#currentSettings').show();
+						break;
+						case 2:
+						$('#pendingSettings').show();
+						break;
+						case 3:
+						$('#defaultSettings').show();
+						break;
+
+					}
+				}
         </script>
 
     </HEAD>
@@ -231,9 +697,32 @@ $.makeTable = function(mydata) {
         <div id="divCentrale">
             <div id="equipements">
                 <h3>Équipements</h3>
-            </div>
+			</div>
+			<div id="settings">
+					<h3 class="m-4">Paramètres</h3>
+					<ul  class="nav nav-tabs">
+						<li class="m-2 nav-link active " onclick="activateMenu(1)">
+							Actuels
+						</li>
+						<li  class="m-2 nav-link "  onclick="activateMenu(2)">
+							Pending
+						</li>
+	
+						<li  class="m-2 nav-link" onclick="activateMenu(3)">
+							Defauts
+						</li>
+					</ul>
+					<div id="currentSettings" class="page-panel" >
+						</div>
+						<div id="pendingSettings" class="page-panel">
+							</div>
+							<div id="defaultSettings" class="page-panel" >
+								</div>
+			
+				</div>
             <div id="controles">
-                <h3>Contrôles</h3>
+				<h3>Contrôles</h3>
+				<div id="contentControl"></div>
             </div>
             <div id="abonAppareilSurface">
                 <h3>Abonnements Appareil Surface</h3>
@@ -253,8 +742,10 @@ $.makeTable = function(mydata) {
 			//		alert(document.getElementById("tabResume").id);
 			telId = getValue('telId');
 			  construitDialogue("modalAbonneArena");
+			  construitDialogue("modalAjouteControle");
 
 			finiLaPage();
+			activateMenu(1);
 			//alert(window.ligueId);
 
 			//getInfoMatch(matchID);

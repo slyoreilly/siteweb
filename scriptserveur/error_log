@@ -479,3 +479,38 @@
 [15-May-2019 17:51:22 UTC] PHP Warning:  fopen(/lookatthis/1546226008877_46.mp4): failed to open stream: No such file or directory in /home3/syncsta1/public_html/scriptserveur/getPointeursVideos.php on line 10
 [15-May-2019 21:49:32 UTC] PHP Parse error:  syntax error, unexpected '}' in /home3/syncsta1/public_html/scriptserveur/setPointeursVideos.php on line 57
 [15-May-2019 21:50:50 UTC] PHP Parse error:  syntax error, unexpected '}' in /home3/syncsta1/public_html/scriptserveur/setPointeursVideos.php on line 57
+[16-May-2019 04:21:52 UTC] PHP Warning:  fopen(https://syncstats.ca/lookatthis/1557873711179_47.mp4): failed to open stream: HTTP request failed! HTTP/1.1 403 Forbidden
+ in /home3/syncsta1/public_html/scriptserveur/downloadInterServer.php on line 10
+[16-May-2019 04:22:02 UTC] PHP Warning:  fopen(https://syncstats.ca/lookatthis/1557872890191_48.mp4): failed to open stream: HTTP request failed! HTTP/1.1 403 Forbidden
+ in /home3/syncsta1/public_html/scriptserveur/downloadInterServer.php on line 10
+[16-May-2019 04:22:03 UTC] PHP Warning:  fopen(https://syncstats.ca/lookatthis/1557872890191_47.mp4): failed to open stream: HTTP request failed! HTTP/1.1 403 Forbidden
+ in /home3/syncsta1/public_html/scriptserveur/downloadInterServer.php on line 10
+[16-May-2019 04:22:04 UTC] PHP Warning:  fopen(https://syncstats.ca/lookatthis/1557872827268_48.mp4): failed to open stream: HTTP request failed! HTTP/1.1 403 Forbidden
+ in /home3/syncsta1/public_html/scriptserveur/downloadInterServer.php on line 10
+[16-May-2019 04:22:05 UTC] PHP Warning:  fopen(https://syncstats.ca/lookatthis/1557872827268_47.mp4): failed to open stream: HTTP request failed! HTTP/1.1 403 Forbidden
+ in /home3/syncsta1/public_html/scriptserveur/downloadInterServer.php on line 10
+[16-May-2019 04:22:06 UTC] PHP Warning:  fopen(https://syncstats.ca/lookatthis/1557872611416_48.mp4): failed to open stream: HTTP request failed! HTTP/1.1 403 Forbidden
+ in /home3/syncsta1/public_html/scriptserveur/downloadInterServer.php on line 10
+[16-May-2019 04:22:07 UTC] PHP Warning:  fopen(https://syncstats.ca/lookatthis/1557872611416_47.mp4): failed to open stream: HTTP request failed! HTTP/1.1 403 Forbidden
+ in /home3/syncsta1/public_html/scriptserveur/downloadInterServer.php on line 10
+[16-May-2019 04:22:08 UTC] PHP Warning:  fopen(https://syncstats.ca/lookatthis/1557872557282_48.mp4): failed to open stream: HTTP request failed! HTTP/1.1 403 Forbidden
+ in /home3/syncsta1/public_html/scriptserveur/downloadInterServer.php on line 10
+[16-May-2019 04:22:10 UTC] PHP Warning:  fopen(https://syncstats.ca/lookatthis/1557872557282_47.mp4): failed to open stream: HTTP request failed! HTTP/1.1 403 Forbidden
+ in /home3/syncsta1/public_html/scriptserveur/downloadInterServer.php on line 10
+[16-May-2019 04:22:11 UTC] PHP Warning:  fopen(https://syncstats.ca/lookatthis/1557872474224_48.mp4): failed to open stream: HTTP request failed! HTTP/1.1 403 Forbidden
+ in /home3/syncsta1/public_html/scriptserveur/downloadInterServer.php on line 10
+[16-May-2019 04:22:12 UTC] PHP Warning:  fopen(https://syncstats.ca/lookatthis/1557872474224_47.mp4): failed to open stream: HTTP request failed! HTTP/1.1 403 Forbidden
+ in /home3/syncsta1/public_html/scriptserveur/downloadInterServer.php on line 10
+[16-May-2019 04:22:13 UTC] PHP Warning:  fopen(https://syncstats.ca/lookatthis/1557872216058_48.mp4): failed to open stream: HTTP request failed! HTTP/1.1 403 Forbidden
+ in /home3/syncsta1/public_html/scriptserveur/downloadInterServer.php on line 10
+[16-May-2019 04:22:14 UTC] PHP Warning:  fopen(https://syncstats.ca/lookatthis/1557872216058_47.mp4): failed to open stream: HTTP request failed! HTTP/1.1 403 Forbidden
+ in /home3/syncsta1/public_html/scriptserveur/downloadInterServer.php on line 10
+[16-May-2019 04:22:21 UTC] PHP Warning:  fopen(https://syncstats.ca/lookatthis/1557872174041_47.mp4): failed to open stream: HTTP request failed! HTTP/1.1 403 Forbidden
+ in /home3/syncsta1/public_html/scriptserveur/downloadInterServer.php on line 10
+[16-May-2019 04:22:26 UTC] PHP Warning:  fopen(https://syncstats.ca/lookatthis/1557871868259_47.mp4): failed to open stream: HTTP request failed! HTTP/1.1 403 Forbidden
+ in /home3/syncsta1/public_html/scriptserveur/downloadInterServer.php on line 10
+[23-Jun-2019 04:22:08 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home3/syncsta1/public_html/scriptserveur/downloadInterServer.php on line 10
+[23-Jun-2019 13:35:02 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home3/syncsta1/public_html/scriptserveur/downloadInterServer.php on line 10
+[11-Jul-2019 01:48:43 UTC] PHP Parse error:  syntax error, unexpected '!=' (T_IS_NOT_EQUAL) in /home3/syncsta1/public_html/scriptserveur/pointeursParHierarchie.php on line 66
+[11-Jul-2019 01:51:31 UTC] PHP Parse error:  syntax error, unexpected '!=' (T_IS_NOT_EQUAL) in /home3/syncsta1/public_html/scriptserveur/pointeursParHierarchie.php on line 66
+[11-Jul-2019 01:56:32 UTC] PHP Parse error:  syntax error, unexpected '!=' (T_IS_NOT_EQUAL) in /home3/syncsta1/public_html/scriptserveur/pointeursParHierarchie.php on line 63

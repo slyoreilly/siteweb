@@ -81,11 +81,11 @@ function gereAffichage() {
 			$('#divGauche').append($('<ul></ul>').append(
 				$('<li></li>').append($('<h2></h2>').text("Guides")).append(
 					$('<ul></ul>').append(
-						$('<li></li>').attr("id","demarrage").append($('<h3></h3>').text("Démarrage")),
-						$('<li></li>').attr("id","prepMatch").append($('<h3></h3>').text("Préparer un match")),
-						$('<li></li>').attr("id","jouerMatch").append($('<h3></h3>').text("Jouer un match")),
-						$('<li></li>').attr("id","corriger").append($('<h3></h3>').text("Corriger")),
-						$('<li></li>').attr("id","guideSimple").append($('<h3></h3>').text("Guide simplifié pour arbitre"))
+						/*$('<li></li>').attr("id","demarrage").append($('<h3></h3>').text("Démarrage")),
+						$('<li></li>').attr("id","prepMatch").append($('<h3></h3>').text("Préparer un match")),*/
+						$('<li></li>').attr("id","jouerMatch").addClass("lien cliquable").append($('<h3></h3>').text("Jouer un match")),
+						$('<li></li>').attr("id","corriger").addClass("lien cliquable").append($('<h3></h3>').text("Corriger")),
+						$('<li></li>').attr("id","guideSimple").addClass("lien cliquable").append($('<h3></h3>').text("Guide simplifié pour arbitre"))
 						)
 				),
 				$('<li></li>').append($('<h2></h2>').text("Dépannage")).append(
@@ -96,8 +96,8 @@ function gereAffichage() {
 				),
 				$('<li></li>').append($('<h2></h2>').text("Références")).append(
 					$('<ul></ul>').append(
-						$('<li></li>').attr("id","siteWeb").append($('<h3></h3>').text("Site web")),
-						$('<li></li>').attr("id","appSyncstats").append($('<h3></h3>').text("App mobile SyncStats")),
+						$('<li></li>').attr("id","siteWeb").addClass("lien cliquable").append($('<h3></h3>').text("Site web")),
+						$('<li></li>').attr("id","appSyncstats").addClass("lien cliquable").append($('<h3></h3>').text("App mobile SyncStats")),
 						$('<li></li>').attr("id","appSynccam").append($('<h3></h3>').text("App mobile SyncCam"))
 						)
 				),
@@ -179,8 +179,66 @@ function gereAffichage() {
  <DIV ID="divCentrale" >
 		<div class="tabs" id="sec_demarrage">Section à venir</DIV>
 			<div class="tabs" id="sec_prepMatch">Section à venir</DIV>
-				<div class="tabs" id="sec_jouerMatch">Section à venir</DIV>
-					<div class="tabs" id="sec_guideSimple">Section à venir</DIV>
+				<div class="tabs" id="sec_jouerMatch">
+						<h2>Préparation du matériel</h2>h2>
+
+						<h3>SyncCam </h3>
+						<p>Installer les SyncCam sur la baie vitrée derrière la zone de but à l’aide des supports.
+						
+								<p> Une fois l’application ouverte, démarrer l’enregistrement.
+						Application de marquage 
+						<p> Une fois l’application ouverte, sélectionner la partie désirée ou ajouter (+) une partie manuellement en sélectionnant les deux équipes concernées.
+						
+							<h3>Début de la partie</h3>
+						Pour débuter, démarrer la partie dans l’application de marquage.
+						<p> Après chaque but compté, cliquer sur le score de l’équipe concernée et confirmer les joueurs impliqués (buteur et assistants).
+						Cliquer sur l’icône de caméscope pour capter des reprises vidéo de faits saillants. 
+						Vous pouvez également ajouter les informations des punitions attribuées pendant la partie.
+						
+						<h3>Fin de la partie</h3>
+						<p> Lorsque la partie est terminée, cliquer sur « fin match » dans l’application de marquage. Vous pouvez retourner à la liste des parties en faisant un retour en arrière.
+								<p> Mettre fin aux enregistrements vidéo dans l’application des SyncCam.
+										<p> Désinstaller le matériel.
+												<p>Connectez les appareils utilisés à un réseau internet pour la synchronisation des données.
+														<p>  Éteindre et recharger les appareils au besoin avant la prochaine utilisation.
+
+
+
+
+				</DIV>
+					<div class="tabs" id="sec_guideSimple">
+						
+							<h2>Guide simplifié pour arbitre</h2>
+							<p>
+								Voici votre téléphone. Peut-être pas exactement comme cela, mais certainement semblable.
+							</p>
+				<p>
+					Cette image montre le « bureau » du téléphone.
+				</p>
+				<p><img src="/zdoc/votreTelephone.png"/>
+				</p>
+				<p>Si vous êtes sur le bureau, cliquez sur l’application SyncStats.
+					Vous êtes perdu? Cliquez sur le bouton retour plusieurs fois jusqu’à revenir sur le bureau. Cliquez ensuite sur l’application SyncStats pour y revenir.
+				</p>
+				<h2>Entrer un but: 5 clics</h2>
+				<p><img src="/zdoc/5clics.png"/>
+				</p>
+				<div class="astuce">
+					<h3>Astuce</h3>
+					<p>
+					<ul style="text-align: left">
+						    <li>Ne regardez JAMAIS le téléphone lorsque le jeu se déroule
+									<li>Laissez les joueurs vous ramener la rondelle au centre.
+											<li>Vous ne trouvez pas le joueur dans l’alignement? Pas trop grave. Donnez le but à n’importe qui, on s’arrangera après.
+													<li>Règle générale, la séquence video est plus importante que la statistique : Mieux vaut rentrer un but au bon moment à une mauvaise personne que de rentrer un bon but au mauvais moment.
+						</ul>
+					</p>
+				</div>		
+				
+				
+					</DIV>
+
+
 						<div class="tabs" id="sec_butsManquants">Section à venir</DIV>
 							<div class="tabs" id="sec_videosManquants">Section à venir</DIV>
 								<div class="tabs" id="sec_appSynccam">Section à venir</DIV>
@@ -363,7 +421,8 @@ function gereAffichage() {
 
 				<div id="divDroite"></div>
 		<script type="text/javascript" charset="utf-8">
-				 		developper(19);
+						 developper(19);
+						 $('#divTitreDoc').append($('<a></a>').attr("href","/").append($('<img src="/images/logoFondNoir.png" height="60px"/>')));
 				 		//detruitDivGauche();
 				 			
 		////////////////// Section Site Web		 			
