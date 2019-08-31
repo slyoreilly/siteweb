@@ -13,66 +13,64 @@ $tableJoueur = 'TableJoueur';
 $tableAbon = 'AbonnementLigue';
 $tableUser = 'TableUser';
 
-$mavId = $_POST['mavId'];
 $ligueId = $_POST['ligueId'];
 $vielledate =$_POST['vielledate'];
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
-	mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
-	
-	
-//$jDom = json_decode($jDomJSON, true);
-//$jVis = json_decode($jVisJSON, true);
-$strRetour="yo";
-$strRetour.=$mavId;
-$qString="SELECT abonEquipeLigue.*,	TableMatch.* FROM MatchAVenir 
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+ 
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
+
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+
+$qString="SELECT abonEquipeLigue.*,	TableMatch.* FROM TableMatch 
 						JOIN abonEquipeLigue 
-							ON (abonEquipeLigue.ligueId=MatchAVenir.ligueId)
-						INNER JOIN TableMatch 
-							ON (MatchAVenir.mavId=TableMatch.mavId)
-							
-						WHERE MatchAVenir.ligueId='{$ligueId}' 
-							AND MatchAVenir.dernierMAJ>'{$vielledate}'
+							ON (abonEquipeLigue.ligueId=TableMatch.ligueRef)
+						WHERE TableMatch.ligueRef='{$ligueId}' 
 							AND abonEquipeLigue.finAbon>NOW()
-							AND MatchAVenir.date>(NOW()-INTERVAL 3 DAY)
-							AND MatchAVenir.date<(NOW()+INTERVAL 2 WEEK)
-							AND (MatchAVenir.eqDom=abonEquipeLigue.equipeId OR MatchAVenir.eqVis=abonEquipeLigue.equipeId)
-						GROUP BY TableMatch.mavId";
-						
+							AND TableMatch.date>(NOW()-INTERVAL 7 DAY)
+							AND TableMatch.date<(NOW()+INTERVAL 2 WEEK)
+							AND (TableMatch.eq_dom=abonEquipeLigue.equipeId OR TableMatch.eq_vis=abonEquipeLigue.equipeId)
+						GROUP BY TableMatch.match_id";
+						//AND TableMatch.TSDMAJ>'{$vielledate}'  retiré 15/01/2019
 unset($retour);
-$retour = mysql_query($qString) or die(mysql_error());	
-//$strRetour.= mysql_num_rows($retour);
-//$strRetour.="rege";
+$retour = mysqli_query($conn,$qString) or die(mysqli_error($conn));	
+
 
 $vecMatch = array();
 $Im=0;
-while($r = mysql_fetch_array($retour)) {
+while($r = mysqli_fetch_assoc($retour)) {
     $vecMatch[]=$r;
 	    $vecMatch[$Im]['nom']=$r['matchIdRef'];
 	    $vecMatch[$Im]['matchId']=$r['match_id'];
 		$vecMatch[$Im]['eqDom']=$r['eq_dom'];
 		$vecMatch[$Im]['eqVis']=$r['eq_vis'];
+		$qAbon="SELECT abonAppMatchId, matchId, surfaceId, positionGabarits.gabaritId, positionGabarits.posGabId, abonAppareilMatch.role as role, telId, abonAppareilMatch.dernierMAJ, posX, posY FROM abonAppareilMatch
+		LEFT JOIN positionGabarits
+			ON (abonAppareilMatch.posGabId=positionGabarits.posGabId)
+		WHERE matchId = '{$r['match_id']}' ";
+		$retAbon= mysqli_query($conn,$qAbon) or die(mysqli_error($conn));	
+while($rA = mysqli_fetch_array($retAbon,MYSQL_ASSOC)) {
+	$vecMatch[$Im]['abons'][]=$rA;		
+}
+
     $Im++;
 }
 $adomper= stripslashes(json_encode($vecMatch));
 $adomper= str_replace('"[','[',$adomper);
 $adomper= str_replace(']"',']',$adomper);
-
+$adomper= str_replace('"{','{',$adomper);
+$adomper= str_replace('}"','}',$adomper);
 if(count($vecMatch)!=0)
 echo $adomper;
 else {
 	echo  "";
 }
 
-
+mysqli_close($conn);
 	//		header("HTTP/1.1 200 OK");
 ?>
+

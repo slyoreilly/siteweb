@@ -27,8 +27,8 @@ tl_general_Dimanche = "Sunday";
 
 tl_titreNouvPhoto = "Download a new photo";
 tl_sousTitreNouvPhoto = "Select a file on your computer";
-tl_titreIndex="Smart Hockey";
-tl_sousTitreIndex="Mobile app to replace scoresheets for automated stats management of hockey leagues and tournaments.";
+tl_titreIndex="Smart Sport";
+tl_sousTitreIndex="Choose video highlights directly during the game! Game summary (statistics and highlights) is automatically generated and available online as soon as devices are connected to the Internet.";
 
 tl_produitH1Admin="For Administrator";
 tl_produitH1Joueur="For Players";
@@ -64,7 +64,7 @@ tl_produitDescSS8="Or contact us!";
 tl_produitDescSB1="Is a scoreboard that can be remotely controlledwith our SyncStats app. Can be displayed on any flatscreen and doesn't need an internet connection.";
 
 tl_produits_titreAvantages="Amazing Add-ons to boost-up your game";
-tl_produits_h1ProdSyncStats="The Hockey App";
+tl_produits_h1ProdSyncStats="The Scorekeeping App";
 tl_produits_h1ProdWebSite="Complete Web Site";
 tl_produits_h1ProdSyncCam="AutoEdited Videos";
 tl_produits_h1SyncBoard="Intelligent Scoreboard";
@@ -78,7 +78,7 @@ tl_produits_li122="User, player, team profiles";
 tl_produits_li123="Schedules, Standings";
 tl_produits_li124="and MUCH more...";
 
-tl_produits_li131="Simple Android phones required";
+tl_produits_li131="We provide you required equipment";
 tl_produits_li132="Install whereever you like: no limit in quantity";
 tl_produits_li133="Enjoy all benefits of the stats web site";
 tl_produits_li134="Just a simple \"Start\" and \"Stop button\"";
@@ -86,6 +86,15 @@ tl_produits_li134="Just a simple \"Start\" and \"Stop button\"";
 tl_produits_li141="Controlled wirelessly by SyncStats app";
 tl_produits_li142="Display Score, time, teams...";
 tl_produits_li143="Also stats and even videos!";
+
+tl_produits_li151="Ice Hockey, Ball Hockey, Ringuette";
+tl_produits_li152="Baseball";
+tl_produits_li153="Soccer";
+tl_produits_li154="You think of and tell us";
+
+tl_produits_li161="Ice rinks";
+tl_produits_li162="Gym";
+tl_produits_li163="Sport Fields";
 
 
 tl_indexBulle1="Your detailed stats";
@@ -259,7 +268,8 @@ tl_class_MinutesPunitions  = "Penalty Minutes";
 	tl_stats_Efficacite ="Efficiency";
 	tl_stats_equipes = "teams";
 		tl_stats_AvNum = "PP";
-	tl_stats_DesavNum = "PK";	
+	tl_stats_DesavNum = "PK";
+	tl_stats_Alignement = "Roster";		
 ///////////  Meneurs.html;
 
 tl_meneurs_Meneurs = "Leaders";

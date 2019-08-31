@@ -23,118 +23,53 @@ $tableSaison = 'TableSaison';
 //
 ////////////////////////////////////////////////////////////
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-	die("Can't connect to database");
-
-if (!mysql_select_db($database)) {
-	echo "<h1>Database: {$database}</h1>";
-	die("Can't select database");
-
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
 
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+mysqli_set_charset($conn, "utf8");
 
-/////////////////////////////////////////////////////////////
-//
-//
 
-function trouveNomJoueurParID($ID) {
-	unset($resultJoueur);
-	$resultJoueur = mysql_query("SELECT * FROM TableJoueur WHERE joueur_id = '{$ID}'") or die(mysql_error() . "query f1");
-	while ($rangeeJoueur = mysql_fetch_array($resultJoueur)) {
-		if (strcmp($rangeeJoueur['NomJoueur'], "null")) {
-			return ($rangeeJoueur['NomJoueur']);
-		} else {
-			return ("Anonyme");
-		}
-	}
-	return ("Anonyme");
-}
-
-/////////////////////////////////////////////////////////////
-//
-//
-
-function parseMatchID($ID) {
-
-	$monMatch['date'] = substr($ID, 0, stripos($ID, '_'));
-	$longueur = strlen($monMatch['date']);
-	$monMatch['dom'] = substr($ID, stripos($ID, '_') + 1, stripos(substr($ID, $longueur + 2), '_') + 1);
-	$monMatch['vis'] = substr($ID, strripos($ID, '_') + 1);
-	return $monMatch;
-}
-
-/////////////////////////////////////////////////////
-//
-//   Trouve ID de la ligue � partir du nom.
-//
-////////////////////////////////////////////////////
-
-function trouveIDParNomLigue($nomLi) {
-
-	$resultLigue = mysql_query("SELECT * FROM {$tableLigue}") or die(mysql_error() . "query f2");
-	while ($rangeeLigue = mysql_fetch_array($resultLigue)) {
-		if (!strcmp($rangeeLigue['Nom_Ligue'], $ligue)) {$ligueSelect = $rangeeLigue['ID_Ligue'];
-		}
-		// Prend le ID de la ligue pour trouver les �quipes.
-	}
-
-	return $LigueID;
-}
-
-/////////////////////////////////////////////////////
-//
-//   Trouve ID de l'equipe � partir du nom.
-//
-////////////////////////////////////////////////////
-function trouveNomParIDEquipe($IEq) {
-
-	$resultEquipe = mysql_query("SELECT * FROM {$tableEquipe}") or die(mysql_error() . "query f3");
-	while ($rangeeEquipe = mysql_fetch_array($resultEquipe)) {
-		if (!strcmp($rangeeEquipe['nom_equipe'], $equipe)) {$equipeID = $rangeeEquipe['equipe_id'];
-			// Ce sont de INT
-		}
-	}
-	return $NomEquipe;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////
-//
-//
-function trouveSaisonActiveDeLigueId($ID) {
-	$rfSaison = mysql_query("SELECT saisonId FROM TableSaison WHERE ligueRef = {$ID} ORDER BY premierMatch DESC") or die(mysql_error() . " Select saisonId");
-	//echo mysql_result($rfSaison, 0)."\n";
-	//$tmp= (mysql_fetch_array($rfSaison));
-	//echo $tmp['saisonId']."\n";
-	return (mysql_result($rfSaison, 0));
-}
 
 $getLigue = $_POST["ligueId"];
 $saisonId = $_POST["saisonId"];
 
+	
+if($saisonId=="null"||$saisonId=="undefined"||$saisonId=="")// Sp�cifie par la saison
+	{
+		$rfSaison = mysqli_query($conn,"SELECT saisonId FROM TableSaison WHERE ligueRef = '{$getLigue}' ORDER BY premierMatch DESC LIMIT 0,1")
+or die(mysqli_error($conn)." Select saisonId"); 
 
-if ((!strcmp($saisonId, "")||($saisonId==null||!strcmp($saisonId, "null"))) && strcmp($getLigue, ""))// Sp�cifie par la ligue
+while($rangeeSaison=mysqli_fetch_array($rfSaison))
 {
-	$saisonId = trouveSaisonActiveDeLigueId($getLigue);
-	//	$saisonId =2;
+	$saisonId= $rangeeSaison['saisonId'];
+	
 }
+		
+		}
 
 //echo $saisonId;
-$prSaison = mysql_query("SELECT premierMatch 
+$prSaison = mysqli_query($conn,"SELECT premierMatch 
 						FROM TableSaison 
-						WHERE saisonId ='{$saisonId}'") or die(mysql_error() . "query PM: saisonId: " . $saisonId);
-$premierMatch = mysql_result($prSaison, 0);
-$drSaison = mysql_query("SELECT dernierMatch FROM TableSaison where saisonId ='{$saisonId}'") or die(mysql_error() . "query DM");
-$dernierMatch = mysql_result($drSaison, 0);
+						WHERE saisonId ='{$saisonId}'") or die(mysqli_error($conn) . "query PM: saisonId: " . $saisonId);
+						while($rang = mysqli_fetch_array($prSaison)){
+							$premierMatch= $rang[0];
+						}
+$drSaison = mysqli_query($conn,"SELECT dernierMatch FROM TableSaison where saisonId ='{$saisonId}'") or die(mysqli_error($conn) . "query DM");
+while($rang = mysqli_fetch_array($drSaison)){
+	$dernierMatch= $rang[0];
+}
 
 //
 $lesMatchs = array();
 $I2 = 0;
-$resultMatch = mysql_query("SELECT * 
+$resultMatch = mysqli_query($conn,"SELECT * 
 							FROM TableMatch 
-								WHERE ligueRef={$getLigue}") or die(mysql_error() . "query Matchs");
+								WHERE ligueRef={$getLigue}") or die(mysqli_error($conn) . "query Matchs");
 
 //$strBigMatch = "SELECT TableMatch.*, abonEquipeLigue.*
 //			FROM TableMatch
@@ -168,13 +103,13 @@ $vecTemps= Array();
 $vecTemps['depart'] = time();
 /////////////////  Section avec abonnement, on liste les equipes.
 
-$resultEq = mysql_query("SELECT abonEquipeLigue.*  
+$resultEq = mysqli_query($conn,"SELECT abonEquipeLigue.*  
 				FROM abonEquipeLigue
-					WHERE  ligueId={$getLigue}") or die(mysql_error() . "query abon 1");
+					WHERE  ligueId={$getLigue}") or die(mysqli_error($conn) . "query abon 1");
 
 $eqAbon = array();
 $Ieq = 0;
-while ($rangeeEq = mysql_fetch_array($resultEq)) {
+while ($rangeeEq = mysqli_fetch_array($resultEq)) {
 	$eqAbon[$Ieq] = $rangeeEq['equipeId'];
 	$Ieq++;
 }
@@ -201,11 +136,29 @@ $dmts = strtotime($dernierMatch)*1000;
 //	 match_event_id = '{$lesMatchs[$Im]}' AND
 $strQuery = "
 
-SELECT TableEvenement0.*, TableEquipe.nom_equipe,TableEquipe.ficId, 								
+SELECT TableEvenement0.*, abJoEq.nom_equipe,abJoEq.ficId, 								
 								 TableJoueur.NomJoueur, TableJoueur.NumeroJoueur ,TableJoueur.ficIdPortrait 
-				FROM TableEvenement0 				
-								
-								
+				FROM TableEvenement0 		
+					INNER JOIN TableMatch 	
+						 ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)
+					INNER JOIN TableJoueur 			
+						 ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id)	
+					LEFT JOIN ( 			
+						SELECT equipeId,joueurId, TableEquipe.nom_equipe, TableEquipe.ficId FROM abonJoueurEquipe
+                        LEFT JOIN TableEquipe			
+							ON (abonJoueurEquipe.equipeId=TableEquipe.equipe_id)
+						WHERE		
+							debutAbon<='{$dateAbon}'		
+								AND finAbon>'{$dateAbon}') AS abJoEq	
+					ON (TableJoueur.joueur_id=abJoEq.joueurId)			
+						WHERE		
+						  TableMatch.ligueRef = 	{$getLigue}		
+						AND chrono>'{$pmts}'		
+						AND chrono<'{$dmts}'		
+						AND code<10		
+						GROUP BY event_id		
+";
+/*
 					INNER JOIN ( 			
 						SELECT equipeId,joueurId FROM abonJoueurEquipe		
 						WHERE		
@@ -217,26 +170,15 @@ SELECT TableEvenement0.*, TableEquipe.nom_equipe,TableEquipe.ficId,
 						WHERE		
 						debutAbon<='{$dateAbon}'		
 							AND finAbon>'{$dateAbon}' AND permission<31) AS abEqLi	
-						 ON (abJoEq.equipeId=abEqLi.equipeId AND TableEvenement0.equipe_event_id=abEqLi.equipeId)		
-					INNER JOIN TableEquipe			
-						 ON (abJoEq.equipeId=TableEquipe.equipe_id) 		
-						 	INNER JOIN TableMatch 	
-						 ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)		
-					INNER JOIN TableJoueur 			
-						 ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id)		
-						WHERE		
-						  TableMatch.ligueRef = 	{$getLigue}		
-						AND chrono>'{$pmts}'		
-						AND chrono<'{$dmts}'		
-						AND code<10		
-						GROUP BY event_id		
-";
+						 ON (abJoEq.equipeId=abEqLi.equipeId AND TableEvenement0.equipe_event_id=abEqLi.equipeId)	
+*/
+
 //echo $strQuery;
 
-mysql_query("SET SQL_BIG_SELECTS=1");
-$resultEvent = mysql_query($strQuery) or die(mysql_error() . "query gros stock");
+mysqli_query($conn,"SET SQL_BIG_SELECTS=1");
+$resultEvent = mysqli_query($conn,$strQuery) or die(mysqli_error($conn) . "query gros stock");
 $vecTemps['postQ1'] = time();
-while ($rangeeEv = mysql_fetch_array($resultEvent)) {
+while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 	$JoueurSommeEvenement[$I0]['event_id'] = $rangeeEv['event_id'];
 	$JoueurSommeEvenement[$I0]['joueur_event_ref'] = $rangeeEv['joueur_event_ref'];
 	$JoueurSommeEvenement[$I0]['code'] = $rangeeEv['code'];
@@ -257,8 +199,8 @@ unset($resultEvent);
 unset($rangeeEv);
 
 //// Section remplaçants: non abonné dans une équipe.
-mysql_query("SET SQL_BIG_SELECTS=1");
-$resultEvent = mysql_query("SELECT TableEvenement0.*, TableJoueur.NomJoueur,TableJoueur.joueur_id,TableJoueur.ficIdPortrait, TableJoueur.NumeroJoueur  
+mysqli_query($conn,"SET SQL_BIG_SELECTS=1");
+$resultEvent = mysqli_query($conn,"SELECT TableEvenement0.*, TableJoueur.NomJoueur,TableJoueur.joueur_id,TableJoueur.ficIdPortrait, TableJoueur.NumeroJoueur  
 				FROM TableEvenement0 
 					LEFT JOIN TableJoueur 
 						 ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id)
@@ -269,13 +211,13 @@ $resultEvent = mysql_query("SELECT TableEvenement0.*, TableJoueur.NomJoueur,Tabl
 						AND chrono<'{$dmts}'
 						AND TableMatch.ligueRef = 	{$getLigue}		
 					 AND code<10
-					") or die(mysql_error() . "query stats pers");
+					") or die(mysqli_error($conn) . "query stats pers");
 					
 					/// Ligne retirée: INNER JOIN abonJoueurLigue 
 					//	 ON (TableEvenement0.joueur_event_ref=abonJoueurLigue.joueurId) 
 					
 $vecTemps['postQ2'] = time();
-while ($rangeeEv = mysql_fetch_array($resultEvent)) {
+while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 	if (in_array($rangeeEv['event_id'], $evenement) == false) {
 		array_push($evenement, $JoueurSommeEvenement[$I0]['event_id']);
 		$JoueurSommeEvenement[$I0]['event_id'] = $rangeeEv['event_id'];
@@ -421,4 +363,5 @@ $vecTemps['7'] = time();
 
 echo $JSONstring;
 //echo json_encode($vecTemps);
+mysqli_close($conn);
 ?>

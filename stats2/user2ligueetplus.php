@@ -24,67 +24,31 @@ $tableAbon = 'AbonnementLigue';
 //
 ////////////////////////////////////////////////////////////
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
-		mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
 
-/////////////////////////////////////////////////////////////
-//
-//
-
-function trouveNomJoueurParID($ID){ 
-
-$resultJoueur = mysql_query("SELECT * FROM TableJoueur WHERE joueur_id = '{$ID}'")
-or die(mysql_error());  
-if($rangeeJoueur=mysql_fetch_array($resultJoueur))
-		  return ($rangeeJoueur['NomJoueur']); 
-else { return ("Anonyme"); }
-} 
-
-
-
-/////////////////////////////////////////////////////
-	//
-//   Trouve ID de l'equipe � partir du nom.
-//
-////////////////////////////////////////////////////
-
-	
-function trouveIDParNomUser($nomUser)
-{
-$fResultUser = mysql_query("SELECT noCompte 
-								FROM TableUser 
-								WHERE username='{$nomUser}'")
-or die(mysql_error());  
-$rU = mysql_fetch_row($fResultUser);
-if (mysql_num_rows($fResultUser)>0)
-{
-return $rU[0];
-}
-else{return -1;}
-
-}	
-
-
-//////////////////////////////////////////////////////
-//
-//  	Section "Matchs"
-//
-//////////////////////////////////////////////////////
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+mysqli_set_charset($conn, "utf8");
+///////////////////////////////////////////
 	
 $uname = $_POST["userId"];
-	// Retrieve all the data from la table
-$userId = trouveIDParNomUser($uname);
 
+$fResultUser = mysqli_query($conn,"SELECT noCompte 
+								FROM TableUser 
+								WHERE username='{$uname}'")
+or die(mysqli_error($conn));  
+$rU = mysqli_fetch_row($fResultUser);
+if (mysqli_num_rows($fResultUser)>0)
+{
+	$userId = $rU[0];
+}
+else{$userId = -1;}
 
+	
 $liste=array();
 $joueur=array();
 $arbitre=array();
@@ -96,12 +60,12 @@ $IL =0;
 $ILL =0;
 $ILE =0;
 
-$resultEvent = mysql_query("SELECT AbonnementLigue.*,Ligue.* FROM AbonnementLigue 
+$resultEvent = mysqli_query($conn,"SELECT AbonnementLigue.*,Ligue.* FROM AbonnementLigue 
 									JOIN Ligue
 									ON (AbonnementLigue.ligueid=Ligue.ID_Ligue)
-									WHERE userid='{$userId}'")or die(mysql_error());  	
+									WHERE userid='{$userId}'")or die(mysqli_error($conn));  	
 
-while($rangeeEv=mysql_fetch_array($resultEvent))
+while($rangeeEv=mysqli_fetch_array($resultEvent))
 {
 $liste[$IL]['type']=$rangeeEv['type'];
 $liste[$IL]['ligueId']=$rangeeEv['ligueid'];
@@ -123,10 +87,10 @@ $liste[$IL]['ligueId']=$rangeeEv['ligueid'];
 
 
 
-$resJou = mysql_query("SELECT * FROM TableJoueur WHERE proprio='{$userId}'")
-or die(mysql_error());  	
+$resJou = mysqli_query($conn,"SELECT * FROM TableJoueur WHERE proprio='{$userId}'")
+or die(mysqli_error($conn));  	
 $IJ=0;
-while($rangJou=mysql_fetch_array($resJou))
+while($rangJou=mysqli_fetch_array($resJou))
 {
 $joueur['nomJoueur']=$rangJou['NomJoueur'];
 $joueur['numero']=$rangJou['NumeroJoueur'];
@@ -145,14 +109,14 @@ $joueur['dernierMAJ']=$rangJou['dernierMAJ'];
 $joueur['abonLigues']=array();
 $joueur['abonEquipes']=array();
 
-	$resLig = mysql_query("SELECT Ligue.*, abonJoueurLigue.* 
+	$resLig = mysqli_query($conn,"SELECT Ligue.*, abonJoueurLigue.* 
 						FROM abonJoueurLigue 
 						JOIN Ligue
 							ON (Ligue.ID_Ligue=abonJoueurLigue.ligueId)
 						WHERE joueurId='{$joueur['joueurId']}'")
-	or die(mysql_error());  	
+	or die(mysqli_error($conn));  	
 	$IAL=0;
-	while($rangLig=mysql_fetch_array($resLig))
+	while($rangLig=mysqli_fetch_array($resLig))
 	{
 	$joueur['abonLigues'][$IAL]['ligueId']=$rangLig['ligueId'];
 	$joueur['abonLigues'][$IAL]['debutAbon']=$rangLig['debutAbon'];
@@ -172,7 +136,7 @@ $joueur['abonEquipes']=array();
 	$IAL++;		
 	}
 // A ajouter si bogue:	, abonEquipeLigue.*
-	$resEq = mysql_query("SELECT Ligue.*, abonJoueurEquipe.*, TableEquipe.* 
+	$resEq = mysqli_query($conn,"SELECT Ligue.*, abonJoueurEquipe.*, TableEquipe.* 
 						FROM abonJoueurEquipe
 						JOIN TableEquipe
 							ON (abonJoueurEquipe.equipeId=TableEquipe.equipe_id) 
@@ -184,10 +148,10 @@ $joueur['abonEquipes']=array();
 						WHERE joueurId='{$joueurId['joueurId']}'
 						AND abonJoueurEquipe.finAbon>=abonEquipeLigue.debutAbon
 						AND abonJoueurEquipe.debutAbon<=abonEquipeLigue.finAbon")
-	or die(mysql_error());  	
+	or die(mysqli_error($conn));  	
 	$IAE=0;
 	
-	while($rangEq=mysql_fetch_array($resEq))
+	while($rangEq=mysqli_fetch_array($resEq))
 	{
 	$joueur['abonEquipes'][$IAL]['equipeId']=$rangEq['equipeId'];
 	$joueur['abonEquipes'][$IAL]['ligueId']=$rangEq['ligueId'];
@@ -227,17 +191,17 @@ $IJ++;
 }
 
 
-$resArb = mysql_query("SELECT TableArbitre.*, abonArbitreLigue.*, Ligue.*
+$resArb = mysqli_query($conn,"SELECT TableArbitre.*, abonArbitreLigue.*, Ligue.*
 						FROM TableArbitre 
 						JOIN abonArbitreLigue 
 							ON (TableArbitre.arbitreId=abonArbitreLigue.arbitreId) 
 							JOIN Ligue
 							ON (abonArbitreLigue.ligueId=Ligue.ID_Ligue)
 						WHERE userId='{$userId}'")
-or die(mysql_error());  	
+or die(mysqli_error($conn));  	
 
 $IA=0;
-while($rangArb=mysql_fetch_array($resArb))
+while($rangArb=mysqli_fetch_array($resArb))
 {
 	if($IA==0)
 	{$arbitre['arbitreId']=$rangArb['arbitreId'];
@@ -265,6 +229,6 @@ $JSONstring .="{\"abonnements\": ".json_encode($liste). ",\"joueur\": ".json_enc
 //echo json_encode($Sommaire);
 echo $JSONstring;
 	
-
+mysqli_close($conn);
 
 ?>

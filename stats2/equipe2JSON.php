@@ -23,17 +23,16 @@ $tableSaison = 'TableSaison';
 //
 ////////////////////////////////////////////////////////////
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-	die("Can't connect to database");
 
-if (!mysql_select_db($database)) {
-	echo "<h1>Database: {$database}</h1>";
-	die("Can't select database");
-
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
 
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+mysqli_set_charset($conn, "utf8");
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -51,28 +50,28 @@ if(!function_exists("array_column"))
 
 }
 
-$rLiEq = mysql_query("SELECT TableEquipe.*, abonEquipeLigue.* FROM {$tableEquipe}
+$rLiEq = mysqli_query($conn,"SELECT TableEquipe.*, abonEquipeLigue.* FROM {$tableEquipe}
 								JOIN abonEquipeLigue
 								ON (TableEquipe.equipe_id=abonEquipeLigue.equipeId) 
 								
-								WHERE equipe_id = '{$equipeId}'") or die(mysql_error());
+								WHERE equipe_id = '{$equipeId}'") or die(mysqli_error($conn));
 //echo "Q1: ".mysql_num_rows($rLiEq)."\n";
 $IV = 0;
 $lesMatchs = array();
 $I2 = 0;
-while ($rangeeLiEq = mysql_fetch_array($rLiEq))//  Pour chacun des abonnements de cette équipe à une ligue quelconque:
+while ($rangeeLiEq = mysqli_fetch_array($rLiEq))//  Pour chacun des abonnements de cette équipe à une ligue quelconque:
 {
-	$resultSaison = mysql_query("SELECT TableSaison.*,Ligue.* FROM TableSaison 
+	$resultSaison = mysqli_query($conn,"SELECT TableSaison.*,Ligue.* FROM TableSaison 
 										JOIN Ligue
 										ON (TableSaison.ligueRef=Ligue.ID_Ligue)
-										WHERE ligueRef = '{$rangeeLiEq['ligueId']}'") or die(mysql_error());
+										WHERE ligueRef = '{$rangeeLiEq['ligueId']}'") or die(mysqli_error($conn));
 	//echo "Q2: ".mysql_num_rows($resultSaison)."\n";
 
-	while ($rangeeSaison = mysql_fetch_array($resultSaison))// Pour chacune des saison associé à la ligue de l'abonnement visé:
+	while ($rangeeSaison = mysqli_fetch_array($resultSaison))// Pour chacune des saison associé à la ligue de l'abonnement visé:
 	{
 		//$vecStats[$IV]['stats']=Array();
 		$stats = Array();
-		mysql_query("SET SQL_BIG_SELECTS=1");
+		mysqli_query($conn,"SET SQL_BIG_SELECTS=1");
 		$reqMatchs = "SELECT TableMatch.*, TableEvenement0.*, TableJoueur.* 
 		 		FROM TableEvenement0
 		 		JOIN TableMatch
@@ -97,11 +96,11 @@ while ($rangeeLiEq = mysql_fetch_array($rLiEq))//  Pour chacun des abonnements d
 				AND debutAbon<='{$rangeeSaison['dernierMatch']}'
 					ORDER BY joueurId";
 
-		$rMatch = mysql_query($reqMatchs) or die(mysql_error() . " reqMatchs");
+		$rMatch = mysqli_query($conn,$reqMatchs) or die(mysqli_error($conn) . " reqMatchs");
 		//	echo "Q3: ".mysql_num_rows($rMatch)."\n";
 		$IE = -1;
 		$jId = 0;
-		while ($rangMatch = mysql_fetch_array($rMatch)) {
+		while ($rangMatch = mysqli_fetch_array($rMatch)) {
 			if ($rangMatch['joueur_id'] != $jId) {
 
 				$IE++;
@@ -132,10 +131,10 @@ while ($rangeeLiEq = mysql_fetch_array($rLiEq))//  Pour chacun des abonnements d
 					break;
 			}
 		}// Fin du while sur les evenements
-		$rAbon = mysql_query($reqAbon) or die(mysql_error() . " reqMatchs");
+		$rAbon = mysqli_query($conn,$reqAbon) or die(mysqli_error($conn) . " reqMatchs");
 		//	echo "Q3: ".mysql_num_rows($rMatch)."\n";
 		$jId = 0;
-		while ($rangAbon = mysql_fetch_array($rAbon)) {
+		while ($rangAbon = mysqli_fetch_array($rAbon)) {
 			//print_r(array_column($stats, 'joueurId'));
 			
 			$key = array_search($rangAbon['joueurId'], array_column($stats, 'joueurId'));
@@ -178,4 +177,5 @@ while ($rangeeLiEq = mysql_fetch_array($rLiEq))//  Pour chacun des abonnements d
 
 //
 echo "{\"Saisons\":" . json_encode($vecStats) . "}";
+mysqli_close($conn);
 ?>

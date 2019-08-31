@@ -1,0 +1,13 @@
+ 
+file /home/lookatthis/1564621346560_63.mp4
+file /home/lookatthis/1564621426503_63.mp4
+file /home/lookatthis/1564621891855_63.mp4
+file ../vidsCree/syncstats.ca/lookatthis/1564621346560_63.mp4
+file ../vidsCree/syncstats.ca/lookatthis/1564621426503_63.mp4
+file ../vidsCree/syncstats.ca/lookatthis/1564621891855_63.mp4
+file ../vidsCree/syncstats.ca/lookatthis/1564621346560_63.mp4
+file ../vidsCree/syncstats.ca/lookatthis/1564621426503_63.mp4
+file ../vidsCree/syncstats.ca/lookatthis/1564621891855_63.mp4
+file ../vidsCree//lookatthis/1564621346560_63.mp4
+file ../vidsCree//lookatthis/1564621426503_63.mp4
+file ../vidsCree//lookatthis/1564621891855_63.mp4

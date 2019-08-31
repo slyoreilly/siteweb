@@ -1,7 +1,14 @@
 <?php
 		
 //$json=json_decode("'".$matchjson."'");
+$connDT = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$connDT) {
+	die("Connection failed: " . mysqli_connect_error());
+}
 
+mysqli_query($connDT, "SET NAMES 'utf8'");
+mysqli_query($connDT, "SET CHARACTER SET 'utf8'");
 
 $retTransJ=array();
 $a=0;
@@ -19,27 +26,27 @@ $retTransJ[$a]=array();
 	$vieuId = $traiteJ['vieuId'];
 
 	
-$retour = mysql_query("INSERT INTO {$tableJoueur} (NomJoueur, NumeroJoueur, equipe_id_ref, Ligue, ficIdPortrait) 
-VALUES ('{$intJoueur}', '{$intNo}', NULL, NULL,95)")or die(mysql_error()."insert bug");	
+$retour = mysqli_query($connDT,"INSERT INTO {$tableJoueur} (NomJoueur, NumeroJoueur, equipe_id_ref, Ligue, ficIdPortrait) 
+VALUES ('{$intJoueur}', '{$intNo}', NULL, NULL,95)")or die(mysqli_error($connDT)."insert bug");	
 //	mysql_query("INSERT INTO {$tableEvent} (joueur_event_ref, equipe_event_id, code, chrono, match_event_id) 
 //VALUES ( 'test	Match2', 'testMatch2', 'testMatch2', 'testMatch2','testMatch2')");	
 	
-	$resultNouveau = mysql_query("SELECT joueur_id FROM {$tableJoueur} WHERE Nomjoueur='{$intJoueur}' AND NumeroJoueur='{$intNo}' ORDER BY joueur_id DESC")
-				or die(mysql_error()."select bug");  
+	$resultNouveau = mysqli_query($connDT,"SELECT joueur_id FROM {$tableJoueur} WHERE Nomjoueur='{$intJoueur}' AND NumeroJoueur='{$intNo}' ORDER BY joueur_id DESC")
+				or die(mysqli_error($connDT)."select bug");  
 	
-	$nId = mysql_fetch_row($resultNouveau);
+	$nId = mysqli_fetch_row($resultNouveau);
 	$retTransJ[$a]['vieuId']=$vieuId;
 	$retTransJ[$a]['nouveauId']=$nId[0];
 	
 	
 //$retour = mysql_query("INSERT INTO abonJoueurEquipe (joueurId, equipeId, permission, debutAbon, finAbon) 
 //VALUES ('{$nId[0]}', '{$intEquipe}',30, NOW(),'2050-01-01')");	
-$retour = mysql_query("INSERT INTO abonJoueurLigue (joueurId, ligueId, permission, debutAbon, finAbon) 
+$retour = mysqli_query($connDT,"INSERT INTO abonJoueurLigue (joueurId, ligueId, permission, debutAbon, finAbon) 
 VALUES ('{$nId[0]}', '{$intLigue}',30, NOW(),'2020-01-01')");	
 
 if($intEquipe!=0)
 {
-$retour = mysql_query("INSERT INTO abonJoueurEquipe (joueurId, equipeId, permission, debutAbon, finAbon) 
+$retour = mysqli_query($connDT,"INSERT INTO abonJoueurEquipe (joueurId, equipeId, permission, debutAbon, finAbon) 
 VALUES ('{$nId[0]}', '{$intEquipe}',30, NOW(),'2020-01-01')");	
 }
 	
@@ -69,22 +76,22 @@ $intEquipe = $traiteE['nom'];
 	$vieuId = $traiteE['vieuId'];
 
 	
-$retour = mysql_query("INSERT INTO TableEquipe (nom_equipe,logo,ficId, equipeActive,dernierMAJ) 
+$retour = mysqli_query($connDT,"INSERT INTO TableEquipe (nom_equipe,logo,ficId, equipeActive,dernierMAJ) 
 VALUES ('{$intEquipe}', '{$intLogo}', 16, 1, NOW())");	
 //	mysql_query("INSERT INTO {$tableEvent} (joueur_event_ref, equipe_event_id, code, chrono, match_event_id) 
 //VALUES ( 'test	Match2', 'testMatch2', 'testMatch2', 'testMatch2','testMatch2')");	
 	
-	$resultNouveau = mysql_query("SELECT equipe_id FROM TableEquipe WHERE nom_equipe='{$intEquipe}'  ORDER BY equipe_id DESC")
-				or die(mysql_error());  
+	$resultNouveau = mysqli_query($connDT,"SELECT equipe_id FROM TableEquipe WHERE nom_equipe='{$intEquipe}'  ORDER BY equipe_id DESC")
+				or die(mysqli_error($connDT));  
 	
-	$nId = mysql_fetch_row($resultNouveau);
+	$nId = mysqli_fetch_row($resultNouveau);
 	$retTransE[$b]['vieuId']=$vieuId;
 	$retTransE[$b]['nouveauId']=$nId[0];
 	
 	
 //$retour = mysql_query("INSERT INTO abonJoueurEquipe (joueurId, equipeId, permission, debutAbon, finAbon) 
 //VALUES ('{$nId[0]}', '{$intEquipe}',30, NOW(),'2050-01-01')");	
-$retour = mysql_query("INSERT INTO abonEquipeLigue (equipeId, ligueId, permission, debutAbon, finAbon) 
+$retour = mysqli_query($connDT,"INSERT INTO abonEquipeLigue (equipeId, ligueId, permission, debutAbon, finAbon) 
 VALUES ('{$nId[0]}', '{$intLigue}',30, NOW(),'2020-01-01')");	
 
 
@@ -105,5 +112,6 @@ if($b==0)
 //	$retTransJ[$a]['info2']=$transJ;
 //$retTransJ[$a]['info3']=$t1;
 //$retTransJ[$a]['info4']=$t2;
+mysqli_close($connDT);
 
 ?>

@@ -1,0 +1,759 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>SyncStats</title>
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+        <script src="/scripts/jquery.timeago.js" type="text/javascript"></script>
+       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+          <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+            <script src="/scripts/date-time-picker.min.js"></script>
+            <!-- Global site tag (gtag.js) - Google Analytics -->
+<!--script async src="https://www.googletagmanager.com/gtag/js?id=UA-121923202-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-121923202-1');
+</script-->
+        <style>
+        #divHaut {
+        position:relative;
+        }
+        
+        #divHaut img {
+            width:100%;
+            height:auto;
+        }
+        
+        body {background-color:#000000;
+        color:#ddd;
+        margin:15px;}
+        
+        div {background-color:#000000;
+        color:#ddd;}
+        
+        table{
+            margin:auto;
+        }
+        th, td{
+            padding:12px;
+        }
+        input {
+            background: #ffffff;
+            border: 1px solid #cccccc;
+            border-radius: 3px;
+            padding: 6px 4px;
+            color:#000000;
+        }
+        
+        #divSelEq {
+            text-align:center;
+            display:inline;
+
+        }
+        
+        select {color:black;}
+        
+        #divNav {
+            width:100%;
+            display:block;
+            clear:both;
+            float:none;
+            min-height:100px;
+            padding:24px;
+        }
+        
+         #retourTAB {
+            float:left;
+        }
+         #propulseSS {
+            float:right;
+        }
+         #propulseSS img {
+           max-height: 70px;
+           width:auto;
+        }
+        #divLesMatchs {
+            text-align:center;
+        }
+        #barre2{
+                        border-top-style: solid;
+            border-top-width:1px;
+            border-top-color:#666;
+            display:flex;
+            justify-content: space-around;
+        }
+        #barre2 > div{
+            width:50%;
+        }
+        
+        #msgSS {
+            max-width:33%;
+        }
+
+
+        .J-dtp-second-input {
+            display:none;
+        }
+        .cmp-dp-time-group {
+            max-width:30%;
+        }
+         .cmp-dp-btn-group {
+             min-width:60%
+         }
+         button {
+             color:#000;
+         }
+         
+        </style>
+
+      
+        <script type="text/javascript" charset="utf-8">
+      function setCookie(c_name,value,exdays)
+{
+var exdate=new Date();
+exdate.setDate(exdate.getDate() + exdays);
+var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
+document.cookie=c_name + "=" + c_value+'; path=/';
+}
+
+function getCookie(c_name)
+{
+var i,x,y,ARRcookies=document.cookie.split(";");
+for (i=0;i<ARRcookies.length;i++)
+  {
+  x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+  y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+  x=x.replace(/^\s+|\s+$/g,"");
+  if (x==c_name)
+    {
+    return unescape(y);
+    }
+  }
+  return null;
+}
+            function getInfoJoueurs(ligueId) {
+
+                var requete_ajax = new XMLHttpRequest();
+
+                var url = "/stats2/joueursDansLigue2JSON.php";
+                //      alert(url);
+                requete_ajax.open('POST', url, true);
+                params = "ligueId='" + ligueId + "'";
+                //alert("Params a setMatchAVenir" + params);
+                //Send the proper header information along with the request
+                requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
+                requete_ajax.setRequestHeader("Content-length", params.length);
+                requete_ajax.setRequestHeader("Connection", "close");
+
+                requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+                    if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+                        lesJoueurs = eval('(' + requete_ajax.responseText + ')');
+                        window.loadVidsCond++;
+                        if (loadVidsCond >= nbVidsCond) {
+                            afficheVideos(0, 0);
+                        }
+                    }
+                };
+                requete_ajax.send(params);
+
+            }
+
+            function getInfoLigue(ligueId) {
+                //  return function(){
+                var requete_ajax = new XMLHttpRequest();
+
+                var url = "/stats2/infoLigue2JSON.php";
+                //  alert(url);
+                var params = "ligueId=" + window.ligueId;
+                //alert(params);
+                requete_ajax.open('POST', url, true);
+
+                requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                requete_ajax.setRequestHeader("Content-length", params.length);
+                requete_ajax.setRequestHeader("Connection", "close");
+
+                requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+                    if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+                        //      alert(requete_ajax.responseText);
+                        //          window.location.reload();
+                        var tmpStr = eval('(' + requete_ajax.responseText + ')');
+                        remplirOuiJetInfoLigue(tmpStr);
+
+                        return requete_ajax.responseText;
+                    }
+                    //      else{alert("Petit problème de développement");}
+                };
+                requete_ajax.send(params);
+                //alert(requete_ajax.responseText);
+                var pourMAJ = new Array();
+
+                //  }
+            }
+
+            function getSommaireMatchPourVideo(matchId, indice) {
+                var requete_ajax = new XMLHttpRequest();
+
+                var url = "/stats2/sommaire2JSON.php";
+                var strMatchId = "matchId=" + matchId;
+
+                params = strMatchId;
+                url = url + "?" + params;
+                //alert(url);
+                requete_ajax.open('POST', url, true);
+                //              requete_ajax.send(null);
+
+                requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                //              requete_ajax.setRequestHeader("Content-length", params.length);
+                //              requete_ajax.setRequestHeader("Connection", "close");
+
+                requete_ajax.send(params);
+
+                requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+                    if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+                        rJSON = eval('(' + requete_ajax.responseText + ')');
+                        $('#divMatch_'+indice).append(
+                            mTable = $('<table></table>').append(
+                              $('<tr></tr>').append(
+                                  $('<th></th>').text("Fait Saillant"),
+                                  $('<th></th>').text("Date"),
+                                  $('<th></th>').text("Cam 1"),
+                                  $('<th></th>').text("Cam 2")
+                                  )));
+                                  
+                        for(var a=0;a<rJSON.buts.length;a++){
+                            var d = new Date(parseInt(rJSON.buts[a].chrono));
+                              var month = d.getMonth()+1;     
+                        var day = d.getDate();
+                        var heure = d.getHours();
+                        var minutes = d.getMinutes();
+                        var secondes = d.getSeconds();
+                              if((new Date()).getTime()-d.getTime()<1000*60*60*24){
+                                        var divT = $('<time></time>').text(jQuery.timeago(d));
+                                            }else{
+                                        var divT = $('<time></time>').text(strDate);
+                                     }
+                            tr = $('<tr></tr>').append(
+                                    $('<td></td>').text("But "+rJSON.buts[a].equipe),
+                                     $('<td></td>').append($(divT)));
+                                       jaiCam=new Array();
+                                   for(var b=0;b<rJSON.buts[a].video.length;b++){
+                                       if($.inArray(rJSON.buts[a].video[b].cam, jaiCam)){
+                                        $(tr).append($('<td></td>').append($('<a></a>').attr("target","_blank").attr("href","http://"+rJSON.buts[a].video[b].emplacement+"/lookatthis/"+rJSON.buts[a].video[b].fic).text("Voir")));
+                                         jaiCam.push(rJSON.buts[a].video[b].cam);
+                                         }
+                                    }
+                                    
+                                $(mTable).append($(tr));    
+                                  
+                            }   
+                          for(var a=0;a<rJSON.clips.length;a++){
+                              var d = new Date(parseInt(rJSON.clips[a].chrono));
+                              var month = d.getMonth()+1;     
+                        var day = d.getDate();
+                        var heure = d.getHours();
+                        var minutes = d.getMinutes();
+                        var secondes = d.getSeconds();
+                        console.log((new Date()).getTime()-d.getTime());
+                        if((new Date()).getTime()-d.getTime()<1000*60*60*24){
+                                        var divT = $('<time></time>').text(jQuery.timeago(d));
+                                            }else{
+                                        var divT = $('<time></time>').text(strDate);
+                                     }
+                              var strDate = day+"/"+month + " "+heure+":"+minutes;
+                            tr = $('<tr></tr>').append(
+                                    $('<td></td>').text("Sequence #"+a),
+                                     $('<td></td>').append($(divT)));
+                                    
+                                    
+                                       jaiCam=new Array();
+                                   for(var b=0;b<rJSON.clips[a].video.length;b++){
+                                       if($.inArray(rJSON.clips[a].video[b].cam, jaiCam)){
+                                        $(tr).append($('<td></td>').append($('<a></a>').attr("target","_blank").attr("href","http://"+rJSON.clips[a].video[b].emplacement+"/lookatthis/"+rJSON.clips[a].video[b].fic).text("Voir")));
+                                         jaiCam.push(rJSON.clips[a].video[b].cam);
+                                         }
+                                    }
+                                    
+                                $(mTable).append($(tr));    
+                                  
+                            }  
+//                      $('#divMatch_'+mavId).append($('<div></div>').text(requete_ajax.responseText));
+                        //alert(requete_ajax.responseText);
+
+                    
+
+                    }
+                };
+            }
+
+function  appendMatch(indice, advDomVis){
+    if(advDomVis==1){
+        advId = window.matchsDsSaison.matchs[indice].eqDomId;
+        advNom = window.matchsDsSaison.matchs[indice].eqDom;
+        
+        
+    }
+    else{
+        advId = window.matchsDsSaison.matchs[indice].eqVisId;
+        advNom = window.matchsDsSaison.matchs[indice].eqVis;
+    }
+     $('#divLesMatchs').append(
+         $('<div></div>').append(
+         $('<input></input>').attr("type","hidden").addClass("inputHiddenSurfaceId").attr("id","matchSurf_"+indice).val(window.matchsDsSaison.matchs[indice].arenaId),
+         $('<input></input>').attr("type","hidden").addClass("inputHiddenMatchId").attr("id","matchId_"+indice).val(window.matchsDsSaison.matchs[indice].matchID),
+         $('<div></div>').attr("id","divMatch_"+indice).append(
+          $('<hr/>'),
+         $('<div></div>').text(window.matchsDsSaison.matchs[indice].eqDom +" vs "+window.matchsDsSaison.matchs[indice].eqVis),
+         $('<br></br>'),
+             $('#selEq').clone().addClass("tag dom").attr("id","tagDomBtn"+indice).hide(),
+             $('#selEq').clone().addClass("tag vis").attr("id","tagVisBtn"+indice).hide(),
+         $('<div></div>').text(window.matchsDsSaison.matchs[indice].date),
+         $('<br></br>')   
+         ))
+         );
+         
+         monDom =getEquipe(window.matchsDsSaison.matchs[indice].eqDomId);
+         monVis =getEquipe(window.matchsDsSaison.matchs[indice].eqVisId);
+         console.log("AND..."+JSON.stringify(monDom));
+         console.log("AND..."+JSON.stringify(monVis));
+         
+         if(monDom.hasOwnProperty("cleValeur")){
+             if(monDom.cleValeur!=null){
+              if(monDom.cleValeur.generiqueDom){
+             $('#tagDomBtn'+indice).show().on("change",{ancienId:monDom.id,matchId:window.matchsDsSaison.matchs[indice].matchID},majEqMatch).find(':first-child').text("TAG Domcile!");
+             }
+             }
+         }
+         if(monVis.hasOwnProperty("cleValeur")){
+             if(monVis.cleValeur!=null){
+              if(monVis.cleValeur.generiqueVis){
+             $('#tagVisBtn'+indice).show().on("change",{ancienId:monVis.id,matchId:window.matchsDsSaison.matchs[indice].matchID},majEqMatch).find(':first-child').text("TAG Visiteur!");
+             }
+             }
+         }
+         
+         getSommaireMatchPourVideo(window.matchsDsSaison.matchs[indice].matchID,indice);
+}
+
+function getMatchsdeLigueID() {
+    
+    
+        $.ajax({
+                        url : "/scriptsphp/matchsDsSaisonLight.php"/*"http://syncstats.com/scriptsphp/listeEquipes.php"*/,
+                        datatype : 'json',
+                        contentType: "application/json",
+                        type : 'POST',
+                        data : JSON.stringify({
+                            saisonId : window.saisonId,
+                            ligueId : window.ligueId,
+                            ventOff : true
+                        }),
+                        contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+                        success : function(response) {
+                        //    alert(response);
+                        matchsDsSaison = eval('(' +response + ')');
+                       matchsDsSaison.matchs.sort(compareDate);
+                        //alert(JSON.stringify(matchsDsSaison));
+                         
+                        },
+                        error : function(xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            alert(err.Message + "  --  ereur lc2MS");
+                        }
+                    });
+    
+    
+    
+            }
+            
+            
+            function getEquipe(id){
+                for(var a=0;a<window.vecEquipes.length;a++){
+                    console.log(JSON.stringify(window.vecEquipes[a]));
+                    console.log(id);
+                    if(parseInt(window.vecEquipes[a].id)==id){
+                        return window.vecEquipes[a];
+                    }
+                }
+                return new array();
+            }
+            
+            function compare(a,b) {
+                var upA =a.nom; 
+                var upB =b.nom; 
+                try{
+  if (upA.toUpperCase() < upB.toUpperCase())
+    return -1;
+  if (upA.toUpperCase() > upB.toUpperCase())
+    return 1;
+  return 0;}
+  catch(err){return 0;}
+}
+    function compareDate(a,b) {
+  if (a.date < b.date)
+    return 1;
+  if (a.date > b.date)
+    return -1;
+  return 0;
+}
+
+    function majEqMatch(event){
+        nouveauId = $(this).find(":selected").val();
+               $.ajax({
+                        url : "/stats2/setEquipeDansMatch.php"/*"http://syncstats.com/scriptsphp/listeEquipes.php"*/,
+                        datatype : 'json',
+                        type : 'POST',
+                        data : jQuery.param({
+                            ancienEqId : event.data.ancienId,
+                            eqId : nouveauId,
+                            matchId : event.data.matchId
+                        }),
+                        contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+                        success : function(response) {
+                           
+                        },
+                        error : function(xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            alert(err.Message + "  --  ereur majEqM");
+                        }
+                    });
+                    
+        
+    }
+
+         function peupleEquipe(monVec,saisonId){
+             for(var a=0;a<monVec.saisons.length;a++){
+                 if(monVec.saisons[a].saisonId==saisonId){
+                     indSaison=a;
+                     monVec.saisons[a].equipe.sort(compare);
+                     
+                     $('#selEq').append($('<option></option>').text("Choisir votre équipe").val(0));
+                     for(var b=0;b<monVec.saisons[a].equipe.length;b++){
+                         if(monVec.saisons[a].equipe[b].cleValeur!=null){
+                             monVec.saisons[a].equipe[b].cleValeur =  eval("(" + monVec.saisons[a].equipe[b].cleValeur  + ")");
+                         }
+                         indEquipe = b;
+                          $('#selEq').append($('<option></option>').text(monVec.saisons[indSaison].equipe[b].nom).val(monVec.saisons[indSaison].equipe[b].id));
+                     }
+                     window.vecEquipes = monVec.saisons[a].equipe;
+                 }
+                 
+             }
+             
+             $('#selEq').on("change",appliqueFiltres);
+         }
+             function peupleSurfaces(monVec){
+                  monVec.sort(compare);
+                     $('#selSurf').append($('<option></option>').text("Choisir votre surface").val(0));
+             for(var a=0;a<monVec.length;a++){
+                          $('#selSurf').append($('<option></option>').text(monVec[a].nomGlace).val(monVec[a].arenaId));
+                     
+                 
+                 
+             }
+             
+             $('#selSurf').on("change",appliqueFiltres);
+         }
+        
+        function appliqueFiltres(){
+              maSurf = $('#selSurf').find(":selected").val();
+               monEq = $('#selEq').find(":selected").val();
+               if($('#debPlage').val()==""){
+                   setDeb=false;
+               }else{
+                   setDeb=true;
+               }
+               if($('#finPlage').val()==""){
+                   setFin=false;
+               }else{
+                   setFin=true;
+               }
+               
+             var deb = new Date($('#debPlage').val());
+             var fin = new Date($('#finPlage').val());
+                            //  $('#divSelEq').hide();
+                            //  $('#divLesMatchs').show();
+                              
+                              
+                            // $('#divLesMatchs input.inputHiddenSurfaceId').parent().hide();
+                             //$('#divLesMatchs input.inputHiddenSurfaceId[value='+maSurf+']').parent().show();
+                              var cptCharge = 0;
+                              var maxCharge = 10;
+
+                            okSurf =  false;
+                            okDate = false;
+
+                             for(var c=0;c<window.matchsDsSaison.matchs.length&&cptCharge<maxCharge;c++){
+                                        okDate = false;
+                                 dateAchecker = new Date(window.matchsDsSaison.matchs[c].date);
+                                // alert(dateAchecker+" -- "+deb+" -- "+fin);
+                                 if(!setDeb&&!setFin){
+                                      okDate = true;
+                                 }
+                                 if(setDeb&&!setFin){
+                                      if(deb.getTime()<dateAchecker.getTime()){
+                                      okDate = true;
+                                 }
+                                 }
+                                 if(!setDeb&&setFin){
+                                      if(fin.getTime()>dateAchecker.getTime()){
+                                      okDate = true;
+                                 }
+                                 }
+                                 if(setDeb&&setFin){
+                                 if(deb.getTime()<dateAchecker.getTime()&&fin.getTime()>dateAchecker.getTime()){
+                                      okDate = true;
+                                 }
+                                 }
+                                 
+                               // alert(okDate+"");
+                                 okSurf =window.matchsDsSaison.matchs[c].arenaId==maSurf
+                                        ||maSurf==0;
+                                 if((window.matchsDsSaison.matchs[c].eqDomId==monEq
+                                        ||monEq==0)
+                                     && okSurf&& okDate
+                                     ){
+                                     if( $('#divLesMatchs input.inputHiddenMatchId[value="'+window.matchsDsSaison.matchs[c].matchID+'"]').length==0){
+                                        appendMatch(c, 2);
+                                        cptCharge++;  
+                                     }
+                                     
+                                      $('#divLesMatchs input.inputHiddenMatchId[value="'+window.matchsDsSaison.matchs[c].matchID+'"]').parent().show();
+                                  }  
+                                  else{
+                                            if((window.matchsDsSaison.matchs[c].eqVisId==monEq||monEq==0)
+                                              && okSurf&& okDate
+                                               ){
+                                                 if( $('#divLesMatchs input.inputHiddenMatchId[value="'+window.matchsDsSaison.matchs[c].matchID+'"]').length==0){
+                                                    appendMatch(c, 1);
+                                                        cptCharge++;  
+                                                 }
+                                                 $('#divLesMatchs input.inputHiddenMatchId[value="'+window.matchsDsSaison.matchs[c].matchID+'"]').parent().show();
+                         
+                                            }
+                                            else{
+                                                
+                                                 $('#divLesMatchs input.inputHiddenMatchId[value="'+window.matchsDsSaison.matchs[c].matchID+'"]').parent().hide();
+                                            }
+                                  }
+                                 
+                               
+                             }
+            
+        }
+        function toggleOptions(){
+            if($('#divOptFiltres button').text()=="Moins d'options"){
+            $('#divFiltres').hide();
+            $('#divOptFiltres button').text("Plus d'options");
+                
+            }else {
+            $('#divFiltres').show();
+            $('#divOptFiltres button').text("Moins d'options");
+                
+            }
+        }
+                    function gestionBackEnd(){
+                                            var d = new Date();
+
+                        var month = d.getMonth()+1;     
+                        var day = d.getDate();
+                        var heure = d.getHours();
+                        var minutes = d.getMinutes();
+                        var secondes = d.getSeconds();
+
+                        var output = d.getFullYear() + '-' + (month<10 ? '0' : '') + month + '-' + (day<10 ? '0' : '') + day
+                        +" "+(heure<10 ? '0' : '')+heure+":"+(minutes<10 ? '0' : '')+minutes+":"+(secondes<10 ? '0' : '')+secondes;
+                        mFakeId =   getCookie("fakeId")==null ? "":getCookie("fakeId");
+                        mLigueId =   getCookie("ligueId")==null ? "":getCookie("ligueId");
+                        
+                        $.post( "/scriptsphp/enregistreVisite.php", { userId: getCookie("userId"),  fakeId:mFakeId, ligueId:mLigueId , location:window.location.href, referrer:document.referrer,date:output  })
+                         .done(function( data ) {
+                            setCookie('fakeId',data,3000);
+                        });
+
+                    }   
+                    
+
+        </script>
+    </head>
+    <body id="mbody">
+        <div class="container-fluid">
+            <div class="row">
+                <div id="divHaut" class="col-sm-12" style="overflow:hidden; margin: 0px;   width:100%; max-height:200px">
+                    <img src="/ligues/lhcmd/banniereLHCMD.png" style="margin: -50px 0 ; object-fit:cover"></img>
+                </div>
+            </div>
+
+            <div class="row">
+                <div id="divCentrale" class="col-sm-12 container">
+                    <div id="divNav">
+                        <div id="retourTAB">
+                        <i class="fas fa-reply"></i><a href="https://www.lhcmd.sitew.ca">Retour à la page principale</a>
+                        </div>
+                        <div id="propulseSS">
+                        <span>Propulsé par <a href="http://www.syncstats.com"><img src="/images/logoFondNoir.png"></a></span>
+                        </div>
+                    </div>
+                    <!--div id="barre2">
+                        <div id="versHighlights">
+                            <h4>Pour voir une sélection des meilleurs highlights</h4>
+                            <a href="/ligues/alexburrows/highlightsTR.html"><p>Suivez ce lien</p></a>
+                        </div-->
+                         <div id="divFiltresPerm" class="row">
+                        
+                    <div id="divSelEq"  class="col-sm-12">
+                        <p>Choisissez votre équipe</p>
+                                          <select id="selEq">                  </select>
+                    </div>                        
+                    </div>
+                         <div id="divOptFiltresCont" class="row">
+                    <div id="divOptFiltres" class="col-sm-12">
+                        <button onclick="toggleOptions()">Plus d'options</button>
+                        </div>
+                    </div>                        
+                         <div id="divFiltres" class="row" style="display:none">
+                             
+                    <div id="divSelSurf" class="col-sm-4">
+                        <p>Choisissez votre surface</p>
+                                          <select id="selSurf">                  </select>
+                    </div>
+                    <div id="divSelDeb"  class="col-sm-4">
+                        <p>Heure du début de la recherche</p>
+                                         <input type="text" id="debPlage"/>
+                    </div>
+                    <div id="divSelFin"  class="col-sm-4">
+                        <p>Heure de fin de la recherche</p>
+                                         <input type="text" id="finPlage"/>
+                    </div>
+                    
+                    
+
+                     </div>
+                    <!---div id="msgSS">
+                        <h4>Un mot de l'équipe de SyncStats</h4>
+                        <p>Ce fut un grand honneur et un immense plaisir pour nous de couvrir le tournoi de Trois-Rivières de la Tournée Alex Burrows. Quelques imprévus nous auront cependant empêchés d'obtenir plusieurs de vos vidéos selon nos standards de précision et de qualité.
+                        Nous vous invitons donc à voir la pinte à moitié pleine: Profitez de ce que vous verrez et passez voir nos <a href="/ligues/alexburrows/highlightsTR.html"> meilleures sélections</a>
+                        Si vous souhaitez nous laisser un commentaire ou même nous demander de tenter de retrouver l'un de vos buts / belles séquences, <a href="mailto:soreilly@syncstats.com?subject=sequence">c'est ici!</a> 
+                    </div-->
+                    </div>
+                    <div id="divLesMatchs"></div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div id="divBas"  class="col-sm-12"></div>
+            </div>
+
+        </div>
+        <script type="text/javascript" charset="utf-8">
+//                                console.log("A");
+
+            saisonId=217;
+            ligueId=89;
+
+            jQuery(document).ready(function() {
+              //  $('#divLesMatchs').hide();
+                getMatchsdeLigueID();
+gestionBackEnd();                
+                              $.ajax({
+                        url : "/scriptsphp/listeEquipes.php"/*"http://syncstats.com/scriptsphp/listeEquipes.php"*/,
+                        datatype : 'json',
+                        type : 'POST',
+                        data : jQuery.param({
+                            saisonId : window.saisonId,
+                            ligueId : window.ligueId
+                        }),
+                        contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+                        success : function(response) {
+                            repEq = eval("(" + response + ")");
+                            peupleEquipe(repEq,saisonId);
+                        },
+                        error : function(xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            alert(err.Message + "  --  ereur lc2Max");
+                        }
+                    });
+
+
+          $.ajax({
+                        url : "/stats2/getArena.php"/*"http://syncstats.com/scriptsphp/listeEquipes.php"*/,
+                        datatype : 'json',
+                        type : 'POST',
+                        data : jQuery.param({
+//                            username : "Burrows"
+                            ligueId:94
+                        }),
+                        contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+                        success : function(response) {
+                            repEq = eval("(" + response + ")");
+                            peupleSurfaces(repEq);
+                        },
+                        error : function(xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            alert(err.Message + "  --  ereur lc2Max");
+                        }
+                    });
+                    
+                    
+                    
+$('#debPlage').dateTimePicker();
+$('#finPlage').dateTimePicker();
+$('#debPlage').dateTimePicker({
+  // used to limit the date range
+      limitMax: null,
+      limitMin: null,
+     // year name
+      yearName: '',
+      // month names
+      monthName: ['JAN', 'FEV', 'MAR', 'AVR', 'MAI', 'JUN', 'JUL', 'AOU', 'SEP', 'OCT', 'NOV', 'DEC'],
+     // day names
+      dayName: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+     // "date" or "dateTime"
+      mode: 'dateTime',
+      // custom date format
+      format: 'MM/dd/yyyy HH:mm'
+   });          
+   $('#finPlage').dateTimePicker({
+  // used to limit the date range
+      limitMax: null,
+      limitMin: null,
+     // year name
+      yearName: '',
+      // month names
+      monthName: ['JAN', 'FEV', 'MAR', 'AVR', 'MAI', 'JUN', 'JUL', 'AOU', 'SEP', 'OCT', 'NOV', 'DEC'],
+     // day names
+      dayName: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+     // "date" or "dateTime"
+      mode: 'dateTime',
+      // custom date format
+     format: 'MM/dd/yyyy HH:mm'
+   });  
+        $('span.J-dtp-btn-yes').text("OK").on("click",function(){
+                              appliqueFiltres();
+
+        });
+        
+        
+
+        
+        
+        
+   });
+   
+   jQuery(document).ready(function() {
+  jQuery("time.timeago").timeago();
+});
+    
+
+        </script>
+    
+    
+    </body>
+</html>

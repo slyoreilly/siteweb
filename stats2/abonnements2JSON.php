@@ -23,24 +23,18 @@ $tableUser = 'TableUser';
 //
 ////////////////////////////////////////////////////////////
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-	die("Can't connect to database");
 
-if (!mysql_select_db($database)) {
-	echo "<h1>Database: {$database}</h1>";
-	die("Can't select database");
-
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
 
-function trouveIDParNomLigue($ligue) {
-	$fResultLigue = mysql_query("SELECT * FROM Ligue") or die(mysql_error());
-	while ($fRangeeLigue = mysql_fetch_array($fResultLigue)) {
-		if (!strcmp($fRangeeLigue['Nom_Ligue'], $ligue)) {$equipeID = $fRangeeLigue['ID_Ligue'];
-			// Ce sont de INT
-		}
-	}
-	return $equipeID;
-}
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+
+
 
 $ligueIdInter = $_GET['ligueId'];
 $userId = $_GET['userId'];
@@ -53,10 +47,10 @@ $ligueId = $ligueIdInter;
 //{$ligueId = $ligueIdInter;}
 
 if (is_numeric($ligueId)) {
-	$resultEquipe = mysql_query("SELECT * FROM AbonnementLigue WHERE ligueid='{$ligueId}' AND contexte='ligue'") or die(mysql_error());
+	$resultEquipe = mysqli_query($conn,"SELECT * FROM AbonnementLigue WHERE ligueid='{$ligueId}' AND contexte='ligue'") or die(mysqli_error($conn));
 
 	$boule = 0;
-	while ($rangee = mysql_fetch_array($resultEquipe)) {
+	while ($rangee = mysqli_fetch_array($resultEquipe)) {
 		$boule = 1;
 		$JSONstring = "{\"userId\": \"" . $rangee['userid'] . "\",";
 		$JSONstring .= "\"type\": \"" . $rangee['type'] . "\",";
@@ -70,13 +64,13 @@ if (is_numeric($ligueId)) {
 	}
 } else {
 	if (isset($userId)) {
-		$resultEquipe = mysql_query("SELECT * FROM AbonnementLigue
+		$resultEquipe = mysqli_query($conn,"SELECT * FROM AbonnementLigue
 					JOIN TableUser
 						ON(TableUser.noCompte=AbonnementLigue.userid)
-					 WHERE username='{$userId}' AND contexte='ligue'") or die(mysql_error());
+					 WHERE username='{$userId}' AND contexte='ligue'") or die(mysqli_error($conn));
 		$abon=array();
 		$IA=0;
-		while ($rangee = mysql_fetch_array($resultEquipe)) {
+		while ($rangee = mysqli_fetch_array($resultEquipe)) {
 			$abon[$IA]['ligueId']=$rangee['ligueid'];
 			$abon[$IA]['type']=$rangee['type'];
 		}
@@ -86,5 +80,6 @@ if (is_numeric($ligueId)) {
 }
 
 echo $JSONstring;
+mysqli_close($conn);
 ?>
 

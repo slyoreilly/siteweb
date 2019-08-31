@@ -475,8 +475,8 @@ function peupleDivBas() {
 	menuAproposJS.id = 'menuApropos';
 	tApropos = document.createElement('A');
 	tContactez = document.createElement('A');
-	tApropos.innerHTML = "À propos de nous";
-	tApropos.href = "http://www.journaldestmichel.com/%C3%89conomie/Affaires/2013-04-24/article-3226532/strongstrongGrace-a-deux-Michelois-Larbitrage-au-hockey-simplifie-strongstrong/1";
+	tApropos.innerHTML = "Documentation";
+	tApropos.href = "/zdoc/demarrer.html";
 	tContactez.innerHTML = "Contactez-nous";
 	tContactez.href = "mailto:info" + "@" + "syncstats.com";
 	menuAproposJS.appendChild(tApropos);
@@ -635,7 +635,7 @@ function genereMenu_dev() {
 		menu_n1 = document.createElement('UL');
 		divMenuHautJS.appendChild(menu_n1);
 		menu_n1.id = 'menu';
-
+/*
 		for (var k = 0; k < hierarchie.length; k++) {
 			i_n1 = document.createElement('LI');
 			menu_n1.appendChild(i_n1);
@@ -667,7 +667,7 @@ function genereMenu_dev() {
 
 			}
 
-		}// Fin du for hierarchie
+		}// Fin du for hierarchie */
 	}
 }
 
@@ -851,11 +851,11 @@ function genereBoites() {
 	genBoiteContexte(2);
 	genBoiteContexte(3);
 	genBoiteContexte(4);
-	genBoiteContexte(5);
+	//genBoiteContexte(5);
 	if (getCookie('ligueId') == 86)
 		faireBoite(1, 10);
 	else
-		faireBoite(1, 9);
+		faireBoite(1, 11);
 	//	genBoiteContexte(3);
 	//	genBoiteContexte(4);
 	//genBoiteContexte(5);
@@ -880,8 +880,8 @@ function genereBoites() {
 	 faireBoite(1,3);
 	 faireBoite(4, 5);*/
 	faireBoite(3, 5);
-	faireBoite(4, 1);
-	faireBoite(5, 6);
+	faireBoite(4, 6);
+//	faireBoite(5, 6);
 	//faireBoiteTest(1);
 	$('<script async></script>').attr("src", "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js").appendTo('#divDroite');
 	$('<ins></ins>').attr("class", "adsbygoogle").attr("style", "display:inline-block;width:300px;height:250px").attr("data-ad-client", "ca-pub-2263794877114969").attr("data-ad-slot", "9575808332").appendTo('#divDroite');

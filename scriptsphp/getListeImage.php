@@ -18,18 +18,15 @@ $database = 'syncsta1_900';
 // 	Connections � la base de donn�es
 //
 ////////////////////////////////////////////////////////////
-
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 
 
@@ -47,12 +44,12 @@ $reqGal = "SELECT *
 			FROM Galerie
 			WHERE proprio={$proprio} 
 				AND typeProprio='{$typeProprio}'";
-$rGal = mysql_query($reqGal)
-or die(mysql_error());  
+$rGal = mysqli_query($conn,$reqGal)
+or die(mysqli_error($conn));  
 
 $IM=0;
 $image = Array();
-while ($rangIm = mysql_fetch_array($rGal))
+while ($rangIm = mysqli_fetch_array($rGal))
 {
 	$image[$IM]=array();
 	$image[$IM]['ficId']=$rangIm['ficId'];
@@ -64,6 +61,6 @@ while ($rangIm = mysql_fetch_array($rGal))
 
 echo json_encode($image);
 	
-
+mysqli_close($conn);
 
 ?>

@@ -2,20 +2,21 @@
 <HTML>
 	<HEAD>
 		<title>Infos</title>
-		<link rel="stylesheet" href="/style/general.css" type="text/css">
+
 				<link rel="shortcut icon" href="/favicon.ico" />
 
-		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
-		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
-			<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
-			<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
-<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
-		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
-		<style>
-		</style>
-		<script type="text/javascript" charset="utf-8">
-				 		gereLangue();
+				<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+				<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		
+				<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+				<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+				
+					  <script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+				<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+				<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		 <script type="text/javascript" charset="utf-8">
+					gereLangue();
+		
 				 		
 				 		
 				 		
@@ -61,7 +62,12 @@
 				 		
 		</script>
 
-
+<style>
+	section {
+		float:none;
+		clear:both;
+	}
+	</style>
 	</HEAD>
 	<body id="mbody">
 		
@@ -74,7 +80,7 @@
 
 
 		<div id="divCentrale">
-			<ul id="menu-info">
+			<ul id="menu-info" style="display:block;float:none;clear:both;">
 				<li id="queFait" class="titre-section choisi">Que fait SyncStats?</li>
 				<li id="commentFonctionne" class="titre-section">Comment ça fonctionne?</li>
 				<li id="combien" class="titre-section">Combien ça coûte?</li>
@@ -144,14 +150,16 @@
 		
 		<script type="text/javascript" charset="utf-8">
 			developper(15);
+			$('#divTitreDoc').append($('<a></a>').attr("href","/").append($('<img src="/images/logoFondNoir.png" height="60px"/>')));
 			$("#divCentrale").css("width","80%");
 		
 			$('.titre-section').click(function(){
 				$('.titre-section').toggleClass("choisi",false);
+				
+				$('section').hide();//toggleClass("choisi",false);
 				$(this).toggleClass("choisi",true);
-				$('section').toggleClass("choisi",false);
 				var indice = $(this).index()+2;
-				$('section:nth-child('+indice+')').toggleClass("choisi",true);
+				$('section:nth-child('+indice+')').show();//toggleClass("choisi",true);
 			});
 			
 			

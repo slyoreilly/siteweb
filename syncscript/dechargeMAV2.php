@@ -11,7 +11,7 @@ $vdhr= str_replace('/','-',$vdhr);
 $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
 // Check connection
 if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+    die("Connection failed: " . mysqli_connect_error($conn));
 }
 
 mysqli_query($conn,"SET NAMES 'utf8'");
@@ -33,7 +33,7 @@ $qString="SELECT abonEquipeLigue.*, TableMatch.*	FROM TableMatch
 						GROUP BY mavId";
 						
 unset($retour);
-$retour = mysqli_query($conn,$qString) or die(mysql_error());	
+$retour = mysqli_query($conn,$qString) or die(mysqli_error($conn));	
 //$strRetour.= mysql_num_rows($retour);
 //$strRetour.="rege";
 
@@ -41,11 +41,12 @@ $vecMatch = array();
 $Im=0;
 while($r = mysqli_fetch_array($retour,MYSQL_ASSOC)) {
     $vecMatch[$Im]=$r;
-	$qAbon="SELECT * FROM abonAppareilMatch
+	$qAbon="SELECT abonAppMatchId, matchId, surfaceId, abonAppareilMatch.gabaritId, abonAppareilMatch.posGabId, 
+	abonAppareilMatch.role, telId, dernierMAJ as dernierMaJ, positionGabarits.posX, positionGabarits.posY FROM abonAppareilMatch
 			LEFT JOIN positionGabarits
 				ON (abonAppareilMatch.posGabId=positionGabarits.posGabId)
 			WHERE matchId = '{$r['match_id']}' ";
-			$retAbon= mysqli_query($conn,$qAbon) or die(mysql_error());	
+			$retAbon= mysqli_query($conn,$qAbon) or die(mysqli_error($conn));	
 	while($rA = mysqli_fetch_array($retAbon,MYSQL_ASSOC)) {
     	$vecMatch[$Im]['abons'][]=$rA;		
 	}
@@ -58,7 +59,7 @@ while($r = mysqli_fetch_array($retour,MYSQL_ASSOC)) {
 $vecMAV2=$vecMatch;
 $infoMav2 = $qString;
 
-
+mysqli_close($conn);
 
 	//		header("HTTP/1.1 200 OK");
 ?>

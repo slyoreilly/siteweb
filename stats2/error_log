@@ -1,0 +1,1486 @@
+[05-Aug-2019 19:23:42 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/infoMatch2JSON.php on line 44
+[05-Aug-2019 19:24:02 UTC] PHP Fatal error:  Cannot redeclare Sensor::connect() in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 20
+[05-Aug-2019 19:25:02 UTC] PHP Fatal error:  Cannot redeclare Sensor::connect() in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 20
+[05-Aug-2019 19:26:03 UTC] PHP Fatal error:  Cannot redeclare Sensor::connect() in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 20
+[05-Aug-2019 19:27:00 UTC] PHP Fatal error:  Cannot redeclare Sensor::connect() in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 20
+[05-Aug-2019 19:27:02 UTC] PHP Fatal error:  Cannot redeclare Sensor::connect() in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 20
+[05-Aug-2019 19:28:04 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:28:15 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:29:03 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:30:03 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:31:03 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:32:03 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:33:03 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:34:03 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:35:03 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:36:03 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:37:03 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:37:55 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:38:04 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:39:04 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:40:03 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:41:04 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:42:04 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:43:05 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:44:06 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:45:05 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:46:05 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:47:04 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:48:08 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:49:05 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:50:05 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:51:03 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:52:05 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:53:04 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:53:06 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:54:08 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:55:04 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:55:54 UTC] PHP Deprecated:  Automatically populating $HTTP_RAW_POST_DATA is deprecated and will be removed in a future version. To avoid this warning set 'always_populate_raw_post_data' to '-1' in php.ini and use the php://input stream instead. in Unknown on line 0
+[05-Aug-2019 19:56:05 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:56:10 UTC] PHP Deprecated:  Automatically populating $HTTP_RAW_POST_DATA is deprecated and will be removed in a future version. To avoid this warning set 'always_populate_raw_post_data' to '-1' in php.ini and use the php://input stream instead. in Unknown on line 0
+[05-Aug-2019 19:57:05 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:58:07 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:59:06 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 19:59:31 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 20:00:06 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 20:00:07 UTC] PHP Warning:  Missing argument 1 for Sensor::connect(), called in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53 and defined in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 17
+[05-Aug-2019 20:01:08 UTC] PHP Parse error:  syntax error, unexpected 'require' (T_REQUIRE), expecting function (T_FUNCTION) in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 10
+[05-Aug-2019 20:02:07 UTC] PHP Parse error:  syntax error, unexpected 'require' (T_REQUIRE), expecting function (T_FUNCTION) in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 10
+[05-Aug-2019 20:03:04 UTC] PHP Parse error:  syntax error, unexpected 'require' (T_REQUIRE), expecting function (T_FUNCTION) in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 10
+[05-Aug-2019 20:04:06 UTC] PHP Fatal error:  Function name must be a string in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53
+[05-Aug-2019 20:05:06 UTC] PHP Fatal error:  Function name must be a string in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53
+[05-Aug-2019 20:06:07 UTC] PHP Fatal error:  Function name must be a string in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53
+[05-Aug-2019 20:07:06 UTC] PHP Fatal error:  Function name must be a string in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53
+[05-Aug-2019 20:08:07 UTC] PHP Fatal error:  Function name must be a string in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53
+[05-Aug-2019 20:08:16 UTC] PHP Fatal error:  Function name must be a string in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53
+[05-Aug-2019 20:09:07 UTC] PHP Fatal error:  Function name must be a string in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53
+[05-Aug-2019 20:10:07 UTC] PHP Fatal error:  Function name must be a string in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53
+[05-Aug-2019 20:11:07 UTC] PHP Fatal error:  Function name must be a string in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53
+[05-Aug-2019 20:12:07 UTC] PHP Fatal error:  Function name must be a string in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53
+[05-Aug-2019 20:13:07 UTC] PHP Fatal error:  Function name must be a string in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53
+[05-Aug-2019 20:14:07 UTC] PHP Fatal error:  Function name must be a string in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53
+[05-Aug-2019 20:15:06 UTC] PHP Fatal error:  Function name must be a string in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53
+[05-Aug-2019 20:16:07 UTC] PHP Fatal error:  Function name must be a string in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53
+[05-Aug-2019 20:17:07 UTC] PHP Fatal error:  Function name must be a string in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 53
+[05-Aug-2019 20:25:47 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/getBabillard.php on line 22
+[05-Aug-2019 20:25:47 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/getListeImage.php on line 22
+[05-Aug-2019 20:40:10 UTC] 0 
+[05-Aug-2019 20:40:10 UTC] 1 
+[05-Aug-2019 20:40:10 UTC] 2 
+[05-Aug-2019 20:40:10 UTC] 3 
+[05-Aug-2019 20:41:10 UTC] 0 
+[05-Aug-2019 20:41:10 UTC] 1 
+[05-Aug-2019 20:41:10 UTC] 2 
+[05-Aug-2019 20:41:10 UTC] 3 
+[05-Aug-2019 20:42:10 UTC] 0 
+[05-Aug-2019 20:42:10 UTC] 1 
+[05-Aug-2019 20:42:10 UTC] 2 
+[05-Aug-2019 20:42:10 UTC] 3 
+[05-Aug-2019 20:43:10 UTC] 0 
+[05-Aug-2019 20:43:10 UTC] 1 
+[05-Aug-2019 20:43:10 UTC] 2 
+[05-Aug-2019 20:43:10 UTC] 3 
+[05-Aug-2019 20:44:11 UTC] 0 
+[05-Aug-2019 20:44:11 UTC] 1 
+[05-Aug-2019 20:44:11 UTC] 2 
+[05-Aug-2019 20:44:11 UTC] 3 
+[05-Aug-2019 20:45:09 UTC] 0 
+[05-Aug-2019 20:45:09 UTC] 1 
+[05-Aug-2019 20:45:09 UTC] 2 
+[05-Aug-2019 20:45:09 UTC] 3 
+[05-Aug-2019 20:46:11 UTC] 0 
+[05-Aug-2019 20:46:11 UTC] 1 
+[05-Aug-2019 20:46:11 UTC] 2 
+[05-Aug-2019 20:46:11 UTC] 3 
+[05-Aug-2019 20:47:09 UTC] 0 
+[05-Aug-2019 20:47:09 UTC] 1 
+[05-Aug-2019 20:47:09 UTC] 2 
+[05-Aug-2019 20:47:09 UTC] 3 
+[05-Aug-2019 20:48:11 UTC] 0 
+[05-Aug-2019 20:48:11 UTC] 1 
+[05-Aug-2019 20:48:11 UTC] 2 
+[05-Aug-2019 20:48:11 UTC] 3 
+[05-Aug-2019 20:48:11 UTC] PHP Warning:  error_log(/scriptsphp/error_log): failed to open stream: No such file or directory in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 25
+[05-Aug-2019 20:49:11 UTC] 0 
+[05-Aug-2019 20:49:11 UTC] 1 
+[05-Aug-2019 20:49:11 UTC] 2 
+[05-Aug-2019 20:49:11 UTC] 3 
+[05-Aug-2019 20:49:11 UTC] PHP Warning:  error_log(/scriptsphp/error_log): failed to open stream: No such file or directory in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 25
+[05-Aug-2019 20:50:09 UTC] 0 
+[05-Aug-2019 20:50:09 UTC] 1 
+[05-Aug-2019 20:50:09 UTC] 2 
+[05-Aug-2019 20:50:09 UTC] 3 
+[05-Aug-2019 20:50:09 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('',','','')
+[05-Aug-2019 20:51:11 UTC] 0 
+[05-Aug-2019 20:51:11 UTC] 1 
+[05-Aug-2019 20:51:11 UTC] 2 
+[05-Aug-2019 20:51:11 UTC] 3 
+[05-Aug-2019 20:51:11 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('',','','')
+[05-Aug-2019 20:52:11 UTC] 0 
+[05-Aug-2019 20:52:11 UTC] 1 
+[05-Aug-2019 20:52:11 UTC] 2 
+[05-Aug-2019 20:52:11 UTC] 3 
+[05-Aug-2019 20:52:11 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','41','1565038331000')
+[05-Aug-2019 20:53:10 UTC] 0 
+[05-Aug-2019 20:53:10 UTC] 1 
+[05-Aug-2019 20:53:10 UTC] 2 
+[05-Aug-2019 20:53:10 UTC] 3 
+[05-Aug-2019 20:53:10 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','40','1565038390000')
+[05-Aug-2019 20:53:29 UTC] 0 
+[05-Aug-2019 20:53:29 UTC] 1 
+[05-Aug-2019 20:53:29 UTC] 2 
+[05-Aug-2019 20:53:29 UTC] 3 
+[05-Aug-2019 20:53:29 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','864237037938514','26','1565038409000')
+[05-Aug-2019 20:53:46 UTC] 0 
+[05-Aug-2019 20:53:46 UTC] 1 
+[05-Aug-2019 20:53:46 UTC] 2 
+[05-Aug-2019 20:53:46 UTC] 3 
+[05-Aug-2019 20:53:46 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015026000391191','35','1565038426000')
+[05-Aug-2019 20:54:04 UTC] 0 
+[05-Aug-2019 20:54:04 UTC] 1 
+[05-Aug-2019 20:54:04 UTC] 2 
+[05-Aug-2019 20:54:04 UTC] 3 
+[05-Aug-2019 20:54:04 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','864237037938514','26','1565038444000')
+[05-Aug-2019 20:54:12 UTC] 0 
+[05-Aug-2019 20:54:12 UTC] 1 
+[05-Aug-2019 20:54:12 UTC] 2 
+[05-Aug-2019 20:54:12 UTC] 3 
+[05-Aug-2019 20:54:12 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','40','1565038452000')
+[05-Aug-2019 20:55:12 UTC] 0 
+[05-Aug-2019 20:55:12 UTC] 1 
+[05-Aug-2019 20:55:12 UTC] 2 
+[05-Aug-2019 20:55:12 UTC] 3 
+[05-Aug-2019 20:55:12 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','40','1565038512000')
+[05-Aug-2019 20:56:12 UTC] 0 
+[05-Aug-2019 20:56:12 UTC] 1 
+[05-Aug-2019 20:56:12 UTC] 2 
+[05-Aug-2019 20:56:12 UTC] 3 
+[05-Aug-2019 20:56:12 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','40','1565038572000')
+[05-Aug-2019 20:57:12 UTC] 0 
+[05-Aug-2019 20:57:12 UTC] 1 
+[05-Aug-2019 20:57:12 UTC] 2 
+[05-Aug-2019 20:57:12 UTC] 3 
+[05-Aug-2019 20:57:12 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','40','1565038632000')
+[05-Aug-2019 20:58:10 UTC] 0 
+[05-Aug-2019 20:58:10 UTC] 1 
+[05-Aug-2019 20:58:10 UTC] 2 
+[05-Aug-2019 20:58:10 UTC] 3 
+[05-Aug-2019 20:58:10 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','40','1565038690000')
+[05-Aug-2019 20:59:12 UTC] 0 
+[05-Aug-2019 20:59:12 UTC] 1 
+[05-Aug-2019 20:59:12 UTC] 2 
+[05-Aug-2019 20:59:12 UTC] 3 
+[05-Aug-2019 20:59:12 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','40','1565038752000')
+[05-Aug-2019 21:00:12 UTC] 0 
+[05-Aug-2019 21:00:12 UTC] 1 
+[05-Aug-2019 21:00:12 UTC] 2 
+[05-Aug-2019 21:00:12 UTC] 3 
+[05-Aug-2019 21:00:12 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','40','1565038812000')
+[05-Aug-2019 21:00:29 UTC] PHP Deprecated:  mysql_query(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/get3etoiles.php on line 92
+[05-Aug-2019 21:00:29 UTC] PHP Warning:  mysql_query(): Access denied for user ''@'localhost' (using password: NO) in /home3/syncsta1/public_html/scriptsphp/get3etoiles.php on line 92
+[05-Aug-2019 21:00:29 UTC] PHP Warning:  mysql_query(): A link to the server could not be established in /home3/syncsta1/public_html/scriptsphp/get3etoiles.php on line 92
+[05-Aug-2019 21:01:00 UTC] PHP Deprecated:  Automatically populating $HTTP_RAW_POST_DATA is deprecated and will be removed in a future version. To avoid this warning set 'always_populate_raw_post_data' to '-1' in php.ini and use the php://input stream instead. in Unknown on line 0
+[05-Aug-2019 21:01:12 UTC] 0 
+[05-Aug-2019 21:01:12 UTC] 1 
+[05-Aug-2019 21:01:12 UTC] 2 
+[05-Aug-2019 21:01:12 UTC] 3 
+[05-Aug-2019 21:01:12 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','40','1565038872000')
+[05-Aug-2019 21:01:12 UTC] PHP Catchable fatal error:  Object of class mysqli could not be converted to string in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 28
+[05-Aug-2019 21:02:12 UTC] 0 
+[05-Aug-2019 21:02:12 UTC] 1 
+[05-Aug-2019 21:02:12 UTC] 2 
+[05-Aug-2019 21:02:12 UTC] 3 
+[05-Aug-2019 21:02:12 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','40','1565038932000')
+[05-Aug-2019 21:02:12 UTC] PHP Catchable fatal error:  Object of class mysqli could not be converted to string in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 28
+[05-Aug-2019 21:03:00 UTC] PHP Deprecated:  Automatically populating $HTTP_RAW_POST_DATA is deprecated and will be removed in a future version. To avoid this warning set 'always_populate_raw_post_data' to '-1' in php.ini and use the php://input stream instead. in Unknown on line 0
+[05-Aug-2019 21:03:12 UTC] 0 
+[05-Aug-2019 21:03:12 UTC] 1 
+[05-Aug-2019 21:03:12 UTC] 2 
+[05-Aug-2019 21:03:12 UTC] 3 
+[05-Aug-2019 21:03:12 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','41','1565038992000')
+[05-Aug-2019 21:03:12 UTC] PHP Catchable fatal error:  Object of class mysqli could not be converted to string in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 28
+[05-Aug-2019 21:04:12 UTC] 0 
+[05-Aug-2019 21:04:12 UTC] 1 
+[05-Aug-2019 21:04:12 UTC] 2 
+[05-Aug-2019 21:04:12 UTC] 3 
+[05-Aug-2019 21:04:12 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','40','1565039052000')
+[05-Aug-2019 21:04:12 UTC] PHP Catchable fatal error:  Object of class mysqli could not be converted to string in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 28
+[05-Aug-2019 21:05:12 UTC] 0 
+[05-Aug-2019 21:05:12 UTC] 1 
+[05-Aug-2019 21:05:12 UTC] 2 
+[05-Aug-2019 21:05:12 UTC] 3 
+[05-Aug-2019 21:05:12 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','41','1565039112000')
+[05-Aug-2019 21:05:12 UTC] PHP Catchable fatal error:  Object of class mysqli could not be converted to string in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 28
+[05-Aug-2019 21:06:12 UTC] 0 
+[05-Aug-2019 21:06:12 UTC] 1 
+[05-Aug-2019 21:06:12 UTC] 2 
+[05-Aug-2019 21:06:12 UTC] 3 
+[05-Aug-2019 21:06:12 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','40','1565039172000')
+[05-Aug-2019 21:06:12 UTC] You messed up! 
+[05-Aug-2019 21:07:12 UTC] 0 
+[05-Aug-2019 21:07:12 UTC] 1 
+[05-Aug-2019 21:07:12 UTC] 2 
+[05-Aug-2019 21:07:12 UTC] 3 
+[05-Aug-2019 21:07:12 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','41','1565039232000')
+[05-Aug-2019 21:07:12 UTC] You messed up! 
+[05-Aug-2019 21:08:12 UTC] 0 
+[05-Aug-2019 21:08:12 UTC] 1 
+[05-Aug-2019 21:08:12 UTC] 2 
+[05-Aug-2019 21:08:12 UTC] 3 
+[05-Aug-2019 21:08:12 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','41','1565039292000')
+[05-Aug-2019 21:08:12 UTC] You messed up! 
+[05-Aug-2019 21:08:12 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:08:12 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:09:04 UTC] 0 
+[05-Aug-2019 21:09:04 UTC] 1 
+[05-Aug-2019 21:09:04 UTC] 2 
+[05-Aug-2019 21:09:04 UTC] 3 
+[05-Aug-2019 21:09:04 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015026000391191','35','1565039344000')
+[05-Aug-2019 21:09:04 UTC] You messed up! 
+[05-Aug-2019 21:09:04 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:09:04 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:09:12 UTC] 0 
+[05-Aug-2019 21:09:12 UTC] 1 
+[05-Aug-2019 21:09:12 UTC] 2 
+[05-Aug-2019 21:09:12 UTC] 3 
+[05-Aug-2019 21:09:12 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','41','1565039352000')
+[05-Aug-2019 21:09:12 UTC] You messed up! 
+[05-Aug-2019 21:09:12 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:09:12 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:10:13 UTC] 0 
+[05-Aug-2019 21:10:13 UTC] 1 
+[05-Aug-2019 21:10:13 UTC] 2 
+[05-Aug-2019 21:10:13 UTC] 3 
+[05-Aug-2019 21:10:13 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','41','1565039413000')
+[05-Aug-2019 21:10:13 UTC] You messed up! 
+[05-Aug-2019 21:10:13 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:10:13 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:11:13 UTC] 0 
+[05-Aug-2019 21:11:13 UTC] 1 
+[05-Aug-2019 21:11:13 UTC] 2 
+[05-Aug-2019 21:11:13 UTC] 3 
+[05-Aug-2019 21:11:13 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','41','1565039473000')
+[05-Aug-2019 21:11:13 UTC] You messed up! 
+[05-Aug-2019 21:11:13 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:11:13 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:12:13 UTC] 0 
+[05-Aug-2019 21:12:13 UTC] 1 
+[05-Aug-2019 21:12:13 UTC] 2 
+[05-Aug-2019 21:12:13 UTC] 3 
+[05-Aug-2019 21:12:13 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','41','1565039533000')
+[05-Aug-2019 21:12:13 UTC] You messed up! 
+[05-Aug-2019 21:12:13 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:12:13 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:13:11 UTC] 0 
+[05-Aug-2019 21:13:11 UTC] 1 
+[05-Aug-2019 21:13:11 UTC] 2 
+[05-Aug-2019 21:13:11 UTC] 3 
+[05-Aug-2019 21:13:11 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','41','1565039591000')
+[05-Aug-2019 21:13:11 UTC] You messed up! 
+[05-Aug-2019 21:13:11 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:13:11 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:21:33 UTC] 0 
+[05-Aug-2019 21:21:33 UTC] 1 
+[05-Aug-2019 21:21:33 UTC] 2 
+[05-Aug-2019 21:21:33 UTC] 3 
+[05-Aug-2019 21:21:33 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','41','1565040093000')
+[05-Aug-2019 21:21:33 UTC] You messed up! 
+[05-Aug-2019 21:21:33 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:21:33 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:27:17 UTC] 0 
+[05-Aug-2019 21:27:17 UTC] 1 
+[05-Aug-2019 21:27:17 UTC] 2 
+[05-Aug-2019 21:27:17 UTC] 3 
+[05-Aug-2019 21:27:17 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015026000391191','35','1565040437000')
+[05-Aug-2019 21:27:17 UTC] You messed up! 
+[05-Aug-2019 21:27:17 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:27:17 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:27:55 UTC] 0 
+[05-Aug-2019 21:27:55 UTC] 1 
+[05-Aug-2019 21:27:55 UTC] 2 
+[05-Aug-2019 21:27:55 UTC] 3 
+[05-Aug-2019 21:27:55 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','353712099875588','0','1565040475000')
+[05-Aug-2019 21:27:55 UTC] You messed up! 
+[05-Aug-2019 21:27:55 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:27:55 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:35:19 UTC] 0 
+[05-Aug-2019 21:35:19 UTC] 1 
+[05-Aug-2019 21:35:19 UTC] 2 
+[05-Aug-2019 21:35:19 UTC] 3 
+[05-Aug-2019 21:35:19 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','353712099878830','17','1565040919000')
+[05-Aug-2019 21:35:19 UTC] You messed up! 
+[05-Aug-2019 21:35:19 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:35:19 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:42:46 UTC] 0 
+[05-Aug-2019 21:42:46 UTC] 1 
+[05-Aug-2019 21:42:46 UTC] 2 
+[05-Aug-2019 21:42:46 UTC] 3 
+[05-Aug-2019 21:42:46 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015026000391191','35','1565041366000')
+[05-Aug-2019 21:42:46 UTC] You messed up! 
+[05-Aug-2019 21:42:46 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:42:46 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:47:30 UTC] 0 
+[05-Aug-2019 21:47:30 UTC] 1 
+[05-Aug-2019 21:47:30 UTC] 2 
+[05-Aug-2019 21:47:30 UTC] 3 
+[05-Aug-2019 21:47:30 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','864237037938514','26','1565041650000')
+[05-Aug-2019 21:47:30 UTC] You messed up! 
+[05-Aug-2019 21:47:30 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:47:30 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:48:07 UTC] 0 
+[05-Aug-2019 21:48:07 UTC] 1 
+[05-Aug-2019 21:48:07 UTC] 2 
+[05-Aug-2019 21:48:07 UTC] 3 
+[05-Aug-2019 21:48:07 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','864237037938514','26','1565041687000')
+[05-Aug-2019 21:48:07 UTC] You messed up! 
+[05-Aug-2019 21:48:07 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:48:07 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:49:46 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 21:54:14 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/getGenerique.php on line 15
+[05-Aug-2019 21:54:14 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/getGenerique.php on line 15
+[05-Aug-2019 21:54:14 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/getVideos.php on line 22
+[05-Aug-2019 21:57:52 UTC] 0 
+[05-Aug-2019 21:57:52 UTC] 1 
+[05-Aug-2019 21:57:52 UTC] 2 
+[05-Aug-2019 21:57:52 UTC] 3 
+[05-Aug-2019 21:57:52 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015026000391191','35','1565042272000')
+[05-Aug-2019 21:57:52 UTC] You messed up! 
+[05-Aug-2019 21:57:52 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 21:57:52 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 22:13:17 UTC] 0 
+[05-Aug-2019 22:13:17 UTC] 1 
+[05-Aug-2019 22:13:17 UTC] 2 
+[05-Aug-2019 22:13:17 UTC] 3 
+[05-Aug-2019 22:13:17 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015026000391191','35','1565043197000')
+[05-Aug-2019 22:13:17 UTC] You messed up! 
+[05-Aug-2019 22:13:17 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 22:13:17 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 22:13:56 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:14:20 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:14:52 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:15:51 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:16:01 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:16:34 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:16:49 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:17:00 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:17:51 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:18:00 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:18:33 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:19:07 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:19:59 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:20:08 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:20:35 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:20:53 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:21:22 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:21:34 UTC] 0 
+[05-Aug-2019 22:21:34 UTC] 1 
+[05-Aug-2019 22:21:34 UTC] 2 
+[05-Aug-2019 22:21:34 UTC] 3 
+[05-Aug-2019 22:21:34 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','41','1565043694000')
+[05-Aug-2019 22:21:34 UTC] You messed up! 
+[05-Aug-2019 22:21:34 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 22:21:34 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 22:21:41 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:21:49 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:22:13 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:22:23 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:22:51 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:23:01 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:23:13 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:23:23 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:23:30 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:23:43 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:24:19 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:25:57 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:28:35 UTC] 0 
+[05-Aug-2019 22:28:35 UTC] 1 
+[05-Aug-2019 22:28:35 UTC] 2 
+[05-Aug-2019 22:28:35 UTC] 3 
+[05-Aug-2019 22:28:35 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015026000391191','35','1565044115000')
+[05-Aug-2019 22:28:35 UTC] You messed up! 
+[05-Aug-2019 22:28:35 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 22:28:35 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 22:31:39 UTC] 0 
+[05-Aug-2019 22:31:39 UTC] 1 
+[05-Aug-2019 22:31:39 UTC] 2 
+[05-Aug-2019 22:31:39 UTC] 3 
+[05-Aug-2019 22:31:39 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','353712099875588','0','1565044299000')
+[05-Aug-2019 22:31:39 UTC] You messed up! 
+[05-Aug-2019 22:31:39 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 22:31:39 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 22:31:46 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 22:35:51 UTC] 0 
+[05-Aug-2019 22:35:51 UTC] 1 
+[05-Aug-2019 22:35:51 UTC] 2 
+[05-Aug-2019 22:35:51 UTC] 3 
+[05-Aug-2019 22:35:51 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','353712099878830','17','1565044551000')
+[05-Aug-2019 22:35:51 UTC] You messed up! 
+[05-Aug-2019 22:35:51 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 22:35:51 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 22:43:43 UTC] 0 
+[05-Aug-2019 22:43:43 UTC] 1 
+[05-Aug-2019 22:43:43 UTC] 2 
+[05-Aug-2019 22:43:43 UTC] 3 
+[05-Aug-2019 22:43:43 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015026000391191','35','1565045023000')
+[05-Aug-2019 22:43:43 UTC] You messed up! 
+[05-Aug-2019 22:43:43 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 22:43:43 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 22:53:31 UTC] 0 
+[05-Aug-2019 22:53:31 UTC] 1 
+[05-Aug-2019 22:53:31 UTC] 2 
+[05-Aug-2019 22:53:31 UTC] 3 
+[05-Aug-2019 22:53:31 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','864237037938514','26','1565045611000')
+[05-Aug-2019 22:53:31 UTC] You messed up! 
+[05-Aug-2019 22:53:31 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 22:53:31 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 22:58:53 UTC] 0 
+[05-Aug-2019 22:58:53 UTC] 1 
+[05-Aug-2019 22:58:53 UTC] 2 
+[05-Aug-2019 22:58:53 UTC] 3 
+[05-Aug-2019 22:58:53 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015026000391191','35','1565045933000')
+[05-Aug-2019 22:58:53 UTC] You messed up! 
+[05-Aug-2019 22:58:53 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 22:58:53 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 23:04:06 UTC] 0 
+[05-Aug-2019 23:04:06 UTC] 1 
+[05-Aug-2019 23:04:06 UTC] 2 
+[05-Aug-2019 23:04:06 UTC] 3 
+[05-Aug-2019 23:04:06 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','864237037938514','26','1565046246000')
+[05-Aug-2019 23:04:06 UTC] You messed up! 
+[05-Aug-2019 23:04:06 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 23:04:06 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 23:09:52 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 23:14:38 UTC] 0 
+[05-Aug-2019 23:14:38 UTC] 1 
+[05-Aug-2019 23:14:38 UTC] 2 
+[05-Aug-2019 23:14:38 UTC] 3 
+[05-Aug-2019 23:14:38 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015026000391191','35','1565046878000')
+[05-Aug-2019 23:14:38 UTC] You messed up! 
+[05-Aug-2019 23:14:38 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 23:14:38 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 23:22:49 UTC] 0 
+[05-Aug-2019 23:22:49 UTC] 1 
+[05-Aug-2019 23:22:49 UTC] 2 
+[05-Aug-2019 23:22:49 UTC] 3 
+[05-Aug-2019 23:22:49 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','41','1565047369000')
+[05-Aug-2019 23:22:49 UTC] You messed up! 
+[05-Aug-2019 23:22:49 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 23:22:49 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/phpobjects/Sensor.php on line 30
+[05-Aug-2019 23:24:44 UTC] 0 
+[05-Aug-2019 23:24:44 UTC] 1 
+[05-Aug-2019 23:24:44 UTC] 2 
+[05-Aug-2019 23:24:44 UTC] 3 
+[05-Aug-2019 23:24:44 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','0','1565047484000')
+[05-Aug-2019 23:25:42 UTC] 0 
+[05-Aug-2019 23:25:42 UTC] 1 
+[05-Aug-2019 23:25:42 UTC] 2 
+[05-Aug-2019 23:25:42 UTC] 3 
+[05-Aug-2019 23:25:42 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','33','1565047542000')
+[05-Aug-2019 23:26:44 UTC] 0 
+[05-Aug-2019 23:26:44 UTC] 1 
+[05-Aug-2019 23:26:44 UTC] 2 
+[05-Aug-2019 23:26:44 UTC] 3 
+[05-Aug-2019 23:26:44 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','34','1565047604000')
+[05-Aug-2019 23:27:42 UTC] 0 
+[05-Aug-2019 23:27:42 UTC] 1 
+[05-Aug-2019 23:27:42 UTC] 2 
+[05-Aug-2019 23:27:42 UTC] 3 
+[05-Aug-2019 23:27:42 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','34','1565047662000')
+[05-Aug-2019 23:27:42 UTC] You messed up! 
+[05-Aug-2019 23:28:43 UTC] 0 
+[05-Aug-2019 23:28:43 UTC] 1 
+[05-Aug-2019 23:28:43 UTC] 2 
+[05-Aug-2019 23:28:43 UTC] 3 
+[05-Aug-2019 23:28:43 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','34','1565047723000')
+[05-Aug-2019 23:28:43 UTC] You messed up! 
+[05-Aug-2019 23:29:43 UTC] 0 
+[05-Aug-2019 23:29:43 UTC] 1 
+[05-Aug-2019 23:29:43 UTC] 2 
+[05-Aug-2019 23:29:43 UTC] 3 
+[05-Aug-2019 23:29:43 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','34','1565047783000')
+[05-Aug-2019 23:29:43 UTC] You messed up! 
+[05-Aug-2019 23:29:48 UTC] 0 
+[05-Aug-2019 23:29:48 UTC] 1 
+[05-Aug-2019 23:29:48 UTC] 2 
+[05-Aug-2019 23:29:48 UTC] 3 
+[05-Aug-2019 23:29:48 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015026000391191','35','1565047788000')
+[05-Aug-2019 23:29:48 UTC] You messed up! 
+[05-Aug-2019 23:30:43 UTC] 0 
+[05-Aug-2019 23:30:43 UTC] 1 
+[05-Aug-2019 23:30:43 UTC] 2 
+[05-Aug-2019 23:30:43 UTC] 3 
+[05-Aug-2019 23:30:43 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','34','1565047843000')
+[05-Aug-2019 23:30:43 UTC] You messed up! 
+[05-Aug-2019 23:31:43 UTC] 0 
+[05-Aug-2019 23:31:43 UTC] 1 
+[05-Aug-2019 23:31:43 UTC] 2 
+[05-Aug-2019 23:31:43 UTC] 3 
+[05-Aug-2019 23:31:43 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','35','1565047903000')
+[05-Aug-2019 23:31:43 UTC] You messed up! 
+[05-Aug-2019 23:32:25 UTC] 0 
+[05-Aug-2019 23:32:25 UTC] 1 
+[05-Aug-2019 23:32:25 UTC] 2 
+[05-Aug-2019 23:32:25 UTC] 3 
+[05-Aug-2019 23:32:25 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','353712099875588','0','1565047945000')
+[05-Aug-2019 23:32:25 UTC] You messed up! 
+[05-Aug-2019 23:32:44 UTC] 0 
+[05-Aug-2019 23:32:44 UTC] 1 
+[05-Aug-2019 23:32:44 UTC] 2 
+[05-Aug-2019 23:32:44 UTC] 3 
+[05-Aug-2019 23:32:44 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','35','1565047964000')
+[05-Aug-2019 23:32:44 UTC] You messed up! 
+[05-Aug-2019 23:33:44 UTC] 0 
+[05-Aug-2019 23:33:44 UTC] 1 
+[05-Aug-2019 23:33:44 UTC] 2 
+[05-Aug-2019 23:33:44 UTC] 3 
+[05-Aug-2019 23:33:44 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','35','1565048024000')
+[05-Aug-2019 23:33:44 UTC] You messed up! 
+[05-Aug-2019 23:34:44 UTC] 0 
+[05-Aug-2019 23:34:44 UTC] 1 
+[05-Aug-2019 23:34:44 UTC] 2 
+[05-Aug-2019 23:34:44 UTC] 3 
+[05-Aug-2019 23:34:44 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','36','1565048084000')
+[05-Aug-2019 23:34:44 UTC] You messed up! 
+[05-Aug-2019 23:35:30 UTC] 0 
+[05-Aug-2019 23:35:30 UTC] 1 
+[05-Aug-2019 23:35:30 UTC] 2 
+[05-Aug-2019 23:35:30 UTC] 3 
+[05-Aug-2019 23:35:30 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','864237037938514','26','1565048130000')
+[05-Aug-2019 23:35:30 UTC] You messed up! 
+[05-Aug-2019 23:35:44 UTC] 0 
+[05-Aug-2019 23:35:44 UTC] 1 
+[05-Aug-2019 23:35:44 UTC] 2 
+[05-Aug-2019 23:35:44 UTC] 3 
+[05-Aug-2019 23:35:44 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','36','1565048144000')
+[05-Aug-2019 23:35:44 UTC] You messed up! 
+[05-Aug-2019 23:36:04 UTC] 0 
+[05-Aug-2019 23:36:04 UTC] 1 
+[05-Aug-2019 23:36:04 UTC] 2 
+[05-Aug-2019 23:36:04 UTC] 3 
+[05-Aug-2019 23:36:04 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','864237037938514','26','1565048164000')
+[05-Aug-2019 23:36:04 UTC] You messed up! 
+[05-Aug-2019 23:36:18 UTC] 0 
+[05-Aug-2019 23:36:18 UTC] 1 
+[05-Aug-2019 23:36:18 UTC] 2 
+[05-Aug-2019 23:36:18 UTC] 3 
+[05-Aug-2019 23:36:18 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','353712099878830','17','1565048178000')
+[05-Aug-2019 23:36:18 UTC] You messed up! 
+[05-Aug-2019 23:36:44 UTC] 0 
+[05-Aug-2019 23:36:44 UTC] 1 
+[05-Aug-2019 23:36:44 UTC] 2 
+[05-Aug-2019 23:36:44 UTC] 3 
+[05-Aug-2019 23:36:44 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','36','1565048204000')
+[05-Aug-2019 23:36:44 UTC] You messed up! 
+[05-Aug-2019 23:36:59 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/listeEquipes.php on line 31
+[05-Aug-2019 23:37:44 UTC] 0 
+[05-Aug-2019 23:37:44 UTC] 1 
+[05-Aug-2019 23:37:44 UTC] 2 
+[05-Aug-2019 23:37:44 UTC] 3 
+[05-Aug-2019 23:37:44 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','36','1565048264000')
+[05-Aug-2019 23:37:44 UTC] You messed up! 
+[05-Aug-2019 23:38:45 UTC] 0 
+[05-Aug-2019 23:38:45 UTC] 1 
+[05-Aug-2019 23:38:45 UTC] 2 
+[05-Aug-2019 23:38:45 UTC] 3 
+[05-Aug-2019 23:38:45 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','36','1565048325000')
+[05-Aug-2019 23:39:45 UTC] 0 
+[05-Aug-2019 23:39:45 UTC] 1 
+[05-Aug-2019 23:39:45 UTC] 2 
+[05-Aug-2019 23:39:45 UTC] 3 
+[05-Aug-2019 23:39:45 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','37','1565048385000')
+[05-Aug-2019 23:40:43 UTC] 0 
+[05-Aug-2019 23:40:43 UTC] 1 
+[05-Aug-2019 23:40:43 UTC] 2 
+[05-Aug-2019 23:40:43 UTC] 3 
+[05-Aug-2019 23:40:43 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','37','1565048443000')
+[05-Aug-2019 23:41:45 UTC] 0 
+[05-Aug-2019 23:41:45 UTC] 1 
+[05-Aug-2019 23:41:45 UTC] 2 
+[05-Aug-2019 23:41:45 UTC] 3 
+[05-Aug-2019 23:41:45 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','37','1565048505000')
+[05-Aug-2019 23:42:43 UTC] 0 
+[05-Aug-2019 23:42:43 UTC] 1 
+[05-Aug-2019 23:42:43 UTC] 2 
+[05-Aug-2019 23:42:43 UTC] 3 
+[05-Aug-2019 23:42:43 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','37','1565048563000')
+[05-Aug-2019 23:43:45 UTC] 0 
+[05-Aug-2019 23:43:45 UTC] 1 
+[05-Aug-2019 23:43:45 UTC] 2 
+[05-Aug-2019 23:43:45 UTC] 3 
+[05-Aug-2019 23:43:45 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','37','1565048625000')
+[05-Aug-2019 23:44:45 UTC] 0 
+[05-Aug-2019 23:44:45 UTC] 1 
+[05-Aug-2019 23:44:45 UTC] 2 
+[05-Aug-2019 23:44:45 UTC] 3 
+[05-Aug-2019 23:44:45 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','38','1565048685000')
+[05-Aug-2019 23:44:57 UTC] 0 
+[05-Aug-2019 23:44:57 UTC] 1 
+[05-Aug-2019 23:44:57 UTC] 2 
+[05-Aug-2019 23:44:57 UTC] 3 
+[05-Aug-2019 23:44:57 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015026000391191','35','1565048697000')
+[05-Aug-2019 23:45:43 UTC] 0 
+[05-Aug-2019 23:45:43 UTC] 1 
+[05-Aug-2019 23:45:43 UTC] 2 
+[05-Aug-2019 23:45:43 UTC] 3 
+[05-Aug-2019 23:45:43 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','37','1565048743000')
+[05-Aug-2019 23:46:45 UTC] 0 
+[05-Aug-2019 23:46:45 UTC] 1 
+[05-Aug-2019 23:46:45 UTC] 2 
+[05-Aug-2019 23:46:45 UTC] 3 
+[05-Aug-2019 23:46:45 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','38','1565048805000')
+[05-Aug-2019 23:47:45 UTC] 0 
+[05-Aug-2019 23:47:45 UTC] 1 
+[05-Aug-2019 23:47:45 UTC] 2 
+[05-Aug-2019 23:47:45 UTC] 3 
+[05-Aug-2019 23:47:45 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','38','1565048865000')
+[05-Aug-2019 23:48:45 UTC] 0 
+[05-Aug-2019 23:48:45 UTC] 1 
+[05-Aug-2019 23:48:45 UTC] 2 
+[05-Aug-2019 23:48:45 UTC] 3 
+[05-Aug-2019 23:48:45 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','38','1565048925000')
+[05-Aug-2019 23:49:45 UTC] 0 
+[05-Aug-2019 23:49:45 UTC] 1 
+[05-Aug-2019 23:49:45 UTC] 2 
+[05-Aug-2019 23:49:45 UTC] 3 
+[05-Aug-2019 23:49:45 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','38','1565048985000')
+[05-Aug-2019 23:50:45 UTC] 0 
+[05-Aug-2019 23:50:45 UTC] 1 
+[05-Aug-2019 23:50:45 UTC] 2 
+[05-Aug-2019 23:50:45 UTC] 3 
+[05-Aug-2019 23:50:45 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','38','1565049045000')
+[05-Aug-2019 23:50:45 UTC] You messed not by much
+[05-Aug-2019 23:51:45 UTC] 0 
+[05-Aug-2019 23:51:45 UTC] 1 
+[05-Aug-2019 23:51:45 UTC] 2 
+[05-Aug-2019 23:51:45 UTC] 3 
+[05-Aug-2019 23:51:45 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','38','1565049105000')
+[05-Aug-2019 23:51:45 UTC] You messed not by much
+[05-Aug-2019 23:52:45 UTC] 0 
+[05-Aug-2019 23:52:45 UTC] 1 
+[05-Aug-2019 23:52:45 UTC] 2 
+[05-Aug-2019 23:52:45 UTC] 3 
+[05-Aug-2019 23:52:45 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','38','1565049165000')
+[05-Aug-2019 23:52:45 UTC] You messed not by much
+[05-Aug-2019 23:53:45 UTC] 0 
+[05-Aug-2019 23:53:45 UTC] 1 
+[05-Aug-2019 23:53:45 UTC] 2 
+[05-Aug-2019 23:53:45 UTC] 3 
+[05-Aug-2019 23:53:45 UTC] You messed up! INSERT INTO SensorLog (sensorType, telId,value,chrono) VALUES ('1','015295002466778','38','1565049225000')
+[05-Aug-2019 23:53:45 UTC] You messed not by much
+[05-Aug-2019 23:54:46 UTC] 0 
+[05-Aug-2019 23:54:46 UTC] 1 
+[05-Aug-2019 23:54:46 UTC] 2 
+[05-Aug-2019 23:54:46 UTC] 3 
+[05-Aug-2019 23:54:46 UTC] retVal 1
+[05-Aug-2019 23:54:46 UTC] succes dump log?
+[05-Aug-2019 23:55:46 UTC] 0 
+[05-Aug-2019 23:55:46 UTC] 1 
+[05-Aug-2019 23:55:46 UTC] 2 
+[05-Aug-2019 23:55:46 UTC] 3 
+[05-Aug-2019 23:55:46 UTC] retVal 1
+[05-Aug-2019 23:55:46 UTC] succes dump log?
+[05-Aug-2019 23:56:46 UTC] 0 
+[05-Aug-2019 23:56:46 UTC] 1 
+[05-Aug-2019 23:56:46 UTC] 2 
+[05-Aug-2019 23:56:46 UTC] 3 
+[05-Aug-2019 23:56:46 UTC] retVal 1
+[05-Aug-2019 23:56:46 UTC] succes dump log?
+[05-Aug-2019 23:57:45 UTC] 0 
+[05-Aug-2019 23:57:45 UTC] 1 
+[05-Aug-2019 23:57:45 UTC] 2 
+[05-Aug-2019 23:57:45 UTC] 3 
+[05-Aug-2019 23:57:45 UTC] retVal 1
+[05-Aug-2019 23:57:45 UTC] succes dump log?
+[05-Aug-2019 23:58:46 UTC] 0 
+[05-Aug-2019 23:58:46 UTC] 1 
+[05-Aug-2019 23:58:46 UTC] 2 
+[05-Aug-2019 23:58:46 UTC] 3 
+[05-Aug-2019 23:58:46 UTC] retVal 1
+[05-Aug-2019 23:58:46 UTC] succes dump log?
+[05-Aug-2019 23:59:46 UTC] 0 
+[05-Aug-2019 23:59:46 UTC] 1 
+[05-Aug-2019 23:59:46 UTC] 2 
+[05-Aug-2019 23:59:46 UTC] 3 
+[05-Aug-2019 23:59:46 UTC] retVal 1
+[05-Aug-2019 23:59:46 UTC] succes dump log?
+[06-Aug-2019 00:00:13 UTC] 0 
+[06-Aug-2019 00:00:13 UTC] 1 
+[06-Aug-2019 00:00:13 UTC] 2 
+[06-Aug-2019 00:00:13 UTC] 3 
+[06-Aug-2019 00:00:13 UTC] retVal 1
+[06-Aug-2019 00:00:13 UTC] succes dump log?
+[06-Aug-2019 00:00:46 UTC] 0 
+[06-Aug-2019 00:00:46 UTC] 1 
+[06-Aug-2019 00:00:46 UTC] 2 
+[06-Aug-2019 00:00:46 UTC] 3 
+[06-Aug-2019 00:00:46 UTC] retVal 1
+[06-Aug-2019 00:00:46 UTC] succes dump log?
+[06-Aug-2019 00:01:44 UTC] 0 
+[06-Aug-2019 00:01:44 UTC] 1 
+[06-Aug-2019 00:01:44 UTC] 2 
+[06-Aug-2019 00:01:44 UTC] 3 
+[06-Aug-2019 00:01:44 UTC] retVal 1
+[06-Aug-2019 00:01:44 UTC] succes dump log?
+[06-Aug-2019 00:02:46 UTC] 0 
+[06-Aug-2019 00:02:46 UTC] 1 
+[06-Aug-2019 00:02:46 UTC] 2 
+[06-Aug-2019 00:02:46 UTC] 3 
+[06-Aug-2019 00:02:46 UTC] retVal 1
+[06-Aug-2019 00:02:46 UTC] succes dump log?
+[06-Aug-2019 00:03:28 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/incrementeVidNbVues.php on line 17
+[06-Aug-2019 00:03:44 UTC] 0 
+[06-Aug-2019 00:03:44 UTC] 1 
+[06-Aug-2019 00:03:44 UTC] 2 
+[06-Aug-2019 00:03:44 UTC] 3 
+[06-Aug-2019 00:03:44 UTC] retVal 1
+[06-Aug-2019 00:03:44 UTC] succes dump log?
+[06-Aug-2019 00:04:46 UTC] 0 
+[06-Aug-2019 00:04:46 UTC] 1 
+[06-Aug-2019 00:04:46 UTC] 2 
+[06-Aug-2019 00:04:46 UTC] 3 
+[06-Aug-2019 00:04:46 UTC] retVal 1
+[06-Aug-2019 00:04:46 UTC] succes dump log?
+[06-Aug-2019 00:05:46 UTC] 0 
+[06-Aug-2019 00:05:46 UTC] 1 
+[06-Aug-2019 00:05:46 UTC] 2 
+[06-Aug-2019 00:05:46 UTC] 3 
+[06-Aug-2019 00:05:46 UTC] retVal 1
+[06-Aug-2019 00:05:46 UTC] succes dump log?
+[06-Aug-2019 00:06:44 UTC] 0 
+[06-Aug-2019 00:06:44 UTC] 1 
+[06-Aug-2019 00:06:44 UTC] 2 
+[06-Aug-2019 00:06:44 UTC] 3 
+[06-Aug-2019 00:06:44 UTC] retVal 1
+[06-Aug-2019 00:06:44 UTC] succes dump log?
+[06-Aug-2019 00:07:46 UTC] 0 
+[06-Aug-2019 00:07:46 UTC] 1 
+[06-Aug-2019 00:07:46 UTC] 2 
+[06-Aug-2019 00:07:46 UTC] 3 
+[06-Aug-2019 00:07:46 UTC] retVal 1
+[06-Aug-2019 00:07:46 UTC] succes dump log?
+[06-Aug-2019 00:08:46 UTC] 0 
+[06-Aug-2019 00:08:46 UTC] 1 
+[06-Aug-2019 00:08:46 UTC] 2 
+[06-Aug-2019 00:08:46 UTC] 3 
+[06-Aug-2019 00:08:46 UTC] retVal 1
+[06-Aug-2019 00:08:46 UTC] succes dump log?
+[06-Aug-2019 00:09:46 UTC] 0 
+[06-Aug-2019 00:09:46 UTC] 1 
+[06-Aug-2019 00:09:46 UTC] 2 
+[06-Aug-2019 00:09:46 UTC] 3 
+[06-Aug-2019 00:09:46 UTC] retVal 1
+[06-Aug-2019 00:09:46 UTC] succes dump log?
+[06-Aug-2019 00:10:46 UTC] 0 
+[06-Aug-2019 00:10:46 UTC] 1 
+[06-Aug-2019 00:10:46 UTC] 2 
+[06-Aug-2019 00:10:46 UTC] 3 
+[06-Aug-2019 00:10:46 UTC] retVal 1
+[06-Aug-2019 00:10:46 UTC] succes dump log?
+[06-Aug-2019 00:11:46 UTC] 0 
+[06-Aug-2019 00:11:46 UTC] 1 
+[06-Aug-2019 00:11:46 UTC] 2 
+[06-Aug-2019 00:11:46 UTC] 3 
+[06-Aug-2019 00:11:46 UTC] retVal 1
+[06-Aug-2019 00:11:46 UTC] succes dump log?
+[06-Aug-2019 00:12:46 UTC] 0 
+[06-Aug-2019 00:12:46 UTC] 1 
+[06-Aug-2019 00:12:46 UTC] 2 
+[06-Aug-2019 00:12:46 UTC] 3 
+[06-Aug-2019 00:12:46 UTC] retVal 1
+[06-Aug-2019 00:12:46 UTC] succes dump log?
+[06-Aug-2019 00:13:46 UTC] 0 
+[06-Aug-2019 00:13:46 UTC] 1 
+[06-Aug-2019 00:13:46 UTC] 2 
+[06-Aug-2019 00:13:46 UTC] 3 
+[06-Aug-2019 00:13:46 UTC] retVal 1
+[06-Aug-2019 00:13:46 UTC] succes dump log?
+[06-Aug-2019 00:14:47 UTC] 0 
+[06-Aug-2019 00:14:47 UTC] 1 
+[06-Aug-2019 00:14:47 UTC] 2 
+[06-Aug-2019 00:14:47 UTC] 3 
+[06-Aug-2019 00:14:47 UTC] retVal 1
+[06-Aug-2019 00:14:47 UTC] succes dump log?
+[06-Aug-2019 00:15:41 UTC] 0 
+[06-Aug-2019 00:15:41 UTC] 1 
+[06-Aug-2019 00:15:41 UTC] 2 
+[06-Aug-2019 00:15:41 UTC] 3 
+[06-Aug-2019 00:15:41 UTC] retVal 1
+[06-Aug-2019 00:15:41 UTC] succes dump log?
+[06-Aug-2019 00:15:47 UTC] 0 
+[06-Aug-2019 00:15:47 UTC] 1 
+[06-Aug-2019 00:15:47 UTC] 2 
+[06-Aug-2019 00:15:47 UTC] 3 
+[06-Aug-2019 00:15:47 UTC] retVal 1
+[06-Aug-2019 00:15:47 UTC] succes dump log?
+[06-Aug-2019 00:16:47 UTC] 0 
+[06-Aug-2019 00:16:47 UTC] 1 
+[06-Aug-2019 00:16:47 UTC] 2 
+[06-Aug-2019 00:16:47 UTC] 3 
+[06-Aug-2019 00:16:47 UTC] retVal 1
+[06-Aug-2019 00:16:47 UTC] succes dump log?
+[06-Aug-2019 00:17:45 UTC] 0 
+[06-Aug-2019 00:17:45 UTC] 1 
+[06-Aug-2019 00:17:45 UTC] 2 
+[06-Aug-2019 00:17:45 UTC] 3 
+[06-Aug-2019 00:17:45 UTC] retVal 1
+[06-Aug-2019 00:17:45 UTC] succes dump log?
+[06-Aug-2019 00:18:47 UTC] 0 
+[06-Aug-2019 00:18:47 UTC] 1 
+[06-Aug-2019 00:18:47 UTC] 2 
+[06-Aug-2019 00:18:47 UTC] 3 
+[06-Aug-2019 00:18:47 UTC] retVal 1
+[06-Aug-2019 00:18:47 UTC] succes dump log?
+[06-Aug-2019 00:19:47 UTC] 0 
+[06-Aug-2019 00:19:47 UTC] 1 
+[06-Aug-2019 00:19:47 UTC] 2 
+[06-Aug-2019 00:19:47 UTC] 3 
+[06-Aug-2019 00:19:47 UTC] retVal 1
+[06-Aug-2019 00:19:47 UTC] succes dump log?
+[06-Aug-2019 00:20:45 UTC] 0 
+[06-Aug-2019 00:20:45 UTC] 1 
+[06-Aug-2019 00:20:45 UTC] 2 
+[06-Aug-2019 00:20:45 UTC] 3 
+[06-Aug-2019 00:20:45 UTC] retVal 1
+[06-Aug-2019 00:20:45 UTC] succes dump log?
+[06-Aug-2019 00:21:47 UTC] 0 
+[06-Aug-2019 00:21:47 UTC] 1 
+[06-Aug-2019 00:21:47 UTC] 2 
+[06-Aug-2019 00:21:47 UTC] 3 
+[06-Aug-2019 00:21:47 UTC] retVal 1
+[06-Aug-2019 00:21:47 UTC] succes dump log?
+[06-Aug-2019 00:22:47 UTC] 0 
+[06-Aug-2019 00:22:47 UTC] 1 
+[06-Aug-2019 00:22:47 UTC] 2 
+[06-Aug-2019 00:22:47 UTC] 3 
+[06-Aug-2019 00:22:47 UTC] retVal 1
+[06-Aug-2019 00:22:47 UTC] succes dump log?
+[06-Aug-2019 00:23:47 UTC] 0 
+[06-Aug-2019 00:23:47 UTC] 1 
+[06-Aug-2019 00:23:47 UTC] 2 
+[06-Aug-2019 00:23:47 UTC] 3 
+[06-Aug-2019 00:23:47 UTC] retVal 1
+[06-Aug-2019 00:23:47 UTC] succes dump log?
+[06-Aug-2019 00:23:54 UTC] 0 
+[06-Aug-2019 00:23:54 UTC] 1 
+[06-Aug-2019 00:23:54 UTC] 2 
+[06-Aug-2019 00:23:54 UTC] 3 
+[06-Aug-2019 00:23:54 UTC] retVal 1
+[06-Aug-2019 00:23:54 UTC] succes dump log?
+[06-Aug-2019 00:24:45 UTC] 0 
+[06-Aug-2019 00:24:45 UTC] 1 
+[06-Aug-2019 00:24:45 UTC] 2 
+[06-Aug-2019 00:24:45 UTC] 3 
+[06-Aug-2019 00:24:45 UTC] retVal 1
+[06-Aug-2019 00:24:45 UTC] succes dump log?
+[06-Aug-2019 00:26:24 UTC] 0 
+[06-Aug-2019 00:26:24 UTC] 1 
+[06-Aug-2019 00:26:24 UTC] 2 
+[06-Aug-2019 00:26:24 UTC] 3 
+[06-Aug-2019 00:26:24 UTC] retVal 1
+[06-Aug-2019 00:26:24 UTC] succes dump log?
+[06-Aug-2019 00:26:48 UTC] 0 
+[06-Aug-2019 00:26:48 UTC] 1 
+[06-Aug-2019 00:26:48 UTC] 2 
+[06-Aug-2019 00:26:48 UTC] 3 
+[06-Aug-2019 00:26:48 UTC] retVal 1
+[06-Aug-2019 00:26:48 UTC] succes dump log?
+[06-Aug-2019 00:27:47 UTC] 0 
+[06-Aug-2019 00:27:47 UTC] 1 
+[06-Aug-2019 00:27:47 UTC] 2 
+[06-Aug-2019 00:27:47 UTC] 3 
+[06-Aug-2019 00:27:47 UTC] retVal 1
+[06-Aug-2019 00:27:47 UTC] succes dump log?
+[06-Aug-2019 00:28:47 UTC] 0 
+[06-Aug-2019 00:28:47 UTC] 1 
+[06-Aug-2019 00:28:47 UTC] 2 
+[06-Aug-2019 00:28:47 UTC] 3 
+[06-Aug-2019 00:28:47 UTC] retVal 1
+[06-Aug-2019 00:28:47 UTC] succes dump log?
+[06-Aug-2019 00:29:30 UTC] 0 
+[06-Aug-2019 00:29:30 UTC] 1 
+[06-Aug-2019 00:29:30 UTC] 2 
+[06-Aug-2019 00:29:30 UTC] 3 
+[06-Aug-2019 00:29:30 UTC] retVal 1
+[06-Aug-2019 00:29:30 UTC] succes dump log?
+[06-Aug-2019 00:29:48 UTC] 0 
+[06-Aug-2019 00:29:48 UTC] 1 
+[06-Aug-2019 00:29:48 UTC] 2 
+[06-Aug-2019 00:29:48 UTC] 3 
+[06-Aug-2019 00:29:48 UTC] retVal 1
+[06-Aug-2019 00:29:48 UTC] succes dump log?
+[06-Aug-2019 00:30:04 UTC] 0 
+[06-Aug-2019 00:30:04 UTC] 1 
+[06-Aug-2019 00:30:04 UTC] 2 
+[06-Aug-2019 00:30:04 UTC] 3 
+[06-Aug-2019 00:30:04 UTC] retVal 1
+[06-Aug-2019 00:30:04 UTC] succes dump log?
+[06-Aug-2019 00:30:48 UTC] 0 
+[06-Aug-2019 00:30:48 UTC] 1 
+[06-Aug-2019 00:30:48 UTC] 2 
+[06-Aug-2019 00:30:48 UTC] 3 
+[06-Aug-2019 00:30:48 UTC] retVal 1
+[06-Aug-2019 00:30:48 UTC] succes dump log?
+[06-Aug-2019 00:31:48 UTC] 0 
+[06-Aug-2019 00:31:48 UTC] 1 
+[06-Aug-2019 00:31:48 UTC] 2 
+[06-Aug-2019 00:31:48 UTC] 3 
+[06-Aug-2019 00:31:48 UTC] retVal 1
+[06-Aug-2019 00:31:48 UTC] succes dump log?
+[06-Aug-2019 00:32:48 UTC] 0 
+[06-Aug-2019 00:32:48 UTC] 1 
+[06-Aug-2019 00:32:48 UTC] 2 
+[06-Aug-2019 00:32:48 UTC] 3 
+[06-Aug-2019 00:32:48 UTC] retVal 1
+[06-Aug-2019 00:32:48 UTC] succes dump log?
+[06-Aug-2019 00:33:48 UTC] 0 
+[06-Aug-2019 00:33:48 UTC] 1 
+[06-Aug-2019 00:33:48 UTC] 2 
+[06-Aug-2019 00:33:48 UTC] 3 
+[06-Aug-2019 00:33:48 UTC] retVal 1
+[06-Aug-2019 00:33:48 UTC] succes dump log?
+[06-Aug-2019 00:34:58 UTC] 0 
+[06-Aug-2019 00:34:58 UTC] 1 
+[06-Aug-2019 00:34:58 UTC] 2 
+[06-Aug-2019 00:34:58 UTC] 3 
+[06-Aug-2019 00:34:58 UTC] retVal 1
+[06-Aug-2019 00:34:58 UTC] succes dump log?
+[06-Aug-2019 00:35:46 UTC] 0 
+[06-Aug-2019 00:35:46 UTC] 1 
+[06-Aug-2019 00:35:46 UTC] 2 
+[06-Aug-2019 00:35:46 UTC] 3 
+[06-Aug-2019 00:35:46 UTC] retVal 1
+[06-Aug-2019 00:35:46 UTC] succes dump log?
+[06-Aug-2019 00:35:50 UTC] 0 
+[06-Aug-2019 00:35:50 UTC] 1 
+[06-Aug-2019 00:35:50 UTC] 2 
+[06-Aug-2019 00:35:50 UTC] 3 
+[06-Aug-2019 00:35:50 UTC] retVal 1
+[06-Aug-2019 00:35:50 UTC] succes dump log?
+[06-Aug-2019 00:36:36 UTC] 0 
+[06-Aug-2019 00:36:36 UTC] 1 
+[06-Aug-2019 00:36:36 UTC] 2 
+[06-Aug-2019 00:36:36 UTC] 3 
+[06-Aug-2019 00:36:36 UTC] retVal 1
+[06-Aug-2019 00:36:36 UTC] succes dump log?
+[06-Aug-2019 00:36:48 UTC] 0 
+[06-Aug-2019 00:36:48 UTC] 1 
+[06-Aug-2019 00:36:48 UTC] 2 
+[06-Aug-2019 00:36:48 UTC] 3 
+[06-Aug-2019 00:36:48 UTC] retVal 1
+[06-Aug-2019 00:36:48 UTC] succes dump log?
+[06-Aug-2019 00:36:54 UTC] 0 
+[06-Aug-2019 00:36:54 UTC] 1 
+[06-Aug-2019 00:36:54 UTC] 2 
+[06-Aug-2019 00:36:54 UTC] 3 
+[06-Aug-2019 00:36:54 UTC] retVal 1
+[06-Aug-2019 00:36:54 UTC] succes dump log?
+[06-Aug-2019 00:37:48 UTC] 0 
+[06-Aug-2019 00:37:48 UTC] 1 
+[06-Aug-2019 00:37:48 UTC] 2 
+[06-Aug-2019 00:37:48 UTC] 3 
+[06-Aug-2019 00:37:48 UTC] retVal 1
+[06-Aug-2019 00:37:48 UTC] succes dump log?
+[06-Aug-2019 00:39:48 UTC] 0 
+[06-Aug-2019 00:39:48 UTC] 1 
+[06-Aug-2019 00:39:48 UTC] 2 
+[06-Aug-2019 00:39:48 UTC] 3 
+[06-Aug-2019 00:39:48 UTC] retVal 1
+[06-Aug-2019 00:39:48 UTC] succes dump log?
+[06-Aug-2019 00:40:48 UTC] 0 
+[06-Aug-2019 00:40:48 UTC] 1 
+[06-Aug-2019 00:40:48 UTC] 2 
+[06-Aug-2019 00:40:48 UTC] 3 
+[06-Aug-2019 00:40:48 UTC] retVal 1
+[06-Aug-2019 00:40:48 UTC] succes dump log?
+[06-Aug-2019 00:41:48 UTC] 0 
+[06-Aug-2019 00:41:48 UTC] 1 
+[06-Aug-2019 00:41:48 UTC] 2 
+[06-Aug-2019 00:41:48 UTC] 3 
+[06-Aug-2019 00:41:48 UTC] retVal 1
+[06-Aug-2019 00:41:48 UTC] succes dump log?
+[06-Aug-2019 00:42:47 UTC] 0 
+[06-Aug-2019 00:42:47 UTC] 1 
+[06-Aug-2019 00:42:47 UTC] 2 
+[06-Aug-2019 00:42:47 UTC] 3 
+[06-Aug-2019 00:42:47 UTC] retVal 1
+[06-Aug-2019 00:42:47 UTC] succes dump log?
+[06-Aug-2019 00:43:49 UTC] 0 
+[06-Aug-2019 00:43:49 UTC] 1 
+[06-Aug-2019 00:43:49 UTC] 2 
+[06-Aug-2019 00:43:49 UTC] 3 
+[06-Aug-2019 00:43:49 UTC] retVal 1
+[06-Aug-2019 00:43:49 UTC] succes dump log?
+[06-Aug-2019 00:44:49 UTC] 0 
+[06-Aug-2019 00:44:49 UTC] 1 
+[06-Aug-2019 00:44:49 UTC] 2 
+[06-Aug-2019 00:44:49 UTC] 3 
+[06-Aug-2019 00:44:49 UTC] retVal 1
+[06-Aug-2019 00:44:49 UTC] succes dump log?
+[06-Aug-2019 00:45:47 UTC] 0 
+[06-Aug-2019 00:45:47 UTC] 1 
+[06-Aug-2019 00:45:47 UTC] 2 
+[06-Aug-2019 00:45:47 UTC] 3 
+[06-Aug-2019 00:45:47 UTC] retVal 1
+[06-Aug-2019 00:45:47 UTC] succes dump log?
+[06-Aug-2019 00:46:49 UTC] 0 
+[06-Aug-2019 00:46:49 UTC] 1 
+[06-Aug-2019 00:46:49 UTC] 2 
+[06-Aug-2019 00:46:49 UTC] 3 
+[06-Aug-2019 00:46:49 UTC] retVal 1
+[06-Aug-2019 00:46:49 UTC] succes dump log?
+[06-Aug-2019 00:47:49 UTC] 0 
+[06-Aug-2019 00:47:49 UTC] 1 
+[06-Aug-2019 00:47:49 UTC] 2 
+[06-Aug-2019 00:47:49 UTC] 3 
+[06-Aug-2019 00:47:49 UTC] retVal 1
+[06-Aug-2019 00:47:49 UTC] succes dump log?
+[06-Aug-2019 00:48:50 UTC] 0 
+[06-Aug-2019 00:48:50 UTC] 1 
+[06-Aug-2019 00:48:50 UTC] 2 
+[06-Aug-2019 00:48:50 UTC] 3 
+[06-Aug-2019 00:48:50 UTC] retVal 1
+[06-Aug-2019 00:48:50 UTC] succes dump log?
+[06-Aug-2019 00:49:49 UTC] 0 
+[06-Aug-2019 00:49:49 UTC] 1 
+[06-Aug-2019 00:49:49 UTC] 2 
+[06-Aug-2019 00:49:49 UTC] 3 
+[06-Aug-2019 00:49:49 UTC] retVal 1
+[06-Aug-2019 00:49:49 UTC] succes dump log?
+[06-Aug-2019 00:50:47 UTC] 0 
+[06-Aug-2019 00:50:47 UTC] 1 
+[06-Aug-2019 00:50:47 UTC] 2 
+[06-Aug-2019 00:50:47 UTC] 3 
+[06-Aug-2019 00:50:47 UTC] retVal 1
+[06-Aug-2019 00:50:47 UTC] succes dump log?
+[06-Aug-2019 00:51:49 UTC] 0 
+[06-Aug-2019 00:51:49 UTC] 1 
+[06-Aug-2019 00:51:49 UTC] 2 
+[06-Aug-2019 00:51:49 UTC] 3 
+[06-Aug-2019 00:51:49 UTC] retVal 1
+[06-Aug-2019 00:51:49 UTC] succes dump log?
+[06-Aug-2019 00:52:48 UTC] 0 
+[06-Aug-2019 00:52:48 UTC] 1 
+[06-Aug-2019 00:52:48 UTC] 2 
+[06-Aug-2019 00:52:48 UTC] 3 
+[06-Aug-2019 00:52:48 UTC] retVal 1
+[06-Aug-2019 00:52:48 UTC] succes dump log?
+[06-Aug-2019 00:53:49 UTC] 0 
+[06-Aug-2019 00:53:49 UTC] 1 
+[06-Aug-2019 00:53:49 UTC] 2 
+[06-Aug-2019 00:53:49 UTC] 3 
+[06-Aug-2019 00:53:49 UTC] retVal 1
+[06-Aug-2019 00:53:49 UTC] succes dump log?
+[06-Aug-2019 00:54:49 UTC] 0 
+[06-Aug-2019 00:54:49 UTC] 1 
+[06-Aug-2019 00:54:49 UTC] 2 
+[06-Aug-2019 00:54:49 UTC] 3 
+[06-Aug-2019 00:54:49 UTC] retVal 1
+[06-Aug-2019 00:54:49 UTC] succes dump log?
+[06-Aug-2019 00:55:05 UTC] 0 
+[06-Aug-2019 00:55:05 UTC] 1 
+[06-Aug-2019 00:55:05 UTC] 2 
+[06-Aug-2019 00:55:05 UTC] 3 
+[06-Aug-2019 00:55:05 UTC] retVal 1
+[06-Aug-2019 00:55:05 UTC] succes dump log?
+[06-Aug-2019 00:55:50 UTC] 0 
+[06-Aug-2019 00:55:50 UTC] 1 
+[06-Aug-2019 00:55:50 UTC] 2 
+[06-Aug-2019 00:55:50 UTC] 3 
+[06-Aug-2019 00:55:50 UTC] retVal 1
+[06-Aug-2019 00:55:50 UTC] succes dump log?
+[06-Aug-2019 00:56:50 UTC] 0 
+[06-Aug-2019 00:56:50 UTC] 1 
+[06-Aug-2019 00:56:50 UTC] 2 
+[06-Aug-2019 00:56:50 UTC] 3 
+[06-Aug-2019 00:56:50 UTC] retVal 1
+[06-Aug-2019 00:56:50 UTC] succes dump log?
+[06-Aug-2019 00:57:50 UTC] 0 
+[06-Aug-2019 00:57:50 UTC] 1 
+[06-Aug-2019 00:57:50 UTC] 2 
+[06-Aug-2019 00:57:50 UTC] 3 
+[06-Aug-2019 00:57:50 UTC] retVal 1
+[06-Aug-2019 00:57:50 UTC] succes dump log?
+[06-Aug-2019 00:58:50 UTC] 0 
+[06-Aug-2019 00:58:50 UTC] 1 
+[06-Aug-2019 00:58:50 UTC] 2 
+[06-Aug-2019 00:58:50 UTC] 3 
+[06-Aug-2019 00:58:50 UTC] retVal 1
+[06-Aug-2019 00:58:50 UTC] succes dump log?
+[06-Aug-2019 00:59:50 UTC] 0 
+[06-Aug-2019 00:59:50 UTC] 1 
+[06-Aug-2019 00:59:50 UTC] 2 
+[06-Aug-2019 00:59:50 UTC] 3 
+[06-Aug-2019 00:59:50 UTC] retVal 1
+[06-Aug-2019 00:59:50 UTC] succes dump log?
+[06-Aug-2019 01:00:48 UTC] 0 
+[06-Aug-2019 01:00:48 UTC] 1 
+[06-Aug-2019 01:00:48 UTC] 2 
+[06-Aug-2019 01:00:48 UTC] 3 
+[06-Aug-2019 01:00:48 UTC] retVal 1
+[06-Aug-2019 01:00:48 UTC] succes dump log?
+[06-Aug-2019 01:01:50 UTC] 0 
+[06-Aug-2019 01:01:50 UTC] 1 
+[06-Aug-2019 01:01:50 UTC] 2 
+[06-Aug-2019 01:01:50 UTC] 3 
+[06-Aug-2019 01:01:50 UTC] retVal 1
+[06-Aug-2019 01:01:50 UTC] succes dump log?
+[06-Aug-2019 01:02:50 UTC] 0 
+[06-Aug-2019 01:02:50 UTC] 1 
+[06-Aug-2019 01:02:50 UTC] 2 
+[06-Aug-2019 01:02:50 UTC] 3 
+[06-Aug-2019 01:02:50 UTC] retVal 1
+[06-Aug-2019 01:02:50 UTC] succes dump log?
+[06-Aug-2019 01:03:50 UTC] 0 
+[06-Aug-2019 01:03:50 UTC] 1 
+[06-Aug-2019 01:03:50 UTC] 2 
+[06-Aug-2019 01:03:50 UTC] 3 
+[06-Aug-2019 01:03:50 UTC] retVal 1
+[06-Aug-2019 01:03:50 UTC] succes dump log?
+[06-Aug-2019 01:04:50 UTC] 0 
+[06-Aug-2019 01:04:50 UTC] 1 
+[06-Aug-2019 01:04:50 UTC] 2 
+[06-Aug-2019 01:04:50 UTC] 3 
+[06-Aug-2019 01:04:50 UTC] retVal 1
+[06-Aug-2019 01:04:50 UTC] succes dump log?
+[06-Aug-2019 01:05:51 UTC] 0 
+[06-Aug-2019 01:05:51 UTC] 1 
+[06-Aug-2019 01:05:51 UTC] 2 
+[06-Aug-2019 01:05:51 UTC] 3 
+[06-Aug-2019 01:05:51 UTC] retVal 1
+[06-Aug-2019 01:05:51 UTC] succes dump log?
+[06-Aug-2019 01:06:50 UTC] 0 
+[06-Aug-2019 01:06:50 UTC] 1 
+[06-Aug-2019 01:06:50 UTC] 2 
+[06-Aug-2019 01:06:50 UTC] 3 
+[06-Aug-2019 01:06:50 UTC] retVal 1
+[06-Aug-2019 01:06:50 UTC] succes dump log?
+[06-Aug-2019 01:07:50 UTC] 0 
+[06-Aug-2019 01:07:50 UTC] 1 
+[06-Aug-2019 01:07:50 UTC] 2 
+[06-Aug-2019 01:07:50 UTC] 3 
+[06-Aug-2019 01:07:50 UTC] retVal 1
+[06-Aug-2019 01:07:50 UTC] succes dump log?
+[06-Aug-2019 01:08:49 UTC] 0 
+[06-Aug-2019 01:08:49 UTC] 1 
+[06-Aug-2019 01:08:49 UTC] 2 
+[06-Aug-2019 01:08:49 UTC] 3 
+[06-Aug-2019 01:08:49 UTC] retVal 1
+[06-Aug-2019 01:08:49 UTC] succes dump log?
+[06-Aug-2019 01:09:50 UTC] 0 
+[06-Aug-2019 01:09:50 UTC] 1 
+[06-Aug-2019 01:09:50 UTC] 2 
+[06-Aug-2019 01:09:50 UTC] 3 
+[06-Aug-2019 01:09:50 UTC] retVal 1
+[06-Aug-2019 01:09:50 UTC] succes dump log?
+[06-Aug-2019 01:10:09 UTC] 0 
+[06-Aug-2019 01:10:09 UTC] 1 
+[06-Aug-2019 01:10:09 UTC] 2 
+[06-Aug-2019 01:10:09 UTC] 3 
+[06-Aug-2019 01:10:09 UTC] retVal 1
+[06-Aug-2019 01:10:09 UTC] succes dump log?
+[06-Aug-2019 01:10:50 UTC] 0 
+[06-Aug-2019 01:10:50 UTC] 1 
+[06-Aug-2019 01:10:50 UTC] 2 
+[06-Aug-2019 01:10:50 UTC] 3 
+[06-Aug-2019 01:10:50 UTC] retVal 1
+[06-Aug-2019 01:10:50 UTC] succes dump log?
+[06-Aug-2019 01:11:51 UTC] 0 
+[06-Aug-2019 01:11:51 UTC] 1 
+[06-Aug-2019 01:11:51 UTC] 2 
+[06-Aug-2019 01:11:51 UTC] 3 
+[06-Aug-2019 01:11:51 UTC] retVal 1
+[06-Aug-2019 01:11:51 UTC] succes dump log?
+[06-Aug-2019 01:12:36 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/incrementeVidNbVues.php on line 17
+[06-Aug-2019 01:12:45 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/incrementeVidNbVues.php on line 17
+[06-Aug-2019 01:12:51 UTC] 0 
+[06-Aug-2019 01:12:51 UTC] 1 
+[06-Aug-2019 01:12:51 UTC] 2 
+[06-Aug-2019 01:12:51 UTC] 3 
+[06-Aug-2019 01:12:51 UTC] retVal 1
+[06-Aug-2019 01:12:51 UTC] succes dump log?
+[06-Aug-2019 01:13:51 UTC] 0 
+[06-Aug-2019 01:13:51 UTC] 1 
+[06-Aug-2019 01:13:51 UTC] 2 
+[06-Aug-2019 01:13:51 UTC] 3 
+[06-Aug-2019 01:13:51 UTC] retVal 1
+[06-Aug-2019 01:13:51 UTC] succes dump log?
+[06-Aug-2019 01:13:56 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/incrementeVidNbVues.php on line 17
+[06-Aug-2019 01:14:51 UTC] 0 
+[06-Aug-2019 01:14:51 UTC] 1 
+[06-Aug-2019 01:14:51 UTC] 2 
+[06-Aug-2019 01:14:51 UTC] 3 
+[06-Aug-2019 01:14:51 UTC] retVal 1
+[06-Aug-2019 01:14:51 UTC] succes dump log?
+[06-Aug-2019 01:15:51 UTC] 0 
+[06-Aug-2019 01:15:51 UTC] 1 
+[06-Aug-2019 01:15:51 UTC] 2 
+[06-Aug-2019 01:15:51 UTC] 3 
+[06-Aug-2019 01:15:51 UTC] retVal 1
+[06-Aug-2019 01:15:51 UTC] succes dump log?
+[06-Aug-2019 01:16:51 UTC] 0 
+[06-Aug-2019 01:16:51 UTC] 1 
+[06-Aug-2019 01:16:51 UTC] 2 
+[06-Aug-2019 01:16:51 UTC] 3 
+[06-Aug-2019 01:16:51 UTC] retVal 1
+[06-Aug-2019 01:16:51 UTC] succes dump log?
+[06-Aug-2019 01:17:51 UTC] 0 
+[06-Aug-2019 01:17:51 UTC] 1 
+[06-Aug-2019 01:17:51 UTC] 2 
+[06-Aug-2019 01:17:51 UTC] 3 
+[06-Aug-2019 01:17:51 UTC] retVal 1
+[06-Aug-2019 01:17:51 UTC] succes dump log?
+[06-Aug-2019 01:18:51 UTC] 0 
+[06-Aug-2019 01:18:51 UTC] 1 
+[06-Aug-2019 01:18:51 UTC] 2 
+[06-Aug-2019 01:18:51 UTC] 3 
+[06-Aug-2019 01:18:51 UTC] retVal 1
+[06-Aug-2019 01:18:51 UTC] succes dump log?
+[06-Aug-2019 01:19:51 UTC] 0 
+[06-Aug-2019 01:19:51 UTC] 1 
+[06-Aug-2019 01:19:51 UTC] 2 
+[06-Aug-2019 01:19:51 UTC] 3 
+[06-Aug-2019 01:19:51 UTC] retVal 1
+[06-Aug-2019 01:19:51 UTC] succes dump log?
+[06-Aug-2019 01:20:51 UTC] 0 
+[06-Aug-2019 01:20:51 UTC] 1 
+[06-Aug-2019 01:20:51 UTC] 2 
+[06-Aug-2019 01:20:51 UTC] 3 
+[06-Aug-2019 01:20:51 UTC] retVal 1
+[06-Aug-2019 01:20:51 UTC] succes dump log?
+[06-Aug-2019 01:21:51 UTC] 0 
+[06-Aug-2019 01:21:51 UTC] 1 
+[06-Aug-2019 01:21:51 UTC] 2 
+[06-Aug-2019 01:21:51 UTC] 3 
+[06-Aug-2019 01:21:51 UTC] retVal 1
+[06-Aug-2019 01:21:51 UTC] succes dump log?
+[06-Aug-2019 01:22:52 UTC] 0 
+[06-Aug-2019 01:22:52 UTC] 1 
+[06-Aug-2019 01:22:52 UTC] 2 
+[06-Aug-2019 01:22:52 UTC] 3 
+[06-Aug-2019 01:22:52 UTC] retVal 1
+[06-Aug-2019 01:22:52 UTC] succes dump log?
+[06-Aug-2019 01:23:30 UTC] 0 
+[06-Aug-2019 01:23:30 UTC] 1 
+[06-Aug-2019 01:23:30 UTC] 2 
+[06-Aug-2019 01:23:30 UTC] 3 
+[06-Aug-2019 01:23:30 UTC] retVal 1
+[06-Aug-2019 01:23:30 UTC] succes dump log?
+[06-Aug-2019 01:23:52 UTC] 0 
+[06-Aug-2019 01:23:52 UTC] 1 
+[06-Aug-2019 01:23:52 UTC] 2 
+[06-Aug-2019 01:23:52 UTC] 3 
+[06-Aug-2019 01:23:52 UTC] retVal 1
+[06-Aug-2019 01:23:52 UTC] succes dump log?
+[06-Aug-2019 01:24:03 UTC] 0 
+[06-Aug-2019 01:24:03 UTC] 1 
+[06-Aug-2019 01:24:03 UTC] 2 
+[06-Aug-2019 01:24:03 UTC] 3 
+[06-Aug-2019 01:24:03 UTC] retVal 1
+[06-Aug-2019 01:24:03 UTC] succes dump log?
+[06-Aug-2019 01:24:16 UTC] 0 
+[06-Aug-2019 01:24:16 UTC] 1 
+[06-Aug-2019 01:24:16 UTC] 2 
+[06-Aug-2019 01:24:16 UTC] 3 
+[06-Aug-2019 01:24:16 UTC] retVal 1
+[06-Aug-2019 01:24:16 UTC] succes dump log?
+[06-Aug-2019 01:25:13 UTC] 0 
+[06-Aug-2019 01:25:13 UTC] 1 
+[06-Aug-2019 01:25:13 UTC] 2 
+[06-Aug-2019 01:25:13 UTC] 3 
+[06-Aug-2019 01:25:13 UTC] retVal 1
+[06-Aug-2019 01:25:13 UTC] succes dump log?
+[06-Aug-2019 01:25:52 UTC] 0 
+[06-Aug-2019 01:25:52 UTC] 1 
+[06-Aug-2019 01:25:52 UTC] 2 
+[06-Aug-2019 01:25:52 UTC] 3 
+[06-Aug-2019 01:25:52 UTC] retVal 1
+[06-Aug-2019 01:25:52 UTC] succes dump log?
+[06-Aug-2019 01:26:52 UTC] 0 
+[06-Aug-2019 01:26:52 UTC] 1 
+[06-Aug-2019 01:26:52 UTC] 2 
+[06-Aug-2019 01:26:52 UTC] 3 
+[06-Aug-2019 01:26:52 UTC] retVal 1
+[06-Aug-2019 01:26:52 UTC] succes dump log?
+[06-Aug-2019 01:27:52 UTC] 0 
+[06-Aug-2019 01:27:52 UTC] 1 
+[06-Aug-2019 01:27:52 UTC] 2 
+[06-Aug-2019 01:27:52 UTC] 3 
+[06-Aug-2019 01:27:52 UTC] retVal 1
+[06-Aug-2019 01:27:52 UTC] succes dump log?
+[06-Aug-2019 01:28:52 UTC] 0 
+[06-Aug-2019 01:28:52 UTC] 1 
+[06-Aug-2019 01:28:52 UTC] 2 
+[06-Aug-2019 01:28:52 UTC] 3 
+[06-Aug-2019 01:28:52 UTC] retVal 1
+[06-Aug-2019 01:28:52 UTC] succes dump log?
+[06-Aug-2019 01:29:52 UTC] 0 
+[06-Aug-2019 01:29:52 UTC] 1 
+[06-Aug-2019 01:29:52 UTC] 2 
+[06-Aug-2019 01:29:52 UTC] 3 
+[06-Aug-2019 01:29:52 UTC] retVal 1
+[06-Aug-2019 01:29:52 UTC] succes dump log?
+[06-Aug-2019 01:30:52 UTC] 0 
+[06-Aug-2019 01:30:52 UTC] 1 
+[06-Aug-2019 01:30:52 UTC] 2 
+[06-Aug-2019 01:30:52 UTC] 3 
+[06-Aug-2019 01:30:52 UTC] retVal 1
+[06-Aug-2019 01:30:52 UTC] succes dump log?
+[06-Aug-2019 01:31:53 UTC] 0 
+[06-Aug-2019 01:31:53 UTC] 1 
+[06-Aug-2019 01:31:53 UTC] 2 
+[06-Aug-2019 01:31:53 UTC] 3 
+[06-Aug-2019 01:31:53 UTC] retVal 1
+[06-Aug-2019 01:31:53 UTC] succes dump log?
+[06-Aug-2019 01:32:53 UTC] 0 
+[06-Aug-2019 01:32:53 UTC] 1 
+[06-Aug-2019 01:32:53 UTC] 2 
+[06-Aug-2019 01:32:53 UTC] 3 
+[06-Aug-2019 01:32:53 UTC] retVal 1
+[06-Aug-2019 01:32:53 UTC] succes dump log?
+[06-Aug-2019 01:33:53 UTC] 0 
+[06-Aug-2019 01:33:53 UTC] 1 
+[06-Aug-2019 01:33:53 UTC] 2 
+[06-Aug-2019 01:33:53 UTC] 3 
+[06-Aug-2019 01:33:53 UTC] retVal 1
+[06-Aug-2019 01:33:53 UTC] succes dump log?
+[06-Aug-2019 01:34:53 UTC] 0 
+[06-Aug-2019 01:34:53 UTC] 1 
+[06-Aug-2019 01:34:53 UTC] 2 
+[06-Aug-2019 01:34:53 UTC] 3 
+[06-Aug-2019 01:34:53 UTC] retVal 1
+[06-Aug-2019 01:34:53 UTC] succes dump log?
+[06-Aug-2019 01:35:54 UTC] 0 
+[06-Aug-2019 01:35:54 UTC] 1 
+[06-Aug-2019 01:35:54 UTC] 2 
+[06-Aug-2019 01:35:54 UTC] 3 
+[06-Aug-2019 01:35:54 UTC] retVal 1
+[06-Aug-2019 01:35:54 UTC] succes dump log?
+[06-Aug-2019 01:36:29 UTC] 0 
+[06-Aug-2019 01:36:29 UTC] 1 
+[06-Aug-2019 01:36:29 UTC] 2 
+[06-Aug-2019 01:36:29 UTC] 3 
+[06-Aug-2019 01:36:29 UTC] retVal 1
+[06-Aug-2019 01:36:29 UTC] succes dump log?
+[06-Aug-2019 01:36:54 UTC] 0 
+[06-Aug-2019 01:36:54 UTC] 1 
+[06-Aug-2019 01:36:54 UTC] 2 
+[06-Aug-2019 01:36:54 UTC] 3 
+[06-Aug-2019 01:36:54 UTC] retVal 1
+[06-Aug-2019 01:36:54 UTC] succes dump log?
+[06-Aug-2019 01:46:15 UTC] 0 
+[06-Aug-2019 01:46:15 UTC] 1 
+[06-Aug-2019 01:46:15 UTC] 2 
+[06-Aug-2019 01:46:15 UTC] 3 
+[06-Aug-2019 01:46:15 UTC] retVal 1
+[06-Aug-2019 01:46:15 UTC] succes dump log?
+[06-Aug-2019 01:47:58 UTC] 0 
+[06-Aug-2019 01:47:58 UTC] 1 
+[06-Aug-2019 01:47:58 UTC] 2 
+[06-Aug-2019 01:47:58 UTC] 3 
+[06-Aug-2019 01:47:58 UTC] retVal 1
+[06-Aug-2019 01:47:58 UTC] succes dump log?
+[06-Aug-2019 01:58:53 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/incrementeVidNbVues.php on line 17
+[06-Aug-2019 01:59:10 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/incrementeVidNbVues.php on line 17
+[06-Aug-2019 01:59:10 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/incrementeVidNbVues.php on line 17
+[06-Aug-2019 02:17:30 UTC] 0 
+[06-Aug-2019 02:17:30 UTC] 1 
+[06-Aug-2019 02:17:30 UTC] 2 
+[06-Aug-2019 02:17:30 UTC] 3 
+[06-Aug-2019 02:17:30 UTC] retVal 1
+[06-Aug-2019 02:17:30 UTC] succes dump log?
+[06-Aug-2019 02:18:04 UTC] 0 
+[06-Aug-2019 02:18:04 UTC] 1 
+[06-Aug-2019 02:18:04 UTC] 2 
+[06-Aug-2019 02:18:04 UTC] 3 
+[06-Aug-2019 02:18:04 UTC] retVal 1
+[06-Aug-2019 02:18:04 UTC] succes dump log?
+[06-Aug-2019 02:25:31 UTC] 0 
+[06-Aug-2019 02:25:31 UTC] 1 
+[06-Aug-2019 02:25:31 UTC] 2 
+[06-Aug-2019 02:25:31 UTC] 3 
+[06-Aug-2019 02:25:31 UTC] retVal 1
+[06-Aug-2019 02:25:31 UTC] succes dump log?
+[06-Aug-2019 02:36:30 UTC] 0 
+[06-Aug-2019 02:36:30 UTC] 1 
+[06-Aug-2019 02:36:30 UTC] 2 
+[06-Aug-2019 02:36:30 UTC] 3 
+[06-Aug-2019 02:36:30 UTC] retVal 1
+[06-Aug-2019 02:36:30 UTC] succes dump log?
+[06-Aug-2019 02:40:45 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/getGenerique.php on line 15
+[06-Aug-2019 02:40:45 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/getGenerique.php on line 15
+[06-Aug-2019 02:40:46 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/getVideos.php on line 22
+[06-Aug-2019 02:47:08 UTC] 0 
+[06-Aug-2019 02:47:08 UTC] 1 
+[06-Aug-2019 02:47:08 UTC] 2 
+[06-Aug-2019 02:47:08 UTC] 3 
+[06-Aug-2019 02:47:08 UTC] retVal 1
+[06-Aug-2019 02:47:08 UTC] succes dump log?
+[06-Aug-2019 02:56:45 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/incrementeVidNbVues.php on line 17
+[06-Aug-2019 02:57:15 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/incrementeVidNbVues.php on line 17
+[06-Aug-2019 02:59:14 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/incrementeVidNbVues.php on line 17
+[06-Aug-2019 02:59:29 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/incrementeVidNbVues.php on line 17
+[06-Aug-2019 03:11:32 UTC] 0 
+[06-Aug-2019 03:11:32 UTC] 1 
+[06-Aug-2019 03:11:32 UTC] 2 
+[06-Aug-2019 03:11:32 UTC] 3 
+[06-Aug-2019 03:11:32 UTC] retVal 1
+[06-Aug-2019 03:11:32 UTC] succes dump log?
+[06-Aug-2019 03:12:19 UTC] 0 
+[06-Aug-2019 03:12:19 UTC] 1 
+[06-Aug-2019 03:12:19 UTC] 2 
+[06-Aug-2019 03:12:19 UTC] 3 
+[06-Aug-2019 03:12:19 UTC] retVal 1
+[06-Aug-2019 03:12:19 UTC] succes dump log?
+[06-Aug-2019 03:25:58 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/incrementeVidNbVues.php on line 17
+[06-Aug-2019 03:26:32 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/incrementeVidNbVues.php on line 17
+[06-Aug-2019 03:26:52 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/incrementeVidNbVues.php on line 17
+[06-Aug-2019 03:26:55 UTC] 0 
+[06-Aug-2019 03:26:55 UTC] 1 
+[06-Aug-2019 03:26:55 UTC] 2 
+[06-Aug-2019 03:26:55 UTC] 3 
+[06-Aug-2019 03:26:55 UTC] retVal 1
+[06-Aug-2019 03:26:55 UTC] succes dump log?
+[06-Aug-2019 03:27:06 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/incrementeVidNbVues.php on line 17
+[06-Aug-2019 03:27:36 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/incrementeVidNbVues.php on line 17
+[06-Aug-2019 03:27:50 UTC] PHP Deprecated:  mysql_connect(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead in /home3/syncsta1/public_html/scriptsphp/incrementeVidNbVues.php on line 17
+[06-Aug-2019 03:40:54 UTC] 0 
+[06-Aug-2019 03:40:54 UTC] 1 
+[06-Aug-2019 03:40:54 UTC] 2 
+[06-Aug-2019 03:40:54 UTC] 3 
+[06-Aug-2019 03:40:54 UTC] retVal 1
+[06-Aug-2019 03:40:54 UTC] succes dump log?
+[06-Aug-2019 03:42:21 UTC] PHP Deprecated:  Automatically populating $HTTP_RAW_POST_DATA is deprecated and will be removed in a future version. To avoid this warning set 'always_populate_raw_post_data' to '-1' in php.ini and use the php://input stream instead. in Unknown on line 0
+[06-Aug-2019 05:25:36 UTC] PHP Parse error:  syntax error, unexpected 'public' (T_PUBLIC) in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 46
+[06-Aug-2019 05:26:33 UTC] PHP Parse error:  syntax error, unexpected 'public' (T_PUBLIC) in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 46
+[06-Aug-2019 05:27:36 UTC] PHP Parse error:  syntax error, unexpected 'public' (T_PUBLIC) in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 46
+[06-Aug-2019 05:28:34 UTC] PHP Parse error:  syntax error, unexpected 'public' (T_PUBLIC) in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 46
+[06-Aug-2019 05:29:06 UTC] PHP Parse error:  syntax error, unexpected 'public' (T_PUBLIC) in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 46
+[06-Aug-2019 05:30:36 UTC] PHP Fatal error:  Cannot redeclare class Database in /home3/syncsta1/public_html/phpobjects/Database.php on line 3
+[06-Aug-2019 05:31:36 UTC] PHP Fatal error:  Cannot redeclare class Database in /home3/syncsta1/public_html/phpobjects/Database.php on line 3
+[06-Aug-2019 05:32:36 UTC] PHP Fatal error:  Cannot redeclare class Database in /home3/syncsta1/public_html/phpobjects/Database.php on line 3
+[06-Aug-2019 05:33:36 UTC] PHP Fatal error:  Cannot redeclare class Database in /home3/syncsta1/public_html/phpobjects/Database.php on line 3
+[06-Aug-2019 05:34:37 UTC] PHP Fatal error:  Cannot redeclare class Database in /home3/syncsta1/public_html/phpobjects/Database.php on line 3
+[06-Aug-2019 05:35:36 UTC] PHP Fatal error:  Cannot redeclare class Database in /home3/syncsta1/public_html/phpobjects/Database.php on line 3
+[06-Aug-2019 05:36:37 UTC] PHP Fatal error:  Cannot redeclare class Database in /home3/syncsta1/public_html/phpobjects/Database.php on line 3
+[06-Aug-2019 05:37:37 UTC] PHP Fatal error:  Cannot redeclare class Database in /home3/syncsta1/public_html/phpobjects/Database.php on line 3
+[06-Aug-2019 05:38:35 UTC] PHP Fatal error:  Cannot redeclare class Database in /home3/syncsta1/public_html/phpobjects/Database.php on line 3
+[06-Aug-2019 05:39:37 UTC] PHP Fatal error:  Cannot redeclare class Database in /home3/syncsta1/public_html/phpobjects/Database.php on line 3
+[06-Aug-2019 05:40:37 UTC] PHP Fatal error:  Cannot redeclare class Database in /home3/syncsta1/public_html/phpobjects/Database.php on line 3
+[06-Aug-2019 05:41:37 UTC] 1
+[06-Aug-2019 05:41:37 UTC] 2
+[06-Aug-2019 05:41:37 UTC] PHP Fatal error:  Cannot redeclare class Database in /home3/syncsta1/public_html/phpobjects/Database.php on line 3
+[06-Aug-2019 05:42:02 UTC] 1
+[06-Aug-2019 05:42:02 UTC] 2
+[06-Aug-2019 05:42:02 UTC] PHP Fatal error:  Cannot redeclare class Database in /home3/syncsta1/public_html/phpobjects/Database.php on line 3
+[06-Aug-2019 05:42:38 UTC] 1
+[06-Aug-2019 05:42:38 UTC] 2
+[06-Aug-2019 05:42:38 UTC] PHP Fatal error:  Cannot redeclare class Database in /home3/syncsta1/public_html/phpobjects/Database.php on line 3
+[06-Aug-2019 05:43:35 UTC] 1
+[06-Aug-2019 05:43:35 UTC] 2
+[06-Aug-2019 05:43:35 UTC] PHP Fatal error:  Cannot redeclare class Database in /home3/syncsta1/public_html/phpobjects/Database.php on line 3
+[06-Aug-2019 05:44:38 UTC] 1
+[06-Aug-2019 05:44:38 UTC] 2
+[06-Aug-2019 05:44:38 UTC] 3
+[06-Aug-2019 05:44:38 UTC] 4
+[06-Aug-2019 05:44:38 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 52
+[06-Aug-2019 05:44:38 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home3/syncsta1/public_html/scriptsphp/enregistreStatutCam.php on line 52

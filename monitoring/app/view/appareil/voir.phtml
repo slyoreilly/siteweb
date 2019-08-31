@@ -1,0 +1,22 @@
+<?php
+include VIEW."header.phtml";
+?>
+<h1>Détail de l'appareil</h1>
+<br/>
+
+<?php 
+echo('<h2> Cam '.$this->view_data['params']->camId.'</h2>');
+echo('<p> Identifiant: '.$this->view_data['params']->telId.'</p>');
+echo('<p> Connecté à: '.$this->view_data['params']->userId.'</p>');
+echo('<p> Dernière mise à jour: '.$this->view_data['params']->dernierMaJ.'</p>');
+echo('<p> Niveau de batterie: '.$this->view_data['params']->batterie.'</p>');
+echo('<p> Mémoire disponible: '.$this->view_data['params']->memoire.'</p>');
+echo('<p> Température: '.$this->view_data['params']->temperature.'</p>');
+echo('<p> Code d\'état: '.$this->view_data['params']->codeEtat.'</p>');
+echo('<p> ID de l\'arena: '.$this->view_data['params']->arenaId.'</p>');
+echo('<p> Version: '.$this->view_data['params']->version.'</p>');
+echo('<p> Fichier de Log: <a href =/monitoring/'.$this->view_data['params']->telId.'>Suivre ce lien </a></p>');
+echo('<p> Page de contrôle alternative: <a href =/zadmin/interfaceAppareil.html?telId='.$this->view_data['params']->telId.'>Suivre ce lien </a></p>');
+
+?>
+<?php include VIEW."footer.phtml";?>

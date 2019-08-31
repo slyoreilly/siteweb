@@ -18,34 +18,16 @@ $database = 'syncsta1_900';
 // 	Connections � la base de donn�es
 //
 ////////////////////////////////////////////////////////////
-
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
 
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
-function trouveIDParNomUser($nomUser)
-{
-$fResultUser = mysql_query("SELECT noCompte 
-								FROM TableUser 
-								WHERE username='{$nomUser}'")
-or die(mysql_error());  
-$rU = mysql_fetch_row($fResultUser);
-if (mysql_num_rows($fResultUser)>0)
-{
-return $rU[0];
-}
-else{return -1;}
-
-}
 
 
 //////////////////////////////////////////////////////
@@ -63,13 +45,13 @@ $reqMes = "SELECT *
 				ON (TableMessage.expediteur=TableUser.noCompte)
 			
 			WHERE recepteur={$ligueId}";
-$rMes = mysql_query($reqMes)
-or die(mysql_error());  
+$rMes = mysqli_query($conn,$reqMes)
+or die(mysqli_error($conn));  
 
 $IM=0;
 $cv = Array();
 $message=Array();
-while ($rangMes = mysql_fetch_array($rMes))
+while ($rangMes = mysqli_fetch_array($rMes))
 {
 	$cv =(array) json_decode($rangMes['cleValeur']);
 	if(is_array($cv))
@@ -91,6 +73,6 @@ while ($rangMes = mysql_fetch_array($rMes))
 
 echo json_encode($message);
 	
-
+mysqli_close($conn);
 
 ?>

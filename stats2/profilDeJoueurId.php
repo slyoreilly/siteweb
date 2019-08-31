@@ -39,19 +39,15 @@ $joueurId = $_POST['joueurId'];
 //
 ////////////////////////////////////////////////////////////
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
 
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
-
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+mysqli_set_charset($conn, "utf8");
 
 ///////////////////////////////////////////////////////////
 //
@@ -61,22 +57,22 @@ mysql_query("SET CHARACTER SET 'utf8'");
 
 
 	$strSelect = "joueur_id,NomJoueur,NumeroJoueur,position,equipe_id_ref,Ligue,nom,prenom,taille,poids,sexe,anneeNaissance,villeOrigine,ficIdJoueur,ficIdPortrait,proprio";
-$rJoueur = mysql_query("SELECT $strSelect FROM TableJoueur WHERE  joueur_id = '$joueurId'")
-or die(mysql_error());  
-$monJoueur=mysql_fetch_row($rJoueur);
+$rJoueur = mysqli_query($conn,"SELECT $strSelect FROM TableJoueur WHERE  joueur_id = '$joueurId'")
+or die(mysqli_error($conn));  
+$monJoueur=mysqli_fetch_row($rJoueur);
 
 
 
 /////
 
-	$rEquipeVis = mysql_query("SELECT * FROM {$tableEquipe} where equipe_id='{$eqVis}'")
-or die(mysql_error()); 
-	$equipeVis=mysql_fetch_row($rEquipeVis);
+	$rEquipeVis = mysqli_query($conn,"SELECT * FROM {$tableEquipe} where equipe_id='{$eqVis}'")
+or die(mysqli_error($conn)); 
+	$equipeVis=mysqli_fetch_row($rEquipeVis);
 
 	$ligueId = $equipeDom[3];
-	$rLigue = mysql_query("SELECT * FROM Ligue WHERE ID_Ligue= '{$ligueId}'")
-or die(mysql_error());  
-$ligue = mysql_fetch_row($rLigue);
+	$rLigue = mysqli_query($conn,"SELECT * FROM Ligue WHERE ID_Ligue= '{$ligueId}'")
+or die(mysqli_error($conn));  
+$ligue = mysqli_fetch_row($rLigue);
 
 	//////////////////////////////////////////////////
 	//
@@ -106,5 +102,5 @@ $ligue = mysql_fetch_row($rLigue);
 	
 echo $JSONstring;
 	
-
+mysqli_close($conn);
 ?>

@@ -1129,7 +1129,8 @@ div#gradTitre
 	z-index:1;
 }
 
-
+
+
 div#divTitreDoc
 {
 color:#000;
@@ -3189,8 +3190,7 @@ background-color:#888c;
 #video-info > div{
 	float:left; 
 	padding:0 0 5px 0; 
-	border-bottom:1px solid #CCC; 
-	width:100%;
+		width:100%;
 }
 #info-img{
 	float:left; 
@@ -4573,58 +4573,6 @@ video {
 	display:block;
 }
 
-section.choisi {
-	display:block;
-	float:none;
-	clear:both;
-	margin-left: 40px;}
-section {display:none;}
- ul#menu-info{
-	list-style:none;
-	display:block;
-}
-
- ul#menu-info li{
- 	margin: 5px 50px 15px 10px;
- 	padding: 0px 00px 8px 0px;
-	float:left;
-	cursor:pointer;
-	display:inline;
-	font: 12px 'Open Sans',Arial,sans-serif;
-    font-weight: 100;
-    text-transform:uppercase;
-    }
-	
- ul#menu-info li.choisi{
- 	border-bottom-width: 5px;
- 	border-bottom-color: #00A5DC;
- 	border-bottom-style: solid;
- }
- 
-section.choisi h1{
-	display:block;
-	width:400px;
-	font: 20px 'Open Sans',Arial,sans-serif;
-    font-weight: 100;
-	padding: 40px;}
-	
- 
-section.choisi a{
-	font: 13px 'Open Sans',Arial,sans-serif;
-    font-weight: 1000;
-	}
-	
-.boutonRedirige{
-	padding:10px;
-	margin:30px;
-	border-width: 2px;
- 	border-style: solid;
- 	text-align: center;
- 	color:#fff;
- 	font-size:large;
- 		box-shadow: 0 2px 1px #9c9c9c;
- 		 border-radius: 3px;
-}
 
 #ligueVedette{
 

@@ -56,7 +56,7 @@ $IJ=0;
 	}
 	
 	$match = array();
-	if(!strcmp($type, "match")){
+	if(strcmp($type, "match")==0){
 
 	$datedeb = $search." 00:00:00.000";
 	$datefin = $search." 23:59:59.999";

@@ -9,31 +9,31 @@ $db_user="syncsta1_u01";
 $db_pwd="test";
 $database = 'syncsta1_900';
 
-$tableEq = 'TableEquipe';
-$tableLigue = 'Ligue';
-$tableMatch = 'TableMatch';
-$tableEvent = 'TableEvenement0';
-$tableJoueur = 'TableJoueur';
-$tableAbon = 'AbonnementLigue';
-$tableUser = 'TableUser';
-$tableFichier = 'TableFichier';
+
 
 
  // some basic sanity checks
  if(isset($_GET['ficId']) && is_numeric($_GET['ficId'])) {
-     //connect to the db
-     $link = mysql_connect($db_host, $db_user, $db_pwd)
-     or die("Could not connect: " . mysql_error());
 
-     // select our database
-     mysql_select_db($database) or die(mysql_error());
+
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error($conn));
+}
+
+mysqli_query($conn,"SET NAMES 'utf8'");
+mysqli_query($conn,"SET CHARACTER SET 'utf8'");
+
+
 
      // get the image from the db
      $sql = "SELECT * FROM TableFichier WHERE ficId=" .$_GET['ficId'] . ";";
 
      // the result of the query
-     $result = mysql_query($sql) or die("Invalid query: " . mysql_error());
-while($rangee=mysql_fetch_array($result))
+     $result = mysqli_query($conn,$sql) or die("Invalid query: " . mysql_error());
+while($rangee=mysqli_fetch_array($result))
 {
 
 
@@ -42,7 +42,7 @@ while($rangee=mysql_fetch_array($result))
      echo $rangee['content'];
 }
      // close the db link
-     mysql_close($link);
+     mysqli_close($conn);
  }
  else {
      echo 'Please use a real id number';

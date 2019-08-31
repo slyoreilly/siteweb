@@ -7,13 +7,13 @@
 		<meta name="keyword" content="hockey,statistics,android,mobile app, smartphone, scoreboard, video replay,">
 		<meta name="author" content="Sylvain O'Reilly">
 		<link rel="shortcut icon" href="/favicon.ico" />
-		<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
-		<script src="/scripts/fonctions_old.js" type="text/javascript" charset="utf-8"></script>
+		<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/jquery.watermark.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
 		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
 		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
-		<script src="/scripts/affichage_old.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -22,6 +22,91 @@
 			gereLangue();
 			</script>
 <style>
+
+	p, .form-group label {font: 12px 'Open Sans',Arial,sans-serif;
+    font-weight: 100;
+	color: #444;
+}
+
+ul#productDots{
+	list-style-type: disc;
+	text-align:center;
+	margin:10px auto;
+
+}
+ul#productDots li {
+	display:inline;
+	color:#034d57;
+	margin: 10px;
+}
+.boiteProduit2{
+width:100%;
+min-width:0px;
+max-width:10000px;
+margin:auto;
+float:left;	
+}
+
+.boiteProduit2 img{
+visibility: hidden;
+}
+
+	#divIndex2BS{
+		width:100%;
+		background:#eee;
+	border-style:solid;
+	border-color:#AAA;
+	border-width:1px;
+	display:block;
+	padding:10px;
+	font-size:medium;
+	text-align:center;
+	border-radius:3px;
+	}
+	#divIndex2BS input{
+		width:95%;
+	}
+	h1{
+		text-align:center;
+	}
+
+	#titreAvantages, h1{
+	
+	font-family:Verdana,arial, fantasy;
+font-size:large;
+font-weight:bold;
+
+color:#034d57;
+font-size:2em;
+
+width:100%;
+float:none;
+clear:both; 
+position:relative; 
+padding:20px 0px;
+}
+	
+.boutonRedirige{
+	padding:10px;
+	margin: 10px 0px;
+	border-width: 2px;
+ 	border-style: solid;
+ 	text-align: center;
+ 	color:#fff;
+ 	font-size:large;
+ 		box-shadow: 0 2px 1px #9c9c9c;
+ 		 border-radius: 3px;
+}
+
+.price{
+	text-align: center;
+	color:#00AA00;
+	font-size: larger;
+}
+
+div#divTitreDoc, #divBas{
+	background-color: hsl(197, 100%, 14%);
+}
             a {
                 color: #8DBB22;
             }
@@ -38,12 +123,126 @@
                 #divIndex2 {
                     width:100%;
                 }
-                
+				
+				
                 }
 
-            
+				ul#menu-info{
+	list-style:none;
+	display:block;
+}
+
+ ul#menu-info li{
+ 	margin: 5px 50px 15px 10px;
+ 	padding: 0px 00px 8px 0px;
+	float:left;
+	cursor:pointer;
+	display:inline;
+	font: 12px 'Open Sans',Arial,sans-serif;
+    font-weight: 100;
+    text-transform:uppercase;
+    }
+	
+ ul#menu-info li.choisi{
+ 	border-bottom-width: 5px;
+ 	border-bottom-color: #00A5DC;
+ 	border-bottom-style: solid;
+ }
+	  
+ ul#menu-info li.titreMob{
+	 width:100%;
+ }
+
+
+ section.choisi {
+	display:block;
+	float:none;
+	clear:both;}
+section {display:none;}
+
+ 
+section.choisi h1{
+	display:block;
+	text-align:left;
+	font: 20px 'Open Sans',Arial,sans-serif;
+    font-weight: 100;
+	padding: 10px;}
+	
+ 
+section.choisi a{
+	font: 13px 'Open Sans',Arial,sans-serif;
+    font-weight: 1000;
+	}
+
+	.bleu{
+	background-color:#00A7DB;
+}
+
+
         </style>
-                <script type="text/javascript" charset="utf-8">
+				<script type="text/javascript" charset="utf-8">
+				
+				function getLiguesDePerso(username) {
+			//			return function(){
+
+			var requete_ajax = new XMLHttpRequest();
+
+			var url = "/stats2/user2ligueetplus.php";
+
+			var strUserId = "userId=" + username;
+			params = strUserId;
+			url = url + "?" + params;
+			requete_ajax.open('POST', url, true);
+			requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			requete_ajax.setRequestHeader("Content-length", params.length);
+			requete_ajax.setRequestHeader("Connection", "close");
+			requete_ajax.send(params);
+
+			requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+					liguesJSON = eval('(' + requete_ajax.responseText + ')');
+					//						alert(requete_ajax.responseText);
+					function getLigue(ligueId) {
+						for (var b = 0; b < window.liguesJSON.ligues.length; b++) {
+							if (window.liguesJSON.ligues[b].ligueId == ligueId) {
+								return window.liguesJSON.ligues[b];
+							}
+						}
+					}
+
+
+						for ( K = 0; K < Ligues.Ligues.length; K = K + 1) {
+							trouve=false;
+							console.log(getValue('ligueId'));
+							console.log(parseInt(getValue('ligueId'))==parseInt(Ligues.Ligues[K].ligueId));
+							if(parseInt(getValue('ligueId'))==parseInt(Ligues.Ligues[K].ligueId)){
+								$('#IDLD').append($('<a></a>').attr('href','/zstats/accueilligue.html?ligueId='+Ligues.Ligues[K].ligueId).text(Ligues.Ligues[K].nomLigue),$('<br/>'));
+								trouve=true;
+							}
+							if(!trouve){
+								try{
+							for (var b = 0; b < liguesJSON.abonnements.length; b++) {
+								if (liguesJSON.abonnements[b].ligueId == Ligues.Ligues[K].ligueId ) {
+									$('#IDLD').append($('<a></a>').attr('href','/zstats/accueilligue.html?ligueId='+Ligues.Ligues[K].ligueId).text(Ligues.Ligues[K].nomLigue),$('<br/>'));
+									trouve=true;
+								}
+							}}catch(err){}}
+							if(!trouve){
+								try{
+							for (var a = 0; a < liguesJSON.joueur.abonLigues.length; a++) {
+								if (liguesJSON.joueur.abonLigues[a].ligueId == Ligues.Ligues[K].ligueId ) {
+								$('#IDLD').append($('<a></a>').attr('href','/zstats/accueilligue.html?ligueId='+liguesJSON.joueur.abonLigues[a].ligueId).text(getLigue(liguesJSON.joueur.abonLigues[a].ligueId).nom),$('<br/>'));
+								}
+							}}catch(err){}
+							}
+
+						}
+				}
+			};
+		}
+
+
+
 			function faitDivIndex1() {
 				// ;
 				//
@@ -76,12 +275,13 @@ $( document ).ready(function() {
 				inBulle1.innerHTML = window.tl_indexBulle1;
 				inBulle2.innerHTML = window.tl_indexBulle2;*/
 				
-				$('#divCentrale').css('display','table')
+				
 				//$('#divIndex1').css('width','40%');
-				$('#divIndex2').append($('<h3 id="rechercheRapide"></h3>').text("Recherche rapide"));
-				$('#divIndex2').append($('<div class="boiteRecherche" id="IDL"></div>').append($('<p></p>').attr("id","titreLigue").text('Ligue')).append($('<input></input>').attr("type", "text").attr('id', 'recherche-ligue')));
-				$('#divIndex2').append($('<div class="boiteRecherche" id="IDJ"></div>').append($('<p></p>').attr("id","titreJoueur").text('Joueur')).append($('<input></input>').attr("type", "text").attr('id', 'recherche-joueur')));
-				$('#divIndex2').append($('<div class="boiteRecherche" id="IDM"></div>').append($('<p></p>').attr("id","titreMatch").text('Match (AAAA/MM/JJ)')).append($('<input></input>').attr("type", "text").attr('id', 'recherche-match')));
+				$('#divIndex2BS').append($('<h1 id="rechercheRapide"></h1>').text("Recherche rapide"));
+				$('#divIndex2BS').append($('<div class="boiteRecherche" id="IDL"></div>').append($('<p></p>').attr("id","titreLigue").text('Ligue')).append($('<input></input>').attr("type", "text").attr('id', 'recherche-ligue')));
+				$('#divIndex2BS').append($('<div class="boiteRecherche" id="IDJ"></div>').append($('<p></p>').attr("id","titreJoueur").text('Joueur')).append($('<input></input>').attr("type", "text").attr('id', 'recherche-joueur')));
+				$('#divIndex2BS').append($('<div class="boiteRecherche" id="IDM"></div>').append($('<p></p>').attr("id","titreMatch").text('Match (AAAA/MM/JJ)')).append($('<input></input>').attr("type", "text").attr('id', 'recherche-match')));
+				$('#divIndex2BS').append($('<div class="boiteRecherche" id="IDLD"></div>').append($('<p></p>').attr("id","titreLienDirect").text('Liens directs')));
 /*
 (function ($) {			
    $('#recherche-ligue').watermark('Ligue');
@@ -230,6 +430,13 @@ $( document ).ready(function() {
 				 			$('#li141').text(window.tl_produits_li141);
 				 			$('#li142').text(window.tl_produits_li142);
 				 			$('#li143').text(window.tl_produits_li143);
+				 			$('#li151').text(window.tl_produits_li151);
+				 			$('#li152').text(window.tl_produits_li152);
+				 			$('#li153').text(window.tl_produits_li153);
+				 			$('#li154').text(window.tl_produits_li154);
+				 			$('#li161').text(window.tl_produits_li161);
+				 			$('#li162').text(window.tl_produits_li162);
+				 			$('#li163').text(window.tl_produits_li163);
 				 			$('#h1ProdSyncStats').text(window.tl_produits_h1ProdSyncStats);
 				 			$('#h1ProdWebSite').text(window.tl_produits_h1ProdWebSite);
 				 			$('#h1ProdSyncCam').text(window.tl_produits_h1ProdSyncCam);
@@ -252,13 +459,13 @@ $( document ).ready(function() {
 
 		<div id="divHaut">
 			<div id="divTitreDoc">
-				<div id="divLogo">
+				<!-div id="divLogo">
 					<a href="/"><h1>SYNCSTATS</h1></a>
 					<img id="imgLogo" src="/images/logoSeul.png" alt="SyncStats Logo"> </img> 
 
 				</div>
 				<div id="menuDivHaut">
-					<div id="divMenu">
+					<!--div id="divMenu">
 
 						<ul id="menu">
 							<li id="1_1">
@@ -307,155 +514,366 @@ $( document ).ready(function() {
 
 							</li>
 						</ul>
-					</div>
+					</div-->
 				</div>
 			</div>
 		</div>
 		<div id="divGauche"></div>
 		<div id="divMenuHaut"></div>
-		<div id="divCentrale" >
-			<div id="divIndex1">
-				<h1 id="titreIndex">Smart Hockey</h1>
+		<div id="divCentrale" class="container-fluid">
 
-				<!--img src="/images/cellEtPucks.png"  height="100" style="float:left; padding:10px;"></img-->
-				<p id="sousTitreIndex" style="padding:15px;">
-					Mobile app to replace scoresheets for automated stats management of hockey leagues and tournaments.</p>
-
-
-
-					<!--div id="bulle2Id" class="divBulle bleu cliquable">
-						<div id="inBulle2Id">
-							Discover SyncStats
-						</div>
-
-					</div-->
-					<div id="ligueVedette" class="boutonRedirige bleu cliquable">
-						Voir notre ligue en vedette >>>>>> 
-
-					</div>
-					<div id="versInfos" class="boutonRedirige vert cliquable">
-						Apprenez sur SyncStats >>>>>> 
-
-					</div>
-
-
-
-			</div>
-			<div id="divIndex2">
-
-			</div>
-				
-			<div id="divProduitSurPli" style="width:100%;position:relative;padding-bottom: 0px;">
+				<ul id="menu-info" style="display:block;float:none;clear:both;">
+						<li id="queFait" class="titre-section choisi">Accueil</li>
+						<li id="commentFonctionne" class="titre-section">Services Offerts</li>
+						<li id="combien" class="titre-section">Tarifs</li>
+						<li id="commentOrganise" class="titre-section">S'abonner</li>
+						
+					</ul>
 					
-					<div id="titreAvantages">Amazing Add-ons to boost-up your game</div>
+					<section id="quoi" class="info choisi" class="container-fluid">
+							<div class="row">
+									<div class="col-md-8 col-sm-12 px-md-5 p-xs-1 ">
+											<h1 id="titreIndex">Smart Hockey</h1>
+										<div class="container-fluid">
+											<div class="row">
+													<div class="col-12">
+														
+									
+															<!--img src="/images/cellEtPucks.png"  height="100" style="float:left; padding:10px;"></img-->
+															<p id="sousTitreIndex" style="padding:15px;">
+																Mobile app to replace scoresheets for automated stats management of hockey leagues and tournaments.</p>
+											
+											
+					
+													</div>
+													<!--div class="col-6">
+															<div id="versInfos" class="boutonRedirige vert cliquable">
+																	Apprenez sur SyncStats >>>>>> 
+											
+															</div>											
+					
+													</div-->
+									
+														<!--div id="bulle2Id" class="divBulle bleu cliquable">
+															<div id="inBulle2Id">
+																Discover SyncStats
+															</div>
+									
+														</div-->
+														<div class="col-12">
+																<iframe width="100%" height="auto" src="https://www.youtube.com/embed/ky4vup3O5ZA?rel=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+									
+														</div>
+														<!--div id="ligueVedette" class="boutonRedirige bleu cliquable">
+															Voir notre ligue en vedette >>>>>> 
+									
+														</div/-->
+					
+														
+									
+									
+									
+												</div>
+												<div class="row">
+														<div id="divProduitSurPli" style="width:100%;position:relative;padding-bottom: 0px;">
+																
+											
+															
+															<div id="divProdSyncStats" class="boiteProduit2">
+																<img     src="/images/icones/smartphone-2.png"></img><h1 id="h1ProdSyncStats">The Hockey App</h1>
+																<h2 id="h2ProdSyncStats"></h2>
+																<div class="boiteAvantages">
+																	<ul>
+																		<li id="li111">No more paper! No more wasted time!</li>
+																		<li id="li112">Easy, flexible, complete app</li>
+																		<li id="li113">Can be used by referee or scorekeeper</li>
+																	</ul>
+																	
+																	
+																</div>
+															</div>
+															
+															<div id="divProdWebSite" class="boiteProduit2">
+																<img     src="/images/icones/web.png"></img><h1 id="h1ProdWebSite">Complete Web Site</h1>
+																<h2 id="h2ProdWebSite"></h2>
+																<div class="boiteAvantages">
+																	<ul>
+																		<li id="li121">All stats and videos logged by apps</li>
+																		<li id="li122">User, player, team profiles</li>
+																		<li id="li123">Schedules, Standings</li>
+																		<li id="li124">and MUCH more...</li>
+																	</ul>
+											
+																	
+																</div>
+															</div>
+															
+															
+															<div id="divProdSyncCam" class="boiteProduit2"> 
+																<img     src="/images/icones/video.png"></img>	
+																				<h1 id="h1ProdSyncCam">AutoEdited Videos</h1>
+																<h2 id="h2ProdSyncCam"></h2>
+																<div class="boiteAvantages">
+																	<ul>
+																		<li id="li131">Simple Android phones required</li>
+																		<li id="li132">Install whereever you like: no limit in quantity</li>
+																		<li id="li133">Enjoy all benefits of the stats web site</li>
+																		<li id="li134">Just a simple "start" and "Stop button" </li>
+																	</ul>
+											
+																	
+																</div>
+															</div>
+															
+															
+																<div id="divProdMultiSport" class="boiteProduit2">
+																	<img     src="/images/icones/web.png"></img><h1 id="h1ProdWebSite">Multisports</h1>
+																	<h2 id="h2ProdWebSite"></h2>
+																	<div class="boiteAvantages">
+																		<ul>
+																			<li id="li151">Ice Hockey, Ball Hockey, Ringuette</li>
+																			<li id="li152">Baseball</li>
+																			<li id="li153">Soccer</li>
+																			<li id="li154">You think of and tell us</li>
+																		</ul>
+												
+																		
+																	</div>
+																</div>
+																
+																	<div id="divProdMultiTerrain" class="boiteProduit2">
+																		<img     src="/images/icones/web.png"></img><h1 id="h1ProdWebSite">Multiterrain</h1>
+																		<h2 id="h2ProdWebSite"></h2>
+																		<div class="boiteAvantages">
+																			<ul>
+																				<li id="li161">Ice rinks</li>
+																				<li id="li162">Gym</li>
+																				<li id="li163">Sport Fields</li>
+											
+																			</ul>
+													
+																			
+																		</div>
+																	</div>
+																	
+											
+													</div>
+											
+													</div>
+													<div class="row">
+															<ul id="productDots" class="px-5"><li><i class="far fa-circle"></i>
+																	<li><i class="far fa-circle"></i>
+																		<li><i class="far fa-circle"></i>
+																			<li><i class="far fa-circle"></i></li>
+																			<li><i class="far fa-circle"></i>
+															</ul>
+													</div>
+										</div>
+												
+									</div>
+									<div class="col-md-4 col-sm-12 p-md-5">
+						
+											<div id="divIndex2BS">
+					
+												</div>
+					
+									</div>
+					
+					
+						
+					</section>
+					<section id="comment" class="info container-fluid">
+						<div class="row pxs-2 px-sm-3 px-md-5">
+							<div class="col-12" >
+									<h1>Fonctionnement général</h1>
+						
+						<p>
+								SyncStats vous offre un système de gestion de marquage sportif avec reprises vidéo intégrées.
+								Dans la trousse, vous trouverez 2 appareils vous permettant de filmer votre événement sportif et le matériel nécessaire pour les installer et en recharger les batteries.
+								L’utilisation de notre application mobile téléchargé sur le 3e appareil contenu dans la trousse vous permet de prendre en note pendant la partie les buts, les aides et les punitions.
+							</p>
+							<h1>Fonctionnalités de l’application mobile SyncStats</h1>
+						<p>
+								Vous pouvez utiliser l’application mobile SyncStats selon 3 modes d’utilisation:</p>
+								<ul style="list-style: none">
+								<li><u>Faits saillants</u>: Permet de capter des reprises vidéo en rafale.</li>
+									<li><u>Équipe</u>: Permet d’associer les évènements (but et punitions) à l’équipe concernée.</li>
+											<li><u>Complet</u>: Permet d’associer les évènements (buts et punitions) aux joueurs et joueuses impliqués (but et aide).</li>
+								</ul>
 
-				<a href="/products/syncstats.html">
-				<div id="divProdSyncStats" class="boiteProduit2">
-					<img     src="/images/icones/smartphone-2.png"></img><h1 id="h1ProdSyncStats">The Hockey App</h1>
-					<h2 id="h2ProdSyncStats"></h2>
-					<div class="boiteAvantages">
-						<ul>
-							<li id="li111">No more paper! No more wasted time!</li>
-							<li id="li112">Easy, flexible, complete app</li>
-							<li id="li113">Can be used by referee or scorekeeper</li>
-						</ul>
-						
-						
-					</div>
-				</div>
-				</a>
-				<a href="/products/website.html">
-				<div id="divProdWebSite" class="boiteProduit2">
-					<img     src="/images/icones/web.png"></img><h1 id="h1ProdWebSite">Complete Web Site</h1>
-					<h2 id="h2ProdWebSite"></h2>
-					<div class="boiteAvantages">
-						<ul>
-							<li id="li121">All stats and videos logged by apps</li>
-							<li id="li122">User, player, team profiles</li>
-							<li id="li123">Schedules, Standings</li>
-							<li id="li124">and MUCH more...</li>
-						</ul>
+<h1>Consultation des reprises vidéos</h1>
+<p>Vous trouverez sur notre site web le calendrier, l’horaire, le classement des équipes de votre ligue, les reprises vidéos (but et/ou faits saillants) et les statistiques le cas échéant.
+</p>
+<h1>Conditions nécessaires</h1>
+<p>L’application mobile de marquage SyncStats ainsi que les SyncCam sont fonctionnelles sans réseau. Toutefois, pour la synchronisation des données statistiques et l’extraction des séquences vidéo sur notre site, nos appareils doivent être connectés après l’utilisation.
+</p>
 
-						
+								</div>
+						</div>
+						<!--h1 id="titre2">Des appareils intelligent, une utilisation facile</h1>
+						<ul>
+						<li id="2li1">Les caméras vidéos filment le match</li>
+						<li id="2li2">L'arbitre (ou le marqueur) possède un "cliqueur"</li>
+						<li id="2li3">Lorsque l'arbitre clique, un signal est envoyé aux caméras</li>
+						<li id="2li4">Les caméras découpent les vidéos et l'envoie sur le site web.</li>
+						</ul>
+						<p id="2p1">Le vidéo ci-contre montre un arbitre entrer un but sur son téléphone.
+										<div class="divVideo">
+							<iframe width="420" height="315" src="http://www.youtube.com/embed/2XOKY-Z2WrI" frameborder="0" allowfullscreen style="zIndex:0.5;"></iframe>
+					
+						</div>
+						</p>
+						</ul-->
+						</section>
+					<section id="combien" class="info container-fluid">
+						<div class="row py-0 pxs-2 px-sm-3 px-md-5">
+								<div class="col-12  px-2 px-md-5" >
+										<h1>Type d'abonnement</h1>
+										<p>
+							Nous vous accompagnerons pour la configuration de votre service et de vos options d’utilisation. 
+							Vous recevrez la trousse SyncStats quelques temps avant le début de votre abonnement. </p>
+						<p>	Remplissez les informations suivantes pour avoir un aperçu de notre gamme de prix.</p>
+
+						</div>
 					</div>
-				</div>
-				</a>
-				<a href="/products/synccam.html">
+					<div class="row pxs-2 p-sm-3 px-md-5">
+							<div class="col-12 col-sm-6 col-md-4 px-2 px-md-5" >
+									<div class="boutonRedirige bleu">
+											Ligue
+					
+										</div>
+					
+							
+										<div class="form-group">
+												<label for="month_season">Nombre de mois</label>
+												<input type="number" class="form-control" id="month_season"/>
+											  </div>
+										<div class="form-group">
+												<label for="team_season">Nombre d'équipes</label>
+												<input type="number" class="form-control" id="team_season"/>
+											  </div>
+										<div class="form-group">
+													<label for="cam_season">Nombre de caméra (recommandé: 2)</label>
+													<input type="number" class="form-control" id="cam_season"/>
+												  </div>
+										<div class="form-group">
+													<p id="result_season" class="price"></p>
+												  </div>
+												
+											  
+							</div>
+							<div class="col-12 col-sm-6  col-md-4 px-2 px-md-5" >
+											<div class="boutonRedirige bleu">
+													Tournoi
+							
+												</div>
+							
+										
+													<div class="form-group">
+														<label for="days_tournament">Nombre de jours</label>
+														<input type="number" class="form-control" id="days_tournament"/>
+													  </div>
+												<div class="form-group">
+														<label for="teams_tournament">Nombre d'équipes</label>
+														<input type="number" class="form-control" id="teams_tournament"/>
+													  </div>
+												<div class="form-group">
+															<label for="cam_tournament">Nombre de caméra (recommandé: 2)</label>
+															<input type="number" class="form-control" id="cam_tournament"/>
+														  </div>
+												<div class="form-group">
+															<p id="result_tournament"  class="price"></p>
+														  </div>
+							
+						
+												</div>
+
+							
+							<div class="col-12 col-sm-6  col-md-4 px-2 px-md-5" >
+								<div class="boutonRedirige bleu">
+										Équipe
 				
-				<div id="divProdSyncCam" class="boiteProduit2">
-					<img     src="/images/icones/video.png"></img>	
-									<h1 id="h1ProdSyncCam">AutoEdited Videos</h1>
-					<h2 id="h2ProdSyncCam"></h2>
-					<div class="boiteAvantages">
-						<ul>
-							<li id="li131">Simple Android phones required</li>
-							<li id="li132">Install whereever you like: no limit in quantity</li>
-							<li id="li133">Enjoy all benefits of the stats web site</li>
-							<li id="li134">Just a simple "start" and "Stop button" </li>
-						</ul>
-
-						
-					</div>
-				</div>
+									</div>
 				
-								</a>
-				<a href="/products/syncboard.html">
+								
 
-				<div id="divSyncBoard" class="boiteProduit2">
-										<img     src="/images/icones/television.png"></img><h1 id="h1SyncBoard">Intelligent Scoreboard</h1>
-					<h2 id="h2SyncBoard"></h2>
-					<div class="boiteAvantages">
-						<ul>
-							<li id="li141">Controlled wirelessly by SyncStats app</li>
-							<li id="li142">Display Score, time, teams...</li>
-							<li id="li143">Also stats and even videos!</li>
-						</ul>
+										<div class="form-group">
+											<label for="month_team">Nombre de mois</label>
+											<input type="number" class="form-control" id="month_team"/>
+										  </div>
+									<div class="form-group">
+												<label for="cam_team">Nombre de caméra (recommandé: 2)</label>
+												<input type="number" class="form-control" id="cam_team"/>
+											  </div>
+									<div class="form-group">
+												<p id="result_team"  class="price"></p>
+											  </div>
 
-						
+
+
+							</div>
+
+						</div>
+						<div class="row pxs-2 p-sm-3 px-md-5">
+								<div class="col-12  px-2 px-md-5" >
+						<p>
+							* Ces prix sont à titre indicatif. Contactez-nous au <a href="info@syncstats.com">info@syncstats.com</a> pour obtenir une soumission adaptée à vos besoins.
+
+						</div>
 					</div>
-				</div>
-				</a>
-								 	
+						<!--h1 id="titre3">Pour une poignée de rondelles</h1>
+						<p id="3p1">Chaque ligue a sa propre façon de fonctionner et ses propres besoins.</p> 
+							<p id="3p2">Des façon générale, nos clients paient entre 5$ et 10$ par match (les joueurs ne paient rien pour voir les vidéos).</p>
+							<p id="3p3">Le prix va varier selon plusieurs facteurs</p>
+							<ul>
+						<li id="3li1">La résolution des vidéos</li>
+						<li id="3li2">Si vous utilisez vos propres appareils ou si vous les louez</li>
+						<li id="3li3">Le nombre de caméras utilisées pendant les matchs</li>
+						<li id="3li4">La main d'oeuvre, si disponible</li>
+							</ul-->
+					</section>
+					<section id="organisation" class="info">
+						<div class="row  px-2 px-md-5 ">
+							<div class="col-12">
+								<h1>S'abonner à SyncStats</h1>
+								<p>Pour connaître vos besoins, veuillez remplir le questionnaire suivant : <a class="lien" href="https://docs.google.com/forms/d/e/1FAIpQLScHJp6QwxpKoznOoPzwXX0T4AVSeYTAMJi4mul2xveOJ-YEZA/viewform?vc=0&c=0&w=1">s'abonner à SyncStats</a></p>
+
+									<p>Nous vous contacterons pour finaliser votre abonnement.
+									</p>
+
+										<p>Veuillez prévoir un délai de deux semaines pour recevoir votre trousse.
+										</p>
+
+											<p>Lorsque vous débutez l’utilisation du système SyncStats, un membre de notre équipe pourra vous accompagner dans l’utilisation de nos différents modes et de leurs fonctionnalités.
+											</p>
+
+												<p>Vous trouverez un bref guide pour l’utilisation de l’application de marquage dans la trousse SyncStats.
+												</p>
+
+													<p>Au besoin, vous pouvez nous joindre par courriel à l’adresse suivante : <a href="mailto:info@syncstats.com">info@syncstats.com</a> </p>
+
+												</div>
+												</div>
+												
+						<!--h1 id="titre4">Service pro-actif</h1>
+						<p id="4p1">L'idéal, à ce moment, est de <a href="mailto:info@syncstats.com">nous contacter</a></p-->
+						
+					</section>
 				
+					
+					
+
+
+			
+		
+
 			</div>
+		
 
-
-
-		</div>
 		
 		
 		<div id="divDroite">
-			<div id="divIndexDroite">
-				<h1>SyncStats</h1>
-				<h2>Base mobile app</h2>
-				<ul>
-					<li>
-						Keep track of score and statistics during the game
-					</li>
-					<li>
-						Eliminate paperwork and retyping, all synced online automaticaly
-					</li>
-					<li>
-						Enjoy a nice web site for your league
-					</li>
-					<li>
-						Not expensive at all, only need a smartphone!
-					</li>
-				</ul>
-				<h2>Extended features*</h2>
-				<ul>
-					<li>
-						Use a remotely controlled scoreboard
-					</li>
-					<li>
-						Record videos of your goals, get highlights, all automatic!
-					</li>
-				</ul>
-				<p>
-					* Extended features still under development, contact us to try them.
-				</p>
 
-			</div>
 
 
 		</div>
@@ -464,18 +882,21 @@ $( document ).ready(function() {
 		<script type="text/javascript" charset="utf-8">
 				$('#divHaut').empty();
 				$('#divDroite').empty();
-			developper(28);
+			developper(15);
+			$('#divTitreDoc').append($('<a></a>').attr("href","/").append($('<img src="/images/logoFondNoir.png" height="60px"/>')));
 
+			$('#divProdMultiSport').hide();
+			$('#divProdMultiTerrain').show();
+			$('#divProdSyncCam').hide();
+						$('#divProdSyncStats').hide()
+						$('#divProdWebSite').hide();
+						$('#productDots li:nth-child(4)').empty().append($('<i class="fas fa-circle"></i>'));
 			detruitNoeud('divGauche');
 	//		detruitNoeud('dBC_1');
 		//	detruitNoeud('dBC_2');
 
 			//		videNoeud('divDroite');
-			document.getElementById('divCentrale').style.width = "76%";
-			document.getElementById('divCentrale').style.marginLeft = "2%";
-			document.getElementById('divCentrale').style.marginRight = "2%";
 
-			document.getElementById('divCentrale').style.left = "0";
 
 			//document.getElementById('divDroite').style.backgroundColor = "#FFF";
 			//		detruitDivGaucheDroite();
@@ -489,32 +910,156 @@ $( document ).ready(function() {
 			$('#barreNav').hide();
 			faitDivIndex1();
 			$(".adsbygoogle").remove();
-			/*
-			 maListe = document.getElementById("liste1");
-			 li1 = document.createElement('LI')
-			 li1.innerHTML=window.tl_l1e1;
-			 li2 = document.createElement('LI')
-			 li2.innerHTML=window.tl_l1e2;
-			 li3 = document.createElement('LI')
-			 li3.innerHTML=window.tl_l1e3;
-			 maListe.appendChild(li1);
-			 maListe.appendChild(li2);
-			 maListe.appendChild(li3);
 
-			 maListe = document.getElementById("liste2");
-			 li1 = document.createElement('LI')
-			 li1.innerHTML=window.tl_l2e1;
-			 li2 = document.createElement('LI')
-			 li2.innerHTML=window.tl_l2e2;
-			 maListe.appendChild(li1);
-			 maListe.appendChild(li2);
+			 delai=300;
+			 compteur = -1;
+			 
+			setInterval(function(){
+				compteur=compteur+1;
+				switch(compteur%5){
+					case 0:
+						
+						$('#divProdMultiTerrain').fadeOut(delai).promise().done(function(){
+						$('#divProdSyncStats').fadeIn(delai)});
+						$('#productDots li:nth-child(4)').empty().append($('<i class="far fa-circle"></i>'));
+						$('#productDots li:nth-child(0)').empty().append($('<i class="fas fa-circle"></i>'));
+					break;
+					case 1:
+					$('#divProdSyncStats').fadeOut(delai).promise().done(function(){
+						$('#divProdSyncCam').fadeIn(delai)});
+						$('#productDots li:nth-child(0)').empty().append($('<i class="far fa-circle"></i>'));
+						$('#productDots li:nth-child(1)').empty().append($('<i class="fas fa-circle"></i>'));
+					break;
+					case 2:
+					$('#divProdSyncCam').fadeOut(delai).promise().done(function(){
+						$('#divProdWebSite').fadeIn(delai)});
+						$('#productDots li:nth-child(1)').empty().append($('<i class="far fa-circle"></i>'));
+						$('#productDots li:nth-child(2)').empty().append($('<i class="fas fa-circle"></i>'));
+					break;
+					case 3:
+					$('#divProdWebSite').fadeOut(delai).promise().done(function(){
+						$('#divProdMultiSport').fadeIn(delai)});
+						$('#productDots li:nth-child(2)').empty().append($('<i class="far fa-circle"></i>'));
+						$('#productDots li:nth-child(3)').empty().append($('<i class="fas fa-circle"></i>'));
+					break;
+					case 4:
+					$('#divProdMultiSport').fadeOut(delai).promise().done(function(){
+						$('#divProdMultiTerrain').fadeIn(delai)});
+						$('#productDots li:nth-child(3)').empty().append($('<i class="far fa-circle"></i>'));
+						$('#productDots li:nth-child(4)').empty().append($('<i class="fas fa-circle"></i>'));
+					break;
 
-			 document.getElementById('index_h1').innerHTML=window.tl_index_h1;
-			 */
-			/*window.onload = function () {
-			 document.getElementById('divSync').className="apresGauche";
-			 document.getElementById('divStats').className="apresDroite";
-			 }*/
+				}
+
+//				$('#productDots li:nth-child('+compteur%5+')').empty().append($('<i class="fas fa-circle"></i>'))
+			},5000)
+			var height = $('iframe').width()*0.6;
+			$('iframe').attr('height',height+'px');
+
+			$(window).on('resize', function(){
+				var height = $('iframe').width()*0.6;
+			$('iframe').attr('height',height+'px');
+
+			$('#productDots li').on("click",{n:compteur%5},function(event){
+				compteur = event.data.n;
+
+			})
+
+});
+detruitNoeud('divDroite');
+detruitNoeud('divLigue');
+$('#divCentrale').css('width','100%');
+
+toggleMenu = false;
+
+$('.titre-section').click(function(){
+				$('.titre-section').toggleClass("choisi",false);
+			
+				$(this).addClass("choisi");
+				var indice = $(this).index()+1;
+				$('section').removeClass('choisi');
+				$('section:nth-child('+indice+')').addClass("choisi")//toggleClass("choisi",true);
+			});
+			
+			
+			//////
+			 $('.titre-section').mouseenter(function(){
+          $(this).css({
+                transition : 'color 0.35s ease-in-out',
+                "color": "#00A7DB"
+            });
+      }).mouseleave(function(){
+          $(this).css({
+                transition : 'color 0.35s ease-in-out',
+                "color": "black"
+            });
+      });
+	  $('.titre-section').addClass('d-none d-md-block');
+	  $('#menu-info').prepend($('<li></li>').attr("id","btnMenu").on("click",function(){
+		  if(!toggleMenu){
+		$('ul#menu-info> li.titre-section').addClass('d-block titreMob').css("float:none; clear:both; text-align:center");
+	}else{
+		$('ul#menu-info>  li.titre-section').removeClass('d-block titreMob').css("float:left");
+	
+		}
+
+		toggleMenu=!toggleMenu;
+	  }).addClass('d-block d-md-none border p-2').append($('<i class="fa fa-bars titre-section "></i>')));
+$('.titre-section:nth-child(2)').removeClass('d-none');
+
+const setUpFees = 20;
+const perMonthPerCamCost = 10;
+const perMonthPerCamCostBase = 5;
+
+function compute_season(){
+	const perTeamPerMonthCost = 12;
+	resSeas = $('#month_season').val()*parseInt($('#team_season').val())*perTeamPerMonthCost
+	+parseInt($('#month_season').val())*(parseInt($('#cam_season').val())*perMonthPerCamCost+perMonthPerCamCostBase)+setUpFees;
+	$('#result_season').text(resSeas +' $' ).append($('<sup></sup>').text('*'));
+}
+function compute_tournament(){
+	const perDayCost = 12;
+	const perTeamCost = 12;
+	resTour = parseInt($('#teams_tournament').val())*perTeamCost
+	+perDayCost*parseInt($('#days_tournament').val())*parseInt($('#cam_tournament').val())+setUpFees;
+	$('#result_tournament').text(resTour+' $').append($('<sup></sup>').text('*'));
+}
+function compute_team(){
+	const forTeamPerMonthCost=25;
+	resTeam = $('#month_team').val()*forTeamPerMonthCost
+	+parseInt($('#month_team').val())*(parseInt($('#cam_team').val())*perMonthPerCamCost+perMonthPerCamCostBase )+setUpFees;
+	$('#result_team').text(resTeam+' $').append($('<sup></sup>').text('*'));
+}
+
+$('#cam_season').on('change',compute_season);
+$('#month_season').on('change',compute_season);
+$('#team_season').on('change',compute_season);
+
+$('#cam_tournament').on('change',compute_tournament);
+$('#days_tournament').on('change',compute_tournament);
+$('#teams_tournament').on('change',compute_tournament);
+
+$('#cam_team').on('change',compute_team);
+$('#month_team').on('change',compute_team);
+
+$.ajax({
+                        url : "/stats2/Ligues2JSON.php",
+                        datatype : 'json',
+                        contentType: "application/json",
+                        type : 'POST',
+                        data : {
+                        },
+                        contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+                        success : function(response) {
+                           Ligues = eval('('+response+')');
+						   getLiguesDePerso(getValue('userId'),Ligues);
+                        },
+                        error : function(xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            alert(err.Message + "  --  ereur ");
+                        }
+                    });
+
 
 		</script>
 	</body>

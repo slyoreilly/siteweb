@@ -39,49 +39,11 @@ $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
 if (!$conn) {
 	die("Connection failed: " . mysqli_connect_error());
 }
-
+ 
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 
-/////////////////////////////////////////////////////////////
-//
-//
-
-function trouveNomJoueurParID($ID,$maConn){ 
-
-$resultJoueur = mysqli_query($maConn,"SELECT * FROM TableJoueur WHERE joueur_id = '{$ID}'")
-or die(mysqli_error($maConn));  
-if($rangeeJoueur=mysqli_fetch_array($resultJoueur))
-		  return ($rangeeJoueur['NomJoueur']); 
-else { return ("Anonyme"); }
-} 
-
-
-
-/////////////////////////////////////////////////////////////
-
-/////////////////////////////////////////////////////
-	//
-//   Trouve Nom de l'equipe � partir du ID.
-//
-////////////////////////////////////////////////////
-
-function trouveNomParIDEquipe($IEq,$maConn)
-{
-$resultEquipe2 = mysqli_query($maConn,"SELECT * FROM TableEquipe WHERE equipe_id='{$IEq}'")
-or die(mysqli_error($maConn));  
-while($rangeeEquipe2=mysqli_fetch_array($resultEquipe2))
-{
-			
-		if($rangeeEquipe2['equipe_id']==$IEq)
-	{
-	$NomEquipe =$rangeeEquipe2['nom_equipe'];// Ce sont de INT
-	}
-}
-//$NomEquipe ="1";
-return $NomEquipe;
-}
 
 //////////////////////////////////////////////////////
 //
@@ -121,48 +83,6 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 
 
 
-//{
-$qVids = 	"SELECT nomFichier,camId,chrono,eval,nbVues,etat,videoId,emplacement, nomThumbnail  FROM Video  WHERE nomMatch = '{$matchID}'  OR nomMatch = '{$matchPourVideos}' ORDER BY nomMatch, angleOk DESC";
-$resultVids = mysqli_query($conn, $qVids)
-or die(mysqli_error($conn).$qVids);  	
-$mesVids=array();
-$mesCam=array();
-$mesChrono=array();
-$mesEval=array();
-$mesNbVues=array();
-$mesEtat=array();
-$mesVidId=array();
-$mesEmplacement=array();
-$mesThumbnails=array();
-while($rangeeVids=mysqli_fetch_array($resultVids))
-	{
-		array_push($mesVids,$rangeeVids[0]);
-		array_push($mesCam,$rangeeVids[1]);
-		array_push($mesChrono,$rangeeVids[2]);
-		array_push($mesEval,$rangeeVids[3]);
-		array_push($mesNbVues,$rangeeVids[4]);
-		array_push($mesEtat,$rangeeVids[5]);
-		array_push($mesVidId,$rangeeVids[6]);
-		array_push($mesEmplacement,$rangeeVids[7]);
-		array_push($mesThumbnails,$rangeeVids[8]);
-		}
-
-
-$I0=0;
-$Sommaire = array();
-$Ibuts = 0;
-$JSONstring = "{\"matchID\": \"".$matchID."\",";
-$JSONstring .="\"date\": \"".$mDate."\",";
-$JSONstring .="\"nbVids\": \"".count($mesVids)."\",";
-$JSONstring .="\"eqDom\": \"".$mEqDom."\",";
-$JSONstring .="\"eqVis\": \"".$mEqVis."\",";
-$JSONstring .="\"eqDomId\": \"".$mEqDomId."\",";
-$JSONstring .="\"eqVisId\": \"".$mEqVisId."\",";
-//$JSONstring .="\"qVids\": \"".$qVids."\",";
-//$JSONstring .="\"buts\": [";
-$buts=array();
-//foreach($equipe as $Ieq)
-//{
 	////////////////////////////////////////
 	//
 	//		Partie des Clips
@@ -171,141 +91,232 @@ $buts=array();
 	//		En principe, ils vont déclencher un nouvel élément de la table Video.
 	//
 	////////////////////////////////////////////////
-$qClips="SELECT * FROM Clips WHERE matchId = '{$matchID}'  OR matchId = '{$matchPourVideos}' ORDER BY chrono";
-	$resultClips = mysqli_query($conn,$qClips )
-or die(mysqli_error($conn));  	
-$IC=0;
-$clips=array();
-//$JSONstring .="\"qClips\": \"".$qClips."\",";
-while($rangeeClips=mysqli_fetch_array($resultClips))
-			{
-				
-				$clips[$IC]=array();
-				$clips[$IC]['video']=array();
-				$clips[$IC]['chrono']=$rangeeClips['chrono'];
-					for($b=0;$b<count($mesVids);$b++)
-					{
-						if(abs($rangeeClips['chrono']-$mesChrono[$b])<20000)
-						{
-							$clips[$IC]['video'][count($clips[$IC]['video'])]['fic']=$mesVids[$b];
-							$clips[$IC]['video'][count($clips[$IC]['video'])-1]['cam']=$mesCam[$b];
-							$clips[$IC]['video'][count($clips[$IC]['video'])-1]['eval']=$mesEval[$b];
-							$clips[$IC]['video'][count($clips[$IC]['video'])-1]['nbVues']=$mesNbVues[$b];
-							$clips[$IC]['video'][count($clips[$IC]['video'])-1]['etat']=$mesEtat[$b];
-							$clips[$IC]['video'][count($clips[$IC]['video'])-1]['videoId']=$mesVidId[$b];
-							$clips[$IC]['video'][count($clips[$IC]['video'])-1]['chrono']=$rangeeClips['chrono'];
-							$clips[$IC]['video'][count($clips[$IC]['video'])-1]['emplacement']=$mesEmplacement[$b];
-							$clips[$IC]['video'][count($clips[$IC]['video'])-1]['thumbnail']=$mesThumbnails[$b];
-				
-				
-						}
-					}
-				$IC++;
-			}
-		
-$JSONstring .= "\"clips\": ".json_encode($clips).",";
-$qEv="SELECT TableEvenement0.*,TableJoueur.* FROM TableEvenement0 JOIN TableJoueur ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id) WHERE match_event_id = '{$matchID}' AND code = 0 ORDER BY chrono";
-$JSONstring .="\"qEv\": \"".$qEv."\",";
-$resultEvent = mysqli_query($conn,$qEv) or die(mysqli_error($conn));  	
 
+	
+//{
+$qVids = "
+	SELECT nomFichier,camId,Clips.chrono,eval,nbVues,etat,videoId,emplacement, nomThumbnail,reference , TypeClips.labelFrench, TypeClips.labelEnglish
+		 FROM Video 
+		 INNER JOIN Clips
+			 ON (Clips.clipId=Video.reference)
+		LEFT JOIN TypeClips 
+			ON (TypeClips.typeClipId = Clips.type)
+  	WHERE (nomMatch = '{$matchID}'  OR nomMatch = '{$matchPourVideos}') AND Video.type=5 ORDER BY clipId, angleOk DESC";
+$resultVids = mysqli_query($conn, $qVids)
+or die(mysqli_error($conn).$qVids);  	
+
+$bufEvent=0;
+$clips=array();
+while($rangeeVids=mysqli_fetch_array($resultVids))
+	{
+		if($rangeeVids['reference']!=$bufEvent){
+			$unClip=array();
+			$unClip['chrono']=$rangeeVids['chrono'];
+			$unClip['labelFrench']=$rangeeVids['labelFrench'];
+			$unClip['labelEnglish']=$rangeeVids['labelEnglish'];
+			$unClip['video']=array();
+			
+			array_push($clips,$unClip);
+			
+		}
+		$unVideo=array();
+
+		$unVideo['fic']=$rangeeVids['nomFichier'];
+		$unVideo['cam']=$rangeeVids['camId'];
+		$unVideo['eval']=$rangeeVids['eval'];
+		$unVideo['nbVues']=$rangeeVids['nbVues'];
+		$unVideo['etat']=$rangeeVids['etat'];
+		$unVideo['videoId']=$rangeeVids['videoId'];
+		$unVideo['emplacement']=$rangeeVids['emplacement'];
+		$unVideo['thumbnail']=$rangeeVids['nomThumbnail'];
+		array_push($unClip['video'],$unVideo);
+//		array_push($clips,$unClip);
+		$bufEvent=$rangeeVids['reference'];
+//		array_push($unClip['video'],$unVideo);
+		end($clips);
+		$key = key($clips);
+		$clips[$key]=$unClip;
+		reset($clips);
+
+		}
+
+
+$I0=0;
+$Sommaire = array();
+$Sommaire['clips']=$clips;
+$Ibuts = 0;
+$Sommaire['matchID']=$matchID;
+$Sommaire['matchId']=$matchPourVideos;
+$Sommaire['date']=$mDate;
+$Sommaire['eqDom']=$mEqDom;
+$Sommaire['eqVis']=$mEqVis;
+$Sommaire['eqDomId']=$mEqDomId;
+$Sommaire['eqVisId']=$mEqVisId;
+
+
+	$qEv="SELECT 
+	TableEvenement0.event_id,
+    TableEvenement0.souscode,
+    TableEvenement0.chrono as mChrono,
+    TableEvenement0.joueur_event_ref,
+    TableEquipe.nom_equipe,
+    TableEquipe.equipe_id,
+    Passeur1.joueur_event_ref AS passeur1Id,
+    Passeur1.NomJoueur AS passeur1,
+    Passeur1.NumeroJoueur AS noPasseur1,
+    Passeur1.P2jId AS passeur2Id,
+    Passeur1.P2nomJoueur AS passeur2,
+    Passeur1.P2noJoueur AS noPasseur2,
+    TableJoueur.NomJoueur,
+    TableJoueur.NumeroJoueur,
+    Video.*,
+    TableMatch.match_id
+FROM
+    TableEvenement0
+        INNER JOIN
+    TableMatch ON (TableMatch.matchIdRef = TableEvenement0.match_event_id)
+        INNER JOIN
+    TableJoueur ON (TableEvenement0.joueur_event_ref = TableJoueur.joueur_id)
+        INNER JOIN
+    TableEquipe ON (TableEquipe.equipe_id = TableEvenement0.equipe_event_id)
+        LEFT JOIN
+    Video ON (Video.reference = TableEvenement0.event_id)
+        AND nomMatch = '{$matchPourVideos}'
+        LEFT JOIN
+    (SELECT 
+        TableEvenement0.joueur_event_ref,
+            TableEvenement0.chrono,
+            TableEvenement0.event_id,
+            TableJoueur.NomJoueur,
+            TableJoueur.NumeroJoueur,
+            Passeur2.NomJoueur AS P2nomJoueur,
+            Passeur2.NumeroJoueur AS P2noJoueur,
+            Passeur2.joueur_event_ref AS P2jId
+    FROM
+        TableEvenement0
+    INNER JOIN TableJoueur ON (TableEvenement0.joueur_event_ref = TableJoueur.joueur_id)
+    INNER JOIN TableMatch ON (TableMatch.matchIdRef = TableEvenement0.match_event_id)
+    LEFT JOIN (SELECT 
+        joueur_event_ref,
+            chrono,
+            event_id,
+            TableJoueur.NomJoueur,
+            TableJoueur.NumeroJoueur
+    FROM
+        TableEvenement0
+    INNER JOIN TableJoueur ON (TableEvenement0.joueur_event_ref = TableJoueur.joueur_id)
+    INNER JOIN TableMatch ON (TableMatch.matchIdRef = TableEvenement0.match_event_id)
+    WHERE
+        TableEvenement0.code = 1
+            AND match_id = '{$matchPourVideos}'
+    ORDER BY TableEvenement0.event_id DESC) AS Passeur2 ON (Passeur2.chrono = TableEvenement0.chrono)
+        AND (Passeur2.event_id <> TableEvenement0.event_id)
+    WHERE
+        TableEvenement0.code = 1
+            AND match_id = '{$matchPourVideos}'
+    GROUP BY chrono) AS Passeur1 ON (Passeur1.chrono = TableEvenement0.chrono)
+WHERE
+    (match_id = '{$matchPourVideos}')
+        AND (TableEvenement0.code = 0)
+        AND (Video.type = 0 OR Video.type IS NULL)
+ORDER BY TableEvenement0.chrono , angleOk DESC";
+
+
+$setupMySql = mysqli_query($conn,"SET SQL_BIG_SELECTS=1" ) or die('Cannot complete SETUP BIG SELECTS because: ' . mysqli_error($conn));
+$resultEvent = mysqli_query($conn,$qEv) or die(mysqli_error($conn));  	
+$buts=array();
+$Sommaire['qEv']=$qEv;
 
 while($rangeeEv=mysqli_fetch_array($resultEvent))
 	{
-				$Sommaire[$Ibuts]['video']=array();
-		for($b=0;$b<count($mesVids);$b++)
-		{
-			if(abs($rangeeEv['chrono']-$mesChrono[$b])<10000)
-			{
-				
-				$Sommaire[$Ibuts]['video'][count($Sommaire[$Ibuts]['video'])]['fic']=$mesVids[$b];
-				$Sommaire[$Ibuts]['video'][count($Sommaire[$Ibuts]['video'])-1]['cam']=$mesCam[$b];
-				$Sommaire[$Ibuts]['video'][count($Sommaire[$Ibuts]['video'])-1]['eval']=$mesEval[$b];
-				$Sommaire[$Ibuts]['video'][count($Sommaire[$Ibuts]['video'])-1]['nbVues']=$mesNbVues[$b];
-				$Sommaire[$Ibuts]['video'][count($Sommaire[$Ibuts]['video'])-1]['etat']=$mesEtat[$b];
-				$Sommaire[$Ibuts]['video'][count($Sommaire[$Ibuts]['video'])-1]['videoId']=$mesVidId[$b];
-				$Sommaire[$Ibuts]['video'][count($Sommaire[$Ibuts]['video'])-1]['emplacement']=$mesEmplacement[$b];
-				$Sommaire[$Ibuts]['video'][count($Sommaire[$Ibuts]['video'])-1]['thumbnail']=$mesThumbnails[$b];
-							}
-		}
-		
-//		foreach($mesVids as $val)
-//		{
-//			if(abs($rangeeEv['chrono']-substr($val,0,stripos($val,'.')))<20000)
-//			{
-//				$Sommaire[$Ibuts]['video']=$val;
-//			}
-//		}
-		
-		
-				$Sommaire[$Ibuts]['equipe']=trouveNomParIDEquipe($rangeeEv['equipe_event_id'],$conn);
-				$Sommaire[$Ibuts]['equipeId']=$rangeeEv['equipe_event_id'];
-				$Sommaire[$Ibuts]['chrono']=$rangeeEv['chrono'];
+		if($rangeeEv['event_id']!=$bufEvent){
+			$unBut=array();
+			$unBut['chrono']=$rangeeEv['mChrono'];
+			$unBut['equipe']=$rangeeEv['nom_equipe'];
+			$unBut['equipeId']=$rangeeEv['equipe_id'];
+			
+			$unBut['marqueur']=$rangeeEv['NomJoueur'];
+			$unBut['noMarqueur']=$rangeeEv['NumeroJoueur'];
+			$unBut['marqueurId']=$rangeeEv['joueur_event_ref'];
+			$unBut['passeur1Id']=$rangeeEv['passeur1Id'];
+			$unBut['passeur1']=$rangeeEv['passeur1'];
+			$unBut['noPasseur1']=$rangeeEv['noPasseur1'];
+			$unBut['passeur2Id']=$rangeeEv['passeur2Id'];
+			$unBut['passeur2']=$rangeeEv['passeur2'];
+			$unBut['noPasseur2']=$rangeeEv['noPasseur2'];
 
-				$qualif=0;
-				$Sommaire[$Ibuts]['qualif']=null;
-				if($rangeeEv['souscode']%10==3)
-				{$Sommaire[$Ibuts]['qualif'][$qualif] = "TP";
-				$qualif=$qualif+1;}
-				if($rangeeEv['souscode']%10==9)
-				{$Sommaire[$Ibuts]['qualif'][$qualif] = "FD";
-				$qualif=$qualif+1;}
-				if(floor($rangeeEv['souscode']/10)==4)
-				{$Sommaire[$Ibuts]['qualif'][$qualif] = "DN";
-				$qualif=$qualif+1;}
-				if(floor($rangeeEv['souscode']/10)==5)
-				{$Sommaire[$Ibuts]['qualif'][$qualif] = "AN";
-				$qualif=$qualif+1;}
-				
-	
-	
-				$Sommaire[$Ibuts]['marqueur']=$rangeeEv['NomJoueur'];
-				$Sommaire[$Ibuts]['noMarqueur']=$rangeeEv['NumeroJoueur'];
-								$Sommaire[$Ibuts]['marqueurId']=$rangeeEv['joueur_event_ref'];
-				$sql_passeurs = mysqli_query($conn,"SELECT TableEvenement0.joueur_event_ref,TableJoueur.* FROM TableEvenement0 
-														JOIN TableJoueur
-															ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id)
-														WHERE match_event_id = '{$matchID}'  AND chrono = '{$rangeeEv['chrono']}' AND code = '1'")
-				or die(mysqli_error($conn)); 
-				$Ipas = 0;
-				while($rangeeEv=mysqli_fetch_array($sql_passeurs))
-				{
-							if($Ipas==0)
-							{
-//								$Sommaire[$Ibuts]['passeur1']=trouveNomJoueurParID($rangeeEv['joueur_event_ref']);				 	
-								$Sommaire[$Ibuts]['passeur1Id']=$rangeeEv['joueur_event_ref'];
-				$Sommaire[$Ibuts]['passeur1']=$rangeeEv['NomJoueur'];
-				$Sommaire[$Ibuts]['noPasseur1']=$rangeeEv['NumeroJoueur'];
-							}else
-							{
-								//	$Sommaire[$Ibuts]['passeur2']=trouveNomJoueurParID($rangeeEv['joueur_event_ref']);				 	
-								$Sommaire[$Ibuts]['passeur2Id']=$rangeeEv['joueur_event_ref'];
-								$Sommaire[$Ibuts]['passeur2']=$rangeeEv['NomJoueur'];
-								$Sommaire[$Ibuts]['noPasseur2']=$rangeeEv['NumeroJoueur'];
-							}
-						$Ipas++;	
-				}
-				//$JSONstring .= json_encode($Sommaire[$Ibuts]).",";
-				$Ibuts++;
-				
+
+			$qualif=0;
+			$unBut['qualif']=null;
+			if($rangeeEv['souscode']%10==3)
+			{$unBut['qualif'][$qualif] = "TP";
+			$qualif=$qualif+1;}
+			if($rangeeEv['souscode']%10==9)
+			{$unBut['qualif'][$qualif] = "FD";
+			$qualif=$qualif+1;}
+			if(floor($rangeeEv['souscode']/10)==4)
+			{$unBut['qualif'][$qualif] = "DN";
+			$qualif=$qualif+1;}
+			if(floor($rangeeEv['souscode']/10)==5)
+			{$unBut['qualif'][$qualif] = "AN";
+			$qualif=$qualif+1;}
+
+
+			//if(!is_null($rangeeEv['videoId'])){
+			$unBut['video']=array();
+			//}
+			array_push($buts,$unBut);
+			
+			$bufEvent= $rangeeEv['event_id'];
+		}
+		$unVideo=array();
+
+		if(!is_null($rangeeEv['videoId'])){
+		$unVideo['fic']=$rangeeEv['nomFichier'];
+		$unVideo['cam']=$rangeeEv['camId'];
+		$unVideo['eval']=$rangeeEv['eval'];
+		$unVideo['nbVues']=$rangeeEv['nbVues'];
+		$unVideo['etat']=$rangeeEv['etat'];
+		$unVideo['videoId']=$rangeeEv['videoId'];
+		$unVideo['emplacement']=$rangeeEv['emplacement'];
+		$unVideo['thumbnail']=$rangeeEv['nomThumbnail'];
+
+		array_push($unBut['video'],$unVideo);}
+		end($buts);
+		$key = key($buts);
+		$buts[$key]=$unBut;
+		reset($buts);
+		
+
 	}
-	$buts['buts']=$Sommaire;
-	//$JSONstring = substr($JSONstring, 0,-1);
-	//$JSONstring .= "],";
-	$JSONstring .= "\"buts\": ".json_encode($buts['buts']).",";
+
+
+
+	$Sommaire['buts']=$buts;
+
 //////////////////////////////////////////////
 // Section Pun.
 $SomPun = array();
-$JSONstring .="\"punitions\": ";
 $IPun=0;
-$resultPun = mysqli_query($conn,"SELECT * FROM TableEvenement0 WHERE match_event_id = '{$matchID}' AND code = 4 ORDER BY chrono")
+$resultPun = mysqli_query($conn,
+"SELECT TableEvenement0.*, TableJoueur.NomJoueur, TableEquipe.nom_equipe 
+ FROM TableEvenement0
+ LEFT JOIN TableJoueur
+ 	ON (TableJoueur.joueur_id=TableEvenement0.joueur_event_ref)
+ LEFT JOIN TableEquipe
+ 	ON (TableEquipe.equipe_id=TableEvenement0.equipe_event_id)
+
+ 	WHERE match_event_id = '{$matchID}' AND code = 4 ORDER BY chrono")
 or die(mysqli_error($conn));  	
 
+$punitions=array();
 
 while($rangeePun=mysqli_fetch_array($resultPun))
 	{
-				$SomPun[$IPun]['equipe']=trouveNomParIDEquipe($rangeePun['equipe_event_id'],$conn);
+		$unePunition=array();
+		$unePunition['equipe']=$rangeePun['nom_equipe'];
+		$unePunition['chrono']=$rangeePun['chrono'];
 	
-				$SomPun[$IPun]['chrono']=$rangeePun['chrono'];
 
 				switch($rangeePun['souscode'])
 				{
@@ -384,22 +395,14 @@ while($rangeePun=mysqli_fetch_array($resultPun))
 										case 37: $SomPun[$IPun]['motif']='Inconduite de partie';
 					break;
 									}
-				$SomPun[$IPun]['joueur']=trouveNomJoueurParID($rangeePun['joueur_event_ref'],$conn);
-				$SomPun[$IPun]['joueurId']=$rangeePun['joueur_event_ref'];
-//				$JSONstring .= json_encode($SomPun[$IPun]).",";
-				$IPun++;
-				
-	}
-//	if(!strcmp(substr($JSONstring, 0,-1),','))	
-//		{$JSONstring = substr($JSONstring, 0,-1);}
-//	$JSONstring .= "],";
-				$JSONstring .= json_encode($SomPun).",";
+				$unePunition['joueur']=$rangeePun['NomJoueur'];
+				$unePunition['joueurId']=$rangeePun['joueur_event_ref'];
 
+				array_push($punitions, $unePunition);
+	}
+$Sommaire['punitions']=$punitions;
 
 ////////////////////////////////////////////
-
-
-
 
 
 $resultPeriode = mysqli_query($conn,"SELECT * FROM TableEvenement0 WHERE match_event_id = '{$matchID}' AND code = 11 ORDER BY souscode ASC")
@@ -439,8 +442,8 @@ else
 $IP++;
 	}
 
-	$JSONstring .= "\"periodes\": ".json_encode($periode).",";
-	
+$Sommaire['periodes']=$periode;
+
 
 
 $rFus = mysqli_query($conn,"SELECT TableEvenement0.*,TableJoueur.*,TableEquipe.* FROM TableEvenement0 
@@ -475,14 +478,13 @@ while($rangFus=mysqli_fetch_array($rFus))
 //}
 	
 //echo json_encode($Sommaire);
-
-$JSONstring.= "\"Fusillade\":".json_encode($fusillade)."}";
-echo  $JSONstring;	
+$Sommaire['Fusillade']=$fusillade;
+echo json_encode($Sommaire);	
 	
 	
 //$sommaire= json_decode($JSONstring);
 
-foreach($Sommaire as $buts )
+foreach($Sommaire['buts'] as $buts )
 {
 	if(count($buts['video'])>0)
 	{

@@ -2060,7 +2060,7 @@ function televerseFic() {
 
 		function creeSaison() {
 			return function() {
-
+ 
 				
 				                     $('#modalModifierSaison').modal("show");
                 $('#modalModifierSaison .modal-body').empty();
@@ -2088,8 +2088,8 @@ function televerseFic() {
 				    ),
 				   
                
-               $("<div></div>").addClass("form-group").attr("id","divDateDeb").append(
-                         $('<label></label>').attr("for","inGrDeb").text(tl_ges_Debut),
+               $("<div></div>").addClass("input-group mb-1").attr("id","divDateDeb").append(
+                         $('<label></label>').attr("for","inGrDeb").addClass("input-group").text(tl_ges_Debut),
                          $('<div></div>').addClass("input-group date").attr("id","inGrDeb").attr("data-target-input","nearest").append(
                          $('<input></input>').attr("type","button").attr("id","inDateDeb2").val("...").on("click",
                  function() {
@@ -2098,8 +2098,8 @@ function televerseFic() {
                 }),
                        $('<div></div>').addClass("input-group-text").append($('<i></i>').addClass("fa fa-calendar"))                             
                     
-                 )),$("<div></div>").addClass("form-group").attr("id","divDateFin").append(
-                         $('<label></label>').attr("for","inGrFin").text(tl_ges_Fin),
+                 )),$("<div></div>").addClass("input-group  mb-1").attr("id","divDateFin").append(
+                         $('<label></label>').attr("for","inGrFin").addClass("input-group").text(tl_ges_Fin),
                          $('<div></div>').addClass("input-group date").attr("id","inGrFin").attr("data-target-input","nearest").append(
                          $('<input></input>').attr("type","button").attr("id","inDateFin2").val("...").on("click",
                  function() {

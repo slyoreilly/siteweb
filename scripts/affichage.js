@@ -267,6 +267,7 @@ function boiteRecherche(){
 	$(function() {
             $('#editSearch').hide();
 			$('#iconeSearch').hover(function() {
+                $('#divSearch').show(400);
                 $('#editSearch').show(400);
 				
 			});
@@ -436,8 +437,8 @@ function peupleDivBas() {
 	menuAproposJS.id = 'menuApropos';
 	tApropos = document.createElement('A');
 	tContactez = document.createElement('A');
-	tApropos.innerHTML = "À propos de nous";
-	tApropos.href = "http://www.journaldestmichel.com/%C3%89conomie/Affaires/2013-04-24/article-3226532/strongstrongGrace-a-deux-Michelois-Larbitrage-au-hockey-simplifie-strongstrong/1";
+	tApropos.innerHTML = "Notre Équipe";
+	tApropos.href = "/zdoc/notreequipe.html";
 	tContactez.innerHTML = "Contactez-nous";
 	tContactez.href = "mailto:info" + "@" + "syncstats.com";
 	menuAproposJS.appendChild(tApropos);
@@ -468,23 +469,25 @@ function peupleDivBas() {
 	menuSuivezJS.appendChild(mIF3);
 	//	document.getElementsByTagName('body')[0].insertBefore(mIF2, document.getElementsByTagName('body')[0].firstChild);
 
-	menuDiscJS = document.createElement('div');
-	menuDiscJS.id = 'menuDisc';
-	imgDiscJS = document.createElement('IMG');
-	imgDiscJS.id = "imgDisc";
-	imgDiscJS.src = "/images/logoFondNoir.png";
-	menuDiscJS.appendChild(imgDiscJS);
+
+
+$('#divBas').append(
+	$('<div></div>').attr('id','menuDisc').append(
+		$('<a></a>').attr('href','/').append(
+			$('<img></img>').attr('src',"/images/logoFondNoir.png").attr('id',"imgDisc")
+		)));
+
+	$('#divBas').append($('<a></a>').attr('href', '#').click(function() {
+		window.open('https://www.sitelock.com/verify.php?site=syncstats.com', 'SiteLock', 'width=600,height=600,left=160,top=170');
+	}).append($('<img></img>').addClass("img-responsive").attr('title', 'SiteLock').attr('src', '//shield.sitelock.com/shield/syncstats.com')));
+
+
 	if (document.documentElement.clientWidth >= 500) {
 		$('<script async></script>').attr("src", "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js").appendTo(divBasJS);
 		$('<ins></ins>').attr("class", "adsbygoogle").attr("style", "display:inline-block;width:728px;height:90px").attr("data-ad-client", "ca-pub-2263794877114969").attr("data-ad-slot", "8589452732").appendTo(divBasJS);
 		( adsbygoogle = window.adsbygoogle || []).push({});
 	}
 
-	divBasJS.appendChild(menuDiscJS);
-
-	$(divBasJS).append($('<a></a>').attr('href', '#').click(function() {
-		window.open('https://www.sitelock.com/verify.php?site=syncstats.com', 'SiteLock', 'width=600,height=600,left=160,top=170');
-	}).append($('<img></img>').addClass("img-responsive").attr('title', 'SiteLock').attr('src', '//shield.sitelock.com/shield/syncstats.com')));
 
 }
 
@@ -513,7 +516,7 @@ function genereMenu_dev() {
 		menu_n1 = document.createElement('UL');
 		divMenuHautJS.appendChild(menu_n1);
 		menu_n1.id = 'menu';
-
+/*
 		for (var k = 0; k < hierarchie.length; k++) {
 			i_n1 = document.createElement('LI');
 			menu_n1.appendChild(i_n1);
@@ -528,7 +531,7 @@ function genereMenu_dev() {
 			i_n1.appendChild(a_n1);
 			
 
-		}// Fin du for hierarchie
+		}// Fin du for hierarchie  */
 	}
 }
 
@@ -707,7 +710,7 @@ function genereBoites() {
 	genBoiteContexte(2);
 	genBoiteContexte(3);
 	genBoiteContexte(4);
-	genBoiteContexte(5);
+//	genBoiteContexte(5);
 	if (getCookie('ligueId') == 86)
 		faireBoite(1, 10);
 	else
@@ -736,8 +739,8 @@ function genereBoites() {
 	 faireBoite(1,3);
 	 faireBoite(4, 5);*/
 	faireBoite(3, 5);
-	faireBoite(4, 1);
-	faireBoite(5, 6);
+	faireBoite(4, 6);
+	//faireBoite(5, 6);
 	//faireBoiteTest(1);
 	$('<script async></script>').attr("src", "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js").appendTo('#divDroite');
 	$('<ins></ins>').attr("class", "adsbygoogle").attr("style", "display:inline-block;width:300px;height:250px").attr("data-ad-client", "ca-pub-2263794877114969").attr("data-ad-slot", "9575808332").appendTo('#divDroite');

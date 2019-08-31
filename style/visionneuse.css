@@ -14,15 +14,11 @@
 	-moz-user-select: none;
 	-webkit-user-select: none;
 	user-select: none;
-	width:100%;
+	min-width:320px;
 	border-top: 1px solid #444444;border-top: 1px solid #444444;
 }
 
-.video {
-    float: left;
-    margin: 0 10px 0 0;
-    position: relative;
-}
+
 
 .video:hover .player {
 	opacity: 1;
@@ -389,10 +385,11 @@ span.thumbnail-content:hover {
 
 .media-box{
 	border-radius:4px;
-	border:1px solid #9b9b9b;
-	padding:15px;
-	background-color: rgba(255, 255, 255, 1);
+	border:1px none #9b9b9b;
+	background-color: rgba(0,0,0, 1);
 	float:left;
+	max-width: 480px;
+	width:100%;
 }
 .close-btn{
     background-image: url("../images/close-btn.png");
@@ -411,7 +408,7 @@ span.thumbnail-content:hover {
 }
 .video-info{
 	float:left;
-	background-color:#FFF;
+	background-color:#000;
 	border-radius:4px;
 	padding:20px 15px;
 	width:220px;
@@ -490,6 +487,7 @@ span.thumbnail-content:hover {
 
 .site-logo{
 	background-image:url(../images/player-logo.png);
+	background-repeat: no-repeat;
 	width:56px;
 	height:13px;
 	position: relative;
@@ -514,20 +512,28 @@ span.thumbnail-content:hover {
 	opacity:1;
 }
 .flag-modal{
-	visibility:hidden;
-	opacity:0;
+	display:none;
 	float: left;
-    margin: 32px 34px;
-    position: absolute;
+    margin: -12px 0 0 -10px;
+	position: absolute;
+	width:24px;
 	-webkit-transition: all 1s ease-in-out;
 	-moz-transition: all 1s ease-in-out;
 	-o-transition: all 1s ease-in-out;
 	transition: all 1s ease-in-out;	
 }
+.flag-modal img{
+	float:left;
+	width:50%;
+}
+
 .flag-modal:hover{
 	visibility:visible;
 	opacity:1;
 	cursor:pointer;
+}
+.rating-star{
+	margin-left:-30px;
 }
 .rating{
 	background-image:url(../images/rating.png);
@@ -561,7 +567,8 @@ span.thumbnail-content:hover {
     float: left;
     min-width:200px;
     text-align:left;
-    position: absolute;
+	position: absolute;
+	margin: -10px 0 0 -30px
 }
 
 .sharing{
@@ -594,9 +601,9 @@ span.thumbnail-content:hover {
 }
 .share-modal2 {
   
-    opacity: 0;
+	display:none;
     float: left;
-    margin: -32px -78px;
+    margin: -50px -0px;
     position: absolute;
     -webkit-transition: all 1s ease-in-out;
     -moz-transition: all 1s ease-in-out;

@@ -1,4 +1,30 @@
 <?php
+
+$db_host="localhost";
+$db_user="syncsta1_u01";
+$db_pwd="test";
+
+$database = 'syncsta1_900';
+$tableEq = 'TableEquipe';
+$tableLigue = 'Ligue';
+$tableMatch = 'TableMatch';
+$tableJoueur = 'TableJoueur';
+$tableAbon = 'AbonnementLigue';
+$tableUser = 'TableUser';
+
+$connMJ = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$connMJ) {
+	die("Connection failed: " . mysqli_connect_error());
+}
+
+mysqli_query($connMJ, "SET NAMES 'utf8'");
+mysqli_query($connMJ, "SET CHARACTER SET 'utf8'");
+	
+
+
+
+
 $totalJSON=json_decode(stripslashes($transPJ), true);
 
 for($a=0;$a<count($totalJSON);$a++)
@@ -10,7 +36,7 @@ for($a=0;$a<count($totalJSON);$a++)
 
 	$intEquipe = $lesParams['equipeId'];
 	$intLigue = $lesParams['ligueId'];
-	$intJoueur =  mysql_real_escape_string($lesParams['nomJoueur']);
+	$intJoueur =  mysqli_real_escape_string($connMJ,$lesParams['nomJoueur']);
 	$intNo = $lesParams['noJoueur'];
 
 	$joueurId = $lesParams['joueurId'];
@@ -18,28 +44,28 @@ for($a=0;$a<count($totalJSON);$a++)
 
 
 	
-	$resultNouveau = mysql_query("UPDATE {$tableJoueur} SET NomJoueur='{$intJoueur}', NumeroJoueur='{$lesParams['noJoueur']}',position='{$lesParams['position']}',dernierMAJ=NOW() WHERE joueur_id='{$joueurId}' ")
-				or die(mysql_error()."update bug");  
+	$resultNouveau = mysqli_query($connMJ,"UPDATE {$tableJoueur} SET NomJoueur='{$intJoueur}', NumeroJoueur='{$lesParams['noJoueur']}',position='{$lesParams['position']}',dernierMAJ=NOW() WHERE joueur_id='{$joueurId}' ")
+				or die(mysqli_error($connMJ)."update bug");  
 	
 	
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 	
-$retour = mysql_query("SELECT abonJouLig 
+$retour = mysqli_query($connMJ,"SELECT abonJouLig 
 						FROM abonJoueurLigue 
 						WHERE joueurId={$joueurId}
 						AND ligueId = {$lesParams['ligueId']}
-						AND finAbon>NOW()")or die(mysql_error()."select ligue"."SELECT abonJouLig FROM abonJoueurLigue WHERE joueurId={$joueurId} AND ligueId = {$lesParams['ligueId']} AND finAbon>NOW()");  	
+						AND finAbon>NOW()")or die(mysqli_error($connMJ)."select ligue"."SELECT abonJouLig FROM abonJoueurLigue WHERE joueurId={$joueurId} AND ligueId = {$lesParams['ligueId']} AND finAbon>NOW()");  	
 
-		if(mysql_num_rows($retour)>0)
+		if(mysqli_num_rows($retour)>0)
 		{
 			/*			$mr = mysql_fetch_row($retour);
 						mysql_query("UPDATE abonJoueurLigue SET finAbon=NOW() WHERE abonJouLig='{$mr[0]}' ")
 				or die(mysql_error()."update bug");  */
 		}
 		else
-		{$retour = mysql_query("INSERT INTO abonJoueurLigue (joueurId, ligueId, permission, debutAbon, finAbon) 
-		VALUES ('{$joueurId}', '{$intLigue}',30, NOW(),'2030-01-01')")or die(mysql_error()."insert Ligue");  
+		{$retour = mysqli_query($connMJ,"INSERT INTO abonJoueurLigue (joueurId, ligueId, permission, debutAbon, finAbon) 
+		VALUES ('{$joueurId}', '{$intLigue}',30, NOW(),'2030-01-01')")or die(mysqli_error($connMJ)."insert Ligue");  
 		}
 		///////////////////////////////////
 		/// Section Equipe
@@ -54,17 +80,17 @@ $retour = mysql_query("SELECT abonJouLig
 						AND abonJoueurEquipe.finAbon>NOW()";
 		
 		
-		$resultAbonEq = mysql_query($qAbonEq)
-		or die(mysql_error().$qAbonEq);  
+		$resultAbonEq = mysqli_query($connMJ,$qAbonEq)
+		or die(mysqli_error($connMJ).$qAbonEq);  
 		
 
 		$abonOk=false;
 		//On passe dans les abonnements actifs
-		while($rangeeAbonEq=mysql_fetch_array($resultAbonEq)){
+		while($rangeeAbonEq=mysqli_fetch_array($resultAbonEq)){
 			
 			if($lesParams['equipeId']!=$rangeeAbonEq['equipeId']){
-				mysql_query("UPDATE abonJoueurEquipe SET finAbon=NOW() WHERE abonJouEq='{$rangeeAbonEq[0]}' ")
-				or die(mysql_error()."update bug EQ");
+				mysqli_query($connMJ,"UPDATE abonJoueurEquipe SET finAbon=NOW() WHERE abonJouEq='{$rangeeAbonEq[0]}' ")
+				or die(mysqli_error($connMJ)."update bug EQ");
 			}
 			else	{
 					
@@ -75,11 +101,13 @@ $retour = mysql_query("SELECT abonJouLig
 
 		if($intEquipe!=0&&!$abonOk)
 		{
-			$retour = mysql_query("INSERT INTO abonJoueurEquipe (joueurId, equipeId, permission, debutAbon, finAbon) 
-			VALUES ('{$joueurId}', '{$intEquipe}',30, NOW(),'2030-01-01')")or die(mysql_error()."insert bug EQ");  	
+			$retour = mysqli_query($connMJ,"INSERT INTO abonJoueurEquipe (joueurId, equipeId, permission, debutAbon, finAbon) 
+			VALUES ('{$joueurId}', '{$intEquipe}',30, NOW(),'2030-01-01')")or die(mysqli_error($connMJ)."insert bug EQ");  	
 		}		
 		
 
 
 }
+mysqli_close($connMJ);
+
 ?>

@@ -60,28 +60,28 @@ $leMatch = json_decode($matchjson, true);
 //echo "\n".json_encode($leMatch)."\n";
 
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
 
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
 }
-	mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+
+mysqli_query($conn,"SET NAMES 'utf8'");
+mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 	
 ///////////////////////////////////////////////////////////////////////////////////////
 
 
 
 	// Retrieve all the data from the "example" table
-$resultUser = mysql_query("SELECT * FROM TableUser")
-or die(mysql_error());  
-while($rangeeUser=mysql_fetch_array($resultUser))
+$resultUser = mysqli_query($conn,"SELECT * FROM TableUser")
+or die(mysqli_error($conn));  
+while($rangeeUser=mysqli_fetch_array($resultUser))
 {
+	
 		if(!strcmp($rangeeUser['username'],$username))
 	{$userSelect =$rangeeUser['noCompte'];
 	}
@@ -89,12 +89,12 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 }
 array_push($controlTemps,time());
 
-$resultAbon = mysql_query("SELECT * FROM AbonnementLigue ORDER BY ligueid")
-or die(mysql_error());  
+$resultAbon = mysqli_query($conn,"SELECT * FROM AbonnementLigue ORDER BY ligueid")
+or die(mysqli_error($conn));  
 
 $AbonSelect = array();
 $dernierLogApp= array();
-while($rangeeAbon=mysql_fetch_array($resultAbon))
+while($rangeeAbon=mysqli_fetch_array($resultAbon))
 	{
 		if($rangeeAbon['userid']==$userSelect)
 			{array_push($AbonSelect, $rangeeAbon['ligueid']);}
@@ -107,16 +107,19 @@ while($rangeeAbon=mysql_fetch_array($resultAbon))
 									ON 	(TableArbitre.userId=TableUser.noCompte)
 								WHERE TableArbitre.userId='{$userSelect}'
 								ORDER BY ligueId";
-$resultAbonArb = mysql_query($qAbonArb)
-or die(mysql_error().$qAbonArb);  
+$resultAbonArb = mysqli_query($conn,$qAbonArb)
+or die(mysqli_error($conn).$qAbonArb);  
 
-while($rangeeAbonArb=mysql_fetch_array($resultAbonArb))
+while($rangeeAbonArb=mysqli_fetch_array($resultAbonArb))
 	{
 		if(!in_array($rangeeAbonArb['ligueId'],$AbonSelect))
 			{array_push($AbonSelect, $rangeeAbonArb['ligueId']);}
 	}
 	array_push($controlTemps,time());
 	// On obtient un array de ligueID auquel userSelect est abonn�.
+
+	mysqli_close($conn);
+
 $lesSync=array();
 $lesSync=json_decode(stripslashes($syncJ));
 $lesSyncMAV=array();
@@ -335,7 +338,8 @@ $extra['info0']=$controlTemps;
 //else{
 	$extra['DM']=2;
 	include 'dechargeMatchs_2.php';
-$extra['DM']=$DMX;
+	if(isset($DMX)){
+$extra['DM']=$DMX;}
 //}
 array_push($controlTemps,time());
 //include('../scriptsphp/actualiseMatchs.php');			// ActualiseMAtch a emmener de gros problème de répétition des entrées...
@@ -368,5 +372,5 @@ echo json_encode($rep);
 
 //header('Content-type: text/plain; charset=utf-8');
  //header("HTTP/1.1 200 OK");
-mysql_close();
+
 ?>

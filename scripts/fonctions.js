@@ -351,7 +351,10 @@ function getValue(varname)
     return getCookie(varname);
   }
   var query = qparts[1];
-  var vars = query.split("&");
+  var tmpNoHash = query.split("#");
+  var noHash= tmpNoHash[0];
+  var vars = noHash.split("&");
+  //var vars = query.split("&");
   var value = "";
   for (i=0;i<vars.length;i++)
   {
@@ -381,7 +384,10 @@ function getValueNoCookie(varname)
     return null;
   }
   var query = qparts[1];
-  var vars = query.split("&");
+ var tmpNoHash = query.split("#");
+ var noHash= tmpNoHash[0];
+ var vars = noHash.split("&");
+ //var vars = query.split("&");
   var value = "";
   for (i=0;i<vars.length;i++)
   {
@@ -679,7 +685,7 @@ function construitDialogue (id){
 		mId = "monModal";
 	}else{mId=id;}
 	
-	$('#divCentrale').append(
+	$('body').append(
 	$('<div></div>').attr("id",mId).addClass('modal').append(
 		
 			$('<div></div>')/*.attr('id','divDialogue')*/.addClass("divDialogue visible modal-dialog modal-lg").append(
@@ -836,6 +842,11 @@ $('#modalChangeLigue .modal-body').attr("id","corpsModalChangeLigue");
 
 				mCode = getValue('code');
 				var affiche =true;
+
+				window.rJSON.Ligues.sort(function(a, b) {                    
+					
+					return (a.nomLigue.toLowerCase().localeCompare(b.nomLigue.toLowerCase()));                            
+				});
 				for ( var J = 0; J <= window.rJSON.Ligues.length; J++) {
 //					alert(window.rJSON.Ligues[J].cleValeur);
 					affiche=true;
