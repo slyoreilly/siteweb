@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<?xml version="1.0" encoding="utf-8"?>
+<html>
+	<head>
+		<title>SyncStats</title>
+		<meta name="description" content="With SyncStats, your hockey statistics are put online seamlessly. Based on an easy-to-use mobile app, you also get a nice web site for your stats. Stay tuned, even nicer features to come!	">
+		<meta name="keyword" content="hockey,statistics,android,mobile app, smartphone, scoreboard, video replay,">
+		<meta name="author" content="Sylvain O'Reilly">
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/jquery.watermark.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
+		<script src="/scripts/dhtmlgoodies_calendar.js" type="text/javascript"charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+		
+		<script type="text/javascript" charset="utf-8">
+			gereLangue();
+			</script>
+<style>
+
+	p, .form-group label {font: 12px 'Open Sans',Arial,sans-serif;
+    font-weight: 100;
+	color: #444;
+}
+
+
+.boiteProduit2 img{
+visibility: hidden;
+}
+
+	
+
+div#divTitreDoc, #divBas{
+	background-color: hsl(197, 100%, 14%);
+}
+            a {
+                color: #8DBB22;
+            }
+            @media only screen and (max-width: 500px) {
+                #divDroite {
+                    display:none;
+                }
+                #divCentrale {
+                   width: 100%;
+                }
+                #divIndex1 {
+                    width:100%;
+                }
+                #divIndex2 {
+                    width:100%;
+                }
+				
+				
+                }
+
+				ul#menu-info{
+	list-style:none;
+	display:block;
+}
+
+ section {
+	display:block;
+	float:none;
+	clear:both;}
+
+ 
+section h1{
+	display:block;
+	text-align:left;
+	font: 20px 'Open Sans',Arial,sans-serif;
+    font-weight: 100;
+	padding: 10px;}
+	
+ 
+section a{
+	font: 13px 'Open Sans',Arial,sans-serif;
+    font-weight: 1000;
+	}
+
+	.bleu{
+	background-color:#00A7DB;
+}
+
+
+        </style>
+				<script type="text/javascript" charset="utf-8">
+				
+		
+
+
+
+			function faitDivIndex1() {
+				// ;
+				//
+				// Vos Stats détaillées;
+				//Découvrez SyncStats;
+				
+				
+$( document ).ready(function() {
+				
+				elParent = document.getElementById('divCentrale');
+				//elParent.style.height="80%";
+				elParent.style.minHeight = "400px";
+				dIndex1 = document.getElementById('divIndex1');
+
+				titreIndexJS = document.getElementById('titreIndex');
+				titreIndexJS.innerHTML = window.tl_titreIndex;
+				sousTitreIndexJS = document.getElementById('sousTitreIndex');
+				sousTitreIndexJS.innerHTML = window.tl_sousTitreIndex;
+	
+			traduction();
+
+
+			});				
+			
+			
+			}
+			function traduction(){
+
+				 		}
+
+		</script>
+	</head>
+	<body id="mbody">
+
+		<div id="divHaut">
+			<div id="divTitreDoc">
+				<!-div id="divLogo">
+					<a href="/"><h1>SYNCSTATS</h1></a>
+					<img id="imgLogo" src="/images/logoSeul.png" alt="SyncStats Logo"> </img> 
+
+				</div>
+				<div id="menuDivHaut">
+				
+				</div>
+			</div>
+		</div>
+		<div id="divGauche"></div>
+		<div id="divMenuHaut"></div>
+		<div id="divCentrale" >
+
+					<section id="contactez" class="info container-fluid">
+							<h1 id="titre5">Notre Équipe</h1>
+							<div class="row  px-2 px-md-5 ">
+							<div class="card col-md-6 col-lg-3" style="width:300px">
+									<img class="card-img-top" src="/images/joli.png" alt="Card image">
+									<div class="card-body">
+									  <h4 class="card-title">Directrice des ventes</h4>
+									  <p class="card-text">Athlète de ringuette possédant une formation en enseignement de l'ÉPS, vous serez heureux de savoir qu'elle sera votre porte d'entrée chez SyncStats.</p>
+									  <a href="mailto:joli-anne@syncstats.com" class="btn btn-primary">joli-anne@syncstats.com</a>
+									</div>
+								  </div>			
+								  <div class="card col-md-6 col-lg-3" style="width:300px">
+										<img class="card-img-top" src="/images/sylvain.png" alt="Card image">
+										<div class="card-body">
+										  <h4 class="card-title">Président</h4>
+										  <p class="card-text">Ingénieur à l'origine du projet, Sylvain connait tous les rouages du système. Pour toutes questions techniques ou encore plus, il sera votre homme.</p>
+										  <a href="mailto:soreilly@syncstats.com" class="btn btn-primary">soreilly@syncstats.com</a>
+										</div>
+									  </div>	
+									  <div class="card col-md-6 col-lg-3" style="width:300px">
+											<img class="card-img-top" src="/images/karrick.png" alt="Card image">
+											<div class="card-body">
+											  <h4 class="card-title">Directeur du service informatique</h4>
+											  <p class="card-text">Programmeur d'expérience, Karrick bâti une page à la fois le futur de SyncStats. Vous voulez être sûr que votre idée se retrouvera sur notre nouvelle plate-forme? Piquez-lui une jasette!</p>
+											  <a href="mailto:karrick@syncstats.com" class="btn btn-primary">karrick@syncstats.com</a>
+											</div>
+										  </div>	
+										  <div class="card col-md-6 col-lg-3" style="width:300px">
+												<img class="card-img-top" src="/images/kim.png" alt="Card image">
+												<div class="card-body">
+												  <h4 class="card-title">Directrice Qualité</h4>
+												  <p class="card-text">Dans l'équipe dès la première heure, Kim Thay s'assure en coulisse que tout va bien. Si vous croyez que quelque chose ne doit pas nous échapper, dites-le lui!</p>
+												  <a href="mailto:kim@syncstats.com" class="btn btn-primary">kim@syncstats.com</a>
+												</div>
+											  </div>	
+											  </div>			
+						</section>
+					
+					
+
+
+			
+		
+
+			</div>
+		
+
+		
+		
+		<div id="divDroite">
+
+
+
+		</div>
+		<div id="divBas"></div>
+
+		<script type="text/javascript" charset="utf-8">
+				$('#divHaut').empty();
+				$('#divDroite').empty();
+			developper(15);
+			$('#divTitreDoc').append($('<a></a>').attr("href","/").append($('<img src="/images/logoFondNoir.png" height="60px"/>')));
+
+			detruitNoeud('divGauche');
+	//		detruitNoeud('dBC_1');
+		//	detruitNoeud('dBC_2');
+
+			//		videNoeud('divDroite');
+
+
+			//document.getElementById('divDroite').style.backgroundColor = "#FFF";
+			//		detruitDivGaucheDroite();
+			bN = document.getElementById('barreTitreContexte');
+			if(bN!=null){
+			for (var a = 0; a < bN.childNodes.length; a++) {
+				bN.childNodes[a].style.display = "none";
+
+			}
+			}
+			$('#barreNav').hide();
+			
+			$(".adsbygoogle").remove();
+
+			 delai=300;
+			 compteur = -1;
+			 
+			
+	
+detruitNoeud('divDroite');
+detruitNoeud('divLigue');
+$('#divCentrale').css('width','100%');
+
+
+		</script>
+	</body>
+</html>

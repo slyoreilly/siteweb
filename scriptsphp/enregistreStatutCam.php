@@ -2,8 +2,10 @@
 $db_host="localhost";
 $db_user="syncsta1_u01";
 $db_pwd="test";
-
 $database = 'syncsta1_900';
+
+require  __DIR__ .'/../phpobjects/Sensor.php';
+require_once __DIR__ .'/../phpobjects/Alarm.php';
 
 //$fichier = $_POST['fichier'];
 //echo $_POST['videos'];
@@ -40,31 +42,94 @@ $dt = new DateTime("now", new DateTimeZone('GMT'));
 
 $mTemps= $dt->format('Y-m-d H:i:s');
 
+
+function loadAlarms($conn,$telId){
+	$alarms=array();
+	$ret = mysqli_query($conn,
+			"SELECT *
+			FROM Alarms
+				WHERE telId='{$telId}'
+			")or die(mysqli_error($conn)." SELECT");
+		while ($rangSel = mysqli_fetch_array($ret))
+		{
+			$toAdd=new Alarm();
+			array_push($alarms, $toAdd);
+			$toAdd->setData(
+				$rangSel['alarmId'],
+				$rangSel['target'],
+				$rangSel['telId'],
+				$rangSel['operand'],
+				$rangSel['sensorType'],
+				$rangSel['value'],
+				$rangSel['ringing'],
+				$rangSel['cv'],
+				$rangSel['alarmClass']
+			);
+		}
+		return $alarms;
+
+
+}
+
+
+
+//////////////////////
+
+$chrono = time()*1000;
+$sensors = array();
+	$sensorTemp = new Sensor();
+	$sensorTemp->setData(1,$telId,$temperature,$chrono);
+	$retVal= $sensorTemp->db_dump();
+//	error_log("1");
+array_push($sensors,$sensorTemp);
+//error_log("2");
+$sensorMem = new Sensor();
+//error_log("3");
+$sensorMem->setData(2,$telId,$memoire,$chrono);
+//error_log("4");
+$retVal= $sensorMem->db_dump();
+array_push($sensors,$sensorMem);
+	$sensorBat = new Sensor();
+	$sensorBat->setData(3,$telId,$batterie,$chrono);
+	$retVal= $sensorBat->db_dump();
+array_push($sensors,$sensorBat);
+$sensorCamState = new Sensor();
+$sensorCamState->setData(4,$telId,$codeEtat,$chrono);
+$retVal= $sensorCamState->db_dump();
+array_push($sensors,$sensorCamState);
+
+$alarms = loadAlarms($conn,$telId);
+foreach($alarms as $alarm){
+	foreach($sensors as $sensor){
+		$alarm->checkAlarm($sensor);
+	}	
+}
+
+
+
+
+
+
+
+
+
+
+
 ////////////////////////////
 //
 ///		Chercher la ligne si elle existe.
 ///			La modifier si elle existe
 ///			L'insérer sinon.
 		
-
-
-		
-	
-		echo " - INIT2";
 		$querySel = "SELECT codeEtat FROM StatutCam WHERE telId = '{$telId}'";
-		echo $querySel;
 		$resultSel=mysqli_query($conn, $querySel) or die("Erreur: ".$querySel."\n".mysqli_error($conn));
-		
-		echo " - INIT3";
 		$message = " - Sel".$querySel. mysqli_error($conn);
 							$log  = $message.' - '.date("F j, Y, g:i:s a").PHP_EOL.
 	        				"-------------------------".PHP_EOL;
 							file_put_contents('../test/statutCam.txt', $log, FILE_APPEND);	
-							
-		echo " - INIT4";
+
 		$rangSel=mysqli_num_rows($resultSel);
 		
-		echo " - SELNUM:".$rangSel;
 		
 		if($rangSel>0)
 			{$tmpSel=mysqli_fetch_row($resultSel );

@@ -1,0 +1,52 @@
+<?php
+include VIEW."header.phtml";
+?>
+<h1>Index des Alarmes</h1>
+<br/>
+
+<?php 
+echo ('<table>');
+echo ('<tr>');
+echo ('<td>');
+echo("État");
+echo ('</td>');
+echo ('<td>');
+echo("Capteur");
+echo ('</td>');
+echo ('<td>');
+echo("Règle");
+echo ('</td>');
+echo ('<td>');
+echo("Seuil");
+echo ('</td>');
+echo ('<td>');
+echo("Cible de l'alerte");
+echo ('</td>');
+echo ('</tr>');
+
+
+
+foreach($this->view_data['alarmList'] as $alarm){
+    echo ('<tr>');
+    echo ('<td>');
+    echo($alarm->ringing."<br/>");
+    echo ('</td>');
+    echo ('<td>');
+    echo($alarm->sensorType."<br/>");
+    echo ('</td>');
+    echo ('<td>');
+    echo($alarm->operand."<br/>");
+    echo ('</td>');
+    echo ('<td>');
+    echo($alarm->value."<br/>");
+    echo ('</td>');
+    echo ('<td>');
+    echo(json_encode($alarm->target)."<br/>");
+    echo ('</td>');
+    echo ('</tr>');
+
+}
+echo ('</table>');
+
+?>
+<?php include VIEW."footer.phtml";?>

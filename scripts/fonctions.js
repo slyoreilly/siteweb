@@ -842,6 +842,11 @@ $('#modalChangeLigue .modal-body').attr("id","corpsModalChangeLigue");
 
 				mCode = getValue('code');
 				var affiche =true;
+
+				window.rJSON.Ligues.sort(function(a, b) {                    
+					
+					return (a.nomLigue.toLowerCase().localeCompare(b.nomLigue.toLowerCase()));                            
+				});
 				for ( var J = 0; J <= window.rJSON.Ligues.length; J++) {
 //					alert(window.rJSON.Ligues[J].cleValeur);
 					affiche=true;

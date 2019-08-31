@@ -851,7 +851,7 @@ function genereBoites() {
 	genBoiteContexte(2);
 	genBoiteContexte(3);
 	genBoiteContexte(4);
-	genBoiteContexte(5);
+	//genBoiteContexte(5);
 	if (getCookie('ligueId') == 86)
 		faireBoite(1, 10);
 	else
@@ -880,8 +880,8 @@ function genereBoites() {
 	 faireBoite(1,3);
 	 faireBoite(4, 5);*/
 	faireBoite(3, 5);
-	faireBoite(4, 1);
-	faireBoite(5, 6);
+	faireBoite(4, 6);
+//	faireBoite(5, 6);
 	//faireBoiteTest(1);
 	$('<script async></script>').attr("src", "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js").appendTo('#divDroite');
 	$('<ins></ins>').attr("class", "adsbygoogle").attr("style", "display:inline-block;width:300px;height:250px").attr("data-ad-client", "ca-pub-2263794877114969").attr("data-ad-slot", "9575808332").appendTo('#divDroite');

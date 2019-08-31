@@ -1,0 +1,47 @@
+<?php
+include VIEW."header.phtml";
+?>
+<h1>Index des Appareils</h1>
+<br/>
+
+<?php 
+echo ('<table>');
+echo ('<tr>');
+echo ('<td>');
+echo("CamId");
+echo ('</td>');
+echo ('<td>');
+echo("TelId");
+echo ('</td>');
+echo ('<td>');
+echo("User");
+echo ('</td>');
+echo ('<td>');
+echo("Action");
+echo ('</td>');
+echo ('</tr>');
+
+
+
+foreach($this->view_data['appareilList'] as $appareil){
+    echo ('<tr>');
+    echo ('<td>');
+    echo($appareil->camId."<br/>");
+    echo ('</td>');
+    echo ('<td>');
+    echo($appareil->telId."<br/>");
+    echo ('</td>');
+    echo ('<td>');
+    echo($appareil->userId."<br/>");
+    echo ('</td>');
+    echo ('<td>');
+    echo('<a href= /monitoring/alarm/index/'.$appareil->camId.'>Alarmes </a>');
+    echo('<a href= /monitoring/appareil/voir/'.$appareil->camId.'>Détails </a>');
+    echo ('</td>');
+    echo ('</tr>');
+
+}
+echo ('</table>');
+
+?>
+<?php include VIEW."footer.phtml";?>

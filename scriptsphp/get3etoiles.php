@@ -66,9 +66,11 @@ $saisonId = $_POST["saisonId"];
 //	$ligueId = trouveIDParNomLigue($monGet);
 
 $qMatchSai = "SELECT premierMatch,dernierMatch FROM TableSaison where saisonId ='{$saisonId}'";
-$prSaison = mysql_query($qMatchSai) or die(mysql_error() . " dans " . $qMatchSai);
-$premierMatch = mysql_result($prSaison, 0, 0);
-$dernierMatch = mysql_result($prSaison, 0, 1);
+$prSaison = mysqli_query($conn,$qMatchSai) or die(mysqli_error($conn) . " dans " . $qMatchSai);
+mysqli_data_seek($prSaison,0);
+$row=mysqli_fetch_row($prSaison);
+$premierMatch = $row[0];
+$dernierMatch =  $row[1];
 //echo $premierMatch." ".$dernierMatch;
 ////////////////////////////////////////
 //
@@ -87,7 +89,7 @@ $Ine = 0;
 
 unset($resultEvent);
 unset($rangeeEv);
-mysql_query("SET SQL_BIG_SELECTS=1"); 
+mysqli_query($conn,"SET SQL_BIG_SELECTS=1"); 
   
 ////  Sélectionne tous les débuts de matchs dans une saison.
 $qGros = "SELECT TableEquipe.*, Ligue.*, TableMatch.*,TableEvenement0.* 
@@ -104,7 +106,7 @@ $qGros = "SELECT TableEquipe.*, Ligue.*, TableMatch.*,TableEvenement0.*
 									AND TableMatch.date>'{$premierMatch}'
 									AND TableMatch.date<'{$dernierMatch}'
 									";
-$resultEvent = mysql_query($qGros) or die(mysql_error() . " dans " . $qGros);
+$resultEvent = mysqli_query($conn,$qGros) or die(mysqli_error($conn) . " dans " . $qGros);
 
 $qJoueurs = "SELECT Ligue.*, TableMatch.*,TableEvenement0.*,TableJoueur.*
 								FROM TableMatch 
@@ -120,9 +122,9 @@ $qJoueurs = "SELECT Ligue.*, TableMatch.*,TableEvenement0.*,TableJoueur.*
 									AND TableMatch.date<'{$dernierMatch}'
 								GROUP BY TableJoueur.joueur_id
 									";
-$resultJoueurs = mysql_query($qJoueurs) or die(mysql_error() . " dans " . $qJoueurs);
+$resultJoueurs = mysqli_query($conn,$qJoueurs) or die(mysqli_error($conn) . " dans " . $qJoueurs);
 
-while ($row = mysql_fetch_assoc($resultJoueurs)) {
+while ($row = mysqli_fetch_assoc($resultJoueurs)) {
 	$joueurs_array[] = $row;
 	// Inside while loop
 }
@@ -136,7 +138,7 @@ $cptM=0;
  $JSONstring .= $premierMatch;
  $JSONstring .= $dernierMatch;
  */
-while ($rangeeEv = mysql_fetch_array($resultEvent)) {
+while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 	
 	$mesMatchs[$cptM]['nomMatch']=$rangeeEv['match_event_id'];
 	
@@ -188,5 +190,6 @@ $cptM++;
 
 
 echo json_encode($mesMatchs);
+mysqli_close($conn);
 ?>
 

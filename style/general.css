@@ -28,7 +28,11 @@ body
 float:left;
 
 }
-
+p{
+font-family: arial;
+font-size: small;
+font-weight: bold;
+}
 a{
 	text-decoration:none;
 	color:#04789D;

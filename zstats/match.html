@@ -867,6 +867,7 @@ function afficheFusillade(rJSON) {
 						
 						$('#adminButsModal .modal-footer').append($('<button></button>').attr("type", "button").addClass("btn btn-primary").text("Apply").on("click", function() {
 							ficsShow = [];
+							ficsNoLocation = [];
 							$('#adminButsModal .modal-body').append(
 										$('<div></div>').attr("id","linklist")
 									);
@@ -896,14 +897,16 @@ function afficheFusillade(rJSON) {
 													place = !strcmp(rSMB.buts[d].video[e].emplacement,"5.39.81.14")?"syncstats.ca":rSMB.buts[d].video[e].emplacement;
 
 													ficsShow.push(place + "/lookatthis/" + rSMB.buts[d].video[e].fic);
-                                                   
+													ficsNoLocation.push("/lookatthis/" + rSMB.buts[d].video[e].fic);
+                                                       
 											    }
 											    else {
 											        if(parseInt($(str2).val()) == 1 && rSMB.buts[d].equipe==infoMatch.equipeNomDom ||parseInt($(str2).val()) == 2 && rSMB.buts[d].equipe==infoMatch.equipeNomVis)
 											             {
 															place = !strcmp(rSMB.buts[d].video[e].emplacement,"5.39.81.14")?"syncstats.ca":rSMB.buts[d].video[e].emplacement;
 															ficsShow.push(place + "/lookatthis/" + rSMB.buts[d].video[e].fic);
-                                                        }
+															ficsNoLocation.push("/lookatthis/" + rSMB.buts[d].video[e].fic);
+                                                           }
 											    }  
 
 											}
@@ -962,6 +965,7 @@ console.log(rSMB.buts[d].video.length);
 								if (parseInt($(str1).val()) == 1) {/// Download
 								   // console.log( arrayCam[a]);
 									fics = [];
+									ficsNoLocation = [];
 //console.log(rSMB.buts.length);
 									for (var d = 0; d < rSMB.buts.length; d++) {
 //console.log(rSMB.buts[d].video.length);
@@ -972,15 +976,15 @@ console.log(rSMB.buts[d].video.length);
 											    {
 													place = !strcmp(rSMB.buts[d].video[e].emplacement,"5.39.81.14")?"syncstats.ca":rSMB.buts[d].video[e].emplacement;
 
-											    fics.push(place + "/lookatthis/" + rSMB.buts[d].video[e].fic);
-                                                   
+												fics.push(place + "/lookatthis/" + rSMB.buts[d].video[e].fic);
+												   
 											    }
 											    else {
 											        if(parseInt($(str2).val()) == 1 && rSMB.buts[d].equipe==infoMatch.equipeNomDom ||parseInt($(str2).val()) == 2 && rSMB.buts[d].equipe==infoMatch.equipeNomVis)
 											             {
 															place = !strcmp(rSMB.buts[d].video[e].emplacement,"5.39.81.14")?"syncstats.ca":rSMB.buts[d].video[e].emplacement;
                                                         fics.push(place + "/lookatthis/" + rSMB.buts[d].video[e].fic);
-                                                        }
+										                }
 											    }  
 
 											}
@@ -1013,31 +1017,38 @@ console.log(rSMB.buts[d].video.length);
 
 								}
 							}
-							console.log(ficsShow);
-									ficsShow.sort();
-									console.log(ficsShow);
+							console.log(ficsNoLocation);
+							ficsNoLocation.sort();
+									console.log(ficsNoLocation);
+									var fileList ='';
+
 									var strInput="";
 									var strChannel="";
-									for (var i = 0; i < ficsShow.length; i++) {
-										strInput=strInput+"-i "+"https://"+ficsShow[i]+" ";
+									for (var i = 0; i < ficsNoLocation.length; i++) {
+										strInput=strInput+"-i "+"https://"+ficsNoLocation[i]+" ";
 										strChannel=strChannel+"["+i+":v:0]["+i+":a:0]";
-
+										fileList +='echo "file ..'+ficsNoLocation[i]+'" >> ../vidsCree/filelist.txt; ' ;
 										$('#linklist').append(
 											$('<p></p>').append(
-												$('<a></a>').html("https://" + ficsShow[i]).attr("href","https://" + ficsShow[i])));
+												$('<a></a>').html("https://" + ficsNoLocation[i]).attr("href","https://" + ficsNoLocation[i])));
 										
 									}
-
+									var rm = 'sudo -u www-data rm -f ../vidsCree/filelist.txt; sudo -u www-data touch ../vidsCree/filelist.txt; '
+									
 									var strDeb = "ffmpeg ";
-									var strFin = "concat=n="+ficsShow.length +":v=1:a=1[outv][outa]\" -map \"[outv]\" -map \"[outa]\" /home/vidsCree/output.mp4";
+//									var strFin = "concat=n="+ficsShow.length +":v=1:a=1[outv][outa]\" -map \"[outv]\" -map \"[outa]\" /home/vidsCree/output.mp4";
 
-									var strTot = strDeb+strInput+" -filter_complex \""+strChannel+strFin;
+//									var strTot = strDeb+strInput+" -filter_complex \""+strChannel+strFin;
 
-									$('#adminButsModal .modal-footer').append($('<button></button>').attr("type", "button").addClass("btn btn-primary").text("Produce Vid").hide().on("click", function() {
+									strTot = rm+fileList+"sudo -u www-data ffmpeg -y -f concat -safe 0 -i ../vidsCree/filelist.txt -c copy ../vidsCree/output2.mp4";
+
+									$('#adminButsModal .modal-footer').append($('<button></button>').attr("type", "button").addClass("btn btn-primary").text("Produce Vid").on("click", function() {
 										$.ajax({url : "https://syncstats.ca/syncscript/commandUpload.php", 
 					type: 'POST',
 					data: {command:strTot},
-					success: function(result){}}
+					success: function(result){
+
+					}}
 					);
 										
 									}));

@@ -150,6 +150,10 @@
 								$('<div></div>').addClass('col-6').text(lesSettings.arena.nomArena+" / "+lesSettings.arena.nomGlace)
 							),
 							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('Delai auto Sync'),
+								$('<div></div>').addClass('col-6').text(lesSettings.delaiAutoSync)
+							),
+							$('<div></div>').addClass('row').append(
 								$('<div></div>').addClass('col-6').text('userSelectedWidth'),
 								$('<div></div>').addClass('col-6').text(lesSettings.userSelectedWidth)
 							),
@@ -698,6 +702,10 @@ $.makeTable = function(mydata) {
             <div id="equipements">
                 <h3>Équipements</h3>
 			</div>
+            <div id="alarms">
+				<h3>Alarmes</h3>
+				<div id="contentAlarms"></div>
+            </div>
 			<div id="settings">
 					<h3 class="m-4">Paramètres</h3>
 					<ul  class="nav nav-tabs">
