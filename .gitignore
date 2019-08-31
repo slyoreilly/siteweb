@@ -2,6 +2,7 @@ lookatthis/
 phpMyAdmin-old/
 .metadata/
 lookatthis
-/.vs/Site web/v15/.suo
+/*/*.suo
 /.vs/slnx.sqlite
 /.vs/VSWorkspaceState.json
+/*/error_log
