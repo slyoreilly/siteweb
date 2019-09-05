@@ -3,6 +3,34 @@ $db_host = "localhost";
 $db_user = "syncsta1_u01";
 $db_pwd = "test";
 
+//////////////////////////////////////////
+//
+//
+//
+//
+//
+//
+//		DEPRECATED, PLUS APPELÉ PAR RIEN
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 header('Content-type: text/html; charset=utf-8');
 
 $database = 'syncsta1_900';
@@ -23,7 +51,7 @@ if (!mysql_connect($db_host, $db_user, $db_pwd))
 	die("Can't connect to database");
 
 if (!mysql_select_db($database)) {
-	echo "<h1>Database: {$database}</h1>";
+	echo "<h1>Database: {$database}</h1>majJoueur2";
 	echo "<h1>Table: {$table}</h1>";
 	die("Can't select database");
 }

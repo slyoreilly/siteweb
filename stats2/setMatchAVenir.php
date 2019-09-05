@@ -40,7 +40,11 @@ if (!$conn) {
 
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+
+$defTimeZone = mysqli_query($conn,"select timediff(now(),convert_tz(now(),@@session.time_zone,'+00:00'))");
 mysqli_query($conn,"SET time_zone='+0:00'");
+
+
 $strEqDom = "";
 $strEqVis = "";
 $strGDom = "";
@@ -121,6 +125,7 @@ if ($mUpdate) {
 } else {
 	//echo "D ";
 	
+	mysqli_query($conn,"SET time_zone='{$defTimeZone}'");
 	$resultJoueur = mysqli_query($conn, "SELECT joueur_id
 													FROM TableJoueur
 													JOIN abonJoueurEquipe
@@ -128,6 +133,7 @@ if ($mUpdate) {
 														WHERE equipeId='{$eqDom}'
 														AND debutAbon<=DATE(NOW())
 														AND finAbon>DATE(NOW())") or die(mysqli_error($conn));
+	mysqli_query($conn,"SET time_zone='+0:00'");
 	$jDom = "[";
 	while ($rangeeJoueur = mysqli_fetch_array($resultJoueur)) {
 
@@ -142,14 +148,17 @@ if ($mUpdate) {
 	//fin des joueurs d'une �quipe
 //echo "E ";
 	
-	$rJVis = mysqli_query($conn, "SELECT joueur_id
+
+mysqli_query($conn,"SET time_zone='{$defTimeZone}'");
+$rJVis = mysqli_query($conn, "SELECT joueur_id
 													FROM TableJoueur
 													JOIN abonJoueurEquipe
 														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
 														WHERE equipeId='{$eqVis}'
 														AND debutAbon<=DATE(NOW())
 														AND finAbon>DATE(NOW())") or die(mysqli_error($conn));
-	$jVis = "[";
+mysqli_query($conn,"SET time_zone='+0:00'");
+$jVis = "[";
 	while ($rangeeJVis = mysqli_fetch_array($rJVis)) {
 
 		$jVis .= $rangeeJVis['joueur_id'] . ",";
