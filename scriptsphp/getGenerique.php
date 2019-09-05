@@ -12,34 +12,30 @@ else
 {$ou = str_replace("'","",$_POST['ou']);}
 //$ligueId = $_POST['ligueId'];
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
-	
-//	mysql_query("SET NAMES 'utf8'");
-//mysql_query("SET CHARACTER SET 'utf8'");
-	mysql_set_charset('utf8');
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
+
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 	
 if($ou==NULL)
 {	
-$retour = mysql_query("SELECT *
+$retour = mysqli_query($conn,"SELECT *
 						FROM $table
-						 WHERE 1")or die(mysql_error());	
+						 WHERE 1")or die(mysqli_error($conn));	
 }
 
 else {
 	$qSelOu ="SELECT * FROM $table WHERE $ou"; 
-	$retour = mysql_query($qSelOu)or die(mysql_error()."   /  ".$qSelOu);
+	$retour = mysqli_query($conn,$qSelOu)or die(mysqli_error($conn)."   /  ".$qSelOu);
 }
 
 $vecMatch = array();
-while($r = mysql_fetch_assoc($retour)) {
+while($r = mysqli_fetch_assoc($retour)) {
     $vecMatch[] = $r;
 	}
 $tmp=json_encode($vecMatch);

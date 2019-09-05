@@ -17,7 +17,12 @@ $tableUser = 'TableUser';
 $mavId = $_POST['mavId'];
 $ligueId = $_POST['ligueId'];
 
-// Create connection
+////////////////////////////////////////////////////////////
+//
+// 	Connections � la base de donn�es
+//
+////////////////////////////////////////////////////////////
+
 $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
 // Check connection
 if (!$conn) {
@@ -26,27 +31,18 @@ if (!$conn) {
 
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
-//$jDom = json_decode($jDomJSON, true);
-//$jVis = json_decode($jVisJSON, true);
-// Ancienne requête:SELECT MatchAVenir.*	
-//						FROM MatchAVenir
-//						LEFT JOIN abonEquipeLigue
-//							ON (MatchAVenir.ligueId=abonEquipeLigue.ligueId)
-//						 WHERE MatchAVenir.ligueId='{$ligueId}'
-//						 	AND abonEquipeLigue.finAbon>NOW()
-//						 	AND (abonEquipeLigue.equipeId =MatchAVenir.eqDom OR abonEquipeLigue.equipeId =MatchAVenir.eqVis)
 //						 GROUP BY MatchAVenir.mavId
 
 // Faudrait refaire en cadrant par rapport à la saison en cours plutôt qu'aux équipes abonnées.
 $strRetour.=$mavId;
-$retour = mysqli_query($conn,"SELECT MatchAVenir.*	
-						FROM MatchAVenir
+$retour = mysqli_query($conn, "SELECT TableMatch.*	
+						FROM TableMatch
 						LEFT JOIN TableSaison
-							ON (MatchAVenir.ligueId=TableSaison.ligueRef)
-						 WHERE MatchAVenir.ligueId='{$ligueId}'
+							ON (TableMatch.ligueRef=TableSaison.ligueRef)
+						 WHERE TableMatch.ligueRef='{$ligueId}'
 						
 						 	
-						 GROUP BY MatchAVenir.mavId")or die(mysql_error());	
+						 GROUP BY TableMatch.mavId")or die(mysqli_error($conn));	
 						 /* AND MatchAVenir.date > (NOW()-INTERVAL 30 DAY) AND TableSaison.dernierMatch>NOW()*/
 $strRetour.= mysqli_num_rows($retour);
 
@@ -102,7 +98,7 @@ while($r = mysqli_fetch_assoc($retour)) {
 		$qGVis= "SELECT joueur_id,NomJoueur,NumeroJoueur,position		
 						FROM TableJoueur
 						 WHERE joueur_id='{$r['gardienVis']}'";
-	$rGVis = mysqli_query($conn, $qGVis)or die(mysqli_error($conn));
+	$rGVis = mysqli_query($conn,$qGVis)or die(mysqli_error($conn));
 	while($rangGVis = mysqli_fetch_assoc($rGVis)) {
 		$vecMatch[$IM]['gVis']=$rangGVis;
 	}
@@ -123,3 +119,4 @@ echo $adomper;
 
 	//		header("HTTP/1.1 200 OK");
 ?>
+<?php  ?>
