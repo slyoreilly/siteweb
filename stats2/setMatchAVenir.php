@@ -41,7 +41,8 @@ if (!$conn) {
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
-$defTimeZone = mysqli_query($conn,"select timediff(now(),convert_tz(now(),@@session.time_zone,'+00:00'))");
+$result = mysqli_query($conn,"select timediff(now(),convert_tz(now(),@@global.time_zone,'+00:00'))");
+$defTimeZone =mysqli_data_seek($result, 0);
 mysqli_query($conn,"SET time_zone='+0:00'");
 
 
