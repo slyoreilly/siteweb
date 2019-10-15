@@ -476,9 +476,11 @@ function getEvaluation(joueurId){
 tmpEq = getEquipeDEqId(mavEnCours.eqDom);
 console.log(JSON.stringify(tmpEq));
 				window.jsonEqDom.nom = tmpEq.nomEquipe;
+				window.jsonEqDom.equipeId = mavEnCours.eqDom;
 				tmpEq = getEquipeDEqId(mavEnCours.eqVis);
 				
 				window.jsonEqVis.nom = tmpEq.nomEquipe;
+				window.jsonEqVis.equipeId = mavEnCours.eqVis;
 				//				creerListeMatchs(window.vecMAV, mavId);
 
 				construitEquipeDAlignement(mavId);

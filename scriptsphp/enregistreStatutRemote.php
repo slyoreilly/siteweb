@@ -13,7 +13,11 @@ $arenaId = $_POST['arenaId'];
 $telId = $_POST['telId'];
 $batterie = $_POST['batterie'];
 $memoire = $_POST['memoire'];
+$temperature = round($_POST['temperature']);
 $codeEtat= $_POST['codeEtat'];
+$camId= $_POST['remoteId'];
+$version= $_POST['version'];
+$settings= $_POST['settings'];
 
 	
 // Create connection
@@ -25,6 +29,13 @@ if (!$conn) {
 
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+
+$dt = new DateTime("now", new DateTimeZone('GMT'));
+
+$mTemps= $dt->format('Y-m-d H:i:s');
+
+
+
 
 ////////////////////////////
 //
@@ -49,15 +60,16 @@ mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 			{$tmpSel=mysqli_fetch_row($resultSel );
 			
 			if($codeEtat=$tmpSel[0]){
-				$queryMod = "UPDATE StatutRemote SET memoire = '{$memoire}', batterie = '{$batterie}', dernierMaJ=now(), userId = '{$usager}', arenaId = '{$arenaId}'
+				$queryMod = "UPDATE StatutRemote SET memoire = '{$memoire}', batterie = '{$batterie}',temperature='{$temperature}', dernierMaJ='{$mTemps}', version='{$version}', userId = '{$usager}', arenaId = '{$arenaId}',settings='{$settings}', codeEtat = '{$codeEtat}'
 					WHERE telId='{$telId}'";
 				mysqli_query($conn,$queryMod) or die("Erreur: "+$queryMod+"\n"+mysqli_error($conn));
 				echo "- MOD1";
 				}
 				else{
-				$queryMod = "UPDATE StatutRemote SET dernierModif = now(), memoire = '{$memoire}', batterie = '{$batterie}', dernierMaJ=now(), userId = '{$usager}', arenaId = '{$arenaId}'
-					WHERE telId='{$telId}'";
-				mysqli_query($conn,$queryMod) or die("Erreur: "+$queryMod+"\n"+mysqli_error($conn));
+					$queryMod = "UPDATE StatutRemote SET dernierModif ='{$mTemps}', memoire = '{$memoire}', version = '{$version}', batterie = '{$batterie}'
+					,temperature='{$temperature}', dernierMaJ='{$mTemps}', userId = '{$usager}',settings='{$settings}', arenaId = '{$arenaId}', codeEtat = '{$codeEtat}'
+						WHERE telId='{$telId}'";
+								mysqli_query($conn,$queryMod) or die("Erreur: "+$queryMod+"\n"+mysqli_error($conn));
 				echo "- MOD2";
 				}
 		echo "- MOD";
@@ -65,8 +77,8 @@ mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 			}
 		else {
 		echo " - PREINS1";
-			$queryIns = "INSERT INTO StatutRemote (userId,dernierModif,dernierMaJ,arenaId,batterie, memoire, telId, codeEtat) ".
-				"VALUES ('{$usager}',now(),now(),'{$arenaId}','{$batterie}','{$memoire}','{$telId}','{$codeEtat}')";
+		$queryIns = "INSERT INTO StatutRemote (userId,dernierModif,dernierMaJ,arenaId,batterie, memoire,temperature, telId, codeEtat, remoteId, version,settings) ".
+		"VALUES ('{$usager}','{$mTemps}','{$mTemps}','{$arenaId}','{$batterie}','{$memoire}','{$temperature}','{$telId}','{$codeEtat}','{$remoteId}','{$version}','{$settings}')";
 		echo " - PREINS2";
 		
 			mysqli_query($conn,$queryIns) or die("Erreur: "+$queryIns+"\n"+mysqli_error($conn));

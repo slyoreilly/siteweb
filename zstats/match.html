@@ -112,8 +112,7 @@
 						detruitNoeud('contResumeMatch');
 						infoMatch = eval('(' + requete_ajax.responseText + ')');
 						ligueId = infoMatch.ligueId;
-						getStatsJSON('H', matchID);
-						getStatsJSON('V', matchID);
+						getStatsJSON(matchID);
 
 						//					console.log(getCookie('ligueId')==null||getCookie('ligueId')=="");
 						if (getCookie('ligueId') == null || getCookie('ligueId') == "") {
@@ -269,9 +268,12 @@
 					if (rJSON.periodes.length > 0)
 						maPer = rJSON.periodes[0];
 					else {
-						// if(rJSON.buts>0){
+						 if(rJSON.buts>0){
 						maPer.chrono = rJSON.buts[0].chrono;
-						//}
+						}
+						else{
+							maPer.chrono =1560000000000;
+						}
 
 					}
 					var Iper = 0;
@@ -410,15 +412,14 @@
 
 			}
 
-			function getStatsJSON(equipe, matchId) {
+			function getStatsJSON(matchId) {
 				var requete_ajax = new XMLHttpRequest();
 
-				var url = "/stats2/stats2JSON.php";
+				var url = "/scriptsphp/statsMatch.php";
 
 				var strMatchId = "matchId=" + matchId;
-				var strEquipe = "equipe=" + equipe;
 
-				params = strMatchId + '&' + strEquipe;
+				params = strMatchId;
 				url = url + "?" + params;
 				requete_ajax.open('POST', url, true);
 				//				requete_ajax.send(null);
@@ -429,26 +430,18 @@
 
 				requete_ajax.send(params);
 
-				if (equipe == 'H') {
 					requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
 						if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 
-							statsJSONHome = eval('(' + requete_ajax.responseText + ')');
+							statsJSON = eval('(' + requete_ajax.responseText + ')');
+							statsJSONHome=statsJSON['dom'];
+							statsJSONVis=statsJSON['vis'];
 							afficheStatsDom(statsJSONHome, 1);
 							$('#nomEquipe_1').text(infoMatch.equipeNomDom);
 							window.etoileConditions++;
 							if (window.etoileConditions >= 4) {
 								afficheEtoiles();
 							}
-
-						}
-					};
-				}
-				if (equipe == 'V') {
-					requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
-						if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
-							//console.log(requete_ajax.responseText);
-							statsJSONVis = eval('(' + requete_ajax.responseText + ')');
 							afficheStatsDom(statsJSONVis, 2);
 							$('#nomEquipe_2').text(infoMatch.equipeNomVis);
 							window.etoileConditions++;
@@ -458,7 +451,6 @@
 
 						}
 					};
-				}
 			}
 
 

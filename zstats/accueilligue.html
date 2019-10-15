@@ -1515,13 +1515,13 @@
         $('#barreNav').before($('<div></div>').attr('id','contContMatch').append(
          
         $('<div></div>').attr('id','poigneeGauche').addClass('contOuiJet noborder').append('<i class="fas fa-caret-left"></i>').on("click",function(){
-        window.offset= window.offset-7;
+        window.offset= window.offset-maxBoitesMatchs;
            
         boiteMatch(0,window.offset);
         }),
         $('<div></div>').attr('id','contMatchHaut').addClass('contOuiJet noborder row'),
         $('<div></div>').attr('id','poigneeDroite').addClass('contOuiJet noborder').append('<i class="fas fa-caret-right"></i>').on("click",function(){
-        window.offset= window.offset+7;
+        window.offset= window.offset+maxBoitesMatchs;
     
         boiteMatch(0,window.offset);
         })));

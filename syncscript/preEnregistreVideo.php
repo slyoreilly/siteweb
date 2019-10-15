@@ -11,29 +11,29 @@ session_start();
 //$fichier = $_POST['fichier'];
 //echo $_POST['videos'];
 $params = array();
+error_log("preEnregistre: ".$_POST['videos']);
 $params =json_decode($_POST['videos'],true);
 $heure = $_POST['heure'];
 $emplacement = $_POST['emplacement'];
 $avanceServeur=time()*1000-$heure;
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
-	mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
 
+mysqli_query($conn,"SET NAMES 'utf8'");
+mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 	
 $syncOK=array();	
 for($a=0;$a<count($params);$a++)
 {	
 $camID = $params[$a]['video']['camID'];
-$nomFic=array_pop(explode('/',$params[$a]['video']['nomFic']));
+$exploded =explode('/',$params[$a]['video']['nomFic']); 
+$nomFic=array_pop($exploded);
 $rSServ=$params[$a]['video']['chrono']+$avanceServeur;
 	
 if(!empty($nomFic))
@@ -43,9 +43,9 @@ if(!empty($nomFic))
 			JOIN TableMatch
 				ON (match_id = nomMatch)  
 		WHERE nomMatch='{$params[$a]['video']['nomMatch']}' AND camId='{$camID}' AND nomFichier='{$nomFic}'";	
-	$retSel=mysql_query($qSel) or die("Erreur: "+$qSel+"\n"+mysql_error());
-		if(mysql_num_rows($retSel)>0){
-			while ($rangSel = mysql_fetch_array($retSel))
+	$retSel=mysqli_query($conn,$qSel) or die("Erreur: "+$qSel+"\n"+mysqli_error($conn));
+		if(mysqli_num_rows($retSel)>0){
+			while ($rangSel = mysqli_fetch_array($retSel))
 			{
 			// N'entre pas dans cette boucle si non-enregistré dans table Video.
 			
@@ -103,7 +103,7 @@ if(!empty($nomFic))
 				}		
 		$query = "INSERT INTO Video (nomFichier,nomMatch,chrono,camId,type,reference,emplacement) ".
 		"VALUES ('{$nomFic}','{$params[$a]['video']['nomMatch']}','{$rSServ}','{$camID}','{$type}','{$reference}','{$emplacement}')";
-		mysql_query($query) or die("Erreur: "+$query+"\n"+mysql_error());
+		mysqli_query($conn,$query) or die("Erreur: "+$query+"\n"+mysqli_error($conn));
 		
 		$monObj['nomFic']=$nomFic;
 		$monObj['etat']='insert';
@@ -147,10 +147,11 @@ if(!empty($nomFic))
 	
 
 }
+$ret = json_encode($syncOK);
+error_log("retour preEnregistre: ".$ret)	;
+	echo $ret;
 	
-	echo json_encode($syncOK);
-	
-	if(json_encode($syncOK)==False)
+	if($ret==False)
 	{echo "erreur, count(syncOK:): ".count($syncOK)."- count($params): ".count($params);}
-	mysql_close();
+	mysqli_close($conn);
 ?>

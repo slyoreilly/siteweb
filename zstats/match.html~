@@ -238,9 +238,11 @@
 					if (rJSON.periodes.length > 0)
 						maPer = rJSON.periodes[0];
 					else {
-						// if(rJSON.buts>0){
+						if(rJSON.buts>0){
 						maPer.chrono = rJSON.buts[0].chrono;
-						//}
+						}else{
+							maPer.chrono=156000000000;
+						}
 
 					}
 					var Iper = 0;
