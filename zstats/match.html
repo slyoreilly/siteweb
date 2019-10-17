@@ -207,9 +207,10 @@
 			function afficheSommairePunitions(rJSON) {
 				var lesTitres = new Array();
 				lesTitres[0] = window.tl_match_Equipe;
-				lesTitres[1] = window.tl_match_Joueur;
-				lesTitres[2] = window.tl_match_Motif;
-				lesTitres[3] = window.tl_match_Chrono;
+                lesTitres[1] = null;
+				lesTitres[2] = window.tl_match_Joueur;
+				lesTitres[3] = window.tl_match_Motif;
+				lesTitres[4] = window.tl_match_Chrono;
 				//div1 = document.getElementById('tabPun');
                 if (window.vPerm < 19) {
                     //                  console.log(window.tl_match_Manque);
@@ -339,17 +340,19 @@
 							lesCols[0] = '<img src=\"' + mSrc + '\" alt=\"' + rJSON.punitions[J].equipe + '\" width=\"32\" height=\"32\"\\/\>';
 						} catch(err) {
 							lesCols[0] = rJSON.punitions[J].equipe;
-						}
+                        }
+                        strImg = "<i onclick=corrigePunition(" + J + ") class=\"far fa-edit\" ></i>";
 
-						lesCols[1] = rJSON.punitions[J].joueur;
-						lesCols[2] = rJSON.punitions[J].motif;
-						lesCols[3] = strChrono;
+                        window.vPerm < 19 ? lesCols[1] = strImg : lesCols[1] = null;
+						lesCols[2] = rJSON.punitions[J].joueur;
+						lesCols[3] = rJSON.punitions[J].motif;
+						lesCols[4] = strChrono;
 
 						var lesLiens = new Array();
 						lesLiens[0] = null;
-						lesLiens[1] = '/zstats/statsjoueur.html?joueurId=' + rJSON.punitions[J].joueurId;
-						lesLiens[2] = null;
+						lesLiens[2] = '/zstats/statsjoueur.html?joueurId=' + rJSON.punitions[J].joueurId;
 						lesLiens[3] = null;
+						lesLiens[4] = null;
 
 						for ( K = 0; K < lesCols.length; K++) {
 							cellule = document.createElement('TD');
@@ -2402,6 +2405,142 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 			}
 
 
+            function corrigePunition(punition) {
+                //	frameModif = document.getElementById("frameModif")
+                //	frameModif.className = "affiche";
+                $('#modalCorrectionPunition').modal("show");
+                $('#modalCorrectionPunition .modal-body').empty();
+                $('#modalCorrectionPunition .modal-footer').empty();
+                doc = $('#modalCorrectionPunition .modal-body');
+
+                //	frameModif.onload = function()
+                //{
+
+                if (window.rJSON.eqDom == window.rJSON.punitions[punition].equipe) {
+                    lequipe = window.statsJSONHome;
+                    equipeId = window.rJSON.eqDomId;
+                } else if (window.rJSON.eqVis == window.rJSON.punitions[punition].equipe) {
+                    lequipe = window.statsJSONVis;
+                    equipeId = window.rJSON.eqVisId;
+                } else
+                    console.log("Erreur d'attribution de nom d'équipe, contactez un membre de Syncstats.");
+
+                var chronoCorr = window.rJSON.punitions[punition].chrono;
+
+                selJoueur = $('<select></select>').addClass("col-6").attr("id", "selJoueur");
+                selMotif = $('<select></select>').addClass("col-6").attr("id", "selMotif");
+                trouveMotif = 0;
+                trouveJoueur = 0;
+                lequipe.joueurs.sort(
+                    function (a, b) {
+                        if (parseInt(a.numero) == parseInt(b.numero))  //Si les numeros sont différents
+                        {
+                            return a.nom.toString().toLowerCase().localeCompare(b.nom.toString().toLowerCase());
+                        }
+                        else { return parseInt(a.numero) - parseInt(b.numero); }
+                    }
+                );
+
+
+                for (a = 0; a < lequipe.joueurs.length; a++) {
+                    opt = $('<option></option>').val(lequipe.joueurs[a].joueurId).text(lequipe.joueurs[a].numero + " - " + lequipe.joueurs[a].nom);
+                    //	vecMarqId[a]=lequipe.joueurs[a].joueurId;
+                    if (lequipe.joueurs[a].joueurId == window.rJSON.punitions[punition].joueurId) {
+                        $(opt).prop("selected", "true");
+                        trouveJoueur = 1;
+                    }
+                    //console.log("Joueur: "+statsJSONHome.joueurs[a].nom);
+                    $(selJoueur).append($(opt));
+                }
+
+                for (a = 0; a < window.motif.length; a++) {
+                    try {
+                        if (window.motif[a][0].length > 0) {
+                        opt2 = $('<option></option>').val(a).text(window.motif[a][0]);
+                        if (a == window.rJSON.punitions[punition].motifId) {
+                            $(opt2).prop("selected", "true");
+                            trouveMotif = 1;
+                            }
+                        }
+                    } catch (err) { }
+
+                    //console.log("Joueur: "+statsJSONHome.joueurs[a].nom);
+                    $(selMotif).append($(opt2));
+
+                }
+                //	lequipe.joueurs.push(null);
+                opt = document.createElement('OPTION');
+                opt.innerHTML = "- " + window.tl_match_aucun + " (Delete penalty)- ";
+                $(opt).val("0");
+                if (!trouveJoueur)
+                    opt.setAttribute("selected", "true");
+                opt2 = document.createElement('OPTION');
+                opt2.innerHTML = "- " + window.tl_match_aucun + " -";
+                $(opt2).val("0");
+                if (!trouveMotif)
+                    opt2.setAttribute("selected", "true");
+
+
+                $(selJoueur).append($(opt));
+                $(selMotif).append($(opt2));
+       
+
+                $(doc).append(
+                    $('<div></div>').addClass("row m-4").append(
+                        $('<div></div>').addClass("col-6").text(window.tl_match_Joueur),
+                        $('<div></div>').addClass("col-6").text(window.tl_match_Motif),
+                    ),
+                    $('<div></div>').addClass("row m-2 mb-8").append(
+                        $(selJoueur), $(selMotif)
+                    )
+                   
+                );
+
+
+                $('#modalCorrectionPunition .modal-title').text(tl_bouton_modifier + " " + tl_match_Penalites);
+
+                /////////////////////////////////////////////////////////
+                //
+                //	Structure JSON de punition à modifier.
+                //
+                //"nouvellePun" : true,
+                //    matchId : window.matchID,
+                //        equipeId : equipeId,
+                //            chrono : chronoCorr,
+                 //               "joueurId" : $('#selJoueur').val(),
+                  //                  "motifId" : $('#selMotif').val(),
+                //
+                //////////////////////////////////////////////////////////
+
+
+                $('#modalCorrectionPunition .modal-footer').append($('<button></button>').addClass("btn btn-primary").text("OK").attr("type", "button").on("click",
+                    function () {
+
+                        //  butModif.noSeq=but;
+                        // marqueurId = lequipe.joueurs[selMarq.selectedIndex] != undefined && lequipe.joueurs[selMarq.selectedIndex] != null && lequipe.joueurs[selMarq.selectedIndex]>0 ?  lequipe.joueurs[selMarq.selectedIndex].joueurId :  null;
+                        // passeur1Id = (lequipe.joueurs[selPass1.selectedIndex] != undefined && lequipe.joueurs[selPass1.selectedIndex] != null) && lequipe.joueurs[selPass1.selectedIndex]>0 ?  lequipe.joueurs[selPass1.selectedIndex].joueurId : null;
+                        // passeur2Id  = lequipe.joueurs[selPass2.selectedIndex] != undefined && lequipe.joueurs[selPass2.selectedIndex] != null && lequipe.joueurs[selPass2.selectedIndex]>0 ? lequipe.joueurs[selPass2.selectedIndex].joueurId : null;
+                        punModif = {
+                            "nouvellePun": false,
+                            matchId: window.matchID,
+                            equipeId: equipeId,
+                            chrono: chronoCorr,
+                            "joueurId": $('#selJoueur').val(),
+                            "motifId": $('#selMotif').val(),
+                        };
+                        strPun = JSON.stringify(punModif);
+                        //console.log(selMarq.selectedIndex);
+                        //console.log(lequipe.joueurs[selMarq.selectedIndex].joueurId);
+                        console.log(strPun);
+
+                        setMAJPun(strPun);
+
+                        detruitDialogue("modalCorrectionPunition");
+                    }));
+
+            }
+
+
             function nouvellePun(domVis) {
                 $('#modalNouvellePun').modal("show");
                $('#modalNouvellePun .modal-body').empty();
@@ -3233,6 +3372,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 
 				
 				construitDialogue("modalCorrectionBut");
+                construitDialogue("modalCorrectionPunition");
                 construitDialogue("modalCorrigePresences");
                 construitDialogue("modalNouveauBut");
                 construitDialogue("modalNouvellePun");

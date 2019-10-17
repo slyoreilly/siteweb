@@ -315,7 +315,9 @@ while($rangeePun=mysqli_fetch_array($resultPun))
 	{
 		$unePunition=array();
 		$unePunition['equipe']=$rangeePun['nom_equipe'];
+		$unePunition['equipeId']=$rangeePun['equipe_event_id'];
 		$unePunition['chrono']=$rangeePun['chrono'];
+		$unePunition['motifId']=$rangeePun['souscode'];
 	
 
 				switch($rangeePun['souscode'])

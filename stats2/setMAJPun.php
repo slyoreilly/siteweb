@@ -44,23 +44,16 @@ if ($punMAJ -> nouvellePun) {
 
 } else {
 
-	$cRow = 0;
-	while ($row = mysqli_fetch_assoc($resultBut)) {
-		if ($punMAJ -> noSeq == $cRow) {$tabButs = $row;
-		}
-		$cRow++;
-	}
 
-	echo stripslashes(json_encode($tabButs));
 
-	mysqli_query($conn,"UPDATE TableEvenement0 SET joueur_event_ref='{$punMAJ->marqueurId}',souscode='{$punMAJ->motifId}' WHERE match_event_id='{$punMAJ->matchId}'
-														AND code=4 AND chrono='{$tabButs['chrono']}'");
+	mysqli_query($conn,"UPDATE TableEvenement0 SET joueur_event_ref='{$punMAJ->joueurId}',souscode='{$punMAJ->motifId}' WHERE match_event_id='{$punMAJ->matchId}'
+														AND code=4 AND chrono='{$punMAJ->chrono}'");
 
 	
-	if($punMAJ -> joueurId == null){
+	if($punMAJ -> joueurId == null || $punMAJ -> joueurId == 0){
 				mysqli_query($conn,"DELETE FROM TableEvenement0 WHERE match_event_id='{$punMAJ->matchId}'
 														AND code=4
-														AND chrono='{$tabButs['chrono']}'
+														AND chrono='{$punMAJ->chrono}'
 														");
 		
 	}
