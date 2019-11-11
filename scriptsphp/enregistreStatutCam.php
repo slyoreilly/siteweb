@@ -15,6 +15,7 @@ $arenaId = $_POST['arenaId'];
 $telId = $_POST['telId'];
 $batterie = $_POST['batterie'];
 $memoire = $_POST['memoire'];
+$memoireInterne = $_POST['memoireInterne'];
 $temperature = round($_POST['temperature']);
 $codeEtat= $_POST['codeEtat'];
 $camId= $_POST['camId'];
@@ -135,7 +136,7 @@ foreach($alarms as $alarm){
 			{$tmpSel=mysqli_fetch_row($resultSel );
 			
 			if($codeEtat==$tmpSel[0]){
-				$queryMod = "UPDATE StatutCam SET memoire = '{$memoire}', batterie = '{$batterie}',temperature='{$temperature}', dernierMaJ='{$mTemps}', version='{$version}', userId = '{$usager}', arenaId = '{$arenaId}', camId = '{$camId}',settings='{$settings}', codeEtat = '{$codeEtat}'
+				$queryMod = "UPDATE StatutCam SET memoire = '{$memoire}',  memoireInterne = '{$memoireInterne}', batterie = '{$batterie}',temperature='{$temperature}', dernierMaJ='{$mTemps}', version='{$version}', userId = '{$usager}', arenaId = '{$arenaId}', camId = '{$camId}',settings='{$settings}', codeEtat = '{$codeEtat}'
 					WHERE telId='{$telId}'";
 				mysqli_query($conn,$queryMod) or die("Erreur: ".$queryMod."\n".mysqli_error($conn));
 						$message = " - mod1".$queryMod. mysql_error();
@@ -145,7 +146,7 @@ foreach($alarms as $alarm){
 						
 				}
 				else{
-				$queryMod = "UPDATE StatutCam SET dernierModif ='{$mTemps}', memoire = '{$memoire}', version = '{$version}', batterie = '{$batterie}'
+				$queryMod = "UPDATE StatutCam SET dernierModif ='{$mTemps}', memoire = '{$memoire}',  memoireInterne = '{$memoireInterne}', version = '{$version}', batterie = '{$batterie}'
 				,temperature='{$temperature}', dernierMaJ='{$mTemps}', userId = '{$usager}',settings='{$settings}', arenaId = '{$arenaId}', camId = '{$camId}', codeEtat = '{$codeEtat}'
 					WHERE telId='{$telId}'";
 				mysqli_query($conn, $queryMod) or die("Erreur: ".$queryMod."\n".mysqli_error($conn));
@@ -157,8 +158,8 @@ foreach($alarms as $alarm){
 			
 			}
 		else {
-			$queryIns = "INSERT INTO StatutCam (userId,dernierModif,dernierMaJ,arenaId,batterie, memoire,temperature, telId, codeEtat, camId, version,settings) ".
-				"VALUES ('{$usager}','{$mTemps}','{$mTemps}','{$arenaId}','{$batterie}','{$memoire}','{$temperature}','{$telId}','{$codeEtat}','{$camId}','{$version}','{$settings}')";
+			$queryIns = "INSERT INTO StatutCam (userId,dernierModif,dernierMaJ,arenaId,batterie, memoire,  memoireInterne ,temperature, telId, codeEtat, camId, version,settings) ".
+				"VALUES ('{$usager}','{$mTemps}','{$mTemps}','{$arenaId}','{$batterie}','{$memoire}','{$memoireInterne}','{$temperature}','{$telId}','{$codeEtat}','{$camId}','{$version}','{$settings}')";
 		echo $queryIns;
 			mysqli_query($conn,$queryIns) or die("Erreur: ".$queryIns."\n".mysqli_error($conn));
 		$message = " - ins".$queryIns. mysqli_error($conn);

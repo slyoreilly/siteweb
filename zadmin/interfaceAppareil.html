@@ -202,6 +202,20 @@
 								)
 							),
 							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('Délai auto Sync'),
+								$('<div></div>').addClass('col-6').append(
+									$('<select></select>').append(
+										$('<option></option>').text('15 minutes').val('900000'),
+										$('<option></option>').text('1 heure').val('3600000'),
+										$('<option></option>').text('12 heures').val('43200000'),
+										$('<option></option>').text('Jamais').val('0')
+									).on("change",function(){
+									pendingSettings.delaiAutoSync = $(this).val();
+								})
+
+								)
+							),
+							$('<div></div>').addClass('row').append(
 								$('<div></div>').addClass('col-6').text('decoupe'),
 								$('<div></div>').addClass('col-6').append($('<input></input>').attr("id","pendingDecoupe").attr("type","text").val(pendingSettings.decoupe).on("change",function(){
 									pendingSettings.decoupe = $(this).val();
@@ -334,6 +348,8 @@
 
 				params = strTable + "&" + strOu;
 				//alert(url);
+
+				
 				requete_ajax.open('POST', url + "?" + params, true);
 				//              requete_ajax.send(null);
 

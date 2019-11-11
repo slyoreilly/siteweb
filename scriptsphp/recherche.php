@@ -34,7 +34,9 @@ mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 $ligue = array();
 	$rLigue = mysqli_query($conn,"SELECT  Ligue.*
 								FROM Ligue
-								WHERE Nom_Ligue LIKE '%".$search."%'")
+								WHERE Nom_Ligue LIKE '%".$search."%'
+								 AND cleValeur NOT RLIKE '\"statut\":\"efface\"|\"statut\":\"secret\"'
+								" )
 or die(mysqli_error($conn)); 
 $IL=0;
 	while($rangLigue=mysqli_fetch_assoc($rLigue)){
