@@ -2770,13 +2770,27 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 				 var pVF = String(mBut.video[vidIndex].fic);
 
 				var sVF = pVF.split(".");
-				var strVid = "videofile=" + sVF[0];
+                var strVid = "videofile=" + sVF[0];
+                $('#video-info input').remove();
+                $('#pub-google').empty();
+                $('#pub-google').append($('<ins></ins>').addClass('adsbygoogle').css("display", "inline-block").css("width", "234px").css("height", "60px").attr("data-ad-slot", "9551625935").attr("data-ad-client", "ca-pub-2263794877114969"));
+
+
+                //console.log(vidIndex);
+                try {
+                    $('ins').each(function () {
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    });
+                }
+                catch (err) {
+                    console.log(err.message);
+                }
 				$('#media-video').get(0).addEventListener('loadedmetadata', function() {
 				 $.ajax({url: url, 
 					type: 'POST',
 					data: strVid,
 					success: function(result){
-   					 
+                        $('#video-info input').remove();
 						infoVid = eval('(' +result + ')');
 						//console.log(result);
 						$('#rateSpan').text("RATING: " + infoVid.eval + " / 5");
@@ -2788,7 +2802,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 							///////////////
 							//
 							//	Efface Video
-						    $('#video-info input').remove();
+						   
 						    $('#video-info').append($("<input></input>").attr("type","button").val("Effacer ce video").on("click",{fic:mBut.video[vidIndex].fic} ,function(event){
 						      $.ajax({
                                         url : "/scriptsphp/effaceVideo.php",
@@ -2802,7 +2816,43 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                                             
                                         }
 						    });
-						    }));
+                            }));
+                            $('#video-info').append($("<input></input>").attr("type", "button").val("Ajuster le délai").on("click", { fic: mBut.video[vidIndex].fic, cam: mBut.video[vidIndex].cam }, function (event) {
+
+                                $('#modalAjusterDelai').modal("show");
+                                $('#modalAjusterDelai .modal-body').empty();
+                                $('#modalAjusterDelai .modal-footer').empty();
+                                $('#modalAjusterDelai .modal-title').text("Ajuster le délai du vidéo");
+
+
+                                $('#modalAjusterDelai .modal-body').append(
+                                    $("<p></p>").text('Entrez le délai souhaité pour la cam ' + event.data.cam+' en secondes'),
+                                    $("<input></input>").attr("id", "inDelai").attr("type", "text").val(""),
+                                    $("<input></input>").attr("type", "button").val("Confirmer")
+                                        .on("click", { fic: event.data.fic, cam: event.data.cam }, function (event) {
+
+                                            $.ajax({
+                                                url: "/scriptsphp/ajusteDelai.php",
+                                                type: "POST",
+                                                data: {
+                                                    fic: event.data.fic,
+                                                    cam: event.data.cam,
+                                                    delai: $('#inDelai').val()
+                                                },
+                                                dataType: "html",
+                                                success: function (response) {
+
+
+                                                }
+                                            })
+                                        })
+
+                                );
+
+
+
+                               
+                            }));
 						}
 						evalBut = getCookie('videoId_eval_' + infoVid.videoId);
 						console.log("evalBut: "+evalBut);
@@ -2831,18 +2881,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 						}
 
 						//$('#video-info').append($('<div></div>').text('TEST!'));//.append($('<ins></ins>').addClass('adsbygoogle')));
-						$('#pub-google').append($('<ins></ins>').addClass('adsbygoogle').css("display", "inline-block").css("width", "234px").css("height", "60px").attr("data-ad-slot", "9551625935").attr("data-ad-client", "ca-pub-2263794877114969"));
-
-
-						//console.log(vidIndex);
-						try {
-						$('ins').each(function() {
-							( adsbygoogle = window.adsbygoogle || []).push({});
-						});
-						}
-                        catch(err) {
-                            console.log(err.message);
-                        }
+                        
 						//(adsbygoogle = window.adsbygoogle || []).push({});
 
 						$.post('/scriptsphp/incrementeVidNbVues.php', {
@@ -3379,7 +3418,8 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                 construitDialogue("modalNouveauFusillade");
                 construitDialogue("modalEditTirs");
                 construitDialogue("modalVideoBut");
-				construitDialogue("modalFullVideoUpload");
+                construitDialogue("modalFullVideoUpload");
+                construitDialogue("modalAjusterDelai");
 
                 if (getValue('videofile') != "" && getValue('videofile') != undefined) {
                     if (getValue('but') != "" && getValue('but') != undefined && getValue('vidIndex') != "" && getValue('vidIndex') != undefined) {

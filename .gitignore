@@ -2,8 +2,8 @@ lookatthis/
 phpMyAdmin-old/
 .metadata/
 lookatthis
-/*/*.suo
-/*/.vs/slnx.sqlite
+/**/*.suo
+/**/slnx.sqlite
 /.vs/VSWorkspaceState.json
 backUp
 
