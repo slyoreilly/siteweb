@@ -2816,8 +2816,11 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                                             
                                         }
 						    });
-                            }));
-                            $('#video-info').append($("<input></input>").attr("type", "button").val("Ajuster le délai").on("click", { fic: mBut.video[vidIndex].fic, cam: mBut.video[vidIndex].cam }, function (event) {
+							}));
+							
+				var ficSeul1 = mBut.video[vidIndex].fic.split("?");
+				var ficSeul = ficSeul1[0];
+                            $('#video-info').append($("<input></input>").attr("type", "button").val("Ajuster le délai").on("click", { fic: ficSeul, cam: mBut.video[vidIndex].cam }, function (event) {
 
                                 $('#modalAjusterDelai').modal("show");
                                 $('#modalAjusterDelai .modal-body').empty();
@@ -2841,10 +2844,11 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                                                 },
                                                 dataType: "html",
                                                 success: function (response) {
-
-
+													$('#modalAjusterDelai .modal-body').append('<div class="alert alert-info alert-dismissible fade show">  Succès!</div>  ');
+													setTimeout(function(){  $('#modalAjusterDelai').modal("hide");}, 1500);
                                                 }
                                             })
+											$(this).prop('disabled', true);
                                         })
 
                                 );

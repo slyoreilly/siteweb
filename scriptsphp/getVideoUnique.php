@@ -46,7 +46,7 @@ $reqFic = "SELECT *
 				ON (Video.nomMatch = TableMatch.matchIdRef)
 			LEFT JOIN TableJoueur
 				ON (Video.tagPrincipal = TableJoueur.joueur_id)	
-			WHERE nomFichier='{$videofile}'";
+			WHERE nomFichier LIKE '{$videofile}%'";
 
 $rFic = mysqli_query($conn, $reqFic)
 or die(mysqli_error($conn));  
@@ -60,7 +60,7 @@ if(strcmp(json_encode($leVid),"false")==0||strcmp(json_encode($leVid),"null")==0
 				ON (Video.nomMatch = TableMatch.match_id)
 			LEFT JOIN TableJoueur
 				ON (Video.tagPrincipal = TableJoueur.joueur_id)	
-			WHERE nomFichier='{$videofile}'";
+			WHERE nomFichier LIKE '{$videofile}%'";
 
 $rFic = mysqli_query($conn,$reqFic)
 or die(mysqli_error($conn));  

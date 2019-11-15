@@ -87,6 +87,9 @@
 							)
 							));
 							var lesSettings =JSON.parse(repRap[0].settings);
+							var arena ="";
+							try{arena =lesSettings.arena.nomArena+" / "+lesSettings.arena.nomGlace}catch(err){}
+
 							console.log(lesSettings);
 							$('#currentSettings').empty();
 							$('#currentSettings').append($('<div></div>').addClass('container grid-striped').append(
@@ -147,7 +150,7 @@
 							),
 							$('<div></div>').addClass('row').append(
 								$('<div></div>').addClass('col-6').text('arena'),
-								$('<div></div>').addClass('col-6').text(lesSettings.arena.nomArena+" / "+lesSettings.arena.nomGlace)
+								$('<div></div>').addClass('col-6').text(arena)
 							),
 							$('<div></div>').addClass('row').append(
 								$('<div></div>').addClass('col-6').text('Delai auto Sync'),
@@ -169,6 +172,9 @@
 
 
 							var pendingSettings =JSON.parse(repRap[0].settings);
+							var arena ="";
+							try{arena =pendingSettings.arena.nomArena+" / "+pendingSettings.arena.nomGlace}catch(err){}
+
 							console.log(pendingSettings);
 							try{
 								$('#pendingSettings').empty();
@@ -250,7 +256,7 @@
 							),
 							$('<div></div>').addClass('row').append(
 								$('<div></div>').addClass('col-6').text('arena'),
-								$('<div></div>').addClass('col-6').text(pendingSettings.arena.nomArena+" / "+pendingSettings.arena.nomGlace)
+								$('<div></div>').addClass('col-6').text(arena)
 							),
 							$('<div></div>').addClass('row').append(
 								$('<div></div>').addClass('col-6').text('userSelectedWidth'),
@@ -267,6 +273,9 @@
 							})
 							));}catch(err){}
 							var lesSettings =JSON.parse(repRap[0].defaultSettings);
+							var arena ="";
+							try{arena =lesSettings.arena.nomArena+" / "+lesSettings.arena.nomGlace}catch(err){}
+
 							console.log(lesSettings);
 							try{
 								$('#defaultSettings').empty();
@@ -317,7 +326,7 @@
 							),
 							$('<div></div>').addClass('row').append(
 								$('<div></div>').addClass('col-6').text('arena'),
-								$('<div></div>').addClass('col-6').text(lesSettings.arena.nomArena+" / "+lesSettings.arena.nomGlace)
+								$('<div></div>').addClass('col-6').text(arena)
 							),
 							$('<div></div>').addClass('row').append(
 								$('<div></div>').addClass('col-6').text('userSelectedWidth'),

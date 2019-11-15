@@ -84,7 +84,20 @@ http_response_code(200);
 		http_response_code(206);
  	}
  }
- 		
+		 
+ 
+
+
+	 
+ //The URL that we want to GET.
+ $url = 'https://syncstats.com/syncscript/majVideo.php?videofile='.$fileName;
+  
+ //Use file_get_contents to GET the URL in question.
+file_get_contents($url);
+
+
+
+
 }
 else {echo "fichier grosseur nulle?";
 	error_log("HTTP/1.1 204 No Content");		 
