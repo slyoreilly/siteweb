@@ -149,6 +149,10 @@
 								})
 							),
 							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('autoClean'),
+								$('<div></div>').addClass('col-6').text(lesSettings.autoClean)
+							),
+							$('<div></div>').addClass('row').append(
 								$('<div></div>').addClass('col-6').text('arena'),
 								$('<div></div>').addClass('col-6').text(arena)
 							),
@@ -191,7 +195,7 @@
 										$('<option></option>').text('Alpha').val('alpha')
 									).on("change",function(){
 									pendingSettings.appChannel = $(this).val();
-								})
+								}).val(pendingSettings.appChannel)
 									)
 
 								
@@ -203,7 +207,10 @@
 										$('<option></option>').text('Local').val('local'),
 										$('<option></option>').text('Internet').val('internet'),
 										$('<option></option>').text('WiFi Direct').val('wifidirect')
-									)
+									).on("change",function(){
+									pendingSettings.connectivite = $(this).val();
+								}).val(pendingSettings.connectivite)
+									
 
 								)
 							),
@@ -217,13 +224,13 @@
 										$('<option></option>').text('Jamais').val('0')
 									).on("change",function(){
 									pendingSettings.delaiAutoSync = $(this).val();
-								})
+								}).val(pendingSettings.delaiAutoSync)
 
 								)
 							),
 							$('<div></div>').addClass('row').append(
 								$('<div></div>').addClass('col-6').text('decoupe'),
-								$('<div></div>').addClass('col-6').append($('<input></input>').attr("id","pendingDecoupe").attr("type","text").val(pendingSettings.decoupe).on("change",function(){
+								$('<div></div>').addClass('col-6').append($('<input></input>').attr("id","pendingDecoupe").attr("type","text").val(lesSettings.decoupe).on("change",function(){
 									pendingSettings.decoupe = $(this).val();
 								}))
 							),
@@ -238,7 +245,7 @@
 							),
 							$('<div></div>').addClass('row').append(
 								$('<div></div>').addClass('col-6').text('secondes'),
-								$('<div></div>').addClass('col-6').append($('<input></input>').attr("id","pendingDecoupe").attr("type","text").val(pendingSettings.secondes).on("change",function(){
+								$('<div></div>').addClass('col-6').append($('<input></input>').attr("id","pendingDecoupe").attr("type","text").val(lesSettings.secondes).on("change",function(){
 									pendingSettings.secondes = $(this).val();
 								}))
 							),
@@ -250,9 +257,15 @@
 										$('<option></option>').text('syncstats.ddns.net').val('syncstats.ddns.net')
 									).on("change",function(){
 									pendingSettings.adresseSync = $(this).val();
-								})
+								}).val(pendingSettings.adresseSync)
 
 								)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('Auto Clean (Mb)'),
+								$('<div></div>').addClass('col-6').append($('<input></input>').attr("id","pendingAutoClean").attr("type","text").val(pendingSettings.autoClean).on("change",function(){
+									pendingSettings.autoClean = $(this).val();
+								}))
 							),
 							$('<div></div>').addClass('row').append(
 								$('<div></div>').addClass('col-6').text('arena'),
@@ -323,6 +336,10 @@
 									));
 
 								})
+							),
+							$('<div>2000</div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('Auto Clean (Mb)'),
+								$('<div></div>').addClass('col-6').text(lesSettings.autoClean)
 							),
 							$('<div></div>').addClass('row').append(
 								$('<div></div>').addClass('col-6').text('arena'),

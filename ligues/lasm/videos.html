@@ -31,11 +31,14 @@
             height:auto;
         }
         
-        body {background-color:#000000;
+        body {
+            background-color:#000000;
+            background-image: url("gazon.jpg");
+  background-repeat: repeat ;
         color:#ddd;
         margin:15px;}
         
-        div {background-color:#000000;
+        div {
         color:#ddd;}
         
         table{
@@ -603,7 +606,7 @@ function getMatchsdeLigueID() {
         <div class="container-fluid">
             <div class="row">
                 <div id="divHaut" class="col-sm-12" style="overflow:hidden; margin: 0px;   max-width:1080; max-height:200px">
-                    <img src="/ligues/lasm/banniere.jpeg" style="margin: -200px 0 ; object-fit:cover"></img>
+                    <img src="/ligues/lasm/banniere.jpeg" style="margin: 0px 0 ; object-fit:cover"></img>
                 </div>
             </div>
             <!--div class="row">
@@ -656,7 +659,14 @@ function getMatchsdeLigueID() {
                     
 
                      </div-->
+                     <div id="msgSS">
+                        <h4>Bienvenue sur SyncStats</h4>
+                        <p>
                    
+La ligue amicale de soccer de Montréal (LASM) est fière de s’associer à SyncStats pour vous offrir des reprises vidéo de vos beaux jeux.
+Sélectionnez d'abord votre équipe et retrouvez l'affrontement que vous voulez consulter ;-).
+                        </p></div>
+                    </div>
                     <div id="divLesMatchs"></div>
 
                 </div>

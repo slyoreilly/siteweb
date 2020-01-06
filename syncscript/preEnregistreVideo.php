@@ -42,7 +42,7 @@ if(!empty($nomFic))
 	$qSel="SELECT * FROM Video 
 			JOIN TableMatch
 				ON (match_id = nomMatch)  
-		WHERE nomMatch='{$params[$a]['video']['nomMatch']}' AND camId='{$camID}' AND nomFichier='{$nomFic}'";	
+		WHERE nomMatch='{$params[$a]['video']['nomMatch']}' AND camId='{$camID}' AND nomFichier Like '{$nomFic}%'";	
 	$retSel=mysqli_query($conn,$qSel) or die("Erreur: "+$qSel+"\n"+mysqli_error($conn));
 		if(mysqli_num_rows($retSel)>0){
 			while ($rangSel = mysqli_fetch_array($retSel))

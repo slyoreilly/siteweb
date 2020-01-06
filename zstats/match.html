@@ -308,9 +308,7 @@
 								}
 
 							}							
-							
-							
-							
+			
 								
 							}
 						} catch(err) {
@@ -602,35 +600,11 @@ function afficheFusillade(rJSON) {
 				}).append($('<p></p>').attr('id', 'nomEqVis').text(infoMatch.equipeNomVis).addClass('moyenTexte'));
 				divLogoVis = $('<div></div>').attr('id', 'logoVis').append($('<a></a>').attr('id', 'lienImgVisSommaire').attr('href', "/zstats/statsequipe.html?equipeId=" + infoMatch.equipeIdVis + "&ligueId=" + infoMatch.ligueId).append($('<img></img>').attr('id', 'logoEquipeSomVis').addClass("grosLogo")));
 
-				/*
-				lienImgVisJS = document.createElement('A');
-				lienImgVisJS.id = "lienImgVis";
-				lienImgVisJS.href = "/zstats/statsequipe.html?equipeId=" + infoMatch.equipeIdVis + "&ligueId=" + infoMatch.ligueId;
-				divImgVis = document.createElement('IMG');
-				divImgVis.id = "logoEquipeSomVis";
-				divImgVis.className = "grosLogo";
-				pNomEqVis = document.createElement('P');
-				pNomEqVis.id = "nomEqVis";
-				pNomEqVis.innerHTML = infoMatch.equipeNomVis + "<br/>";
 
-				pNomEqVis.className = "moyenTexte";
-				pVilleEqVis = document.createElement('P');
-				pVilleEqVis.id = "villeEqVis";
-				pVilleEqVis.innerHTML = infoMatch.equipeVilleVis + "<br/>";
-				*/
-				//	divScoreDom.style.margin="5%";
-				//	divScoreVis.style.margin="5%";
 				divDash = $('<div></div>').attr('id', 'divDash').addClass("grosTexte").append($('<p></p>').addClass("grosTexte").text("-"));
 
 				divCont = document.createElement('DIV');
 
-				//			infoMatch.equipeVilleVis.length > 0 ? divLogoVis.appendChild(pVilleEqVis) : "";
-
-				//				divLogoVis.appendChild(lienImgVisJS);
-				//				lienImgVisJS.appendChild(divImgVis);
-				//				divLogoVis.appendChild(pNomEqVis);
-
-				//				divImgVis.src = '/admin/afficheImage.php?ficId=' + infoMatch.equipeFicIdVis;
 				var statut;
 				if (infoMatch.statut == 'F') {
 					statut = "Final";
@@ -643,9 +617,6 @@ function afficheFusillade(rJSON) {
 				$(divCont).append($('<div></div>').attr('id', 'boiteCentre').append($('<div></div>').attr('id', 'boiteStatut').append($('<p></p>').text(statut)), $('<div></div>').attr('id', 'boiteArena').append($('<br></br>'), $('<p></p>').text(infoMatch.nomArena + ', ' + infoMatch.nomGlace)), $('<div></div>').attr('id', 'boiteScore').append($('<div></div>').attr('id', 'scoreDom').addClass('grosTexte').append($('<p></p>').attr('id', 'tScoreDom').addClass('grosTexte').text(infoMatch.equipeScoreDom)), $(divDash), $('<div></div>').attr('id', 'scoreVis').addClass('grosTexte').append($('<p></p>').attr('id', 'tScoreVis').addClass('grosTexte').text(infoMatch.equipeScoreVis)))));
 				$(divCont).append($(divLogoVis), $(divNomEqVilleVis));
 
-				//                $(divCont).append($(divLogoVis));
-				//$(divCont).append($(pNomEqVis));
-				//$(divCont).append();
 
 				divLigne.appendChild(divCont);
 
@@ -1396,10 +1367,7 @@ console.log(rSMB.buts[d].video.length);
 						strChrono = minutes + ":" + dizSecondes + secondes;
 
 						var lesCols = new Array();
-						//
-						//console.log('mSrc');
-						//console.log(mSrc);
-						//console.log(rSMB.buts[J].equipe);
+	
 						//
 						lesCols[0] = strChrono;
 						lesCols[1] = rSMB.clips[J].labelFrench;
@@ -1419,11 +1387,7 @@ console.log(rSMB.buts[d].video.length);
 								imgVid.src = "/images/icones/movie.png";
 								imgVid.alt = "Video";
 
-								/*$(imgVid).hover(function(){
-								 $(this).attr('src','/images/icones/movie.ico');
-								 },function(){
-								 $(this).attr('src','/images/icones/movie.ico');
-								 });*/
+
 								if (mBut != null) {
 									if (mBut.video.length > 0) {
 										pVids.appendChild(imgVid);
@@ -1844,13 +1808,6 @@ $('<table></table>').attr("id","divFormulaire").append($('<tbody></tbody>').appe
 						//console.log( $('#cbpres_'+lequipe.joueurs[a].joueurId).prop( "checked"));
 						$('#cbpres_' + lequipe.joueurs[a].joueurId).prop("checked", true);
 					}
-					/* $(":checkbox").parent().click(function(evt) {
-					 if (evt.target.type !== 'checkbox') {
-					 var $checkbox = $(":checkbox", this);
-					 $checkbox.attr('checked', !$checkbox.attr('checked'));
-					 $checkbox.change();
-					 }
-					 });*/
 
 				}
 
@@ -1980,8 +1937,7 @@ $('<table></table>').attr("id","divFormulaire").append($('<tbody></tbody>').appe
 					for (var b = 0; b < window.lesJoueursDeLigue.equipe.length; b++) {
 						//  console.log(JSON.stringify(window.lesJoueursDeLigue.equipe[b]));
 						for (var a = 0; a < window.lesJoueursDeLigue.equipe[b].joueur.length; a++) {
-							//console.log(window.lesJoueursDeLigue.equipe[b].joueur[a].nomJoueur);
-							//console.log(window.lesJoueursDeLigue.equipe[b].joueur[a].nomJoueur.toLowerCase()+" --  "+str);
+
 							if (window.lesJoueursDeLigue.equipe[b].joueur[a].nomJoueur.toLowerCase().indexOf(str) >= 0) {
 
 								$("#boiteResRecherchePres").append($('<div></div>').text(window.lesJoueursDeLigue.equipe[b].joueur[a].nomJoueur).hover(function() {
@@ -2144,8 +2100,7 @@ $('<table></table>').attr("id","divFormulaire").append($('<tbody></tbody>').appe
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 						//console.log("WAIT!");
 						recalculeUnMatch();
-						//                        window.location.href = '/zstats/match.html?match=' + encodeURIComponent(window.matchID) + '&onglet=0' + '&m=' + window.m;
-						// window.location.reload(true);
+
 					}
 				};
 
@@ -2297,11 +2252,6 @@ $('#modalCorrectionBut .modal-title').text(tl_bouton_modifier+" "+tl_stats_But);
                     
 				$('#modalCorrectionBut .modal-footer').append($('<button></button>').addClass("btn btn-primary").text("OK").attr("type","button").on("click",
 				function() {
-
-                    //  butModif.noSeq=but;
-                   // marqueurId = lequipe.joueurs[selMarq.selectedIndex] != undefined && lequipe.joueurs[selMarq.selectedIndex] != null && lequipe.joueurs[selMarq.selectedIndex]>0 ?  lequipe.joueurs[selMarq.selectedIndex].joueurId :  null;
-                   // passeur1Id = (lequipe.joueurs[selPass1.selectedIndex] != undefined && lequipe.joueurs[selPass1.selectedIndex] != null) && lequipe.joueurs[selPass1.selectedIndex]>0 ?  lequipe.joueurs[selPass1.selectedIndex].joueurId : null;
-                   // passeur2Id  = lequipe.joueurs[selPass2.selectedIndex] != undefined && lequipe.joueurs[selPass2.selectedIndex] != null && lequipe.joueurs[selPass2.selectedIndex]>0 ? lequipe.joueurs[selPass2.selectedIndex].joueurId : null;
                     butModif = {
                         matchId : window.matchID,
                         noSeq : but,
@@ -2803,7 +2753,17 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 							//
 							//	Efface Video
 						   
-						    $('#video-info').append($("<input></input>").attr("type","button").val("Effacer ce video").on("click",{fic:mBut.video[vidIndex].fic} ,function(event){
+						    $('#video-info').append(
+							$("<div></div>").attr("id","conteneurEfface").append(	
+							
+							$("<input></input>").attr("id","btnEffacer").addClass('my-3').attr("type","button").val("Effacer ce video").on("click",{fic:mBut.video[vidIndex].fic} ,function(event){
+								$('#btnEffacer').hide();
+							  $('#texteConfirmeEffacer').show();
+							  $('#btnConfirmeEffacer').show();
+							  $('#btnAnnuleEffacer').show();
+							}),
+							$('<p></p>').addClass('text-warning lead').attr("id","texteConfirmeEffacer").text('Êtes-vous sûr de vouloir effacer?').hide(),
+							$('<input></input>').attr("id","btnConfirmeEffacer").attr("type","button").val('Oui, GO!').hide().on("click",{fic:mBut.video[vidIndex].fic} ,function(event){
 						      $.ajax({
                                         url : "/scriptsphp/effaceVideo.php",
                                         type : "POST",
@@ -2812,15 +2772,26 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                                         },
                                         dataType : "html",
                                         success : function(response) {
+                                            $('#conteneurEfface').append('<div class="alert alert-info alert-dismissible fade show">  Succès!</div>  ');
                                             
-                                            
-                                        }
-						    });
-							}));
+										}
+									
+							});
+							$('#conteneurEfface').empty();
+							}),
+							$('<input></input>').attr("id","btnAnnuleEffacer").attr("type","button").val('NNNOOOONNNN!!!!!').hide().on("click",function(){
+							  $('#btnEffacer').show();
+							  $('#texteConfirmeEffacer').hide();
+							  $('#btnConfirmeEffacer').hide();
+							  $('#btnAnnuleEffacer').hide();
+							  
+							})
 							
-				var ficSeul1 = mBut.video[vidIndex].fic.split("?");
-				var ficSeul = ficSeul1[0];
-                            $('#video-info').append($("<input></input>").attr("type", "button").val("Ajuster le délai").on("click", { fic: ficSeul, cam: mBut.video[vidIndex].cam }, function (event) {
+							
+							));
+							
+
+                            $('#video-info').append($("<input></input>").addClass('my-3').attr("type", "button").val("Ajuster le délai").on("click", { video: mBut.video[vidIndex] }, function (event) {
 
                                 $('#modalAjusterDelai').modal("show");
                                 $('#modalAjusterDelai .modal-body').empty();
@@ -2829,17 +2800,20 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 
 
                                 $('#modalAjusterDelai .modal-body').append(
-                                    $("<p></p>").text('Entrez le délai souhaité pour la cam ' + event.data.cam+' en secondes'),
+                                    $("<p></p>").text('Entrez le délai souhaité pour la cam ' + event.data.video.cam+' en secondes'),
                                     $("<input></input>").attr("id", "inDelai").attr("type", "text").val(""),
                                     $("<input></input>").attr("type", "button").val("Confirmer")
-                                        .on("click", { fic: event.data.fic, cam: event.data.cam }, function (event) {
+                                        .on("click", { video: event.data.video}, function (event) {
+
+											var ficSeul1 = event.data.video.fic.split("?");
+											var ficSeul = ficSeul1[0];	
 
                                             $.ajax({
                                                 url: "/scriptsphp/ajusteDelai.php",
                                                 type: "POST",
                                                 data: {
-                                                    fic: event.data.fic,
-                                                    cam: event.data.cam,
+                                                    fic: ficSeul,
+                                                    cam: event.data.video.cam,
                                                     delai: $('#inDelai').val()
                                                 },
                                                 dataType: "html",
@@ -2931,22 +2905,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 					'playerWidth' : 1,
 					'videoClass' : 'video'
 				});
-				/*mediaPlayer = document.getElementById('media-video');
-				 if (mediaPlayer != null) {
-				 $('.close-btn').click(function() {
-				 $('#ecranSombre').remove();
-
-				 mediaPlayer.pause();
-				 try {
-				 mediaPlayer.currentTime = 0;
-				 } catch(err) {
-				 }
-				 $('.media-box').hide();
-				 $(".play-btn").show();
-				 $('.play-pause').addClass('play').removeClass('pause');
-
-				 });
-				 }*/
+				
 
 				var requete_ajax = new XMLHttpRequest();
 				var url = "/scriptsphp/getVideoUnique.php";
@@ -3388,11 +3347,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 
 				}
 
-				
-				
-				
 
-				//	console.log(document.getElementById("tabResume").id);
 
 				etoileConditions = 0;
 				//			console.log('de');

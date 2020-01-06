@@ -37,18 +37,16 @@ return $UserID;
 }
 
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
-	
-		mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+
 	
 	
 	//////////////////////////////////////////////////////////////////////
@@ -75,23 +73,23 @@ mysql_query("SET CHARACTER SET 'utf8'");
 	$query_ligue = "INSERT INTO Ligue (Nom_Ligue, Horaire, Lieu,ficId, dernierMAJ,cleValeur) ".
 "VALUES ('$nom', '$horaire', '$lieu','$ficId', NOW(),'$accolade2')";
 		
-$retour = mysql_query($query_ligue)or die('Error, query Ligue failed'.$query_ligue.": ".mysql_error());
-$resultEvent = mysql_query("SELECT * FROM Ligue WHERE Nom_Ligue = '{$nom}' ORDER BY ID_Ligue DESC")or die (mysql_error());
+$retour = mysqli_query($conn,$query_ligue)or die('Error, query Ligue failed'.$query_ligue.": ".mysqli_error($conn));
+$resultEvent = mysqli_query($conn,"SELECT * FROM Ligue WHERE Nom_Ligue = '{$nom}' ORDER BY ID_Ligue DESC")or die (mysqli_error($conn));
 	
 	
 	
-while($rang=mysql_fetch_array($resultEvent))
+while($rang=mysqli_fetch_array($resultEvent))
 {$ligueId= $rang['ID_Ligue'];}
 
 $query_saison = "INSERT INTO TableSaison (typeSaison, saisonActive, premierMatch, dernierMatch, ligueRef	 ) ".
-"VALUES (1, 1, NOW(), '2020-01-01','{$ligueId}')";
-	mysql_query($query_saison)	
-or die('Error, query saison failed: '.mysql_error());
+"VALUES (1, 1, NOW(), '2030-01-01','{$ligueId}')";
+	mysqli_query($conn,$query_saison)	
+or die('Error, query saison failed: '.mysqli_error($conn));
 
 	$query_abon = "INSERT INTO AbonnementLigue (userid, type, ligueid,contexte) ".
 "VALUES ('$userId', '10', '$ligueId','ligue')";
-$retour = mysql_query($query_abon)	
-or die('Error, query abon failed: '.mysql_error());
+$retour = mysqli_query($conn,$query_abon)	
+or die('Error, query abon failed: '.mysqli_error($conn));
 
 echo $ligueId;
 
@@ -101,18 +99,20 @@ echo $ligueId;
 	
 	if(10==$code)  // Code 10:  Modifie ligue existante.
 	{
-		$resultFic = mysql_query("SELECT ficId FROM Ligue WHERE ID_Ligue= '$ligueId'")or die (mysql_error());
+		//$resultFic = mysqli_query($conn,"SELECT ficId FROM Ligue WHERE ID_Ligue= '$ligueId'")or die (mysqli_error($conn));
 		
 		
 		
-	$query_update = "UPDATE Ligue SET Nom_Ligue='$nom', Horaire='$horaire',ficId='$ficId' , Lieu='$lieu' WHERE ID_Ligue= '$ligueId'";	
-	mysql_query($query_update)or die (mysql_error());	
+	$query_update = "UPDATE Ligue SET Nom_Ligue='$nom', Horaire='$horaire',ficId='$ficId' , Lieu='$lieu' , dernierMAJ = NOW() WHERE ID_Ligue= '$ligueId'";	
+	mysqli_query($conn,$query_update)or die (mysqli_error($conn));	
 	
 	
-mysql_query($queryFic) or die('Error, query failed');
+//mysqli_query($conn,$queryFic) or die('Error, query failed');
 //include 'library/closedb.php';
 	
 	}
+
+	mysqli_close($conn)
 
 ?>
 

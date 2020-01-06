@@ -33,7 +33,7 @@ if (!mysql_select_db($database))
 	if($dateDeb=='')
 	{$dateDeb='2011-01-01';}
 	if($dateFin=='')
-	{$dateFin='2020-01-01';}
+	{$dateFin='2050-01-01';}
 
 if($abonId!='undefined'&&$abonId!=0)
 {

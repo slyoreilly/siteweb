@@ -87,6 +87,9 @@
 			function faitCheckBox(nomParam, titre, checked, divAttacheId) {
 				$('#' + divAttacheId).append($('<div></div>').addClass("form-check").append($('<input/>').attr("id", "id" + nomParam).prop('checked', checked).attr("type", "checkbox"), $('<label></label>').attr("for", "id" + nomParam).text(titre)));
 			}
+			function faitInputText(nomParam, titre, defaut, divAttacheId) {
+				$('#' + divAttacheId).append($('<div></div>').addClass("form-text").append($('<input/>').attr("id", "id" + nomParam).val(defaut).attr("type", "text"), $('<label></label>').attr("for", "id" + nomParam).text(titre)));
+			}
 
 			function faitCouleur(nomParam, titre, couleur, divAttacheId) {
 				$('#' + divAttacheId).append($('<div></div>').addClass("form-group").append(
@@ -165,6 +168,17 @@
 				} catch(err) {
 				}
 
+				try {
+					faitInputText("nomligue", "Nom de la ligue",inLigue.Ligue.nom, "divInfo");
+					faitInputText("lieu", "Emplacement",inLigue.Ligue.lieu, "divInfo");
+					faitInputText("horaire", "Horaire de la lilgue",inLigue.Ligue.horaire, "divInfo");
+					window.ficId = inLigue.Ligue.ficId;
+					$('#logoLigue').attr('src','/admin/afficheImage.php?ficId=' + ficId);
+
+				} catch(err) {
+				}
+				
+
 			} catch(err) {
 			}
 
@@ -181,7 +195,8 @@
 			}
 
 			function enregistrePEapplique(applique) {
-				aDomper = JSON.stringify({
+				aDomper = JSON.stringify(
+					{
 					parametres : {
 						"3etoiles" : "vote"
 					},
@@ -210,8 +225,16 @@
 						}
 					}
 				});
+				colonnes =
+					{
+					nom :$('#idnomligue').val(),
+					horaire :$('#idhoraire').val(),
+					lieu :$('#idlieu').val(),
+					ficId :window.ficId
+				};
 
 				sauvegardeParams(window.ligueId, aDomper, applique);
+				sauvegardeColonnes(window.ligueId, colonnes) ;
 			}
 
 			function faitOngletSysteme(noMatchId, arenaId) {
@@ -244,6 +267,37 @@
 						alert(err.Message + "  --  ereur gardMax");
 					}
 				});
+
+			}
+
+			function sauvegardeColonnes(ligue, colonnes) {
+
+			$.ajax({
+				url : "/admin/modifierligue.php",
+				type : "POST",
+
+				data : jQuery.param({
+					nom : colonnes.nom,
+					horaire : colonnes.horaire,
+					lieu : colonnes.lieu,
+					userId : "",
+					code : 10,
+					ligueid :  window.ligueId,
+					ficId : colonnes.ficId
+					}
+					),
+				contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+				success : function(response) {
+					//var laTable = eval("(" + response + ")");
+					
+					console.log("repSauvColonnes: " + response);
+
+				},
+				error : function(xhr, status, error) {
+					var err = eval("(" + xhr.responseText + ")");
+					alert(err.Message + "  --  ereur gardMax");
+				}
+			});
 
 			}
 
@@ -327,6 +381,31 @@
 				return ($(table));
 			};
 
+			function televerseFic() {
+				var fd = new FormData();
+				var files = $('#userfile')[0].files[0];
+				fd.append('userfile',files);
+
+				$.ajax({
+					url: '/admin/enregistreFichier.php',
+					type: 'post',
+					data: fd,
+					contentType: false,
+					processData: false,
+					success: function(response){
+						if(response != 0){
+
+							$('#logoLigue').attr('src','/admin/afficheImage.php?ficId=' + response);
+						window.ficId = response;
+						}else{
+							alert('file not uploaded');
+						}
+					},
+				});
+
+				//	}
+			}
+
         </script>
 
     </HEAD>
@@ -337,6 +416,13 @@
         <div id="divMenuHaut"></div>
 
         <div id="divCentrale">
+			<div id="divInfo">
+                <h1>Info sur la ligue</h1>
+				<input name="userfile" type="file" id="userfile">
+<input name="upload" type="button" onclick="televerseFic()" id="upload" value="Importer"/>
+		<img id="logoLigue"/>
+
+            </div>
             <div id="divReglements">
                 <h1>Règlements</h1>
             </div>

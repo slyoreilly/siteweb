@@ -42,12 +42,12 @@ VALUES ('{$intJoueur}', '{$intNo}', NULL, NULL,95)")or die(mysqli_error($connDT)
 //$retour = mysql_query("INSERT INTO abonJoueurEquipe (joueurId, equipeId, permission, debutAbon, finAbon) 
 //VALUES ('{$nId[0]}', '{$intEquipe}',30, NOW(),'2050-01-01')");	
 $retour = mysqli_query($connDT,"INSERT INTO abonJoueurLigue (joueurId, ligueId, permission, debutAbon, finAbon) 
-VALUES ('{$nId[0]}', '{$intLigue}',30, NOW(),'2020-01-01')");	
+VALUES ('{$nId[0]}', '{$intLigue}',30, NOW(),'2050-01-01')");	
 
 if($intEquipe!=0)
 {
 $retour = mysqli_query($connDT,"INSERT INTO abonJoueurEquipe (joueurId, equipeId, permission, debutAbon, finAbon) 
-VALUES ('{$nId[0]}', '{$intEquipe}',30, NOW(),'2020-01-01')");	
+VALUES ('{$nId[0]}', '{$intEquipe}',30, NOW(),'2050-01-01')");	
 }
 	
 //		echo $retTransJ;
@@ -92,7 +92,7 @@ VALUES ('{$intEquipe}', '{$intLogo}', 16, 1, NOW())");
 //$retour = mysql_query("INSERT INTO abonJoueurEquipe (joueurId, equipeId, permission, debutAbon, finAbon) 
 //VALUES ('{$nId[0]}', '{$intEquipe}',30, NOW(),'2050-01-01')");	
 $retour = mysqli_query($connDT,"INSERT INTO abonEquipeLigue (equipeId, ligueId, permission, debutAbon, finAbon) 
-VALUES ('{$nId[0]}', '{$intLigue}',30, NOW(),'2020-01-01')");	
+VALUES ('{$nId[0]}', '{$intLigue}',30, NOW(),'2050-01-01')");	
 
 
 	

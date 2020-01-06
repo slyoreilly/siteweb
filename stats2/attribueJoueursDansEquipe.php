@@ -65,7 +65,7 @@ while($Ij<count($lesJoueurs))
 					$sql = "INSERT INTO abonJoueurEquipe 
 									(joueurId,equipeId,permission,debutAbon,finAbon) 
 									VALUES 
-									('{$lesJoueurs[$Ij]['joueurId']}','{$lesJoueurs[$Ij]['equipeId']}','30',NOW(),'2020-01-01')";
+									('{$lesJoueurs[$Ij]['joueurId']}','{$lesJoueurs[$Ij]['equipeId']}','30',NOW(),'2050-01-01')";
 				$res=mysqli_query($conn,$sql) or die("Et mon erreur: ".mysqli_error($conn));
 
 			}
