@@ -451,32 +451,69 @@ $Sommaire['periodes']=$periode;
 
 
 
-$rFus = mysqli_query($conn,"SELECT TableEvenement0.*,TableJoueur.*,TableEquipe.* FROM TableEvenement0 
+$rFus = mysqli_query($conn,"SELECT TableEvenement0.*, Video.*, TableJoueur.*,TableEquipe.* FROM TableEvenement0 
 										JOIN TableJoueur
 											ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id)
 										JOIN TableEquipe
 											ON (TableEvenement0.equipe_event_id=TableEquipe.equipe_id)
-											 WHERE match_event_id = '{$matchID}' AND code = 2 ORDER BY chrono")
+										LEFT JOIN
+											Video ON (Video.reference = TableEvenement0.event_id)
+										WHERE match_event_id = '{$matchID}' AND code = 2 ORDER BY TableEvenement0.chrono")
 or die(mysqli_error($conn));  	
 
 $fusillade =Array();
 	$IF=0;
+
+$bufEvent=0;
 while($rangFus=mysqli_fetch_array($rFus))
 	{
-		$fusillade[$IF]=array();
+		$uneFus=array();
+		if($rangFus['event_id']!=$bufEvent){
+
 		if($rangFus['souscode']==1)
 		{
-			$fusillade[$IF]['nom']=$rangFus['NomJoueur'];
-			$fusillade[$IF]['equipe']=$rangFus['nom_equipe'];
-			$fusillade[$IF]['but']=true;
+			$uneFus['nom']=$rangFus['NomJoueur'];
+			$uneFus['equipe']=$rangFus['nom_equipe'];
+			$uneFus['but']=true;
 		}
 		if($rangFus['souscode']==5)
 		{
-			$fusillade[$IF]['nom']=$rangFus['NomJoueur'];
-			$fusillade[$IF]['equipe']=$rangFus['nom_equipe'];
-			$fusillade[$IF]['but']=false;
+			$uneFus['nom']=$rangFus['NomJoueur'];
+			$uneFus['equipe']=$rangFus['nom_equipe'];
+			$uneFus['but']=false;
 		}
-		$IF++;
+
+
+
+			//if(!is_null($rangeeEv['videoId'])){
+			$uneFus['video']=array();
+			//}
+			array_push($fusillade,$uneFus);
+			
+			$bufEvent= $rangFus['event_id'];
+		}
+
+		$unVideo=array();
+		if(!is_null($rangFus['videoId'])){
+		$unVideo['fic']=$rangFus['nomFichier'];
+		$unVideo['cam']=$rangFus['camId'];
+		$unVideo['eval']=$rangFus['eval'];
+		$unVideo['nbVues']=$rangFus['nbVues'];
+		$unVideo['etat']=$rangFus['etat'];
+		$unVideo['videoId']=$rangFus['videoId'];
+		$unVideo['emplacement']=$rangFus['emplacement'];
+		$unVideo['thumbnail']=$rangFus['nomThumbnail'];
+
+		array_push($uneFus['video'],$unVideo);}
+		end($fusillade);
+		$key = key($fusillade);
+		$fusillade[$key]=$uneFus;
+		reset($fusillade);
+		
+
+
+
+
 	}
 
 

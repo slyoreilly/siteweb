@@ -1,0 +1,28 @@
+[Sun Jan 12 07:02:49.154234 2020] [mpm_prefork:notice] [pid 1481] AH00163: Apache/2.4.7 (Ubuntu) PHP/5.5.9-1ubuntu4.26 OpenSSL/1.0.1f configured -- resuming normal operations
+[Sun Jan 12 07:02:49.154337 2020] [core:notice] [pid 1481] AH00094: Command line: '/usr/sbin/apache2'
+[Sun Jan 12 12:24:43.323011 2020] [:error] [pid 16667] [client 5.101.0.209:42234] script '/home/index.php' not found or unable to stat
+[Sun Jan 12 16:27:53.894599 2020] [:error] [pid 3229] [client 94.177.255.51:60767] script '/home/wp-login.php' not found or unable to stat
+[Mon Jan 13 00:42:33.219839 2020] [mpm_prefork:notice] [pid 1481] AH00171: Graceful restart requested, doing restart
+[Mon Jan 13 00:42:33.406533 2020] [mpm_prefork:notice] [pid 1481] AH00163: Apache/2.4.7 (Ubuntu) PHP/5.5.9-1ubuntu4.26 OpenSSL/1.0.1f configured -- resuming normal operations
+[Mon Jan 13 00:42:33.406566 2020] [core:notice] [pid 1481] AH00094: Command line: '/usr/sbin/apache2'
+[Mon Jan 13 00:42:40.473767 2020] [mpm_prefork:notice] [pid 1481] AH00171: Graceful restart requested, doing restart
+[Mon Jan 13 00:42:40.610080 2020] [mpm_prefork:notice] [pid 1481] AH00163: Apache/2.4.7 (Ubuntu) PHP/5.5.9-1ubuntu4.26 OpenSSL/1.0.1f configured -- resuming normal operations
+[Mon Jan 13 00:42:40.610115 2020] [core:notice] [pid 1481] AH00094: Command line: '/usr/sbin/apache2'
+[Mon Jan 13 00:42:43.172185 2020] [mpm_prefork:notice] [pid 1481] AH00171: Graceful restart requested, doing restart
+[Mon Jan 13 00:42:43.310420 2020] [mpm_prefork:notice] [pid 1481] AH00163: Apache/2.4.7 (Ubuntu) PHP/5.5.9-1ubuntu4.26 OpenSSL/1.0.1f configured -- resuming normal operations
+[Mon Jan 13 00:42:43.310455 2020] [core:notice] [pid 1481] AH00094: Command line: '/usr/sbin/apache2'
+[Mon Jan 13 00:42:50.385279 2020] [mpm_prefork:notice] [pid 1481] AH00171: Graceful restart requested, doing restart
+[Mon Jan 13 00:42:50.528609 2020] [mpm_prefork:notice] [pid 1481] AH00163: Apache/2.4.7 (Ubuntu) PHP/5.5.9-1ubuntu4.26 OpenSSL/1.0.1f configured -- resuming normal operations
+[Mon Jan 13 00:42:50.528644 2020] [core:notice] [pid 1481] AH00094: Command line: '/usr/sbin/apache2'
+[Mon Jan 13 00:42:58.034963 2020] [mpm_prefork:notice] [pid 1481] AH00171: Graceful restart requested, doing restart
+[Mon Jan 13 00:42:58.170643 2020] [mpm_prefork:notice] [pid 1481] AH00163: Apache/2.4.7 (Ubuntu) PHP/5.5.9-1ubuntu4.26 OpenSSL/1.0.1f configured -- resuming normal operations
+[Mon Jan 13 00:42:58.170684 2020] [core:notice] [pid 1481] AH00094: Command line: '/usr/sbin/apache2'
+[Mon Jan 13 00:43:00.933192 2020] [mpm_prefork:notice] [pid 1481] AH00171: Graceful restart requested, doing restart
+[Mon Jan 13 00:43:01.065336 2020] [mpm_prefork:notice] [pid 1481] AH00163: Apache/2.4.7 (Ubuntu) PHP/5.5.9-1ubuntu4.26 OpenSSL/1.0.1f configured -- resuming normal operations
+[Mon Jan 13 00:43:01.065390 2020] [core:notice] [pid 1481] AH00094: Command line: '/usr/sbin/apache2'
+[Mon Jan 13 02:57:24.667647 2020] [:error] [pid 16184] [client 5.101.0.209:60678] script '/home/index.php' not found or unable to stat
+[Mon Jan 13 05:55:37.468917 2020] [:error] [pid 28550] [client 212.83.146.219:40680] script '/home/wp-login.php' not found or unable to stat
+[Tue Jan 14 01:40:17.038340 2020] [:error] [pid 3214] [client 5.101.0.209:36478] script '/home/index.php' not found or unable to stat
+[Tue Jan 14 04:53:59.096104 2020] [:error] [pid 6509] [client 167.99.188.32:48186] script '/home/index.php' not found or unable to stat
+[Tue Jan 14 04:58:50.855966 2020] [:error] [pid 32296] [client 213.159.209.133:38586] script '/home/index.php' not found or unable to stat
+[Tue Jan 14 11:08:38.008190 2020] [ssl:error] [pid 6509] AH02032: Hostname 5.39.81.14:443 provided via SNI and hostname 5.39.81.14 provided via HTTP are different

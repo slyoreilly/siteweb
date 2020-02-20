@@ -98,7 +98,6 @@ file_get_contents($url);
 
 
 
-}
 else {echo "fichier grosseur nulle?";
 	error_log("HTTP/1.1 204 No Content");		 
 	http_response_code(204);}

@@ -59,7 +59,7 @@ $qMatch = "SELECT * FROM (
 				ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)
 
 			WHERE ((TableEvenement0.chrono>$rrs2 
-				AND (TableEvenement0.code=0 OR TableEvenement0.code=10))
+				AND (TableEvenement0.code=0 OR TableEvenement0.code=2 OR TableEvenement0.code=10))
 				)
 				AND TableMatch.arenaId='{$arena}'
 UNION ALL
@@ -125,10 +125,11 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 				case 0:
 					switch($rangeeMatch['code']){
 					case 0:
+					case 2:
 					$mVideo= array();
 					$mVideo['match_id'] = $rangeeMatch['match_id'];
 					$mVideo['reference'] = $rangeeMatch['event_id'];
-					$mVideo['type'] = 0;
+					$mVideo['type'] = $rangeeMatch['code'];
 					$mVideo['chrono'] = $rangeeMatch['chrono'];
 					$mVideo['ligueId'] = $rangeeMatch['ligueRef'];
 					$mVideo['equipe'] = $rangeeMatch['equipe_event_id'];
@@ -147,6 +148,8 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 
 
 				break;
+				
+
 				case 5:			
 				$mVideo= array();
 				$mVideo['match_id'] = $rangeeMatch['match_id'];
