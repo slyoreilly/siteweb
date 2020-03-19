@@ -1,5 +1,9 @@
 <?php
-require '../scriptsphp/defenvvar.php';nt0';
+require '../scriptsphp/defenvvar.php';
+$tableEq = 'TableEquipe';
+$tableLigue = 'Ligue';
+$tableMatch = 'TableMatch';
+$tableEvent = 'TableEvenement0';
 $tableJoueur = 'TableJoueur';
 $tableAbon = 'AbonnementLigue';
 $tableUser = 'TableUser';

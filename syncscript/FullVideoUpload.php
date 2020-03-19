@@ -1,5 +1,9 @@
 <?php
-require '../scriptsphp/defenvvar.php';n'];
+require '../scriptsphp/defenvvar.php';
+
+
+$time = $_POST['time'];
+$location = $_POST['location'];
 $game = $_POST['game'];
 $cam = $_POST['cam'];
 $fileName = $_POST['fileName'];

@@ -8,7 +8,11 @@
 // 
 ////////////////////////////////////////////////////////////
 
-require '../scriptsphp/defenvvar.php';';
+require '../scriptsphp/defenvvar.php';
+$tableLigue = 'Ligue';
+$tableJoueur = 'TableJoueur';
+$tableEvent = 'TableEvenement0';
+$tableEquipe = 'TableEquipe';
 $tableUser = 'TableUser';
 
 ////////////////////////////////////////////////////////////

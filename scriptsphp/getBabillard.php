@@ -7,7 +7,15 @@
 // 
 ////////////////////////////////////////////////////////////
 
-require '../scriptsphp/defenvvar.php';host, $db_user, $db_pwd, $database);
+require '../scriptsphp/defenvvar.php';
+
+////////////////////////////////////////////////////////////
+//
+// 	Connections � la base de donn�es
+//
+////////////////////////////////////////////////////////////
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
 // Check connection
 if (!$conn) {
 	die("Connection failed: " . mysqli_connect_error());

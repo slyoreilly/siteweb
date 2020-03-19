@@ -1,5 +1,9 @@
 <?php
-require '../scriptsphp/defenvvar.php';d'];
+require '../scriptsphp/defenvvar.php';
+
+//$jDomJSON = stripslashes($_POST['jDom']);
+//$jVisJSON = stripslashes($_POST['jVis']);
+$evalueId = $_POST['evalueId'];
 $evaluateurId = $_POST['evaluateurId'];
 $ligueId = $_POST['ligueId'];
 

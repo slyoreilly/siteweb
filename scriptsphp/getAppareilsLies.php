@@ -1,5 +1,9 @@
 <?php
 require '../scriptsphp/defenvvar.php';
+
+//$fichier = $_POST['fichier'];
+//echo $_POST['videos'];
+if(isset($_POST['telId'])){
 	$telId = $_POST['telId'];
 }
 $usager = $_POST['username'];

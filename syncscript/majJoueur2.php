@@ -1,6 +1,10 @@
 <?php
 
-require '../scriptsphp/defenvvar.php';';
+require '../scriptsphp/defenvvar.php';
+$tableEq = 'TableEquipe';
+$tableLigue = 'Ligue';
+$tableMatch = 'TableMatch';
+$tableJoueur = 'TableJoueur';
 $tableAbon = 'AbonnementLigue';
 $tableUser = 'TableUser';
 
