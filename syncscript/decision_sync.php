@@ -1,9 +1,5 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableEq = 'TableEquipe';
 $tableLigue = 'Ligue';
 $tableMatch = 'TableMatch';
@@ -33,7 +29,7 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 		if(!strcmp($rangeeUser['username'],$username))
 	{$userSelect =$rangeeUser['ref_id'];
 	}
-		// Prend le ID du user pour trouver les ligues abonnées.
+		// Prend le ID du user pour trouver les ligues abonnï¿½es.
 }
 
 $resultAbon = mysql_query("SELECT * FROM AbonnementLigue ORDER BY ligueid")
@@ -46,7 +42,7 @@ while($rangeeAbon=mysql_fetch_array($resultAbon))
 			array_push($AbonSelect, $rangeeAbon['ligueid']);
 	}
 	
-	// On obtient un array de ligueID auquel userSelect est abonné.
+	// On obtient un array de ligueID auquel userSelect est abonnï¿½.
 	
 
 $ligueSelect = array();
@@ -122,12 +118,12 @@ $Iequipe = 0;
 								$JSONstring .=  "\"maj\": \"".$rangeeJoueur['dernierMAJ']."\", ";
 								$JSONstring .=  "\"noJoueur\": \"".$rangeeJoueur['NumeroJoueur']."\"},";}
 							}//Fin du scan des joueurs
-							if(!strcmp(",", substr($JSONstring,-1)))// Pour éviter les vides;
+							if(!strcmp(",", substr($JSONstring,-1)))// Pour ï¿½viter les vides;
 							{$JSONstring = substr($JSONstring, 0,-1);}
-						$JSONstring .= "]},"; //fin des joueurs d'une équipe
-//						}// Fin d'une équipe valide
+						$JSONstring .= "]},"; //fin des joueurs d'une ï¿½quipe
+//						}// Fin d'une ï¿½quipe valide
 				
-					}// Fin des scans d'équipes
+					}// Fin des scans d'ï¿½quipes
 					
 				
 				////////////////////////////
@@ -147,23 +143,23 @@ $Iequipe = 0;
 								$JSONstring .=  "\"joueurId\": \"".$rangeeJoueur['joueur_id']."\", ";
 								$JSONstring .=  "\"maj\": \"".$rangeeJoueur['dernierMAJ']."\", ";
 								$JSONstring .=  "\"noJoueur\": \"".$rangeeJoueur['NumeroJoueur']."\"},";}//Fin du scan des joueurs
-							if(!strcmp(",", substr($JSONstring,-1)))// Pour éviter les vides;
+							if(!strcmp(",", substr($JSONstring,-1)))// Pour ï¿½viter les vides;
 							{$JSONstring = substr($JSONstring, 0,-1);}
-						$JSONstring .= "]},"; //fin des joueurs d'une équipe
+						$JSONstring .= "]},"; //fin des joueurs d'une ï¿½quipe
 //				
 				////////////////////////////////////////////////////////////
 					
-							if(!strcmp(",", substr($JSONstring,-1)))// Pour éviter les vides;
+							if(!strcmp(",", substr($JSONstring,-1)))// Pour ï¿½viter les vides;
 							{$JSONstring = substr($JSONstring, 0,-1);}
-				$JSONstring .= "]},"; //fin des équipes d'une ligue
+				$JSONstring .= "]},"; //fin des ï¿½quipes d'une ligue
 				$Iligue++;
 				}//Fin d'une ligue valide
 			}//Fin des scans de ligues.
-							if(!strcmp(",", substr($JSONstring,-1)))// Pour éviter les vides;
+							if(!strcmp(",", substr($JSONstring,-1)))// Pour ï¿½viter les vides;
 							{$JSONstring = substr($JSONstring, 0,-1);}
 		$JSONstring .= "],"; //fin des ligues
 		$noLigue++;
-	}//Fin du scan des ligues auquel l'utilisateur est abbonné.
+	}//Fin du scan des ligues auquel l'utilisateur est abbonnï¿½.
 	
 		$JSONstring = substr($JSONstring, 0,-1);
 	$JSONstring .= "}";
@@ -182,7 +178,7 @@ echo $JSONstring;
 //echo "[".$ligueSelect[0]."]";
 //return $JSONobjet;
 
-////////////////////  Reste à faire le mapping des ID de ligue vers des noms de ligues.	
+////////////////////  Reste ï¿½ faire le mapping des ID de ligue vers des noms de ligues.	
 
 
 

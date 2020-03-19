@@ -1,9 +1,5 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableEq = 'TableEquipe';
 $tableLigue = 'Ligue';
 $tableMatch = 'TableMatch';
@@ -24,7 +20,7 @@ echo "Bidon";
 //echo "[".$ligueSelect[0]."]";
 //return $JSONobjet;
 
-////////////////////  Reste à faire le mapping des ID de ligue vers des noms de ligues.	
+////////////////////  Reste ï¿½ faire le mapping des ID de ligue vers des noms de ligues.	
 
 
 

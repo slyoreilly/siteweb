@@ -3,15 +3,11 @@
 
 /////////////////////////////////////////////////////////////
 //
-//  Définitions des variables
+//  Dï¿½finitions des variables
 // 
 ////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableLigue = 'Ligue';
 $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
@@ -21,7 +17,7 @@ $joueurId = $_GET['joueurId'];
 
 ////////////////////////////////////////////////////////////
 //
-// 	Connections à la base de données
+// 	Connections ï¿½ la base de donnï¿½es
 //
 ////////////////////////////////////////////////////////////
 
@@ -39,7 +35,7 @@ if (!mysql_select_db($database))
 
 ///////////////////////////////////////////////////////////
 //
-//	Début du corps
+//	Dï¿½but du corps
 //
 ///////////////////////////////////////////////////////////
 
@@ -64,7 +60,7 @@ $ligue = mysql_fetch_row($rLigue);
 
 	//////////////////////////////////////////////////
 	//
-	// 	Écrit JSON
+	// 	ï¿½crit JSON
 	
 	$JSONstring = "{\"joueurId\": \"". $monJoueur[0]."\",";
 		$JSONstring .= "\"nomJoueur\": \"". $monJoueur[1]."\",";

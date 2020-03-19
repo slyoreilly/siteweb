@@ -1,13 +1,5 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
-
-
-$time = $_POST['time'];
-$location = $_POST['location'];
+require '../scriptsphp/defenvvar.php';n'];
 $game = $_POST['game'];
 $cam = $_POST['cam'];
 $fileName = $_POST['fileName'];

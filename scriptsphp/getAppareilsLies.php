@@ -1,13 +1,5 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
-
-//$fichier = $_POST['fichier'];
-//echo $_POST['videos'];
-if(isset($_POST['telId'])){
+require '../scriptsphp/defenvvar.php';
 	$telId = $_POST['telId'];
 }
 $usager = $_POST['username'];

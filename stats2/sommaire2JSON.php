@@ -9,22 +9,9 @@
 ////////////////////////////////////////////////////////////
 
 
+require '../scriptsphp/defenvvar.php';
 
-/////////////////////////////////////////////////////////////
-//
-//  D�finitions des variables
-// 
-////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
-$tableLigue = 'Ligue';
-$tableJoueur = 'TableJoueur';
-$tableEvent = 'TableEvenement0';
-$tableEquipe = 'TableEquipe';
 
 ////////////////////////////////////////////////////////////
 //
@@ -522,7 +509,8 @@ while($rangFus=mysqli_fetch_array($rFus))
 //echo json_encode($Sommaire);
 $Sommaire['Fusillade']=$fusillade;
 echo json_encode($Sommaire);	
-	
+
+
 	
 //$sommaire= json_decode($JSONstring);
 

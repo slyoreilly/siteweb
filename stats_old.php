@@ -52,11 +52,7 @@ formulaire.boite2.selectedIndex=0;
 <option selected>...........Choisissez une Ligue...........</option> 
 
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 //$table = 'Ligue';
 
 if (!mysql_connect($db_host, $db_user, $db_pwd))

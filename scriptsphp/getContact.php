@@ -7,15 +7,7 @@
 // 
 ////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
-
-$username = $_POST["username"];
-
-////////////////////////////////////////////////////////////
+require '../scriptsphp/defenvvar.php';/////////////////////////////////
 //
 // 	Connections � la base de donn�es
 //

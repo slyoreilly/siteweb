@@ -7,19 +7,7 @@
 // 
 ////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
-
-////////////////////////////////////////////////////////////
-//
-// 	Connections � la base de donn�es
-//
-////////////////////////////////////////////////////////////
-
-// Create connection
+require '../scriptsphp/defenvvar.php';
 $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
 // Check connection
 if (!$conn) {

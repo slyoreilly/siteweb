@@ -1,8 +1,7 @@
-<?php $db_host = "localhost";
-$db_user = "syncsta1_u01";
-$db_pwd = "test";
+<?php 
 
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
+
 $tableEq = 'TableEquipe';
 $tableLigue = 'Ligue';
 $tableMatch = 'TableMatch';

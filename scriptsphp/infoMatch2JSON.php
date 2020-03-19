@@ -7,15 +7,7 @@
 // 
 ////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
-$tableLigue = 'Ligue';
-$tableJoueur = 'TableJoueur';
-$tableEvent = 'TableEvenement0';
-$tableEquipe = 'TableEquipe';
+require '../scriptsphp/defenvvar.php';';
 
 
 $matchId = $_GET['matchId'];

@@ -3,15 +3,11 @@
 
 /////////////////////////////////////////////////////////////
 //
-//  Définitions des variables
+//  Dï¿½finitions des variables
 // 
 ////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableLigue = 'Ligue';
 $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
@@ -20,7 +16,7 @@ $tableAbon = 'AbonnementLigue';
 
 ////////////////////////////////////////////////////////////
 //
-// 	Connections à la base de données
+// 	Connections ï¿½ la base de donnï¿½es
 //
 ////////////////////////////////////////////////////////////
 
@@ -64,7 +60,7 @@ return $monMatch;
 
 /////////////////////////////////////////////////////
 	//
-//   Trouve ID de l'equipe à partir du nom.
+//   Trouve ID de l'equipe ï¿½ partir du nom.
 //
 ////////////////////////////////////////////////////
 

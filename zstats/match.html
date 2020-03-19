@@ -731,8 +731,9 @@ function afficheFusillade(rJSON) {
 				$('#tabButs').append(
 					$('<div></div>').attr("id","admin_match"),
 					$('<div></div>').attr("id","divSommaire"),
-					$('<div></div>').attr("id","divPlusHighlights"),
-					$('<div></div>').attr("id","divIntegral")
+					$('<div></div>').attr("id","divPlusHighlights")
+					//,
+					//$('<div></div>').attr("id","divIntegral")
 				);
 
 				selectOnglet(window.ongletSel);
@@ -1263,8 +1264,9 @@ console.log(rSMB.buts[d].video.length);
 				var lesTitres = new Array();
 
 				lesTitres[0] = window.tl_match_Chrono;
-				lesTitres[1] = "Type";
-				lesTitres[2] = "Video";
+				lesTitres[1] = "";
+				lesTitres[2] = "Type";
+				lesTitres[3] = "Video";
 				div1 = document.getElementById('divPlusHighlights');
 
 				//  lecorps = document.getElementById('divCentrale');
@@ -1349,9 +1351,7 @@ console.log(rSMB.buts[d].video.length);
 								}
 
 							}
-
-							//                              }
-						}// Fin du S'il y a des périodes
+						}
 						//                      } catch(err) {
 						//                      }
 
@@ -1365,17 +1365,18 @@ console.log(rSMB.buts[d].video.length);
 						secondes = Math.floor(((parseInt(rSMB.clips[J].chrono) - parseInt(maPer.chrono)) - minutes * 60000 - dizSecondes * 10000) / 1000);
 						//  console.log("secondes"+secondes+" ");
 						strChrono = minutes + ":" + dizSecondes + secondes;
-
+						strImg= "<i onclick=deleteClip(" + J + ") class=\"fa fa-trash\" ></i>";
 						var lesCols = new Array();
 	
 						//
 						lesCols[0] = strChrono;
-						lesCols[1] = rSMB.clips[J].labelFrench;
-						lesCols[2] = "" ;
+						lesCols[1] = window.vPerm < 19 ?   strImg : null;
+						lesCols[2] = rSMB.clips[J].labelFrench;
+						lesCols[3] = "" ;
 
 						//          console.log(rSMB.buts[J].video.length);
 						//          lesCols[6] = (rSMB.buts[J].video.length <= 0) ? "" : "Voir";
-
+						
 						if (rSMB.clips.length > 0) {
 							try {
 
@@ -1402,6 +1403,7 @@ console.log(rSMB.buts[d].video.length);
 								lesLiens[0] = null;
 								lesLiens[1] = null;
 								lesLiens[2] = null;
+								lesLiens[3] = null;
 
 								for ( K = 0; K < lesCols.length; K++) {
 									// console.log(K);
@@ -1416,7 +1418,7 @@ console.log(rSMB.buts[d].video.length);
 										} else {
 											//          console.log(K );
 
-											if (K == 2) {
+											if (K == 3) {
 												//  console.log('Ss');
 												cellule.appendChild(pVids);
 												//console.log(pVids.id);
@@ -1775,6 +1777,67 @@ $('<table></table>').attr("id","divFormulaire").append($('<tbody></tbody>').appe
 
 			}
 
+			function deleteClip(J){
+				$('#modalDeleteClip').modal("show");
+				$('#modalDeleteClip .modal-body').empty();
+                $('#modalDeleteClip .modal-footer').empty();
+				doc = $('#modalDeleteClip .modal-body');
+
+				//	frameModif.onload = function()
+				//{
+
+
+$(doc).append($('<p></p>').text('Cliquez OK pour effacer le clip.')
+    
+
+
+    );
+    
+
+            
+    
+$('#modalDeleteClip .modal-title').text("Voulez-vous effacer ce clip?");
+
+				/////////////////////////////////////////////////////////
+				//
+				//	Structure JSON du but à modifier.
+				//
+				//	noSeq
+				//	matchId
+				//	marqueurId
+				//	passeur1Id
+				//	passeur2Id
+				//
+				//////////////////////////////////////////////////////////
+
+                    
+				$('#modalDeleteClip .modal-footer').append($('<button></button>').addClass("btn btn-primary").text("OK").attr("type","button").on("click",{seqClip:J},
+				function(event) {
+                  
+						chronoCorr = parseInt(window.rJSON.clips[event.data.seqClip].chrono);
+					
+					clipDel = {
+						"deleteClip" : true,
+						"nouveauClip" : false,
+						matchId : window.matchID,
+						chrono : chronoCorr,
+					};
+                    strClip = JSON.stringify(clipDel);
+                    //console.log(selMarq.selectedIndex);
+                    //console.log(lequipe.joueurs[selMarq.selectedIndex].joueurId);
+                    console.log(strClip);
+
+                    setDeleteClip(strClip);
+
+					detruitDialogue("modalDeleteClip");
+				})
+                );
+				
+			}
+
+
+			
+
 			function corrigePresences() {
 				getJSONJoueursEquipes(null, window.ligueId);
 				
@@ -2060,6 +2123,35 @@ $('<table></table>').attr("id","divFormulaire").append($('<tbody></tbody>').appe
 				return requete_ajax.responseText;
 			}
 			
+
+			function setDeleteClip(strMAJ){
+				var requete_ajax = new XMLHttpRequest();
+				var url = "/stats2/setMAJClip.php";
+				var params = "strMAJ=" + strMAJ;
+				requete_ajax.open("POST", url, true);
+
+				//Send the proper header information along with the request
+				requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				requete_ajax.setRequestHeader("Content-length", params.length);
+				requete_ajax.setRequestHeader("Connection", "close");
+
+				requete_ajax.send(params);
+				requete_ajax.onreadystatechange = function() {
+					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+						//console.log("WAIT!");7
+						recalculeUnMatch();
+						//						window.location.href = '/zstats/match.html?match=' + encodeURIComponent(window.matchID) + '&onglet=1' + '&m=' + window.m;
+						// window.location.reload(true);
+					}
+				};
+
+				//  console.log(requete_ajax.responseText);
+				//  console.log("params: "+params);
+				return requete_ajax.responseText;
+
+
+			}
+
             function setMAJPun(strMAJ)// id est le username.
             {
                 var requete_ajax = new XMLHttpRequest();
@@ -2690,6 +2782,8 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 			//		});
 
 			function getInfoVid(vidIndex, mBut) {
+				window.goodFic=mBut.video[vidIndex].fic;
+				
 				//console.log("getInfoVid "+videofile);
 				var place = !strcmp(mBut.video[vidIndex].emplacement,"5.39.81.14")?"syncstats.ca":mBut.video[vidIndex].emplacement;
 
@@ -2721,7 +2815,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 
 				var sVF = pVF.split(".");
                 var strVid = "videofile=" + sVF[0];
-                $('#video-info input').remove();
+                $('#video-info').empty();
                 $('#pub-google').empty();
                 $('#pub-google').append($('<ins></ins>').addClass('adsbygoogle').css("display", "inline-block").css("width", "234px").css("height", "60px").attr("data-ad-slot", "9551625935").attr("data-ad-client", "ca-pub-2263794877114969"));
 
@@ -2735,13 +2829,15 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                 catch (err) {
                     console.log(err.message);
                 }
-				$('#media-video').get(0).addEventListener('loadedmetadata', function() {
+				$('#media-video').get(0).addEventListener('loadedmetadata',function(event) {
 				 $.ajax({url: url, 
 					type: 'POST',
 					data: strVid,
 					success: function(result){
-                        $('#video-info input').remove();
 						infoVid = eval('(' +result + ')');
+						console.log("compteurs clic:"+window.goodFic+" -- "+infoVid.nomFichier);
+						if(infoVid.nomFichier.localeCompare(window.goodFic)==0){
+                        $('#video-info input').remove();
 						//console.log(result);
 						$('#rateSpan').text("RATING: " + infoVid.eval + " / 5");
 						if(parseInt(infoVid.nbVues)>=5){
@@ -2756,14 +2852,14 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 						    $('#video-info').append(
 							$("<div></div>").attr("id","conteneurEfface").append(	
 							
-							$("<input></input>").attr("id","btnEffacer").addClass('my-3').attr("type","button").val("Effacer ce video").on("click",{fic:mBut.video[vidIndex].fic} ,function(event){
+							$("<input></input>").attr("id","btnEffacer").addClass('my-3').attr("type","button").val("Effacer ce video").on("click",{fic:infoVid.nomFichier} ,function(event){
 								$('#btnEffacer').hide();
 							  $('#texteConfirmeEffacer').show();
 							  $('#btnConfirmeEffacer').show();
 							  $('#btnAnnuleEffacer').show();
 							}),
 							$('<p></p>').addClass('text-warning lead').attr("id","texteConfirmeEffacer").text('Êtes-vous sûr de vouloir effacer?').hide(),
-							$('<input></input>').attr("id","btnConfirmeEffacer").attr("type","button").val('Oui, GO!').hide().on("click",{fic:mBut.video[vidIndex].fic} ,function(event){
+							$('<input></input>').attr("id","btnConfirmeEffacer").attr("type","button").val('Oui, GO!').hide().on("click",{fic:infoVid.nomFichier} ,function(event){
 						      $.ajax({
                                         url : "/scriptsphp/effaceVideo.php",
                                         type : "POST",
@@ -2791,7 +2887,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 							));
 							
 
-                            $('#video-info').append($("<input></input>").addClass('my-3').attr("type", "button").val("Ajuster le délai").on("click", { video: mBut.video[vidIndex] }, function (event) {
+                            $('#video-info').append($("<input></input>").addClass('my-3').attr("type", "button").val("Ajuster le délai").on("click", { fic: infoVid.nomFichier, cam:infoVid.camId }, function (event) {
 
                                 $('#modalAjusterDelai').modal("show");
                                 $('#modalAjusterDelai .modal-body').empty();
@@ -2800,12 +2896,12 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 
 
                                 $('#modalAjusterDelai .modal-body').append(
-                                    $("<p></p>").text('Entrez le délai souhaité pour la cam ' + event.data.video.cam+' en secondes'),
+                                    $("<p></p>").text('Entrez le délai souhaité pour la cam ' + event.data.cam+' en secondes'),
                                     $("<input></input>").attr("id", "inDelai").attr("type", "text").val(""),
                                     $("<input></input>").attr("type", "button").val("Confirmer")
-                                        .on("click", { video: event.data.video}, function (event) {
+                                        .on("click", { cam: event.data.cam, fic:event.data.fic}, function (event) {
 
-											var ficSeul1 = event.data.video.fic.split("?");
+											var ficSeul1 = event.data.fic.split("?");
 											var ficSeul = ficSeul1[0];	
 
                                             $.ajax({
@@ -2813,7 +2909,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                                                 type: "POST",
                                                 data: {
                                                     fic: ficSeul,
-                                                    cam: event.data.video.cam,
+                                                    cam: event.data.cam,
                                                     delai: $('#inDelai').val()
                                                 },
                                                 dataType: "html",
@@ -2877,7 +2973,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 								videoId : infoVid.videoId
 							});
 						});
-
+					}
 				  }});
 				 /* console.log("But:"+JSON.stringify(mBut)+"...+..."+vidIndex);
 				  if (mBut != undefined && mBut != "") {
@@ -3031,6 +3127,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 							but : mBut
 						},
 						 function(event) {console.log("click thumbnail");
+						 $('#video-info input').remove();
 						 vidSuite(event.data.vids, event.data.but);
 
 							getInfoVid(event.data.vids, event.data.but);
@@ -3318,7 +3415,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                 try { FB.init({ appId: "469385383553568", status: true, cookie: true }); }
                 catch (err) { }
 
-
+				compteurClic=0;  // Pour savoir quel video load
 				developper(22);
 				detruitDivGauche();
 				$('#divTitreDoc').prepend(
@@ -3379,6 +3476,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                 construitDialogue("modalVideoBut");
                 construitDialogue("modalFullVideoUpload");
                 construitDialogue("modalAjusterDelai");
+				construitDialogue("modalDeleteClip");
 
                 if (getValue('videofile') != "" && getValue('videofile') != undefined) {
                     if (getValue('but') != "" && getValue('but') != undefined && getValue('vidIndex') != "" && getValue('vidIndex') != undefined) {

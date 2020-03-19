@@ -1,13 +1,5 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
-
-//$jDomJSON = stripslashes($_POST['jDom']);
-//$jVisJSON = stripslashes($_POST['jVis']);
-$evalueId = $_POST['evalueId'];
+require '../scriptsphp/defenvvar.php';d'];
 $evaluateurId = $_POST['evaluateurId'];
 $ligueId = $_POST['ligueId'];
 
