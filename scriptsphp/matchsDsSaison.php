@@ -19,11 +19,7 @@ $qVentOff =  $request->ventOff;
 //$saisonId = $_POST["saisonId"];
 //echo $ligueId."  t  ".$saisonId." 2 ";
 
-$db_host = "localhost";
-$db_user = "syncsta1_u01";
-$db_pwd = "test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableLigue = 'Ligue';
 $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';

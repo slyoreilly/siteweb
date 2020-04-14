@@ -24,11 +24,7 @@ header("Access-Control-Allow-Origin: http://syncstats.ca");
         exit(0);
 	}
 	
-$db_host = "localhost";
-$db_user = "syncsta1_u01";
-$db_pwd = "test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 
 // Create connection
 $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
