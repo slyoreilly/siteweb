@@ -67,7 +67,7 @@ else
 										JOIN TableSaison
 										ON (Ligue.ID_Ligue=TableSaison.ligueRef)
 										WHERE 1
-										GROUP BY Ligue.ID_Ligue, Ligue.Nom_Ligue,Ligue.lieu,Ligue.horaire")
+										GROUP BY Ligue.ID_Ligue, Ligue.Nom_Ligue,Ligue.lieu,Ligue.horaire,Ligue.cleValeur")
 		or die(mysqli_error($con));
 	}
 	}
