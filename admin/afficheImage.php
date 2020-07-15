@@ -4,10 +4,7 @@
  // just so we know it is broken
  error_reporting(E_ALL);
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-$database = 'syncsta1_900';
+ require '../scriptsphp/defenvvar.php';
 
 
 
