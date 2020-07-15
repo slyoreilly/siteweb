@@ -284,7 +284,7 @@ foreach ($leMatch as $evenement) {
 			//	break;		 NO BREAK!!!!!!!
 			case 12 :
 				if ($trouveClip == 0) {
-				$qInsM = "INSERT INTO Clips (matchId, chrono, scoringEnd, type) VALUES ('{$evenement['match_id']}','{$evenement['chrono']}','{$monEnd}','{$retTypeClip}')";
+				$qInsM = "INSERT INTO Clips (matchId, chrono, scoringEnd, type) VALUES ('{$evenement['match_id']}','{$evenement['chrono']}',{$monEnd},'{$retTypeClip}')";
 
 				mysqli_query($conn,$qInsM) or die(mysqli_error($conn) . $qInsM);
 				}
