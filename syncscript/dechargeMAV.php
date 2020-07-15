@@ -38,7 +38,7 @@ $retour = mysqli_query($connDV, $qString) or die(mysqli_error($connDV));
 
 $vecMatch = array();
 $Im=0;
-while($r = mysqli_fetch_array($retour,MYSQL_ASSOC)) {
+while($r = mysqli_fetch_array($retour,MYSQLI_ASSOC)) {
     $vecMatch[]=$r;
     $Im++;
 }
