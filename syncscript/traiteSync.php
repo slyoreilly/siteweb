@@ -1,21 +1,9 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
+require '../scriptsphp/defenvvar.php';
 ////////////////////////////////////////////////////////
 //  TraiteSync est la fonction principale appelée par l'app SyncStats
 //  pour à la fois télécharger les données des ligues et téléverser le contenu du téléphone.
 
-
-
-$database = 'syncsta1_900';
-$tableEq = 'TableEquipe';
-$tableLigue = 'Ligue';
-$tableMatch = 'TableMatch';
-$tableJoueur = 'TableJoueur';
-$tableAbon = 'AbonnementLigue';
-$tableUser = 'TableUser';
 
 $username = $_POST['username'];
 $deviceId = $_POST['deviceId'];
