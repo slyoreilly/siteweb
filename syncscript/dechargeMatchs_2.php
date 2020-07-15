@@ -265,9 +265,9 @@ foreach ($leMatch as $evenement) {
 		if($evenement['scoringEnd']>0){
 			$monEnd = $evenement['scoringEnd'];
 		}else{
-			$monEnd=null;
+			$monEnd='NULL';
 		}
-		} else{ $monEnd=null;}
+		} else{ $monEnd='NULL';}
 		$trouveClip=0;
 		switch(f_es($evenement['es'])) {
 			
