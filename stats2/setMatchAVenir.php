@@ -78,6 +78,7 @@ if ($jVis != 'undefined' && $jVis != undefined) {$strJVis = "alignementVis='{$jV
 }
 if ($arbitreId != 'undefined' && $arbitreId != undefined && $arbitreId != "") {$strArb = "arbitreId='{$arbitreId}', ";
 } else {
+	$strArb = "";
 	$arbitreId = 0;
 }
 if ($dateDeb == 'AAAA/MM/JJ 23:59') {$dateDeb = "2000/01/01 00:00";
