@@ -108,8 +108,9 @@ while($rangeeAbonArb=mysqli_fetch_array($resultAbonArb))
 
 	mysqli_close($conn);
 
-$lesSync=array();
+
 $lesSync=json_decode(stripslashes($syncJ));
+if(is_null($lesSync)){$lesSync=array();}
 $lesSyncMAV=array();
 $lesSyncMAV=json_decode(stripslashes($syncMav));
 //echo "syncJ:   ".stripslashes($syncJ)."\n";
