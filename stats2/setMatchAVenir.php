@@ -17,7 +17,7 @@ $gVis = $_POST['gVis'];
 $eqDom = $_POST['eqDom'];
 $eqVis = $_POST['eqVis'];
 $dateDeb = $_POST['dateDeb'];
-if(isset($_POST['dateFin'])){$dateFin = $_POST['dateFin'];}else{$dateFin = '2050-01-01 00:00:00';}
+if(isset($_POST['dateFin'])&&$_POST['dateFin']!="" ){$dateFin = $_POST['dateFin'];}else{$dateFin = '2050-01-01 00:00:00';}
 $ligueId = $_POST['ligueId'];
 $mavId = $_POST['mavId'];
 $arenaId = $_POST['arenaId'];
