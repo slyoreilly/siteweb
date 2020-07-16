@@ -22,7 +22,7 @@ mysqli_query($connMJ, "SET CHARACTER SET 'utf8'");
 
 
 $totalJSON=json_decode(stripslashes($transPJ), true);
-
+if(is_null($totalJSON)){$totalJSON=array();}
 for($a=0;$a<count($totalJSON);$a++)
 {		
 		$lesParams = $totalJSON[$a];

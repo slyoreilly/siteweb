@@ -49,7 +49,7 @@ while($r = mysqli_fetch_assoc($retour)) {
 			ON (abonAppareilMatch.posGabId=positionGabarits.posGabId)
 		WHERE matchId = '{$r['match_id']}' ";
 		$retAbon= mysqli_query($conn,$qAbon) or die(mysqli_error($conn));	
-while($rA = mysqli_fetch_array($retAbon,MYSQL_ASSOC)) {
+while($rA = mysqli_fetch_array($retAbon,MYSQLI_ASSOC)) {
 	$vecMatch[$Im]['abons'][]=$rA;		
 }
 

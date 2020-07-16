@@ -47,7 +47,7 @@ function utf8ize($mixed) {
 //$jVis = json_decode($jVisJSON, true);
 //$strRetour .= $mavId;
 //echo ($username != 0)."Blip". ($username != undefined);
-if (($username !== 0) && ($username != undefined) && ($username != null)) {
+if (($username !== 0) && ($username != 'undefined') && ($username != null)) {
 
 
 	$retour = mysqli_query($conn, "SELECT AbonnementLigue.type,
@@ -76,6 +76,7 @@ if (($username !== 0) && ($username != undefined) && ($username != null)) {
 	$vecMatch = array();
 	$IA=0;
 	while ($r = mysqli_fetch_assoc($retour)) {
+		$vecMatch[$IA] = array();
 		$vecMatch[$IA]->type = $r['type'];
 		$vecMatch[$IA]->ligueId = $r['ligueId'];
 		$vecMatch[$IA]->arenaId = $r['arenaId'];
@@ -88,7 +89,7 @@ if (($username !== 0) && ($username != undefined) && ($username != null)) {
             $vecMatch[$IA]->gabarit =Array();
 			$qGab = "SELECT  positionGabarits.posX, positionGabarits.posY, positionGabarits.posGabId,  positionGabarits.role
 			FROM positionGabarits
-				WHERE gabaritId='{$vecMatch[$IA]['gabaritId']}'	";
+				WHERE gabaritId='{$vecMatch[$IA]->gabaritId}'	";
 			$retGab =mysqli_query($conn, $qGab) or die (mysqli_error($conn));
             $IPG=0;
            
