@@ -81,7 +81,7 @@ mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 		
 		if(mysqli_num_rows($resultSelCam)>0){
 		$rangSelCam = mysqli_fetch_assoc($resultSelCam);
-		$cams[$cptCams]=Array();
+		$cams[$cptCams]= new \stdClass();
 		$cams[$cptCams]->telId=$appareils[$a]['telId'];
 		$cams[$cptCams]->camId=$rangSelCam['camId'];
 		$cams[$cptCams]->memoire=round($rangSelCam['memoire']/1000000);
