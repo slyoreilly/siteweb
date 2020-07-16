@@ -17,9 +17,10 @@ public static function getDB(){
 
     public static function initialize()
     {
+        require '../scriptsphp/defenvvar.php';
         if (self::$init===TRUE)return;
         self::$init = TRUE;
-        self::$connPdo = new mysqli("localhost", "syncsta1_u01", "test", "syncsta1_900");
+        self::$connPdo = mysqli($db_host, $db_user, $db_pwd, $database);
     }
 }
 
