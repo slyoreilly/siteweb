@@ -62,11 +62,11 @@ if ($eqVis != 'undefined') {$strEqVis = "eqVis='{$eqVis}', ";
 } else {$strEqVis = "";
 	$eqVis = 0;
 }
-if ($gDom != 'undefined' && $gDom != undefined) {$strGDom = "gardienDom='{$gDom}', ";
+if ($gDom != 'undefined' && $gDom != undefined && $gDom != "") {$strGDom = "gardienDom='{$gDom}', ";
 } else {$strGDom = "";
 	$gDom = 0;
 }
-if ($gVis != 'undefined' && $gVis != undefined) {$strGVis = "gardienVis='{$gVis}', ";
+if ($gVis != 'undefined' && $gVis != undefined && $gVis != "") {$strGVis = "gardienVis='{$gVis}', ";
 } else {$strGVis = "";
 	$gVis = 0;
 }
