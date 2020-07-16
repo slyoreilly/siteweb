@@ -11,15 +11,14 @@ $tableUser = 'TableUser';
 $joueur = json_decode(stripslashes($_POST['params']), true);
 
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 	
 	//////////////////////////////////////////////////////////////////////
 //
@@ -47,20 +46,20 @@ if(!get_magic_quotes_gpc())
 $query = "INSERT INTO TableFichier (contexte, idRef , name, size, type, content ) ".
 "VALUES ('joueur', '0','{$fileName}', '{$fileSize}', '{$fileType}', '{$content}')";
 
-mysql_query($query) or die("Erreur: "+$query+"\n"+mysql_error());
+mysqli_query($conn,$query) or die("Erreur: "+$query+"\n"+mysqli_error($conn));
 
 
 
 $querySel = "SELECT ficId FROM TableFichier WHERE 1 ORDER BY ficId DESC ";
-$retSel = mysql_query($querySel) or die("Erreur: "+$querySel+"\n"+mysql_error());
+$retSel = mysqli_query($conn,$querySel) or die("Erreur: "+$querySel+"\n"+mysqli_error($conn));
 
-$are = mysql_fetch_row($retSel);
+$are = mysqli_fetch_row($retSel);
 
 $query = "UPDATE TableJoueur SET dernierMAJ = now(), ficIdPortrait = '{$are[0]}'
 			WHERE joueur_id='{$joueur['joueurId']}'";
 	
 
-mysql_query($query) or die("Erreur: "+$query+"\n"+mysql_error());
+mysqli_query($conn,$query) or die("Erreur: "+$query+"\n"+mysqli_error($conn));
 
 
 
@@ -77,5 +76,6 @@ else echo 0;
 
 
 //include 'library/closedb.php';
-	
+mysqli_close($conn);
+
 ?>

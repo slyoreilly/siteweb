@@ -9,22 +9,23 @@ $tableUser = 'TableUser';
 
 $username = $_POST['username'];
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error($conn));
 }
-	
+
+mysqli_query($conn,"SET NAMES 'utf8'");
+mysqli_query($conn,"SET CHARACTER SET 'utf8'");
+
+
 	
 	// Retrieve all the data from the "example" table
-$resultUser = mysql_query("SELECT * FROM TableUser")
-or die(mysql_error());  
-while($rangeeUser=mysql_fetch_array($resultUser))
+$resultUser = mysqli_query($conn, "SELECT * FROM TableUser")
+or die(mysqli_error($conn));  
+while($rangeeUser=mysqli_fetch_array($resultUser))
 {
 		if(!strcmp($rangeeUser['username'],$username))
 	{$userSelect =$rangeeUser['ref_id'];
@@ -32,11 +33,11 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 		// Prend le ID du user pour trouver les ligues abonn�es.
 }
 
-$resultAbon = mysql_query("SELECT * FROM AbonnementLigue ORDER BY ligueid")
-or die(mysql_error());  
+$resultAbon = mysqli_query($conn, "SELECT * FROM AbonnementLigue ORDER BY ligueid")
+or die(mysqli_error($conn));  
 
 $AbonSelect = array();
-while($rangeeAbon=mysql_fetch_array($resultAbon))
+while($rangeeAbon=mysqli_fetch_array($resultAbon))
 	{
 		if($rangeeAbon['userid']==$userSelect)
 			array_push($AbonSelect, $rangeeAbon['ligueid']);
@@ -58,13 +59,13 @@ $Iequipe = 0;
 //echo " ".count($AbonSelect);
 	while($Iligue<count($AbonSelect))
 	{
-	$resultLigue = mysql_query("SELECT Ligue.ID_Ligue, TableEquipe.equipe_id, TableJoueur.joueur_id 
+	$resultLigue = mysqli_query($conn,"SELECT Ligue.ID_Ligue, TableEquipe.equipe_id, TableJoueur.joueur_id 
 									FROM {$tableLigue} 
 										JOIN {$tableEq},{$tableJoueur} 
 											ON dernierMAJ 
 												ORDER BY dernierMAJ 
 													SORT DESC")
-	or die(mysql_error());  
+	or die(mysqli_error($conn));  
 	//$resultJoueur = mysql_query("SELECT * FROM {$tableJoueur}")
 	//or die(mysql_error());  
 		
@@ -86,7 +87,7 @@ $Iequipe = 0;
 		//////////////////////////////////
 
 	$JSONstring = 	"{\"ligue\": [";
-		while($rangeeLigue=mysql_fetch_array($resultLigue))
+		while($rangeeLigue=mysqli_fetch_array($resultLigue))
 			{if($rangeeLigue['ID_Ligue']==$AbonSelect[$Iligue])
 				{$JSONstring .=  "{\"nomLigue\": \"".$rangeeLigue['Nom_Ligue']."\", ";
 				$JSONstring .=  "\"ligueId\": \"".$rangeeLigue['ID_Ligue']."\", ";
@@ -94,11 +95,11 @@ $Iequipe = 0;
 				$c=0;
 				$rangeeEquipe=null;
 				$resultEquipe = NULL;
-				$resultEquipe = mysql_query("SELECT * 
+				$resultEquipe = mysqli_query($conn, "SELECT * 
 												FROM {$tableEq} 
 													WHERE ligue_equipe_ref={$rangeeLigue['ID_Ligue']}")
-				or die(mysql_error());  
-				while($rangeeEquipe=mysql_fetch_array($resultEquipe))
+				or die(mysqli_error($conn));  
+				while($rangeeEquipe=mysqli_fetch_array($resultEquipe))
 					{
 //					if($rangeeEquipe['ligue_equipe_ref']==$rangeeLigue['ID_Ligue'])
 //						{
@@ -106,12 +107,12 @@ $Iequipe = 0;
 						$JSONstring .=  "\"equipeId\": \"".$rangeeEquipe['equipe_id']."\", ";
 						$JSONstring .=  "\"logo\": \"".$rangeeEquipe['logo']."\", ";
 						$JSONstring .=  "\"joueur\": [";
-						$resultJoueur = mysql_query("SELECT * 
+						$resultJoueur = mysqli_query($conn,"SELECT * 
 													FROM {$tableJoueur}
 														WHERE equipe_id_ref={$rangeeEquipe['equipe_id']}")
-						or die(mysql_error());  
+						or die(mysqli_error($conn));  
 						$rangeeJoueur=0;
-						while($rangeeJoueur=mysql_fetch_array($resultJoueur))
+						while($rangeeJoueur=mysqli_fetch_array($resultJoueur))
 							{if($rangeeJoueur['equipe_id_ref']==$rangeeEquipe['equipe_id'])
 								{$JSONstring .=  "{\"nomJoueur\": \"".$rangeeJoueur['NomJoueur']."\", ";
 								$JSONstring .=  "\"joueurId\": \"".$rangeeJoueur['joueur_id']."\", ";
@@ -136,9 +137,9 @@ $Iequipe = 0;
 													FROM {$tableJoueur}
 														WHERE equipe_id_ref=0
 															AND Ligue={$rangeeLigue['ID_Ligue']}")
-						or die(mysql_error());  
+						or die(mysqli_error($conn));  
 						$rangeeJoueur=0;
-						while($rangeeJoueur=mysql_fetch_array($resultJoueur))
+						while($rangeeJoueur=mysqli_fetch_array($resultJoueur))
 								{$JSONstring .=  "{\"nomJoueur\": \"".$rangeeJoueur['NomJoueur']."\", ";
 								$JSONstring .=  "\"joueurId\": \"".$rangeeJoueur['joueur_id']."\", ";
 								$JSONstring .=  "\"maj\": \"".$rangeeJoueur['dernierMAJ']."\", ";
@@ -181,7 +182,7 @@ echo $JSONstring;
 ////////////////////  Reste � faire le mapping des ID de ligue vers des noms de ligues.	
 
 
-
+mysqli_close($conn);
 
 ?>
-<?php  ?>
+

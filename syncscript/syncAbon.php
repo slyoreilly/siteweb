@@ -13,22 +13,20 @@ $vielledate = date("Y/m/d H:i:s",$_POST['vielledate']);
 
 $ligueId = $_POST['ligueId'];
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
+
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 	
 	
 	// Retrieve all the data from the "example" table
-$resultUser = mysql_query("SELECT * FROM TableUser")
-or die(mysql_error());  
-while($rangeeUser=mysql_fetch_array($resultUser))
+$resultUser = mysqli_query($conn,"SELECT * FROM TableUser")
+or die(mysqli_error($conn));  
+while($rangeeUser=mysqli_fetch_array($resultUser))
 {
 		if(!strcmp($rangeeUser['username'],$username))
 	{$userSelect =$rangeeUser['ref_id'];
@@ -39,19 +37,19 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 
 $forceSync=false;
 	
-$resultAbon = mysql_query("SELECT * FROM AbonnementLigue 
+$resultAbon = mysqli_query($conn,"SELECT * FROM AbonnementLigue 
 								JOIN TableUser
 									ON (AbonnementLigue.userid=TableUser.noCompte)
 										WHERE ligueid={$ligueId}")
-or die(mysql_error()." SELECT * FROM AbonnementLigue 
+or die(mysqli_error($conn)." SELECT * FROM AbonnementLigue 
 								JOIN TableUser");  
 
 $AbonSelect = array();
-while($rangeeAbon=mysql_fetch_array($resultAbon))
+while($rangeeAbon=mysqli_fetch_array($resultAbon))
 	{
-	$resultLigue = mysql_query("SELECT * FROM {$tableLigue} 
+	$resultLigue = mysqli_query($conn,"SELECT * FROM {$tableLigue} 
 									WHERE ID_Ligue={$ligueId}")
-	or die(mysql_error());  
+	or die(mysqli_error($conn));  
 	//$resultJoueur = mysql_query("SELECT * FROM {$tableJoueur}")
 	//or die(mysql_error());  
 		
@@ -73,7 +71,7 @@ while($rangeeAbon=mysql_fetch_array($resultAbon))
 		//////////////////////////////////
 
 	$JSONstring = 	"{\"ligue\": [";
-		while($rangeeLigue=mysql_fetch_array($resultLigue))
+		while($rangeeLigue=mysqli_fetch_array($resultLigue))
 			{
 				$JSONstring .=  "{\"nomLigue\": \"".$rangeeLigue['Nom_Ligue']."\", ";
 				$JSONstring .=  "\"ligueId\": \"".$rangeeLigue['ID_Ligue']."\", ";
@@ -83,15 +81,15 @@ while($rangeeAbon=mysql_fetch_array($resultAbon))
 				$resultEquipe = NULL;
 				unset($joueurs);
 				$joueurs=array();
-				$resultEquipe = mysql_query("SELECT TableEquipe.*,abonEquipeLigue.* 
+				$resultEquipe = mysqli_query($conn,"SELECT TableEquipe.*,abonEquipeLigue.* 
 												FROM abonEquipeLigue
 												JOIN {$tableEq} 
 													ON(TableEquipe.equipe_id=abonEquipeLigue.equipeId)
 													WHERE ligueId={$rangeeLigue['ID_Ligue']}
 														AND debutAbon <= NOW() 
 														AND finAbon >= NOW()")
-				or die(mysql_error());  
-				while($rangeeEquipe=mysql_fetch_array($resultEquipe))
+				or die(mysqli_error($conn));  
+				while($rangeeEquipe=mysqli_fetch_array($resultEquipe))
 					{
 //					if($rangeeEquipe['ligue_equipe_ref']==$rangeeLigue['ID_Ligue'])
 //						{
@@ -104,7 +102,7 @@ while($rangeeAbon=mysql_fetch_array($resultAbon))
 						$JSONstring .=  "\"equipeId\": \"".$rangeeEquipe['equipe_id']."\", ";
 						$JSONstring .=  "\"logo\": \"".$rangeeEquipe['logo']."\", ";
 						$JSONstring .=  "\"joueur\": [";
-						$resultJoueur = mysql_query("SELECT TableJoueur.*, abonJoueurEquipe.* 
+						$resultJoueur = mysqli_query($conn,"SELECT TableJoueur.*, abonJoueurEquipe.* 
 													FROM abonJoueurEquipe
 													JOIN {$tableJoueur}
 														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
@@ -112,9 +110,9 @@ while($rangeeAbon=mysql_fetch_array($resultAbon))
 														AND debutAbon <= NOW() 
 														AND finAbon >= NOW()
 															AND dernierMAJ>'{$vielledate}'")
-						or die(mysql_error());  
+						or die(mysqli_error($conn));  
 						$rangeeJoueur=0;
-						while($rangeeJoueur=mysql_fetch_array($resultJoueur))
+						while($rangeeJoueur=mysqli_fetch_array($resultJoueur))
 							{if($rangeeJoueur['equipeId']==$rangeeEquipe['equipe_id'])
 								{$JSONstring .=  "{\"nomJoueur\": \"".$rangeeJoueur['NomJoueur']."\", ";
 								$JSONstring .=  "\"joueurId\": \"".$rangeeJoueur['joueur_id']."\", ";
@@ -138,7 +136,7 @@ while($rangeeAbon=mysql_fetch_array($resultAbon))
 						$JSONstring .=  "\"equipeId\": \"". 0 ."\", ";
 						$JSONstring .=  "\"logo\": \"". "rien\", ";
 						$JSONstring .=  "\"joueur\": [";
-						$resultJoueur2 = mysql_query("SELECT * 
+						$resultJoueur2 = mysqli_query($conn,"SELECT * 
 													FROM abonJoueurLigue
 														JOIN TableJoueur
 															ON (TableJoueur.joueur_id=abonJoueurLigue.joueurId)
@@ -147,9 +145,9 @@ while($rangeeAbon=mysql_fetch_array($resultAbon))
 																AND debutAbon <= NOW() 
 																AND finAbon >= NOW()")
 						
-						or die(mysql_error());  
+						or die(mysqli_error($conn));  
 						$rangeeJoueur=0;
-						while($rangeeJoueur=mysql_fetch_array($resultJoueur2))
+						while($rangeeJoueur=mysqli_fetch_array($resultJoueur2))
 								{
 									if(in_array($rangeeJoueur['joueur_id'],$joueurs)==false)
 										{$JSONstring .=  "{\"nomJoueur\": \"".$rangeeJoueur['NomJoueur']."\", ";
@@ -175,7 +173,7 @@ while($rangeeAbon=mysql_fetch_array($resultAbon))
 				////////////////////////////
 				//	Section Arbitres
 						$JSONstring .=  "\"arbitres\": [";
-						$resultArb = mysql_query("SELECT abonArbitreLigue.*,TableArbitre.*,TableUser.nom, TableUser.prenom,TableUser.username,TableUser.noCompte
+						$resultArb = mysqli_query($conn,"SELECT abonArbitreLigue.*,TableArbitre.*,TableUser.nom, TableUser.prenom,TableUser.username,TableUser.noCompte
 													FROM abonArbitreLigue
 														JOIN TableArbitre
 															ON (TableArbitre.arbitreId=abonArbitreLigue.arbitreId)
@@ -186,9 +184,9 @@ while($rangeeAbon=mysql_fetch_array($resultAbon))
 																AND abonArbitreLigue.debutAbon <= NOW() 
 																AND abonArbitreLigue.finAbon >= NOW()")
 						
-						or die(mysql_error());  
+						or die(mysqli_error($conn));  
 						$rangeeArbitre=0;
-						while($rangeeArb=mysql_fetch_array($resultArb))
+						while($rangeeArb=mysqli_fetch_array($resultArb))
 								{
 										$JSONstring .=  "{\"nomArbitre\": \"".$rangeeArb['nom']."\", ";
 										$JSONstring .=  "\"prenomArbitre\": \"".$rangeeArb['prenom']."\", ";
@@ -235,7 +233,6 @@ else
 	
 	}
 
-
+mysqli_close($conn);
 
 ?>
-<?php  ?>

@@ -98,11 +98,9 @@ else {echo "fichier grosseur nulle?";
 	error_log("HTTP/1.1 204 No Content");		 
 	http_response_code(204);}
 
-//////////////////////////////////
-//
-//	Les queries
-//
 
+
+mysqli_close($conn);
 error_log(http_response_code());
 //include 'library/closedb.php';
 	

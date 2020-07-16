@@ -48,6 +48,7 @@ if($tmpArray['dernierMAJ']>$recentMAJ){
 }
 }
 	
+mysqli_close($conn);
 	echo utf8_encode($recentMatchId);
 	header("Content-Type: application/json", true);
 		header("HTTP/1.1 200 OK");

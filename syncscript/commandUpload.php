@@ -55,12 +55,5 @@ VALUES ('{$command}',NOW(),10)")or die(mysqli_error($conn)." INSERT INTO TacheSh
 
 
 
-//////////////////////////////////
-//
-//	Les queries
-//
-
-
-//include 'library/closedb.php';
-	
+mysqli_close($conn);	
 ?>
