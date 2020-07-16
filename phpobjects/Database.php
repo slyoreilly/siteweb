@@ -20,7 +20,7 @@ public static function getDB(){
         require '../scriptsphp/defenvvar.php';
         if (self::$init===TRUE)return;
         self::$init = TRUE;
-        self::$connPdo = mysqli($db_host, $db_user, $db_pwd, $database);
+        self::$connPdo = new mysqli($db_host, $db_user, $db_pwd, $database);
     }
 }
 
