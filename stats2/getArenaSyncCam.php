@@ -76,7 +76,7 @@ if (($username !== 0) && ($username != 'undefined') && ($username != null)) {
 	$vecMatch = array();
 	$IA=0;
 	while ($r = mysqli_fetch_assoc($retour)) {
-		$vecMatch[$IA] = array();
+		$vecMatch[$IA] = new \stdClass();
 		$vecMatch[$IA]->type = $r['type'];
 		$vecMatch[$IA]->ligueId = $r['ligueId'];
 		$vecMatch[$IA]->arenaId = $r['arenaId'];
@@ -94,7 +94,7 @@ if (($username !== 0) && ($username != 'undefined') && ($username != null)) {
             $IPG=0;
            
 			while ($rangGab = mysqli_fetch_assoc($retGab)) {
-                $vecMatch[$IA]->gabarit[$IPG]=Array();
+                $vecMatch[$IA]->gabarit[$IPG]=new \stdClass();
 				$vecMatch[$IA]->gabarit[$IPG]->posGabId = $rangGab['posGabId'];
 				$vecMatch[$IA]->gabarit[$IPG]->posX = $rangGab['posX'];
 				$vecMatch[$IA]->gabarit[$IPG]->posY = $rangGab['posY'];
