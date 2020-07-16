@@ -76,7 +76,7 @@ if ($jDom != 'undefined' && $jDom != undefined) {$strJDom = "alignementDom='{$jD
 if ($jVis != 'undefined' && $jVis != undefined) {$strJVis = "alignementVis='{$jVis}', ";
 } else {$strJVis = "alignementVis=NULL, ";
 }
-if ($arbitreId != 'undefined') {$strArb = "arbitreId='{$arbitreId}', ";
+if ($arbitreId != 'undefined' && $gVis != arbitreId && $arbitreId != "") {$strArb = "arbitreId='{$arbitreId}', ";
 } else {
 	$arbitreId = 0;
 }
