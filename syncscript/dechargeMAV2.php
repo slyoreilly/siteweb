@@ -39,7 +39,7 @@ $retour = mysqli_query($conn,$qString) or die(mysqli_error($conn));
 
 $vecMatch = array();
 $Im=0;
-while($r = mysqli_fetch_array($retour,MYSQL_ASSOC)) {
+while($r = mysqli_fetch_array($retour,MYSQLI_ASSOC)) {
     $vecMatch[$Im]=$r;
 	$qAbon="SELECT abonAppMatchId, matchId, surfaceId, abonAppareilMatch.gabaritId, abonAppareilMatch.posGabId, 
 	abonAppareilMatch.role, telId, dernierMAJ as dernierMaJ, positionGabarits.posX, positionGabarits.posY FROM abonAppareilMatch
