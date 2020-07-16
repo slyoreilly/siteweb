@@ -12,8 +12,8 @@ $tableUser = 'TableUser';
 //$jDomJSON = stripslashes($_POST['jDom']);
 //$jVisJSON = stripslashes($_POST['jVis']);
 $mavId =null; 
-$ligueId = null;$_POST['ligueId'];
-$username = null;$_POST['username'];
+$ligueId = null;
+$username = null;
 
 if(isset($_POST['arenaId'])){
 	$mavId =$_POST['arenaId'];
@@ -47,7 +47,7 @@ function utf8ize($mixed) {
 }
 //$jDom = json_decode($jDomJSON, true);
 //$jVis = json_decode($jVisJSON, true);
-$strRetour .= $mavId;
+$strRetour = $mavId;
 //echo ($username != 0)."Blip". ($username != undefined);
 if (($username !== 0) && ($username != null)) {
 

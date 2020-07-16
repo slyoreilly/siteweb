@@ -113,6 +113,7 @@ $lesSync=json_decode(stripslashes($syncJ));
 if(is_null($lesSync)){$lesSync=array();}
 $lesSyncMAV=array();
 $lesSyncMAV=json_decode(stripslashes($syncMav));
+if(is_null($lesSyncMAV)){$lesSyncMAV=array();}
 //echo "syncJ:   ".stripslashes($syncJ)."\n";
 //echo "lesSync:   ".$lesSync."\n";
 
