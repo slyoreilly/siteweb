@@ -17,7 +17,7 @@ $gVis = $_POST['gVis'];
 $eqDom = $_POST['eqDom'];
 $eqVis = $_POST['eqVis'];
 $dateDeb = $_POST['dateDeb'];
-$dateFin = $_POST['dateFin'];
+if(isset($_POST['dateFin'])){$dateFin = $_POST['dateFin'];}else{$dateFin = '2050-01-01 00:00:00';}
 $ligueId = $_POST['ligueId'];
 $mavId = $_POST['mavId'];
 $arenaId = $_POST['arenaId'];
@@ -62,21 +62,21 @@ if ($eqVis != 'undefined') {$strEqVis = "eqVis='{$eqVis}', ";
 } else {$strEqVis = "";
 	$eqVis = 0;
 }
-if ($gDom != 'undefined' && $gDom != undefined && $gDom != "") {$strGDom = "gardienDom='{$gDom}', ";
+if ($gDom != 'undefined' && $gDom != "") {$strGDom = "gardienDom='{$gDom}', ";
 } else {$strGDom = "";
 	$gDom = 0;
 }
-if ($gVis != 'undefined' && $gVis != undefined && $gVis != "") {$strGVis = "gardienVis='{$gVis}', ";
+if ($gVis != 'undefined' && $gVis != "") {$strGVis = "gardienVis='{$gVis}', ";
 } else {$strGVis = "";
 	$gVis = 0;
 }
-if ($jDom != 'undefined' && $jDom != undefined) {$strJDom = "alignementDom='{$jDom}', ";
+if ($jDom != 'undefined' ) {$strJDom = "alignementDom='{$jDom}', ";
 } else {$strJDom = "alignementDom=NULL, ";
 }
-if ($jVis != 'undefined' && $jVis != undefined) {$strJVis = "alignementVis='{$jVis}', ";
+if ($jVis != 'undefined') {$strJVis = "alignementVis='{$jVis}', ";
 } else {$strJVis = "alignementVis=NULL, ";
 }
-if ($arbitreId != 'undefined' && $arbitreId != undefined && $arbitreId != "") {$strArb = "arbitreId='{$arbitreId}', ";
+if ($arbitreId != 'undefined' && $arbitreId != "") {$strArb = "arbitreId='{$arbitreId}', ";
 } else {
 	$strArb = "";
 	$arbitreId = 0;
