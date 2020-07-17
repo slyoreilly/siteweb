@@ -469,9 +469,11 @@ while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 		$gPerd = $gardDom;
 	}
 
+	
 	}
-	}
-	}
+}
+
+
 	$butGagne = "";
 
 
