@@ -145,14 +145,14 @@ while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 
 
 	//echo $tmpCV."/.-";
-	if (strlen($tmpCV) > 0) {
-		try {$tmpJS = json_decode($tmpCV, true);
+	if (strlen($rangeeEv['cleValeur']) > 0) {
+		try {$tmpJS = json_decode($rangeeEv['cleValeur'], true);
 		} catch(Exception $e) {echo $e -> getMessage();
 		}
 	}//json_decode(stripcslashes($tmpCV));}
-	else {$tmpJS = $tmpCV;
+	else {$tmpJS = $rangeeEv['cleValeur'];
 	}
-	$mJS = array();
+	$mJS = new \stdClass;
 	if (isset($tmpJS['etoile1'])) {$mJS['etoile1'] = $tmpJS['etoile1'];
 	}
 	if (isset($tmpJS['etoile2'])) {$mJS['etoile2'] = $tmpJS['etoile2'];

@@ -449,13 +449,16 @@ while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 	$gGagne = "";
 	$gPerd = "";
 	 
-	if(!is_null($joueurs_array)){
+	if(!is_null($joueurs_array)&& !is_null($gardiens) ){
 
 	$gD = trouveJoueur($gardiens['dom'], $joueurs_array);
-	$gardDom = $gD['NomJoueur'];
+	if(!is_null($gD)){
+	$gardDom = $gD['NomJoueur'];}
+	$gV = trouveJoueur($gardiens['vis'], $joueurs_array);	
+	if(!is_null($gV)){
+		$gardVis = $gV['NomJoueur'];}
 
-	$gV = trouveJoueur($gardiens['vis'], $joueurs_array);
-	$gardVis = $gV['NomJoueur'];
+
 	$gGagne = "";
 	$gPerd = "";
 
@@ -466,7 +469,7 @@ while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 		$gPerd = $gardDom;
 	}
 
-	
+	}
 	}
 	}
 	$butGagne = "";
