@@ -271,7 +271,7 @@ if ($appareils != null) {
 				mysqli_query($conn, "INSERT INTO abonAppareilMatch (matchId, surfaceId, gabaritId, posGabId, telId, role) 
 					VALUES ('{$match_id}','{$appareils['remotes'][$a]['surfaceId']}','{$appareils['remotes'][$a]['gabaritId']}',
 					'{$appareils['remotes'][$a]['posGabId']}', '{$appareils['remotes'][$a]['telId']}',
-					'{$appareils['remotes'][$a]['role']}')") or die(mysqli_error() . " INSERT INTO abonAppareilMatch");
+					'{$appareils['remotes'][$a]['role']}')") or die(mysqli_error($conn) . " INSERT INTO abonAppareilMatch");
 				$retour = mysqli_error($conn);
 				echo 5;
 			}

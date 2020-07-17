@@ -446,6 +446,10 @@ while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 	if($qVentOff==false){
 	
 	$gardiens = trouveGardiens($rangeeEv['matchIdRef'], $array_gard);
+	$gGagne = "";
+	$gPerd = "";
+	 
+	if(!is_null($joueurs_array)){
 
 	$gD = trouveJoueur($gardiens['dom'], $joueurs_array);
 	$gardDom = $gD['NomJoueur'];
@@ -461,10 +465,13 @@ while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 	if ($rangeeEv['score_dom'] < $rangeeEv['score_vis']) {$gGagne = $gardVis;
 		$gPerd = $gardDom;
 	}
-	$butGagne = "";
+
 	
 	}
-	
+	}
+	$butGagne = "";
+
+
 	unset($matchID);
 	$matchID = $rangeeEv['matchIdRef'];
 
@@ -491,7 +498,7 @@ while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 	$JS2['eqVisId'] = $rangeeEv['eq_vis'];
 	$JS2['ficIdVis'] = $trouveVis;
 	$JS2['arbitre'] = $arbitre;
-	$JS2['butGagnant'] = $mMatch['butGagnant'];
+	$JS2['butGagnant'] = isset($mMatch['butGagnant'])? $mMatch['butGagnant']: "";
 	$JS2['gGagnant'] = $gGagne;
 	$JS2['gPerdant'] = $gPerd;
 	$JS2['ventDom'] = $mMatch['ventDom'];
