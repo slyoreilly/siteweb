@@ -152,7 +152,7 @@ while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 	}//json_decode(stripcslashes($tmpCV));}
 	else {$tmpJS = $rangeeEv['cleValeur'];
 	}
-	$mJS = new \stdClass();
+	$mJS = array();
 	if (isset($tmpJS['etoile1'])) {$mJS['etoile1'] = $tmpJS['etoile1'];
 	}
 	if (isset($tmpJS['etoile2'])) {$mJS['etoile2'] = $tmpJS['etoile2'];

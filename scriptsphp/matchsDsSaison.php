@@ -450,14 +450,17 @@ while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 	$gPerd = "";
 	 
 	if(!is_null($joueurs_array)&& !is_null($gardiens) ){
-
+	if(isset($gardiens['dom'])){
 	$gD = trouveJoueur($gardiens['dom'], $joueurs_array);
 	if(!is_null($gD)){
-	$gardDom = $gD['NomJoueur'];}
+	$gardDom = $gD['NomJoueur'];}}
+
+	if(isset($gardiens['vis'])){
+	
 	$gV = trouveJoueur($gardiens['vis'], $joueurs_array);	
 	if(!is_null($gV)){
 		$gardVis = $gV['NomJoueur'];}
-
+	}
 
 	$gGagne = "";
 	$gPerd = "";
@@ -506,8 +509,8 @@ while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 	$JS2['butGagnant'] = isset($mMatch['butGagnant'])? $mMatch['butGagnant']: "";
 	$JS2['gGagnant'] = $gGagne;
 	$JS2['gPerdant'] = $gPerd;
-	$JS2['ventDom'] = $mMatch['ventDom'];
-	$JS2['ventVis'] = $mMatch['ventVis'];
+	$JS2['ventDom'] =  isset($mMatch['ventDom'])? $mMatch['ventDom']:"";
+	$JS2['ventVis'] =  isset($mMatch['ventVis'])? $mMatch['ventVis']:"";
 	//	$JS2['ventVis'] =$ventVis;
 	$JS2['cleValeur'] = $tmpJS;
 	$mE = trouveFic($rangeeEv['eq_vis'], $fic_array);
