@@ -68,11 +68,11 @@ else
 	}
 	else
 	{
-	$resultEvent = mysqli_query($con,"SELECT Ligue.cleValeur,Ligue.ID_Ligue, Ligue.Nom_Ligue,Ligue.lieu,Ligue.horaire FROM Ligue 
+	$resultEvent = mysqli_query($con,"SELECT Ligue.cleValeur,Ligue.ID_Ligue, Ligue.Nom_Ligue,Ligue.Lieu,Ligue.Horaire FROM Ligue 
 										JOIN TableSaison
 										ON (Ligue.ID_Ligue=TableSaison.ligueRef)
 										WHERE 1
-										GROUP BY Ligue.ID_Ligue, Ligue.Nom_Ligue,Ligue.lieu,Ligue.horaire,Ligue.cleValeur")
+										GROUP BY Ligue.ID_Ligue, Ligue.Nom_Ligue,Ligue.Lieu,Ligue.Horaire,Ligue.cleValeur")
 		or die(mysqli_error($con));
 	}
 	}
