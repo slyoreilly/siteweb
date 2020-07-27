@@ -748,7 +748,7 @@ function forceSelectionLigue(){
 				function surSelection(ligueId) {
 				return function() {
 					setCookie('ligueId', ligueId, 120);
-					window.location.href='http://www.syncstats.com/zstats/accueilligue.html?ligueId='+ligueId;
+					window.location.href='/zstats/accueilligue.html?ligueId='+ligueId;
 					//window.location.reload(true);
 				}
 				//						setCookie('ligueId',ligueId,120);
