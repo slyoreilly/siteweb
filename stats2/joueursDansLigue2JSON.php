@@ -45,7 +45,7 @@ function trouveSaisonActiveDeLigueId($ID,$conn) {
 	//echo mysql_result($rfSaison, 0)."\n";
 	//$tmp= (mysql_fetch_array($rfSaison));
 	//echo $tmp['saisonId']."\n";
-	return (mysqli_result($rfSaison, 0));
+	return (mysqli_data_seek($rfSaison, 0));
 }
 
 $getLigue = $_POST["ligueId"];
@@ -59,9 +59,9 @@ if (!strcmp($saisonId, "")&& strcmp($getLigue, ""))// Sp�cifie par la ligue
 $prSaison = mysqli_query($conn,"SELECT premierMatch 
 						FROM TableSaison 
 						WHERE saisonId ='{$saisonId}'") or die(mysqli_error($conn) . "query PM: saisonId: " . $saisonId);
-$premierMatch = mysqli_result($prSaison, 0);
+$premierMatch = mysqli_data_seek($prSaison, 0);
 $drSaison = mysqli_query($conn,"SELECT dernierMatch FROM TableSaison where saisonId ='{$saisonId}'") or die(mysqli_error($conn) . "query DM");
-$dernierMatch = mysqli_result($drSaison, 0);
+$dernierMatch = mysqli_data_seek($drSaison, 0);
 
 //
 $lesMatchs = array();
