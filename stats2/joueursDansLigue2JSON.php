@@ -131,7 +131,7 @@ if ($dernierMatch > date("Y-m-d")) {$dateAbon = date("Y-m-d");
 						AND code<10
 						GROUP BY event_id";
 						
-						mysqli_query("SET SQL_BIG_SELECTS=1");
+						mysqli_query($conn,"SET SQL_BIG_SELECTS=1");
 	$resultEvent = mysqli_query($conn,$strQuery) or die(mysqli_error($conn) . "query gros stock");
 
 	while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
