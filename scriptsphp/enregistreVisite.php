@@ -50,7 +50,7 @@ $fakeId=$tmpMax[0]+1;
 	
 		$query = "INSERT INTO Visites (userId,fakeId,ligueId,location,referrer,date) ".
 		"VALUES ('{$userId}','{$fakeId}','{$ligueId}','{$location}','{$referrer}','{$heure}')";
-		mysqli_query($conn, $query) or die("Erreur: "+$query+"\n"+mysqli_error($conn));
+		mysqli_query($conn, $query) or die("Erreur: ".$query."\n".mysqli_error($conn));
 		
 		echo $fakeId;
 	mysqli_close($conn);

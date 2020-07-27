@@ -40,7 +40,7 @@ mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 /////////////////////////////////////////////////////////////
 //
 //
-function trouveSaisonActiveDeLigueId($ID) {
+function trouveSaisonActiveDeLigueId($ID,$conn) {
 	$rfSaison = mysqli_query($conn,"SELECT saisonId FROM TableSaison WHERE ligueRef = {$ID} ORDER BY premierMatch DESC") or die(mysqli_error($conn) . " Select saisonId");
 	//echo mysql_result($rfSaison, 0)."\n";
 	//$tmp= (mysql_fetch_array($rfSaison));
@@ -53,7 +53,7 @@ $saisonId = $_POST["saisonId"];
 
 if (!strcmp($saisonId, "")&& strcmp($getLigue, ""))// Sp�cifie par la ligue
 {
-	$saisonId = trouveSaisonActiveDeLigueId($getLigue);
+	$saisonId = trouveSaisonActiveDeLigueId($getLigue,$conn);
 	//	$saisonId =2;
 }
 $prSaison = mysqli_query($conn,"SELECT premierMatch 

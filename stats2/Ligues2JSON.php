@@ -36,6 +36,8 @@ mysqli_query($con,"SET CHARACTER SET 'utf8'");
 //
 //
 //////////////////////////////////////////////////////
+$ligueId =null;
+$equipeId =null;
 	if(isset($_GET["LigueID"])){
 $ligueId = $_GET["LigueID"];}
 if(isset($_GET["equipeId"])){
