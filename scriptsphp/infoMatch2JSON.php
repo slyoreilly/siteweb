@@ -171,7 +171,8 @@ if(!is_null($equipeDom)&&!is_null($equipeVis)){
 
 	echo $JSONstring;
 }else{
-	echo "{\"ligueId\":".$ligueId." }"}
+	echo "{\"ligueId\":".$ligueId." }";
+}
 	
 
 	
