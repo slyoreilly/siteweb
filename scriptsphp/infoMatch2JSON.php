@@ -139,6 +139,9 @@ else {
 	//////////////////////////////////////////////////
 	//
 	// 	�crit JSON
+
+if(!is_null($equipeDom)&&!is_null($equipeVis)){
+
 	$cV = stripslashes($equipeVis['cleValeur']);
 	if(strlen($cV)==0)
 		$cV="\"\"";	
@@ -166,9 +169,11 @@ else {
 	$JSONstring .= "\"cleValeur\": ".$cV.",";
 	$JSONstring .= "\"date\": \"". $equipeDom['date']."\"}";
 
-
+	echo $JSONstring;
+}else{
+	echo "{\"ligueId\":".$ligueId." }"}
 	
-echo $JSONstring;
+
 	
 mysqli_close($conn);
 
