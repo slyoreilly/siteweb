@@ -9,16 +9,18 @@ $tableAbon = 'AbonnementLigue';
 $tableUser = 'TableUser';
 
 $contexte = $_POST['contexte'];
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
+	
+	
 	
 	//////////////////////////////////////////////////////////////////////
 //
@@ -46,11 +48,11 @@ if(!get_magic_quotes_gpc())
 $query = "INSERT INTO TableFichier (contexte, idRef , name, size, type, content ) ".
 "VALUES ('equipe', '0','{$fileName}', '{$fileSize}', '{$fileType}', '{$content}')";
 
-mysql_query($query) or die("Erreur: "+$query+"\n"+mysql_error());
+mysqli_query($conn,$query) or die("Erreur: "+$query+"\n"+mysqli_error($conn));
 
 $querySel = "SELECT ficId FROM TableFichier WHERE 1 ORDER BY ficId DESC ";
-$retSel = mysql_query($querySel) or die("Erreur: "+$querySel+"\n"+mysql_error());
-$are = mysql_fetch_row($retSel);
+$retSel = mysqli_query($conn,$querySel) or die("Erreur: "+$querySel+"\n"+mysql_error());
+$are = mysqli_fetch_row($retSel);
 echo $are[0];
 
 }
@@ -64,4 +66,6 @@ else echo 0;
 
 //include 'library/closedb.php';
 	
+mysqli_close($conn);
+
 ?>
