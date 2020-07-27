@@ -34,7 +34,7 @@ mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 
 
-function trouveJoueur($joueurId, $array_joueur,$conn) {
+function trouveJoueur($joueurId, $array_joueur) {
 	foreach ($array_joueur as $valeur) {
 		if ($valeur['joueur_id'] == $joueurId) {
 			return $valeur;

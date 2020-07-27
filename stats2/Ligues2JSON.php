@@ -83,7 +83,7 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 	{
 		$lId=$rangeeEv['ID_Ligue'];
 	$IL++;
-	$Ligues[$IL]=new \stdClass();
+	$Ligues[$IL]=array();
 	$Ligues[$IL]['nomLigue']=$rangeeEv['Nom_Ligue'];
 	$Ligues[$IL]['ligueId']=$rangeeEv['ID_Ligue'];
 	$Ligues[$IL]['ficId']=$rangeeEv['ficId'];

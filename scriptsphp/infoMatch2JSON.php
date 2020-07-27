@@ -13,10 +13,11 @@ $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
 $tableEquipe = 'TableEquipe';
 
+$matchId = null;
 
-$matchId = $_GET['matchId'];
+if(isset($_GET['matchId'])){$matchId = $_GET['matchId'];}
 if($matchId=="" OR $matchId==NULL OR $matchId==undefined ){
-$matchId = $_POST['matchId'];
+	if(isset($_POST['matchId'])){$matchId = $_POST['matchId'];}
 	
 }
 $refParString=true;

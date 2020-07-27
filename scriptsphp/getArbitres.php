@@ -28,7 +28,7 @@ mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 $retAbon=null;
 
-if ($username != undefined && $username != null) {
+if ($username != 'undefined' && $username != null) {
 	$retour = mysqli_query($conn,"SELECT TableArbitre.*, TableUser.*
 						FROM TableArbitre
 						LEFT JOIN TableUser
@@ -36,9 +36,9 @@ if ($username != undefined && $username != null) {
 						 WHERE TableUser.username='{$username}'") or die(mysqli_error($conn));
 } else {
 
-	if ($arbitreId != undefined && $arbitreId != null) {
+	if ($arbitreId != 'undefined' && $arbitreId != null) {
 		
-		if ($ligueId != undefined && $ligueId != null) {
+		if ($ligueId != 'undefined' && $ligueId != null) {
 			$retour = mysqli_query($conn,"SELECT TableArbitre.*, TableUser.*
 						FROM TableArbitre
 						LEFT JOIN TableUser
@@ -66,7 +66,7 @@ if ($username != undefined && $username != null) {
 		}
 	} else {
 
-		if ($ligueId != undefined && $ligueId != null) {
+		if ($ligueId != 'undefined' && $ligueId != null) {
 			$retour = mysqli_query($conn,"SELECT TableArbitre.*, TableUser.*,abonArbitreLigue.*
 						FROM TableArbitre
 						LEFT JOIN TableUser

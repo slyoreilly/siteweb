@@ -19,11 +19,11 @@ $ficId = $_POST['ficId'];
 
 
 
-function trouveIDParNomUser($nomLi)
+function trouveIDParNomUser($nomLi,$conn)
 {
-$resultUser = mysql_query("SELECT * FROM TableUser")
-or die(mysql_error());  
-while($rangeeUser=mysql_fetch_array($resultUser))
+$resultUser = mysqli_query($conn,"SELECT * FROM TableUser")
+or die(mysqli_error($conn));  
+while($rangeeUser=mysqli_fetch_array($resultUser))
 {
 		if(!strcmp($rangeeUser['username'],$nomLi))
 	{$UserID =$rangeeUser['noCompte'];// Ce sont de INT
@@ -63,9 +63,9 @@ mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 {
 	
 	if(!is_numeric($userId))
-		{$userId=trouveIDParNomUser($userId);}
+		{$userId=trouveIDParNomUser($userId,$conn);}
 		$accolade = "{}";
-		$accolade2=mysql_real_escape_string($accolade);
+		$accolade2=mysqli_real_escape_string($conn,$accolade);
 	$query_ligue = "INSERT INTO Ligue (Nom_Ligue, Horaire, Lieu,ficId, dernierMAJ,cleValeur) ".
 "VALUES ('$nom', '$horaire', '$lieu','$ficId', NOW(),'$accolade2')";
 		
