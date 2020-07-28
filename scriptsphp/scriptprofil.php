@@ -79,7 +79,7 @@ $ficId = $_POST['ficId'];
 			NOW(),0,0,0)";	
 	//echo $query_insert;
 			$ret =mysqli_query($conn,$query_insert) or die('TableJoueur Insert '+mysqli_error($conn)); 
-	$mes1='TableJoueur Insert '+mysqli_error($conn);
+	$mes1='TableJoueur Insert '.mysqli_error($conn);
 	//echo " que je cherche";
 	
 	if($ret)
