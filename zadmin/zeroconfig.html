@@ -473,14 +473,14 @@ function getEvaluation(joueurId){
 				//				alert(JSON.stringify(mavEnCours));
 				//				return function(){
 				mavId = mavEnCours.mavId;
-tmpEq = getEquipeDEqId(mavEnCours.eqDom);
+tmpEq = getEquipeDEqId(mavEnCours.eq_dom);
 console.log(JSON.stringify(tmpEq));
 				window.jsonEqDom.nom = tmpEq.nomEquipe;
-				window.jsonEqDom.equipeId = mavEnCours.eqDom;
-				tmpEq = getEquipeDEqId(mavEnCours.eqVis);
+				window.jsonEqDom.equipeId = mavEnCours.eq_dom;
+				tmpEq = getEquipeDEqId(mavEnCours.eq_vis);
 				
 				window.jsonEqVis.nom = tmpEq.nomEquipe;
-				window.jsonEqVis.equipeId = mavEnCours.eqVis;
+				window.jsonEqVis.equipeId = mavEnCours.eq_vis;
 				//				creerListeMatchs(window.vecMAV, mavId);
 
 				construitEquipeDAlignement(mavId);
@@ -1590,11 +1590,11 @@ function trouveEval(critereId){
 					var iDom = 0;
 					var iVis = 0;
 					for ( i = 0; i < window.cJSON.equipe.length; i++) {
-						if (mavEnCours.eqDom == window.cJSON.equipe[i].equipeId) {
+						if (mavEnCours.eq_dom == window.cJSON.equipe[i].equipeId) {
 //							window.jsonEqDom = window.cJSON.equipe[i];
 							iDom = i;
 						}
-						if (mavEnCours.eqVis == window.cJSON.equipe[i].equipeId) {
+						if (mavEnCours.eq_vis == window.cJSON.equipe[i].equipeId) {
 //							window.jsonEqVis = window.cJSON.equipe[i];
 							iVis = i;
 						}
