@@ -50,13 +50,13 @@ foreach($lesJoueurs as $nomJoueur)
 	$requeteJou = "INSERT INTO TableJoueur (NomJoueur, NumeroJoueur, ficIdPortrait, dernierMAJ) ".
 "VALUES ('$nomJoueur', '0', 95, NOW())";
 
-	$retour3 = mysqli_query($conn,$requeteJou) or die("Erreur: ".$requeteJou.mysqli_error);
+	$retour3 = mysqli_query($conn,$requeteJou) or die("Erreur: ".$requeteJou.mysqli_error($conn));
 		$last_id = mysqli_insert_id($conn);
 	
 $requeteAbon = "INSERT INTO abonJoueurEquipe (equipeId, joueurId, permission, debutAbon, finAbon) ".
 "VALUES ('$equipeId', '$last_id', 30, NOW(), '2030-01-01')";
 
-$retour2 = mysqli_query($conn,$requeteAbon) or die("Erreur: ".$requeteAbon.mysqli_error);
+$retour2 = mysqli_query($conn,$requeteAbon) or die("Erreur: ".$requeteAbon.mysqli_error($conn));
 
 
 }

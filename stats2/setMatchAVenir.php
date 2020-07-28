@@ -20,7 +20,7 @@ $dateDeb = $_POST['dateDeb'];
 if(isset($_POST['dateFin'])&&$_POST['dateFin']!="" ){$dateFin = $_POST['dateFin'];}else{$dateFin = '2050-01-01 00:00:00';}
 $ligueId = $_POST['ligueId'];
 $mavId = $_POST['mavId'];
-$arenaId = $_POST['arenaId'];
+$arenaId = is_numeric($_POST['arenaId']) ? $_POST['arenaId']: 0;
 $arbitreId = $_POST['arbitreId'];
 $appareils_json = $_POST['appareils'];
 $appareils = json_decode($appareils_json, true);
