@@ -36,7 +36,7 @@ mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 		$rangSel = mysqli_fetch_row($resultSel);
 		$arenaId = $rangSel[0];
 		
-		$querySelCam = "SELECT * FROM StatutCam WHERE arenaId = $arenaId AND telId <> $telId 
+		$querySelCam = "SELECT * FROM StatutCam WHERE arenaId = $arenaId AND telId <> $telId AND userId='{$usager}'
 		ORDER BY dernierMaJ DESC";
 		$resultSelCam=mysqli_query($conn,$querySelCam) or die("Erreur: "+$querySelCam+"\n"+mysqli_error($conn));
 		
