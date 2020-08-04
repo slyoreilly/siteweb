@@ -1175,7 +1175,7 @@
 						//console.log(d1+" / "+dPM+" / "+dDM );
 						if (dPM < d1 && dDM > d1 && filtreEquipe(window.rJSON.matchs[J], 1)) {
 							matchsDsSaison[cpt] = window.rJSON.matchs[J];
-							if(window.rJSON.matchs[J].statut!=""){matchsDsSaison[cpt].etat = "termine";}
+							if(window.rJSON.matchs[J].statut!=""&&window.rJSON.matchs[J].statut!=null){matchsDsSaison[cpt].etat = "termine";}
 							else{matchsDsSaison[cpt].etat = "avenir";}
 							
 							cpt++;
