@@ -136,7 +136,7 @@ foreach($alarms as $alarm){
 				$queryMod = "UPDATE StatutCam SET memoire = '{$memoire}',  memoireInterne = '{$memoireInterne}', batterie = '{$batterie}',temperature='{$temperature}', dernierMaJ='{$mTemps}', version='{$version}', userId = '{$usager}', arenaId = '{$arenaId}', camId = '{$camId}',settings='{$settings}', codeEtat = '{$codeEtat}'
 					WHERE telId='{$telId}'";
 				mysqli_query($conn,$queryMod) or die("Erreur: ".$queryMod."\n".mysqli_error($conn));
-						$message = " - mod1".$queryMod. mysql_error();
+						$message = " - mod1".$queryMod. mysqli_error($conn);
 							$log  = $message.' - '.date("F j, Y, g:i:s a").PHP_EOL.
 	        				"-------------------------".PHP_EOL;
 							file_put_contents('../test/statutCam.txt', $log, FILE_APPEND);	
