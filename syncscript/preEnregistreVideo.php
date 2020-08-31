@@ -99,7 +99,7 @@ if(!empty($nomFic))
 				}		
 		$query = "INSERT INTO Video (nomFichier,nomMatch,chrono,camId,type,reference,emplacement) ".
 		"VALUES ('{$nomFic}','{$params[$a]['video']['nomMatch']}','{$rSServ}','{$camID}','{$type}','{$reference}','{$emplacement}')";
-		mysqli_query($conn,$query) or die("Erreur: "+$query+"\n"+mysqli_error($conn));
+		mysqli_query($conn,$query) or die("Erreur: ".$query."\n".mysqli_error($conn));
 		
 		$monObj['nomFic']=$nomFic;
 		$monObj['etat']='insert';
