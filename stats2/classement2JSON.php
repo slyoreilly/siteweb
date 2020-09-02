@@ -47,7 +47,7 @@ or die(mysqli_error($conn)." Select saisonId");
 //echo mysql_result($rfSaison, 0)."\n";  
 //$tmp= (mysql_fetch_array($rfSaison));
 //echo $tmp['saisonId']."\n";  
-return (mysqli_data_seek($rfSaison, 0))
+return (mysqli_data_seek($rfSaison, 0));
 } 
 
 //////////////////////////////////////////////////////
