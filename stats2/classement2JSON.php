@@ -71,14 +71,14 @@ while($rangeeSaison=mysqli_fetch_array($resultSaison))
 	$dernierMatch = $rangeeSaison['dernierMatch'];
 	$typeSaison = $rangeeSaison['typeSaison'];
 }
-
-$resultEquipe = mysqli_query($conn,"SELECT TableEquipe.*,abonEquipeLigue.* FROM TableEquipe 
-								JOIN abonEquipeLigue
-									ON (equipeId=equipe_id) 
-									WHERE ligueId = '{$ligueId}'
-									AND (abonEquipeLigue.finAbon>='{$premierMatch}'
-											AND abonEquipeLigue.debutAbon<='{$dernierMatch}')")
-								or die(mysqli_error($conn));  
+$requeteSelect= "SELECT TableEquipe.*,abonEquipeLigue.* FROM TableEquipe 
+JOIN abonEquipeLigue
+	ON (equipeId=equipe_id) 
+	WHERE ligueId = '{$ligueId}'
+	AND (abonEquipeLigue.finAbon>='{$premierMatch}'
+			AND abonEquipeLigue.debutAbon<='{$dernierMatch}')";
+$resultEquipe = mysqli_query($conn,$requeteSelect)
+								or die($requeteSelect." --  ".mysqli_error($conn));  
 $equipe=array();
 $Ie=0;
 while($rangeeEquipe=mysqli_fetch_array($resultEquipe))

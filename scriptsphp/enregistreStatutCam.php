@@ -121,10 +121,10 @@ foreach($alarms as $alarm){
 		
 		$querySel = "SELECT codeEtat FROM StatutCam WHERE telId = '{$telId}'";
 		$resultSel=mysqli_query($conn, $querySel) or die("Erreur: ".$querySel."\n".mysqli_error($conn));
-		$message = " - Sel".$querySel. mysqli_error($conn);
-							$log  = $message.' - '.date("F j, Y, g:i:s a").PHP_EOL.
-	        				"-------------------------".PHP_EOL;
-							file_put_contents('../test/statutCam.txt', $log, FILE_APPEND);	
+//		$message = " - Sel".$querySel. mysqli_error($conn);
+//							$log  = $message.' - '.date("F j, Y, g:i:s a").PHP_EOL.
+//	        				"-------------------------".PHP_EOL;
+//							file_put_contents('../test/statutCam.txt', $log, FILE_APPEND);	
 
 		$rangSel=mysqli_num_rows($resultSel);
 		

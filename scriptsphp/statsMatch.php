@@ -32,24 +32,6 @@ mysqli_query($conn,"SET NAMES 'utf8'");
 mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 
 
-
-
-/////////////////////////////////////////////////////
-//
-//   Trouve ID de la ligue � partir du nom.
-//
-////////////////////////////////////////////////////
-
-$resultLigue = mysqli_query($conn,"SELECT * FROM {$tableLigue}")
-or die(mysqli_error($conn));  
-while($rangeeLigue=mysqli_fetch_array($resultLigue))
-{
-		if(!strcmp($rangeeLigue['Nom_Ligue'],$ligue))
-	{$ligueSelect =$rangeeLigue['ID_Ligue'];
-	}
-		// Prend le ID de la ligue pour trouver les �quipes.
-}
-
 /////////////////////////////////////////////////////
 	//
 //   Trouve ID de l'equipe � partir du nom.
