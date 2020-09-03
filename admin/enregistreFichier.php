@@ -46,17 +46,18 @@ $tmpName  = $_FILES['userfile']['tmp_name'];
 $fileSize = $_FILES['userfile']['size'];
 $fileType = $_FILES['userfile']['type'];
 
-$fp      = fopen($tmpName, 'r');
-$content = fread($fp, filesize($tmpName));
-fclose($fp);
+//$fp      = fopen($tmpName, 'r');
+$content = addslashes(file_get_contents($tmpName))
+//$content = fread($fp, filesize($tmpName));
+//fclose($fp);
 
 
 if(!get_magic_quotes_gpc())
 {
-	$content2 = addslashes($content);
+//	$content2 = addslashes($content);
     $fileName = addslashes($fileName);
 }else{
-	$content2 = $content;
+	//$content2 = $content;
 
 }
 
