@@ -48,13 +48,14 @@ $fileType = $_FILES['userfile']['type'];
 
 $fp      = fopen($tmpName, 'r');
 $content = fread($fp, filesize($tmpName));
-$content = addslashes($content);
-fclose($fp);
+
 
 if(!get_magic_quotes_gpc())
 {
+	$content = addslashes($content);
     $fileName = addslashes($fileName);
 }
+fclose($fp);
 
 $query = "INSERT INTO TableFichier (contexte, idRef , name, size, type, content ) ".
 "VALUES ('{$contexte}', '{$refId}','{$fileName}', '{$fileSize}', '{$fileType}', '{$content}')";
