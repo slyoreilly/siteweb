@@ -48,6 +48,7 @@ $fileType = $_FILES['userfile']['type'];
 
 $fp      = fopen($tmpName, 'r');
 $content = fread($fp, filesize($tmpName));
+$content = addslashes($content);
 
 
 if(!get_magic_quotes_gpc())
