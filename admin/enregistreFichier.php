@@ -7,8 +7,19 @@ $tableEvent = 'TableEvenement0';
 $tableJoueur = 'TableJoueur';
 $tableAbon = 'AbonnementLigue';
 $tableUser = 'TableUser';
+$contexte = 'equipe';
 
-$contexte = $_POST['contexte'];
+
+if (isset($_POST['contexte'])){
+    $contexte =$_POST['contexte']);
+}
+$contexte = 'equipe';
+
+$refId = 0;
+if (isset($_POST['refId'])){
+    $refId =$_POST['refId']);
+}
+
 // Create connection
 $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
 // Check connection
@@ -46,12 +57,12 @@ if(!get_magic_quotes_gpc())
 }
 
 $query = "INSERT INTO TableFichier (contexte, idRef , name, size, type, content ) ".
-"VALUES ('equipe', '0','{$fileName}', '{$fileSize}', '{$fileType}', '{$content}')";
+"VALUES ('{$contexte}', '{$refId}','{$fileName}', '{$fileSize}', '{$fileType}', '{$content}')";
 
-mysqli_query($conn,$query) or die("Erreur: "+$query+"\n"+mysqli_error($conn));
+mysqli_query($conn,$query) or die("Erreur: ".$query."\n".mysqli_error($conn));
 
 $querySel = "SELECT ficId FROM TableFichier WHERE 1 ORDER BY ficId DESC ";
-$retSel = mysqli_query($conn,$querySel) or die("Erreur: "+$querySel+"\n"+mysql_error());
+$retSel = mysqli_query($conn,$querySel) or die("Erreur: ".$querySel."\n".mysqli_error($conn));
 $are = mysqli_fetch_row($retSel);
 echo $are[0];
 
