@@ -11,13 +11,13 @@ $contexte = 'equipe';
 
 
 if (isset($_POST['contexte'])){
-    $contexte =$_POST['contexte']);
+    $contexte =$_POST['contexte'];
 }
 $contexte = 'equipe';
 
 $refId = 0;
 if (isset($_POST['refId'])){
-    $refId =$_POST['refId']);
+    $refId =$_POST['refId'];
 }
 
 // Create connection
