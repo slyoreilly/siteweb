@@ -54,7 +54,13 @@ $rPeriode = mysqli_query($conn, "SELECT MAX(souscode) as sc
 
 if (mysqli_num_rows($rPeriode) > 0) {
 	$statutAr = mysqli_fetch_row($rPeriode);
-	if ($statutAr[0] < 10) {$statut = $statutAr[0];
+	if ($statutAr[0] < 10) {
+		if(is_null($statutAr[0])){
+		$statut = 0;
+		}else{
+			$statut = $statutAr[0];
+
+		}
 	} else {
 		$statut = $statutAr[0] % 10;
 		$statut = $statut . 'P';
@@ -142,7 +148,7 @@ $qNiou ="UPDATE TableMatch
 echo $qNiou;
 
 }
-
+mysqli_close($conn);
 
 ?>
 
