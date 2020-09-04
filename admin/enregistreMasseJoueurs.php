@@ -47,8 +47,8 @@ mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 
 foreach($lesJoueurs as $nomJoueur)
 {
-	$requeteJou = "INSERT INTO TableJoueur (NomJoueur, NumeroJoueur, Equipe,ficIdPortrait, dernierMAJ) ".
-"VALUES ('$nomJoueur', '0','aucune', 95, NOW())";
+	$requeteJou = "INSERT INTO TableJoueur (NomJoueur, NumeroJoueur, Equipe,nom, prenom, taille,poids, anneeNaissance,villeOrigine, ficIdJoueur,proprio, ficIdPortrait, dernierMAJ) ".
+"VALUES ('$nomJoueur', '0','aucune','','',0,0,0,'',95,0, 95, NOW())";
 
 	$retour3 = mysqli_query($conn,$requeteJou) or die("Erreur: ".$requeteJou.mysqli_error($conn));
 		$last_id = mysqli_insert_id($conn);
