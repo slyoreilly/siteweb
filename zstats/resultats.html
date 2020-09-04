@@ -916,7 +916,7 @@
                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                        success: function (response) {
                          // console.log(response);                            
-                              lc2++;
+//lc2++;
                               if(lc2>=lc2Max){ 
                                                               //      console.log("lc2Max: "+lc2Max);
                                   window.location.href = '/zstats/match.html?match=' + encodeURIComponent(matchsDsSaison[no].matchID) + '&m=' + window.m;}
@@ -940,7 +940,7 @@
                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                        success: function (response) {
                          // console.log(response);                            
-                              lc2++;
+                       //       lc2++;
                               if(lc2>=lc2Max){ 
                                 // console.log("lc2Max: "+lc2Max);
                                   window.location.href ='/zstats/match.html?match=' + encodeURIComponent(matchsDsSaison[no].matchID) + '&m=' + window.m;}
@@ -958,7 +958,7 @@
                       data: jQuery.param({ table : "TableMatch", valeur :JSON.stringify(valeur2), mode : "modif", critere: "matchIdRef='"+window.matchsDsSaison[no].matchID+"'"}) ,
                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                        success: function (response) {
-                         lc2++;
+                       //  lc2++;
                               if(lc2>=lc2Max){
                                     //                                console.log("lc2Max: "+lc2Max);
                                    window.location.href = '/zstats/match.html?match=' + encodeURIComponent(matchsDsSaison[no].matchID) + '&m=' + window.m;}
@@ -968,7 +968,7 @@
                           console.log(err.Message);
                            }
 				  }); 
-				  alert('WAIT!!');
+				  
                     }
                 );    
 	       ////////////////////////			
