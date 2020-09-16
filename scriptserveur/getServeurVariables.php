@@ -1,0 +1,1 @@
+<?php echo "WORK_ENV: ".getenv('WORK_ENV') ?>

@@ -43,7 +43,7 @@ topLiensJeudi = [{
 	valeur:"equipes_cosom_montreal/2020/automne_cosom_montreal/equipes_jeudi_cosom_montreal.html",
 	texte:"Équipes"
 },{
-	valeur:"horaires_cosom_montreal/2020/automne_cosom_montreal/horaires_jeudi_cosom_montreal.html",
+	valeur:"horaires_cosom_montreal/2020/automne_cosom_montrealautomne_cosom_montreal/horaires_jeudi_cosom_montreal.html",
 	texte:"Horaires"
 },{
 	valeur:"classements_cosom_montreal/2020/automne_cosom_montreal/classements_jeudi_cosom_montreal.html",

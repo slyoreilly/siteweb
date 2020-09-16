@@ -14,7 +14,7 @@ $channel =$_POST['channel'];
 $version =$_POST['version'];
 error_log("test0: ".$channel." ".$app." ".$version);
 
-$mVersionArray= array("synccam"=>array("stable"=>"94","beta"=>"94","alpha"=>"94"),"syncstats"=>array("stable"=>"64","beta"=>"65","alpha"=>"65"));
+$mVersionArray= array("synccam"=>array("stable"=>"95","beta"=>"95","alpha"=>"95"),"syncstats"=>array("stable"=>"64","beta"=>"65","alpha"=>"65"));
 error_log("test-1: ".json_encode($mVersionArray));
 
 error_log("test: ".$mVersionArray[$app][$channel]);

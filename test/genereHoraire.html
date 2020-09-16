@@ -1140,18 +1140,18 @@
 
 						} else {
 							$('#divMatchsTr_' + q).append($('<td></td>').append($('<i class="fas fa-unlock"></i>')));
-							//alert($('#divMatchsTr_'+q+' i.fa-unlock').html());
-							$(function() {
+							//console.log($('#divMatchsTr_'+q+' i.fa-unlock').html());
+							//$(function() {
 								$('#divMatchs').on("click", "tr:nth-child(" + tmpQ + ") i.fa-unlock", {
 									ind : q
 								}, function(event) {
-									//     alert(calendrierMatchs[event.data.ind].statut);
+									console.log(calendrierMatchs[event.data.ind].statut);
 									$(this).removeClass("fa-unlock").addClass("fa-lock");
 									calendrierMatchs[event.data.ind].statut = 80;
 									//actualiseVecteurs();
 
 								});
-							});
+							//});
 
 						}
 
