@@ -126,7 +126,7 @@ if($TP){$sc =$sc +3;}
 	}
 	
 	if($butMAJ -> marqueurId == null || $butMAJ -> marqueurId == "0"){
-		mysqli_query($conn,"UPDATE TableEvenement0 SET joueur_event_ref='{$butMAJ->marqueurId}' ,souscode ='{$sc}' WHERE match_event_id='{$butMAJ->matchId}'
+		mysqli_query($conn,"UPDATE TableEvenement0 SET  code ='15' WHERE match_event_id='{$butMAJ->matchId}'
 		AND code=0 AND chrono='{$tabButs['chrono']}'");
 
 //				mysqli_query($conn,"DELETE FROM TableEvenement0 WHERE match_event_id='{$butMAJ->matchId}'
