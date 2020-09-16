@@ -26,8 +26,8 @@ $retTransJ[$a]=array();
 	$vieuId = $traiteJ['vieuId'];
 
 	
-$retour = mysqli_query($connDT,"INSERT INTO TableJoueur (NomJoueur, NumeroJoueur, equipe_id_ref,Equipe, Ligue, ficIdPortrait) 
-VALUES ('{$intJoueur}', '{$intNo}', NULL,'aucune', NULL,95)")or die(mysqli_error($connDT)."insert bug");	
+$retour = mysqli_query($connDT,"INSERT INTO TableJoueur (NomJoueur, NumeroJoueur, equipe_id_ref,Equipe, Ligue, ficIdPortrait,nom,prenom,villeOrigine) 
+VALUES ('{$intJoueur}', '{$intNo}', NULL,'aucune', NULL,95,'','','')")or die(mysqli_error($connDT)."insert bug");	
 //	mysql_query("INSERT INTO {$tableEvent} (joueur_event_ref, equipe_event_id, code, chrono, match_event_id) 
 //VALUES ( 'test	Match2', 'testMatch2', 'testMatch2', 'testMatch2','testMatch2')");	
 	
