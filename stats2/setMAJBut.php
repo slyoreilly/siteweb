@@ -110,10 +110,8 @@ if($TP){$sc =$sc +3;}
 
 	}
 	echo "cpas: " . $cPas . "  sPas: " . $sPas . "  " . $butMAJ -> passeur1Id . "  " . $butMAJ -> passeur2Id;
-	while ($sPas > $cPas) {			mysqli_query($conn,"DELETE FROM TableEvenement0 WHERE match_event_id='{$butMAJ->matchId}'
-														AND code=1 
-														AND chrono='{$tabButs['chrono']}'
-														LIMIT 1");
+	while ($sPas > $cPas) {			mysqli_query($conn,"UPDATE TableEvenement0 SET  code ='15' WHERE match_event_id='{$butMAJ->matchId}'
+	AND code=1 AND chrono='{$tabButs['chrono']}'");
 
 		$sPas--;
 	}
