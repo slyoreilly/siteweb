@@ -317,6 +317,7 @@ $nbLigueCons=0;
 //////////////////////////////////////////////////////////////////////////////////////////
 
 $syncOK = array();
+$syncOKdetail = array();
 $extra = array();
 $extra['info0']=$controlTemps;
 
@@ -345,6 +346,7 @@ array_push($controlTemps,time());
 $extra['info6']=$heureServeur - time()*1000;
 
 $rep['syncOK']=$syncOK;
+$rep['syncOKdetail']=$syncOKdetail;
 $rep['extra']=$extra;
 $rep['transJ']=$retTransJ;
 $rep['transE']=$retTransE;
