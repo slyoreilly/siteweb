@@ -150,7 +150,7 @@ foreach ($leMatch as $evenement) {
 					}
 				}
 				array_push($syncOK, $retBut);
-				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdBut"=>$arrInsButs,"webIdPlus"=>$arrInsPlus,"webIdMoins"=>$arrInsMoins )
+				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdBut"=>$arrInsButs,"webIdPlus"=>$arrInsPlus,"webIdMoins"=>$arrInsMoins );
 				array_push($syncOKdetail, $retObj);
 
 				break;
@@ -233,7 +233,7 @@ foreach ($leMatch as $evenement) {
 				
 				array_push($syncOK, $retBut);
 
-				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdPun"=>$webIdPun)
+				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdPun"=>$webIdPun);
 				array_push($syncOKdetail, $retObj);
 
 
@@ -308,7 +308,7 @@ foreach ($leMatch as $evenement) {
 
 				}
 				array_push($syncOK, $retClip);
-				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdClip"=>$webIdClip)
+				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdClip"=>$webIdClip);
 
 				array_push($syncOKdetail, $retObj);
 				break;
@@ -354,7 +354,7 @@ foreach ($leMatch as $evenement) {
 					$webIdPanier=mysqli_insert_id($conn);
 				}
 				array_push($syncOK, $retBut);
-				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdPanier"=>$webIdPanier)
+				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdPanier"=>$webIdPanier);
 
 				array_push($syncOKdetail, $retObj);
 
@@ -406,7 +406,7 @@ foreach ($leMatch as $evenement) {
 				$webIdFus=mysqli_insert_id($conn);
 
 				array_push($syncOK, $retBut);
-				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdFus"=>$webIdFus)
+				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdFus"=>$webIdFus);
 				array_push($syncOKdetail, $retObj);
 				break;
 		}
@@ -515,7 +515,7 @@ foreach ($leMatch as $evenement) {
 				
 				}
 				array_push($syncOK, $retPer);
-				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdPer"=>$webIdPer)
+				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdPer"=>$webIdPer);
 				array_push($syncOKdetail, $retObj);
 				break;
 		}
