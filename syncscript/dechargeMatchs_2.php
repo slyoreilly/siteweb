@@ -378,6 +378,18 @@ foreach ($leMatch as $evenement) {
 
 	}
 
+	if (!strcmp($evenement['type'],'remove')) {
+
+
+
+			// Peu importe le ES on esssaie de mettre a jour.
+
+			mysqli_query($conn,"UPDATE TableEvenement0 SET code=15 WHERE match_event_id = '{$evenement['match_id']}' and chrono ={$evenement['chrono']}") or die(mysqli_error($conn)." sur erreur update remove");	
+				array_push($syncOK, $evenement['chrono']);
+
+
+	}
+
 	if (!strcmp($evenement['type'],'board')) {
 		$matchAEnr = parseMatchID($evenement['match_id']);
 		if (isset($matchAEnr['ligueId'])) {$ligueId = $matchAEnr['ligueId'];
