@@ -571,9 +571,9 @@ foreach ($leMatch as $evenement) {
 				$cDef = 0;
 
 				mysqli_query($conn,$qInsDM) or die(mysqli_error($conn) . $qInsDM);
-				$arrMatch=>'chronoInit'=$evenement['chrono'];
-				$arrMatch=>'type'="debutMatch";
-				$arrMatch=>'webDebutId'=mysqli_insert_id($conn);
+				$arrMatch['chronoInit']=$evenement['chrono'];
+				$arrMatch['type']="debutMatch";
+				$arrMatch['webDebutId']=mysqli_insert_id($conn);
 
 				while ($cDom < count($evenement['alDom'])) {
 					$qAlDom = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$evenement['match_id']}','{$evenement['eqDom']}','{$evenement['alDom'][$cDom]}','{$evenement['chrono']}',0,3)";
