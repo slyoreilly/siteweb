@@ -522,7 +522,7 @@ foreach ($leMatch as $evenement) {
 				
 				}
 				array_push($syncOK, $retPer);
-				$retObj = array("type"=>"periode","chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdPer"=>$webIdPer);
+				$retObj = array("type"=>"periode","chronoInit"=>$evenement['chrono'],"chronoFin"=>$evenement['chrono'],"webIdPer"=>$webIdPer);
 				array_push($syncOKdetail, $retObj);
 				break;
 		}
