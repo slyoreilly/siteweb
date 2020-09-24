@@ -537,15 +537,12 @@ foreach ($leMatch as $evenement) {
 		//if (isset($matchAEnr['ligueId'])) {$ligueId = $matchAEnr['ligueId'];
 		
 		//}
-		$arrMatch= array();
+		
 		$arrGdom=array();
 		$arrGvis=array();
 		$arrAlDom=array();
 		$arrAlVis=array();
-		$arrMatch=>'alDom'=$arrAlDom;
-		$arrMatch=>'alVis'=$arrAlVis;
-		$arrMatch=>'gDom'=$arrGdom;
-		$arrMatch=>'gVis'=$arrGvis;
+		$arrMatch= array('alDom'=>$arrAlDom,'alVis'=>$arrAlVis,'gDom'=>$arrGdom,'gVis'=>$arrGvis);
 	$trouveDM=0;
 		switch(f_es($evenement['es'])) {
 
