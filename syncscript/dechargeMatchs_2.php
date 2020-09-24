@@ -578,14 +578,14 @@ foreach ($leMatch as $evenement) {
 				while ($cDom < count($evenement['alDom'])) {
 					$qAlDom = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$evenement['match_id']}','{$evenement['eqDom']}','{$evenement['alDom'][$cDom]}','{$evenement['chrono']}',0,3)";
 					mysqli_query($conn,$qAlDom) or die(mysqli_error($conn) . $qAlDom);
-					array_push($arrAlDom,array('joueurId'=$evenement['alDom'][$cDom],'webId'=mysqli_insert_id($conn)));
+					array_push($arrAlDom,array('joueurId'=>$evenement['alDom'][$cDom],'webId'=>mysqli_insert_id($conn)));
 					$cDom++;
 
 				}
 				while ($cVis < count($evenement['alVis'])) {
 					$qAlVis = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$evenement['match_id']}','{$evenement['eqVis']}','{$evenement['alVis'][$cVis]}','{$evenement['chrono']}',0,3)";
 					mysqli_query($conn,$qAlVis) or die(mysqli_error($conn) . $qAlVis);
-					array_push($arrAlVis,array('joueurId'=$evenement['alDom'][$cVis],'webId'=mysqli_insert_id($conn)));
+					array_push($arrAlVis,array('joueurId'=>$evenement['alDom'][$cVis],'webId'=>mysqli_insert_id($conn)));
 					$cVis++;
 				}
 				while ($cDef < count($evenement['alDef'])) {
@@ -594,10 +594,10 @@ foreach ($leMatch as $evenement) {
 					$cDef++;
 				}
 				if ($evenement['gDom'] != 0) {mysqli_query($conn,$qInsGDom) or die(mysqli_error($conn) . $qInsGDom);
-					array_push($arrGdom,array('joueurId'=$evenement['gDom'],'webId'=mysqli_insert_id($conn)));
+					array_push($arrGdom,array('joueurId'=>$evenement['gDom'],'webId'=>mysqli_insert_id($conn)));
 				}
 				if ($evenement['gVis'] != 0) {mysqli_query($conn,$qInsGVis) or die(mysqli_error($conn) . $qInsGVis);
-					array_push($arrGvis,array('joueurId'=$evenement['gVis'],'webId'=mysqli_insert_id($conn)));
+					array_push($arrGvis,array('joueurId'=>$evenement['gVis'],'webId'=>mysqli_insert_id($conn)));
 				}
 				//											include('../scriptsphp/actualiseMatchs.php');
 				}
