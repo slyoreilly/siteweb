@@ -124,33 +124,34 @@ foreach ($leMatch as $evenement) {
 			case 12 :
 				if ($trouveBut == 0) {
 					$arrInsButs= array();
+					$arrInsPasses= array();
 					$arrInsPlus= array();
 					$arrInsMoins= array();
 					$qInsM = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code,noSequence) VALUES ('{$evenement['match_id']}','{$evenement['eqId']}','{$evenement['m']}','{$evenement['chrono']}','{$evenement['sc']}',0,'{$noseq}')";
 					$qInsP1 = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code,noSequence) VALUES ('{$evenement['match_id']}','{$evenement['eqId']}','{$evenement['p1']}','{$evenement['chrono']}','{$evenement['sc']}',1,'{$noseq}')";
 					$qInsP2 = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code,noSequence) VALUES ('{$evenement['match_id']}','{$evenement['eqId']}','{$evenement['p2']}','{$evenement['chrono']}','{$evenement['sc']}',1,'{$noseq}')";
 					mysqli_query($conn,$qInsM) or die(mysqli_error($conn) . $qInsM);
-					array_push($arrInsButs,mysqli_insert_id($conn));
+					$arrInsButs=array("joueurId"=>$evenement['m'],"webId"=>mysqli_insert_id($conn));
 					if ($evenement['p1'] != 0) {mysqli_query($conn,$qInsP1) or die(mysqli_error($conn) . $qInsP1);
-						array_push($arrInsButs,mysqli_insert_id($conn));
+						array_push($arrInsPasses,array("joueurId"=>$evenement['p1'],"webId"=>mysqli_insert_id($conn)));
 					}
 					if ($evenement['p2'] != 0) {mysqli_query($conn,$qInsP2) or die(mysqli_error($conn) . $qInsP2);
-						array_push($arrInsButs,mysqli_insert_id($conn));
+						array_push($arrInsPasses,array("joueurId"=>$evenement['p2'],"webId"=>mysqli_insert_id($conn)));
 					}
 					$moins = $evenement['moins'];
 					for ($a = 0; $a < count($evenement['plus']); $a++) {
 						$qInsPlus = "INSERT INTO PlusMoins (matchId,joueurId, equipeId, ligueId, plusMoins, chrono) VALUES ('{$evenement['match_id']}','{$evenement['plus'][$a]}','{$evenement['eqId']}','{$ligueId}',1,'{$evenement['chrono']}')";
 						mysqli_query($conn,$qInsPlus) or die(mysqli_error($conn) . $qInsPlus);
-						array_push($arrInsPlus,mysqli_insert_id($conn));
+						array_push($arrInsPlus,array("joueurId"=>$evenement['plus'][$a],"webId"=>mysqli_insert_id($conn)));
 					}
 					for ($a = 0; $a < count($evenement['moins']); $a++) {
 						$qInsMoins = "INSERT INTO PlusMoins (matchId ,joueurId, equipeId, ligueId, plusMoins, chrono) VALUES ('{$evenement['match_id']}','{$evenement['moins'][$a]}','{$evenement['advId']}','{$ligueId}',-1,'{$evenement['chrono']}')";
 						mysqli_query($conn,$qInsMoins) or die(mysqli_error($conn) . $qInsMoins);
-						array_push($arrInsMoins,mysqli_insert_id($conn));
+						array_push($arrInsMoins,array("joueurId"=>$evenement['moins'][$a],"webId"=>mysqli_insert_id($conn)));
 					}
 				}
 				array_push($syncOK, $retBut);
-				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdBut"=>$arrInsButs,"webIdPlus"=>$arrInsPlus,"webIdMoins"=>$arrInsMoins );
+				$retObj = array("type"=>"but","chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webBut"=>$arrInsButs,"webPasses"=>$arrInsPasses,"webPlus"=>$arrInsPlus,"webMoins"=>$arrInsMoins );
 				array_push($syncOKdetail, $retObj);
 
 				break;
@@ -204,7 +205,8 @@ foreach ($leMatch as $evenement) {
 				$qInsM = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code,noSequence) VALUES ('{$evenement['match_id']}','{$evenement['eqId']}','{$evenement['joueur']}','{$evenement['chrono']}','{$evenement['sc']}',4,'{$noseq}')";
 
 				mysqli_query($conn,$qInsM) or die(mysqli_error($conn) . $qInsM);
-				$webIdPun=mysqli_insert_id($conn);
+				$webPun=array("joueurId"=>$evenement['joueur'],"webId"=>mysqli_insert_id($conn));
+
 				
 				}
 				
@@ -233,7 +235,7 @@ foreach ($leMatch as $evenement) {
 				
 				array_push($syncOK, $retBut);
 
-				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdPun"=>$webIdPun);
+				$retObj = array("type"=>"punition","chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webPun"=>$webPun);
 				array_push($syncOKdetail, $retObj);
 
 
@@ -305,10 +307,11 @@ foreach ($leMatch as $evenement) {
 
 				mysqli_query($conn,$qInsM) or die(mysqli_error($conn) . $qInsM);
 				$webIdClip=mysqli_insert_id($conn);
+				
 
 				}
 				array_push($syncOK, $retClip);
-				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdClip"=>$webIdClip);
+				$retObj = array("type"=>"clip","chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdClip"=>$webIdClip);
 
 				array_push($syncOKdetail, $retObj);
 				break;
@@ -351,10 +354,10 @@ foreach ($leMatch as $evenement) {
 				if ($trouveBut == 0) {
 					$qInsM = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code,noSequence) VALUES ('{$evenement['match_id']}','{$evenement['eqId']}','{$evenement['joueur']}','{$evenement['chrono']}','{$evenement['sc']}',70,'{$noseq}')";
 					mysqli_query($conn,$qInsM) or die(mysqli_error($conn) . $qInsM);
-					$webIdPanier=mysqli_insert_id($conn);
+					$webPanier=array("joueurId"=>$evenement['joueur'],"webId"=>mysqli_insert_id($conn));
 				}
 				array_push($syncOK, $retBut);
-				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdPanier"=>$webIdPanier);
+				$retObj = array("type"=>"panier","chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webPanier"=>$webPanier);
 
 				array_push($syncOKdetail, $retObj);
 
@@ -403,10 +406,10 @@ foreach ($leMatch as $evenement) {
 				$qInsM = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$evenement['match_id']}','{$evenement['eqId']}','{$evenement['joueur']}','{$evenement['chrono']}','{$evenement['sc']}',2)";
 
 				mysqli_query($conn,$qInsM) or die(mysqli_error($conn) . $qInsM);
-				$webIdFus=mysqli_insert_id($conn);
-
+				$webFus=array("joueurId"=>$evenement['joueur'],"webId"=>mysqli_insert_id($conn));
+				
 				array_push($syncOK, $retBut);
-				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdFus"=>$webIdFus);
+				$retObj = array("type"=>"fusillade","chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webFus"=>$webFus);
 				array_push($syncOKdetail, $retObj);
 				break;
 		}
@@ -419,9 +422,12 @@ foreach ($leMatch as $evenement) {
 
 			// Peu importe le ES on esssaie de mettre a jour.
 
-			mysqli_query($conn,"UPDATE TableEvenement0 SET code=15 WHERE match_event_id = '{$evenement['match_id']}' and chrono ={$evenement['chrono']}") or die(mysqli_error($conn)." sur erreur update remove");	
+			mysqli_query($conn,"UPDATE TableEvenement0 SET code=15 WHERE event_id ={$evenement['eventId']}") or die(mysqli_error($conn)." sur erreur update remove");	
 				array_push($syncOK, $evenement['chrono']);
-				array_push($syncOKdetail, $evenement['chrono']);
+				$retObj = array("type"=>"remove","chronoInit"=>$evenement['chrono'],"chronoFin"=>$evenement['chrono'],"eventId"=>$evenement['eventId']);
+				array_push($syncOKdetail, $retObj);
+
+				
 
 
 	}
@@ -515,7 +521,7 @@ foreach ($leMatch as $evenement) {
 				
 				}
 				array_push($syncOK, $retPer);
-				$retObj = array("chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdPer"=>$webIdPer);
+				$retObj = array("type"=>"periode","chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdPer"=>$webIdPer);
 				array_push($syncOKdetail, $retObj);
 				break;
 		}
