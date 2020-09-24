@@ -683,9 +683,9 @@ foreach ($leMatch as $evenement) {
 				$qInsFM = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$evenement['match_id']}',
 				0,0,'{$evenement['chrono']}',10,10)";
 				mysqli_query($conn,$qInsFM) or die(mysqli_error($conn) . $qInsFM);
-				$arrFinMatch=>'chronoInit'=$evenement['chrono'];
-				$arrFinMatch=>'type'="finMatch";
-				$arrFinMatch=>'webFinId'=mysqli_insert_id($conn);
+				$arrFinMatch['chronoInit']=$evenement['chrono'];
+				$arrFinMatch['type']="finMatch";
+				$arrFinMatch['webFinId']=mysqli_insert_id($conn);
 				}
 			////////////  NO BREAK!!!  //////////////////////
 			case 10 :
