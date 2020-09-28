@@ -540,9 +540,16 @@ foreach ($leMatch as $evenement) {
 			//	break;		 NO BREAK!!!!!!!
 			case 15 :
 			
-				$qSelPer = "SELECT * FROM TableEvenement0 WHERE chrono='{$evenement['chrono']}' AND match_event_id='{$evenement['match_id']}'";
+				$qSelPer = "SELECT * FROM TableEvenement0 WHERE event_id='{$evenement['db_id']}' AND match_event_id='{$evenement['match_id']}'";
 				$resPer = mysqli_query($conn,$qSelPer) or die(mysqli_error($conn) . $qSelPer);
 				$trouvePer = mysqli_num_rows($resPer);
+
+				if($trouvePer>0){
+					
+					while ($rangPer = mysqli_fetch_array($resPer)) {
+						$retObj = array("type"=>"periode","chronoInit"=>$retPer,"chronoFin"=>$evenement['chrono'],"webIdPer"=>$rangPer['event_id']);
+					}
+				}
 
 			//	break;		 NO BREAK!!!!!!!
 			case 12 :
@@ -554,11 +561,14 @@ foreach ($leMatch as $evenement) {
 				$webIdPer=mysqli_insert_id($conn);
 
 				mysqli_query($conn,"UPDATE TableMatch SET statut='{$evenement['sc']}' WHERE matchIdRef = '{$evenement['match_id']}'") or die(mysqli_error($conn));	
-				
+				$retObj = array("type"=>"periode","chronoInit"=>$retPer,"chronoFin"=>$evenement['chrono'],"webIdPer"=>$webIdPer);
 				}
+
+
 				array_push($syncOK, $retPer);
-				$retObj = array("type"=>"periode","chronoInit"=>$evenement['chrono'],"chronoFin"=>$evenement['chrono'],"webIdPer"=>$webIdPer);
 				array_push($syncOKdetail, $retObj);
+
+
 				break;
 		}
 
