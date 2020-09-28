@@ -115,10 +115,39 @@ foreach ($leMatch as $evenement) {
 				mysqli_query($conn,$qDel) or die(mysqli_error($conn) . $qDel);
 			//	break;		 NO BREAK!!!!!!!
 			case 15 :
-			
-				$qSelButs = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND code=0 AND equipe_event_id='{$evenement['eqId']}' AND noSequence={$evenement['noseq']}";
+				$arrCheckButs= array();
+				$arrCheckPasses= array();
+				$arrCheckPlus= array();
+				$arrCheckMoins= array();
+				$qSelButs = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND code=0 AND equipe_event_id='{$evenement['eqId']}' AND noSequence={$evenement['db_id']}";
 				$resButs = mysqli_query($conn,$qSelButs) or die(mysqli_error($conn) . $qSelButs);
+
 				$trouveBut = mysqli_num_rows($resButs);
+				if($trouveBut>0){
+					
+					while ($rangBut = mysqli_fetch_array($resButs)) {
+						$arrCheckButs=array("joueurId"=>$rangBut['joueur_event_ref'],"webId"=>$rangBut['event_id']);
+						$chronoBut=$rangBut['chrono'];
+					}
+					$qSelPasses = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND code=1 AND chrono='{$chronoBut}'";
+					$resPasses = mysqli_query($conn,$qSelPasses) or die(mysqli_error($conn) . $qSelPasses);
+					while ($rangPasses = mysqli_fetch_array($resPasses)) {
+						array_push($arrCheckPasses,array("joueurId"=>$rangPasses['joueur_event_ref'],"webId"=>$rangPasses['event_id']));
+					}
+					$qSelPlus = "SELECT * FROM PlusMoins WHERE matchId='{$evenement['match_id']}' AND plusMoins=1  AND chrono='{$chronoBut}'";
+					$resPlus = mysqli_query($conn,$qSelPlus) or die(mysqli_error($conn) . $qSelPlus);
+					while ($rangPlus = mysqli_fetch_array($resPlus)) {
+						array_push($arrCheckPlus,array("joueurId"=>$rangPlus['joueurId'],"webId"=>$rangPlus['plusMoinsId']));
+					}
+					$qSelMoins = "SELECT * FROM PlusMoins WHERE matchId='{$evenement['match_id']}' AND plusMoins=-1  AND chrono='{$chronoBut}'";
+					$resMoins = mysqli_query($conn,$qSelMoins) or die(mysqli_error($conn) . $qSelMoins);
+					while ($rangMoins = mysqli_fetch_array($resMoins)) {
+						array_push($arrCheckMoins,array("joueurId"=>$rangMoins['joueurId'],"webId"=>$rangMoins['plusMoinsId']));
+					}
+				
+
+				}
+
 
 			//	break;		 NO BREAK!!!!!!!
 			case 12 :
@@ -149,10 +178,16 @@ foreach ($leMatch as $evenement) {
 						mysqli_query($conn,$qInsMoins) or die(mysqli_error($conn) . $qInsMoins);
 						array_push($arrInsMoins,array("joueurId"=>$evenement['moins'][$a],"webId"=>mysqli_insert_id($conn)));
 					}
+					array_push($syncOK, $retBut);
+					$retObj = array("type"=>"but","chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webBut"=>$arrInsButs,"webPasses"=>$arrInsPasses,"webPlus"=>$arrInsPlus,"webMoins"=>$arrInsMoins );
+					array_push($syncOKdetail, $retObj);
+				}else{
+					array_push($syncOK, $chronoBut);
+					$retObj = array("type"=>"but","chronoInit"=>$chronoBut,"chronoFin"=>$evenement['chrono'],"webBut"=>$arrCheckButs,"webPasses"=>$arrCheckPasses,"webPlus"=>$arrCheckPlus,"webMoins"=>$arrCheckMoins );
+					array_push($syncOKdetail, $retObj);
+
+
 				}
-				array_push($syncOK, $retBut);
-				$retObj = array("type"=>"but","chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webBut"=>$arrInsButs,"webPasses"=>$arrInsPasses,"webPlus"=>$arrInsPlus,"webMoins"=>$arrInsMoins );
-				array_push($syncOKdetail, $retObj);
 
 				break;
 		}
