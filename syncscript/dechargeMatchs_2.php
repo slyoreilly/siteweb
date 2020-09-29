@@ -607,6 +607,7 @@ foreach ($leMatch as $evenement) {
 					while ($rangDM = mysqli_fetch_array($resDM)) {
 						$arrMatch['chronoInit']=$evenement['chrono'];
 				$arrMatch['type']="debutMatch";
+				$arrMatch['nomMatch']=$rangDM['match_event_id'];
 				$arrMatch['webDebutId']=$rangDM['event_id'];
 					}
 					$qSelDom = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND equipe_event_id='{$evenement['eqDom']}' AND code=3 AND souscode=0 ";
@@ -650,6 +651,7 @@ foreach ($leMatch as $evenement) {
 
 				mysqli_query($conn,$qInsDM) or die(mysqli_error($conn) . $qInsDM);
 				$arrMatch['chronoInit']=$evenement['chrono'];
+				$arrMatch['nomMatch']=$evenement['match_id'];
 				$arrMatch['type']="debutMatch";
 				$arrMatch['webDebutId']=mysqli_insert_id($conn);
 
