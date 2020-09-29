@@ -601,7 +601,40 @@ foreach ($leMatch as $evenement) {
 				$resDM = mysqli_query($conn,$qSelDM) or die(mysqli_error($conn) . $qSelDM);
 
 				$trouveDM = mysqli_num_rows($resDM);
-			
+	
+				if($trouveDM>0){
+					
+					while ($rangDM = mysqli_fetch_array($resDM)) {
+						$arrMatch['chronoInit']=$evenement['chrono'];
+				$arrMatch['type']="debutMatch";
+				$arrMatch['webDebutId']=$rangDM['event_id'];
+					}
+					$qSelDom = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND equipe_event_id='{$evenement['eqDom']}' AND code=3 AND souscode=0 ";
+					$resDom = mysqli_query($conn,$qSelDom) or die(mysqli_error($conn) . $qSelDom);
+					while ($rangDom = mysqli_fetch_array($resDom)) {
+						array_push($arrAlDom,array("joueurId"=>$rangDom['joueur_event_ref'],"webId"=>$rangDom['event_id']));
+					}
+					$qSelVis = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND equipe_event_id='{$evenement['eqVis']}' AND code=3 AND souscode=0 ";
+					$resVis = mysqli_query($conn,$qSelVis) or die(mysqli_error($conn) . $qSelVis);
+					while ($rangVis = mysqli_fetch_array($resVis)) {
+						array_push($arrAlVis,array("joueurId"=>$rangVis['joueur_event_ref'],"webId"=>$rangVis['event_id']));
+					}
+					$qSelGVIs = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND equipe_event_id='{$evenement['eqVis']}' AND code=3 AND souscode=5 ";
+					$resGVis = mysqli_query($conn,$qSelGVis) or die(mysqli_error($conn) . $qSelGVis);
+					while ($rangGVis = mysqli_fetch_array($resGVis)) {
+						array_push($arrGVis,array("joueurId"=>$rangGVis['joueur_event_ref'],"webId"=>$rangGVis['event_id']));
+					}
+					$qSelGDom = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND equipe_event_id='{$evenement['eqDom']}' AND code=3 AND souscode=5 ";
+					$resGDom = mysqli_query($conn,$qSelGDom) or die(mysqli_error($conn) . $qSelGDom);
+					while ($rangGDom = mysqli_fetch_array($resGDom)) {
+						array_push($arrGdom,array("joueurId"=>$rangGDom['joueur_event_ref'],"webId"=>$rangGDom['event_id']));
+					}
+
+				}
+
+
+
+
 			case 12 :
 			
 				if($trouveDM==0){
