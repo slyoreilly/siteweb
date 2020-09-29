@@ -619,7 +619,7 @@ foreach ($leMatch as $evenement) {
 					while ($rangVis = mysqli_fetch_array($resVis)) {
 						array_push($arrAlVis,array("joueurId"=>$rangVis['joueur_event_ref'],"webId"=>$rangVis['event_id']));
 					}
-					$qSelGVIs = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND equipe_event_id='{$evenement['eqVis']}' AND code=3 AND souscode=5 ";
+					$qSelGVis = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND equipe_event_id='{$evenement['eqVis']}' AND code=3 AND souscode=5 ";
 					$resGVis = mysqli_query($conn,$qSelGVis) or die(mysqli_error($conn) . $qSelGVis);
 					while ($rangGVis = mysqli_fetch_array($resGVis)) {
 						array_push($arrGVis,array("joueurId"=>$rangGVis['joueur_event_ref'],"webId"=>$rangGVis['event_id']));
