@@ -587,7 +587,7 @@ foreach ($leMatch as $evenement) {
 		$arrGvis=array();
 		$arrAlDom=array();
 		$arrAlVis=array();
-		$arrMatch= array('alDom'=>$arrAlDom,'alVis'=>$arrAlVis,'gDom'=>$arrGdom,'gVis'=>$arrGvis);
+		$arrMatch= array();
 	$trouveDM=0;
 		switch(f_es($evenement['es'])) {
 
@@ -609,26 +609,33 @@ foreach ($leMatch as $evenement) {
 				$arrMatch['type']="debutMatch";
 				$arrMatch['nomMatch']=$rangDM['match_event_id'];
 				$arrMatch['webDebutId']=$rangDM['event_id'];
+
+				$arrMatch['alDom']=array();
+				$arrMatch['alVis']=array();
+				$arrMatch['gDom']=array();
+				$arrMatch['gVis']=array();
+				
+				
 					}
 					$qSelDom = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND equipe_event_id='{$evenement['eqDom']}' AND code=3 AND souscode=0 ";
 					$resDom = mysqli_query($conn,$qSelDom) or die(mysqli_error($conn) . $qSelDom);
 					while ($rangDom = mysqli_fetch_array($resDom)) {
-						array_push($arrAlDom,array("joueurId"=>$rangDom['joueur_event_ref'],"webId"=>$rangDom['event_id']));
+						array_push($arrMatch['alDom'],array("joueurId"=>$rangDom['joueur_event_ref'],"webId"=>$rangDom['event_id']));
 					}
 					$qSelVis = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND equipe_event_id='{$evenement['eqVis']}' AND code=3 AND souscode=0 ";
 					$resVis = mysqli_query($conn,$qSelVis) or die(mysqli_error($conn) . $qSelVis);
 					while ($rangVis = mysqli_fetch_array($resVis)) {
-						array_push($arrAlVis,array("joueurId"=>$rangVis['joueur_event_ref'],"webId"=>$rangVis['event_id']));
+						array_push($arrMatch['alVis'],array("joueurId"=>$rangVis['joueur_event_ref'],"webId"=>$rangVis['event_id']));
 					}
 					$qSelGVis = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND equipe_event_id='{$evenement['eqVis']}' AND code=3 AND souscode=5 ";
 					$resGVis = mysqli_query($conn,$qSelGVis) or die(mysqli_error($conn) . $qSelGVis);
 					while ($rangGVis = mysqli_fetch_array($resGVis)) {
-						array_push($arrGVis,array("joueurId"=>$rangGVis['joueur_event_ref'],"webId"=>$rangGVis['event_id']));
+						array_push($arrMatch['gVis'],array("joueurId"=>$rangGVis['joueur_event_ref'],"webId"=>$rangGVis['event_id']));
 					}
 					$qSelGDom = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND equipe_event_id='{$evenement['eqDom']}' AND code=3 AND souscode=5 ";
 					$resGDom = mysqli_query($conn,$qSelGDom) or die(mysqli_error($conn) . $qSelGDom);
 					while ($rangGDom = mysqli_fetch_array($resGDom)) {
-						array_push($arrGdom,array("joueurId"=>$rangGDom['joueur_event_ref'],"webId"=>$rangGDom['event_id']));
+						array_push($arrMatch['gDom'],array("joueurId"=>$rangGDom['joueur_event_ref'],"webId"=>$rangGDom['event_id']));
 					}
 
 				}
@@ -655,17 +662,21 @@ foreach ($leMatch as $evenement) {
 				$arrMatch['type']="debutMatch";
 				$arrMatch['webDebutId']=mysqli_insert_id($conn);
 
+				$arrMatch['alDom']=array();
+				$arrMatch['alVis']=array();
+				$arrMatch['gDom']=array();
+				$arrMatch['gVis']=array();
 				while ($cDom < count($evenement['alDom'])) {
 					$qAlDom = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$evenement['match_id']}','{$evenement['eqDom']}','{$evenement['alDom'][$cDom]}','{$evenement['chrono']}',0,3)";
 					mysqli_query($conn,$qAlDom) or die(mysqli_error($conn) . $qAlDom);
-					array_push($arrAlDom,array('joueurId'=>$evenement['alDom'][$cDom],'webId'=>mysqli_insert_id($conn)));
+					array_push($arrMatch['alDom'],array('joueurId'=>$evenement['alDom'][$cDom],'webId'=>mysqli_insert_id($conn)));
 					$cDom++;
 
 				}
 				while ($cVis < count($evenement['alVis'])) {
 					$qAlVis = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$evenement['match_id']}','{$evenement['eqVis']}','{$evenement['alVis'][$cVis]}','{$evenement['chrono']}',0,3)";
 					mysqli_query($conn,$qAlVis) or die(mysqli_error($conn) . $qAlVis);
-					array_push($arrAlVis,array('joueurId'=>$evenement['alDom'][$cVis],'webId'=>mysqli_insert_id($conn)));
+					array_push($arrMatch['alVis'],array('joueurId'=>$evenement['alDom'][$cVis],'webId'=>mysqli_insert_id($conn)));
 					$cVis++;
 				}
 				while ($cDef < count($evenement['alDef'])) {
@@ -674,10 +685,10 @@ foreach ($leMatch as $evenement) {
 					$cDef++;
 				}
 				if ($evenement['gDom'] != 0) {mysqli_query($conn,$qInsGDom) or die(mysqli_error($conn) . $qInsGDom);
-					array_push($arrGdom,array('joueurId'=>$evenement['gDom'],'webId'=>mysqli_insert_id($conn)));
+					array_push($arrMatch['gDom'],array('joueurId'=>$evenement['gDom'],'webId'=>mysqli_insert_id($conn)));
 				}
 				if ($evenement['gVis'] != 0) {mysqli_query($conn,$qInsGVis) or die(mysqli_error($conn) . $qInsGVis);
-					array_push($arrGvis,array('joueurId'=>$evenement['gVis'],'webId'=>mysqli_insert_id($conn)));
+					array_push($arrMatch['gVis'],array('joueurId'=>$evenement['gVis'],'webId'=>mysqli_insert_id($conn)));
 				}
 				//											include('../scriptsphp/actualiseMatchs.php');
 				}
