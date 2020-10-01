@@ -468,7 +468,7 @@ foreach ($leMatch as $evenement) {
 				ON (TableMatch.matchIdRef=TableEvenement0.match_event_id)
 				WHERE event_id ={$evenement['eventId']}") or die(mysqli_error($conn)." sur erreur update remove2");	
 			
-			$noMatch = mysqli_data_seek($resMatch, 0)
+			$noMatch = mysqli_data_seek($resMatch, 0);
 
 
 
@@ -484,7 +484,7 @@ $options = array(
     )
 );
 $context  = stream_context_create($options);
-$result = file_get_contents($url, false, $context)
+$result = file_get_contents($url, false, $context);
 				
 
 
