@@ -462,6 +462,29 @@ foreach ($leMatch as $evenement) {
 				$retObj = array("type"=>"remove","chronoInit"=>$evenement['chrono'],"chronoFin"=>$evenement['chrono'],"eventId"=>$evenement['eventId']);
 				array_push($syncOKdetail, $retObj);
 
+				$resMatch = mysqli_query($conn,"SELECT match_id 
+				FROM  TableMatch 
+				JOIN TableEvenement0
+				ON (TableMatch.matchIdRef=TableEvenement0.match_event_id)
+				WHERE event_id ={$evenement['eventId']}") or die(mysqli_error($conn)." sur erreur update remove2");	
+			
+			$noMatch = mysqli_data_seek($resMatch, 0)
+
+
+
+				$url = 'http://syncstats.com/scriptsphp/calculeUnMatch.php';
+$data = array('noMatchId' => $noMatch);
+
+// use key 'http' even if you send the request to https://...
+$options = array(
+    'http' => array(
+        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+        'method'  => 'POST',
+        'content' => http_build_query($data)
+    )
+);
+$context  = stream_context_create($options);
+$result = file_get_contents($url, false, $context)
 				
 
 
