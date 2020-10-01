@@ -676,7 +676,7 @@ foreach ($leMatch as $evenement) {
 				while ($cVis < count($evenement['alVis'])) {
 					$qAlVis = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$evenement['match_id']}','{$evenement['eqVis']}','{$evenement['alVis'][$cVis]}','{$evenement['chrono']}',0,3)";
 					mysqli_query($conn,$qAlVis) or die(mysqli_error($conn) . $qAlVis);
-					array_push($arrMatch['alVis'],array('joueurId'=>$evenement['alDom'][$cVis],'webId'=>mysqli_insert_id($conn)));
+					array_push($arrMatch['alVis'],array('joueurId'=>$evenement['alVis'][$cVis],'webId'=>mysqli_insert_id($conn)));
 					$cVis++;
 				}
 				while ($cDef < count($evenement['alDef'])) {
