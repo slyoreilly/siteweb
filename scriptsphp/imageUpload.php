@@ -35,7 +35,7 @@ if(!get_magic_quotes_gpc())
  $stream = stream_context_create($options);
 // error_log("postStream ".$_FILES['fichier']['name'], 0);
 // $chemin = '/home/lookatthis/'.$fileName;
-  $chemin = $_SERVER["DOCUMENT_ROOT"].$image_loc.$fileName;   // Pour SyncStats.com
+  $chemin = $_SERVER["DOCUMENT_ROOT"]."/".$image_loc.$fileName;   // Pour SyncStats.com
  $retByte =file_put_contents($chemin, $content, 0, $stream); 
  error_log("postPut Image".$_FILES['fichier']['name']."/ callé: ".$_FILES['fichier']['size']."/ ecrit: ".$retByte, 0);
 
