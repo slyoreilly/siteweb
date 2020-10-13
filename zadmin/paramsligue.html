@@ -122,6 +122,17 @@
 						contentType : false,
 						processData : false
 					});
+					$.ajax({
+						url : "/scriptsphp/imageUpload.php",
+						type : 'POST',
+						data : formData,
+						success : function(data) {
+							//alert(data)
+						},
+						cache : false,
+						contentType : false,
+						processData : false
+					});
 					//});
 
 				}), $('<label></label>').attr("for", "id" + nomParam).text(titre)));
