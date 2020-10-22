@@ -470,7 +470,7 @@ foreach ($leMatch as $evenement) {
 			
 			$noMatch = mysqli_data_seek($resMatch, 0);
 
-			$noMatchId = $noMatch;
+			$noMatchId = $noMatch[0];
 			include ($_SERVER['DOCUMENT_ROOT'] . '/scriptsphp/calculeUnMatch.php');
 
 				

@@ -46,7 +46,7 @@ $isEnr = mysqli_num_rows($rEnr);
 if ($isEnr > 0) {
 
 
-$vecMatch = mysqli_fetch_row($rEnr);
+$vecMatch = mysqli_data_seek($rEnr,0);
 $matchIdRef = $vecMatch[0];
 $eDom = $vecMatch[1];
 $eVis = $vecMatch[2];
@@ -57,7 +57,7 @@ $rPeriode = mysqli_query($connC1M, "SELECT MAX(souscode) as sc
 								AND code=11") or die(mysqli_error($connC1M));
 
 if (mysqli_num_rows($rPeriode) > 0) {
-	$statutAr = mysqli_fetch_row($rPeriode);
+	$statutAr = mysqli_data_seek($rPeriode,0);
 	if ($statutAr[0] < 10) {
 		if(is_null($statutAr[0])){
 		$statut = 0;
