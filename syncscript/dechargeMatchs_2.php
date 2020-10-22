@@ -472,7 +472,7 @@ foreach ($leMatch as $evenement) {
 
 
 
-				$url = '/scriptsphp/calculeUnMatch.php';
+				$url = '../scriptsphp/calculeUnMatch.php';
 $data = array('noMatchId' => $noMatch);
 
 // use key 'http' even if you send the request to https://...
