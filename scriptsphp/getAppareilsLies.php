@@ -8,7 +8,11 @@ if(isset($_POST['telId'])){
 }
 $usager = $_POST['username'];
 $mode = $_POST['mode'];
-$arrayTel = $_POST['arrayTel'];
+if( isset($_POST['arrayTel']) )
+{
+	$arrayTel = $_POST['arrayTel'];
+}
+
 
 
 // Create connection
@@ -41,6 +45,7 @@ mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 		$resultSelCam=mysqli_query($conn,$querySelCam) or die("Erreur: "+$querySelCam+"\n"+mysqli_error($conn));
 		
 		$cptCams =0;
+		$cams=Array();  ///  Ajout 22 octobre 2020
 		while($rangSel = mysqli_fetch_assoc($resultSelCam)){
 		$cams[] = $rangSel;	
 			$cams[$cptCams]['memoire']=round($rangSel['memoire']/1000000);
