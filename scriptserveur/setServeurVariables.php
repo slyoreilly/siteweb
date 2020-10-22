@@ -1,1 +1,1 @@
-<?php echo "WORK_ENV set? :".putenv("WORK_ENV=production"); ?>
+<?php echo "WORK_ENV set? :".putenv("WORK_ENV='production'"); ?>
