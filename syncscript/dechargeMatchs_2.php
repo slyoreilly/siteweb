@@ -346,7 +346,7 @@ foreach ($leMatch as $evenement) {
 
 				}
 				array_push($syncOK, $retClip);
-				$retObj = array("type"=>"clip","chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webIdClip"=>$webIdClip);
+				$retObj = array("type"=>"clip","chronoInit"=>$retClip,"chronoFin"=>$evenement['chrono'],"webIdClip"=>$webIdClip);
 
 				array_push($syncOKdetail, $retObj);
 				break;
@@ -780,12 +780,13 @@ foreach ($leMatch as $evenement) {
 				$resFM = mysqli_query($conn,$qSelFM) or die(mysqli_error($conn) . $qSelFM);
 				$trouveFM = mysqli_num_rows($resFM);
 			
-				case 12 :
+			case 12 :
 				if($trouveFM==0){
 				$qInsFM = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$evenement['match_id']}',
 				0,0,'{$evenement['chrono']}',10,10)";
 				mysqli_query($conn,$qInsFM) or die(mysqli_error($conn) . $qInsFM);
 				$arrFinMatch['chronoInit']=$evenement['chrono'];
+				$arrFinMatch['db_id']=$evenement['db_id'];
 				$arrFinMatch['type']="finMatch";
 				$arrFinMatch['webFinId']=mysqli_insert_id($conn);
 				}
