@@ -28,7 +28,11 @@ mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 
-$noMatchId = $_POST['noMatchId'];
+if( isset($_POST['noMatchId']) )
+{
+	$noMatchId = $_POST['noMatchId'];
+}
+
 
 //////////
 ///  $noMatchId doit être défini dans le script appellant

@@ -470,21 +470,9 @@ foreach ($leMatch as $evenement) {
 			
 			$noMatch = mysqli_data_seek($resMatch, 0);
 
+			$noMatchId = $noMatch;
+			include ($_SERVER['DOCUMENT_ROOT'] . '/scriptsphp/calculeUnMatch.php');
 
-
-				$url = '../scriptsphp/calculeUnMatch.php';
-$data = array('noMatchId' => $noMatch);
-
-// use key 'http' even if you send the request to https://...
-$options = array(
-    'http' => array(
-        'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-        'method'  => 'POST',
-        'content' => http_build_query($data)
-    )
-);
-$context  = stream_context_create($options);
-$result = file_get_contents($url, false, $context);
 				
 
 
