@@ -18,14 +18,14 @@ $tableEquipe = 'TableEquipe';
 //
 ////////////////////////////////////////////////////////////
 
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+$connC1M = mysqli_connect($db_host, $db_user, $db_pwd, $database);
 // Check connection
-if (!$conn) {
+if (!$connC1M) {
 	die("Connection failed: " . mysqli_connect_error());
 }
 
-mysqli_query($conn, "SET NAMES 'utf8'");
-mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+mysqli_query($connC1M, "SET NAMES 'utf8'");
+mysqli_query($connC1M, "SET CHARACTER SET 'utf8'");
 
 
 if( isset($_POST['noMatchId']) )
@@ -38,9 +38,9 @@ if( isset($_POST['noMatchId']) )
 ///  $noMatchId doit être défini dans le script appellant
 
 // Vérification s'il y a une inscription dans tablematch
-$rEnr = mysqli_query($conn, "SELECT matchIdRef,eq_dom,eq_vis
+$rEnr = mysqli_query($connC1M, "SELECT matchIdRef,eq_dom,eq_vis
 									FROM TableMatch 
-								WHERE match_id = '{$noMatchId}'") or die(mysqli_error($conn));
+								WHERE match_id = '{$noMatchId}'") or die(mysqli_error($connC1M));
 $isEnr = mysqli_num_rows($rEnr);
 
 if ($isEnr > 0) {
@@ -51,10 +51,10 @@ $matchIdRef = $vecMatch[0];
 $eDom = $vecMatch[1];
 $eVis = $vecMatch[2];
 // Obtention du code de période pour tableevenement0
-$rPeriode = mysqli_query($conn, "SELECT MAX(souscode) as sc
+$rPeriode = mysqli_query($connC1M, "SELECT MAX(souscode) as sc
 								FROM TableEvenement0 
 								WHERE match_event_id = '{$matchIdRef}' 
-								AND code=11") or die(mysqli_error($conn));
+								AND code=11") or die(mysqli_error($connC1M));
 
 if (mysqli_num_rows($rPeriode) > 0) {
 	$statutAr = mysqli_fetch_row($rPeriode);
@@ -74,25 +74,25 @@ if (mysqli_num_rows($rPeriode) > 0) {
 }
 
 //Vérifivation si le match est complet pour enregistrement définitif.
-$matchFini = mysqli_query($conn, "SELECT * 
+$matchFini = mysqli_query($connC1M, "SELECT * 
 								FROM TableEvenement0 
 								WHERE match_event_id = '{$matchIdRef}' 
 								AND code=10 
-								AND souscode=10") or die(mysqli_error($conn));
+								AND souscode=10") or die(mysqli_error($connC1M));
 $fini = mysqli_num_rows($matchFini);
 
 ///Compte le score
-$compteDom = mysqli_query($conn, "SELECT * 
+$compteDom = mysqli_query($connC1M, "SELECT * 
 								FROM TableEvenement0 
 								WHERE match_event_id = '{$matchIdRef}' 
 									AND code=0 
-									AND equipe_event_id =  '{$eDom}'") or die(mysqli_error($conn));
+									AND equipe_event_id =  '{$eDom}'") or die(mysqli_error($connC1M));
 
-$compteVis = mysqli_query($conn, "SELECT * 
+$compteVis = mysqli_query($connC1M, "SELECT * 
 								FROM TableEvenement0 
 								WHERE match_event_id = '{$matchIdRef}' 
 									AND code=0 
-									AND equipe_event_id = '{$eVis}'") or die(mysqli_error($conn));
+									AND equipe_event_id = '{$eVis}'") or die(mysqli_error($connC1M));
 $cDom = mysqli_num_rows($compteDom);
 $cVis = mysqli_num_rows($compteVis);
 
@@ -102,8 +102,8 @@ if ($fini > 0) {
 		$cFD = 0;
 		$cFV = 0;
 
-		$resFus = mysqli_query($conn, "SELECT  * FROM TableEvenement0 
-										WHERE match_event_id = '{$matchIdRef}' AND code=2 AND souscode=1") or die(mysqli_error($conn));
+		$resFus = mysqli_query($connC1M, "SELECT  * FROM TableEvenement0 
+										WHERE match_event_id = '{$matchIdRef}' AND code=2 AND souscode=1") or die(mysqli_error($connC1M));
 
 		while ($rangFus = mysqli_fetch_array($resFus)) {
 			if ($rangFus['equipe_event_id'] == $eDom)
@@ -124,13 +124,13 @@ if ($fini > 0) {
 								VALUES 
 									('{$eDom}', '{$cDom}', '{$eVis}', '{$cVis}','{$noMatchId}','{$ligueId}','{$aDate}','F')";
 			
-		$retour = mysqli_query($conn, $qNiou) or die(mysqli_error($conn) . "INSERT 	INTO TableMatch");
+		$retour = mysqli_query($connC1M, $qNiou) or die(mysqli_error($connC1M) . "INSERT 	INTO TableMatch");
 
 	} else {
 			$qNiou="UPDATE TableMatch
 											SET score_dom='{$cDom}', score_vis='{$cVis}' ,statut='F'
 											WHERE match_id='{$noMatchId}'";
-		$retour = mysqli_query($conn, $qNiou);
+		$retour = mysqli_query($connC1M, $qNiou);
 	}
 
 } else {
@@ -140,19 +140,19 @@ if ($fini > 0) {
 									(eq_dom, score_dom, eq_vis, score_vis, matchIdRef, ligueRef, date,statut) 
 								VALUES 
 									('{$eDom}', '{$cDom}', '{$eVis}', '{$cVis}','{$noMatchId}','{$ligueId}','{$aDate}','{$statut}')";
-		$retour = mysqli_query($conn, $qNiou) or die(mysqli_error($conn) . "INSERT 	INTO TableMatch");
+		$retour = mysqli_query($connC1M, $qNiou) or die(mysqli_error($connC1M) . "INSERT 	INTO TableMatch");
 
 	} else {
 $qNiou ="UPDATE TableMatch
 											SET score_dom='{$cDom}', score_vis='{$cVis}' ,statut='{$statut}'
 											WHERE match_id='{$noMatchId}'	";
-		$retour = mysqli_query($conn, $qNiou);
+		$retour = mysqli_query($connC1M, $qNiou);
 	}
 }
 echo $qNiou;
 
 }
-mysqli_close($conn);
+mysqli_close($connC1M);
 
 ?>
 
