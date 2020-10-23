@@ -8,6 +8,15 @@ require '../scriptsphp/defenvvar.php';
 //
 /////////////////////////////////////////////////////////////////////
 
+
+
+
+$headers = apache_request_headers();
+
+if(strcasecmp($headers['confirmation-key'],'GDB2QGakzuo9pmb0MOIf')){
+	error_log("ecriture de l'image: header non valide. On se fait hacker? ");
+
+}else{
 error_log("ecriture de l'image ".$_FILES['fichier']['name']. " grosseur: ".$_FILES['fichier']['size'], 0);
 
 
@@ -63,5 +72,5 @@ http_response_code(200);
 
 
 echo $url;
-
+}
 ?>
