@@ -13,7 +13,7 @@ require '../scriptsphp/defenvvar.php';
 
 $headers = apache_request_headers();
 
-if(strcasecmp($headers['confirmation-key'],'GDB2QGakzuo9pmb0MOIf')){
+if(strcasecmp($headers['confirmation-key'],'z0d2N9IvAifAoZZgVqDfGDB2QGakzuo9pmb0MOIf')){
 	error_log("ecriture de l'image: header non valide. On se fait hacker? ");
 
 }else{
