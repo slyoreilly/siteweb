@@ -17,15 +17,18 @@ $code = $_POST['code'];
 
 
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
+mysqli_query($conn,"SET NAMES 'utf8'");
+mysqli_query($conn,"SET CHARACTER SET 'utf8'");
+mysqli_query($conn,"SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+///////////////////////////////////////////////////////////////////////////////////////
+
 
 
 //////////////////////////////////
@@ -40,8 +43,8 @@ if (!mysql_select_db($database))
 	$query_equipe = "INSERT INTO abonEquipeLigue (equipeId, ligueId, permission, debutAbon, finAbon) ".
 "VALUES ($equipeId, $ligueId, 30, '$pm','$dm' )";
 		
-$retour = mysql_query($query_equipe)
-or die('Error, query failed');
+$retour = mysqli_query($conn,$query_equipe)
+or die(mysqli_error($conn));
 
 }
 
@@ -53,8 +56,8 @@ or die('Error, query failed');
 						ORDER BY finAbon DESC
 						LIMIT 1 ";
 		
-$retour = mysql_query($query_equipe)
-or die('Error, query failed'.$query_equipe);
+$retour =mysqli_query($conn,$query_equipe)
+or die(mysqli_error($conn).$query_equipe);
 
 }
 
@@ -64,4 +67,6 @@ or die('Error, query failed'.$query_equipe);
 	
 	}
 	echo $retour;
+
+	mysqli_close($conn);
 ?>
