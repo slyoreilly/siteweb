@@ -16,7 +16,7 @@ $tableEquipe = 'TableEquipe';
 $matchId = null;
 
 if(isset($_GET['matchId'])){$matchId = $_GET['matchId'];}
-if($matchId=="" OR $matchId==NULL OR $matchId==undefined ){
+if($matchId=="" OR $matchId==NULL OR $matchId=='undefined' ){
 	if(isset($_POST['matchId'])){$matchId = $_POST['matchId'];}
 	
 }

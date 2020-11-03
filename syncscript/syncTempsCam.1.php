@@ -48,7 +48,7 @@ $qMatch = "SELECT * FROM (
 			INNER JOIN TableUser
 				ON (AbonnementLigue.userid=TableUser.noCompte)
 			WHERE TableEvenement0.chrono>$rrs2 
-				AND TableEvenement0.code=0 
+				AND (TableEvenement0.code=0 OR TableEvenement0.code=2)
 				AND TableUser.username='{$username}'
 UNION ALL
 	SELECT Clips.clipId, chrono,TableMatch.matchIdRef,TableMatch.eq_dom,TableMatch.eq_vis,TableMatch.ligueRef,TableMatch.match_id,
@@ -136,9 +136,24 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 
 
 					}
-
+					case 2:
+						$mVideo= array();
+						$mVideo['match_id'] = $rangeeMatch['match_id'];
+						$mVideo['reference'] = $rangeeMatch['event_id'];
+						$mVideo['type'] = 2;
+						$mVideo['chrono'] = $rangeeMatch['chrono'];
+						$mVideo['ligueId'] = $rangeeMatch['ligueRef'];
+						$mVideo['equipe'] = $rangeeMatch['equipe_event_id'];
+						array_push($matchPeriode[$mGameIndex]['videos'],$mVideo);
+						break;
 
 				break;
+
+
+
+
+
+
 				case 5:			
 				$mVideo= array();
 				$mVideo['match_id'] = $rangeeMatch['match_id'];
