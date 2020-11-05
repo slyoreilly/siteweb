@@ -1,4 +1,4 @@
-<?php
+																																											<?php
 require '../scriptsphp/defenvvar.php';
 $tableEq = 'TableEquipe';
 $tableLigue = 'Ligue';
@@ -102,6 +102,7 @@ while($rangeeUser=mysqli_fetch_array($resultUser))
 						$ligue['equipe'][$IEq]['nomEquipe']=$rangeeEquipe['nom_equipe'];
 						$ligue['equipe'][$IEq]['equipeId']=$rangeeEquipe['equipe_id'];
 						$ligue['equipe'][$IEq]['logo']=$rangeeEquipe['logo'];
+						$ligue['equipe'][$IEq]['couleur']=$rangeeEquipe['couleur1'];
 						$ligue['equipe'][$IEq]['cleValeur']=$rangeeEquipe['cleValeur'];
 						$ligue['equipe'][$IEq]['joueur']=array();	
 						
@@ -147,6 +148,7 @@ while($rangeeUser=mysqli_fetch_array($resultUser))
 						$ligue['equipe'][$IEq]['equipeId']=0;
 						$ligue['equipe'][$IEq]['logo']="rien";
 						$ligue['equipe'][$IEq]['cleValeur']="";
+						$ligue['equipe'][$IEq]['couleur']=$rangeeEquipe['FFFFFF'];
 						$ligue['equipe'][$IEq]['joueur']=array();
 				
 						$IJ=0;
