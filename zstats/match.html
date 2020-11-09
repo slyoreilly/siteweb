@@ -773,10 +773,10 @@ function afficheFusillade(rJSON) {
 					$(div1).append($('<h2 id="admin_title"></h2>'), $('<img id="admin_vids"></img>'));
 					$('#admin_title').text("Admin Tools");
 					$('#admin_match').append($('<div></div>').text(window.tl_match_ajouteBut).click(function() {
-						corrigeStatut();
+						nouveauBut(1);
 					}),
 					$('<div></div>').text(window.tl_match_modifierStatut).click(function() {
-						nouveauBut(1);
+						corrigeStatut();
 					})
 					, $('<div></div>').text(window.tl_match_ajouteFusillade).click(function() {
 						nouveauFusillade(1);
@@ -1845,9 +1845,46 @@ $('#modalDeleteClip .modal-title').text("Voulez-vous effacer ce clip?");
 				    $('#modalCorrigeStatut .modal-body').empty();
 				     $('#modalCorrigeStatut .modal-footer').empty();
 				      $('#modalCorrigeStatut .modal-title') .text(window.tl_match_modifierStatut)
-               $('#modalCorrigeStatut .modal-body').append($('<div></div>').attr('id', 'divChangeStatut').text("Modif"));
+			   $('#modalCorrigeStatut .modal-body').append($('<input><//input>').val("Fermer le match").attr('id', 'divChangeStatut').text("Modif").on('click', function() {
 
-	
+				$.ajax({
+                        url : "/scriptsphp/setGenerique.php",
+                        datatype : 'json',
+                        contentType: "application/json",
+                        type : 'POST',
+                        data : JSON.stringify({
+
+							valeur :JSON.stringify( {
+						match_event_id : window.matchID,
+						equipe_event_id : 0,
+						joueur_event_ref : 0,
+						code : 10,
+						souscode : 10,
+						chrono : (new Date()).getTime(),
+						noSequence : 0
+					}),
+					table: "TableEvenement0",
+					mode : "creer"
+				}),
+                        contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+                        success : function(response) {
+                        //    console.log(response);
+						recalculeUnMatch();
+                         
+                        },
+                        error : function(xhr, status, error) {
+                            var err = eval("(" + xhr.responseText + ")");
+                            console.log(err.Message + "  --  ereur modStatutMatch");
+                        }
+                    });
+
+
+
+			   }) // Fin onClick
+			   
+			   );
+
+
 
 			}
 			
