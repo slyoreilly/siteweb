@@ -102,10 +102,10 @@ if ($gVis != 'undefined' && $gVis != "") {$strGVis = "gardienVis='{$gVis}', ";
 } else {$strGVis = "";
 	$gVis = 0;
 }
-if ($jDom == 'undefined' ){
+if ($jDom == 'undefined'|| $jDom=="" ){
 	$jDom=getAlignement($conn,$eqDom, $defTimeZone);
 } $strJDom = "alignementDom='{$jDom}', ";
-if ($jVis == 'undefined' ){
+if ($jVis == 'undefined' || $jVis=="" ){
 	$jVis=getAlignement($conn,$eqVis, $defTimeZone);
 } $strJVis = "alignementVis='{$jVis}', ";
 
