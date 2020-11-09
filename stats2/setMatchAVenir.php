@@ -109,8 +109,8 @@ if ($jDom == 'undefined'|| $jDom=="" || $jDom==null){
 }$strJDom = "alignementDom='{$jDom}', ";
 if ($jVis == 'undefined' || $jVis=="" || $jVis==null ){
 	$jVis=getAlignement($conn,$eqVis, $defTimeZone);
-}else{
-	$jVis=json_encode($Vis);
+}else{	
+	$jVis=json_encode($jVis);
 } $strJVis = "alignementVis='{$jVis}', ";
 
 if ($arbitreId != 'undefined' && $arbitreId != "") {$strArb = "arbitreId='{$arbitreId}', ";
