@@ -60,7 +60,7 @@ function getAlignement($connGA,$eqId,$defTimeZone)
 	$alignement=array();
 	//$alignement = "[";
 	while ($rangeeJoueur = mysqli_fetch_array($resultJoueur)) {
-array_push($rangeeJoueur['joueur_id']);
+array_push($alignement,$rangeeJoueur['joueur_id']);
 /*		$jDom .= $rangeeJoueur['joueur_id'] . ",";
 	}//Fin du scan des joueurs
 
@@ -69,9 +69,9 @@ array_push($rangeeJoueur['joueur_id']);
 		$jDom = substr($alignement, 0, -1);
 	}
 	$alignement .= "]";*/
-
-	return json_encode($rangeeJoueur);
 }
+	return json_encode($alignement);
+
 }
 
 $strEqDom = "";
