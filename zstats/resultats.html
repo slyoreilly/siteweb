@@ -1057,8 +1057,8 @@
                 }
                 } 
     
-                var strJDom = (no == 1000000 || rienDom||resetDom) ? undefined :  JSON.stringify(window.matchsDsSaison[no].alDom);
-                var strJVis = (no == 1000000 || rienVis||resetVis) ? undefined :  JSON.stringify(window.matchsDsSaison[no].alVis);
+                var strJDom = (no == 1000000 || rienDom||resetDom) ? undefined :  window.matchsDsSaison[no].alDom;
+                var strJVis = (no == 1000000 || rienVis||resetVis) ? undefined :  window.matchsDsSaison[no].alVis;
                 var strGDom = (no == 1000000) ? undefined : window.matchsDsSaison[no].gardienDom;
                 var strGVis = (no == 1000000) ? undefined : window.matchsDsSaison[no].gardienVis;
                 var strDateDeb = mDate + " " + mHeure;
