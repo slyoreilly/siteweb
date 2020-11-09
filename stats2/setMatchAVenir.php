@@ -42,6 +42,38 @@ $defTimeZone =mysqli_data_seek($result, 0);
 mysqli_query($conn,"SET time_zone='+0:00'");
 
 
+
+function getAlignement($connGA,$eqId,$defTimeZone)
+{
+
+
+
+	mysqli_query($connGA,"SET time_zone='{$defTimeZone}'");
+	$resultJoueur = mysqli_query($connGA, "SELECT joueur_id
+													FROM TableJoueur
+													JOIN abonJoueurEquipe
+														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
+														WHERE equipeId='{$eqId}'
+														AND debutAbon<=DATE(NOW())
+														AND finAbon>DATE(NOW())") or die(mysqli_error($conn));
+	mysqli_query($connGA,"SET time_zone='+0:00'");
+	$alignement=array();
+	//$alignement = "[";
+	while ($rangeeJoueur = mysqli_fetch_array($resultJoueur)) {
+array_push($rangeeJoueur['joueur_id']);
+/*		$jDom .= $rangeeJoueur['joueur_id'] . ",";
+	}//Fin du scan des joueurs
+
+	if (!strcmp(",", substr($alignement, -1)))// Pour �viter les vides;
+	{
+		$jDom = substr($alignement, 0, -1);
+	}
+	$alignement .= "]";*/
+
+	return json_encode($rangeeJoueur);
+}
+
+
 $strEqDom = "";
 $strEqVis = "";
 $strGDom = "";
@@ -70,12 +102,13 @@ if ($gVis != 'undefined' && $gVis != "") {$strGVis = "gardienVis='{$gVis}', ";
 } else {$strGVis = "";
 	$gVis = 0;
 }
-if ($jDom != 'undefined' ) {$strJDom = "alignementDom='{$jDom}', ";
-} else {$strJDom = "alignementDom=NULL, ";
-}
-if ($jVis != 'undefined') {$strJVis = "alignementVis='{$jVis}', ";
-} else {$strJVis = "alignementVis=NULL, ";
-}
+if ($jDom == 'undefined' ){
+	$jDom=getAlignement($conn,$eqDom, $defTimeZone);
+} $strJDom = "alignementDom='{$jDom}', ";
+if ($jVis == 'undefined' ){
+	$jVis=getAlignement($conn,$eqVis, $defTimeZone);
+} $strJVis = "alignementVis='{$jVis}', ";
+
 if ($arbitreId != 'undefined' && $arbitreId != "") {$strArb = "arbitreId='{$arbitreId}', ";
 } else {
 	$strArb = "";
@@ -122,7 +155,7 @@ if ($mUpdate) {
 
 } else {
 	//echo "D ";
-	
+	/*
 	mysqli_query($conn,"SET time_zone='{$defTimeZone}'");
 	$resultJoueur = mysqli_query($conn, "SELECT joueur_id
 													FROM TableJoueur
@@ -132,6 +165,8 @@ if ($mUpdate) {
 														AND debutAbon<=DATE(NOW())
 														AND finAbon>DATE(NOW())") or die(mysqli_error($conn));
 	mysqli_query($conn,"SET time_zone='+0:00'");
+
+
 	$jDom = "[";
 	while ($rangeeJoueur = mysqli_fetch_array($resultJoueur)) {
 
@@ -145,7 +180,11 @@ if ($mUpdate) {
 	$jDom .= "]";
 	//fin des joueurs d'une �quipe
 //echo "E ";
-	
+	*/
+
+
+
+/*
 
 mysqli_query($conn,"SET time_zone='{$defTimeZone}'");
 $rJVis = mysqli_query($conn, "SELECT joueur_id
@@ -168,9 +207,16 @@ $jVis = "[";
 		$jVis = substr($jVis, 0, -1);
 	}
 	$jVis .= "]";
+
+*/
+
+
+$alDom= getAlignement($conn, $eqDom, $defTimeZone);
+$alVis= getAlignement($conn, $eqVis, $defTimeZone);
+
 	//fin des joueurs d'une �quipe
 $qIns= "INSERT INTO MatchAVenir (matchId, alignementDom, alignementVis, gardienDom, gardienVis, eqDom, eqVis, date, dateFin, ligueId,dernierMAJ,arenaId,arbitreId) 
-VALUES ('{$matchId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$arenaId}','{$arbitreId}')";
+VALUES ('{$matchId}','{$alDom}', '{$alVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$arenaId}','{$arbitreId}')";
 	//echo $qIns;
 	$retour = mysqli_query($conn,$qIns) or die(mysqli_error($conn) . " INSERT INTO MatchAVenir");
 
