@@ -200,6 +200,7 @@ tl_match_FiletDesert ="Empty Net";
 
 tl_match_corrigePresence = "Fix Line-ups";
 tl_match_ajouteBut = "Add a goal";
+tl_match_modifierStatut = "Change game status";
 tl_match_ajouteFusillade = "Add a shootout event";
 tl_match_avertissementTrouvePasJoueur = "Don't see your player? Close this screen and go in Fix Line-ups";
 

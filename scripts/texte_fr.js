@@ -191,6 +191,7 @@ tl_match_FiletDesert ="Filet Désert";
 		tl_match_Fusillade ="Fusillade";
 		tl_match_corrigePresence = "Corriger les alignements";
 tl_match_ajouteBut = "Ajouter un but";
+tl_match_modifierStatut = "Modifier le statut du match";
 tl_match_ajouteFusillade = "Ajouter un évènement de fusillade";
 tl_match_avertissementTrouvePasJoueur = "Vous ne trouvez pas votre joueur? Fermez cette fenêtre et aller dans Corriger les alignements";
 

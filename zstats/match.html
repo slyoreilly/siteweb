@@ -773,8 +773,12 @@ function afficheFusillade(rJSON) {
 					$(div1).append($('<h2 id="admin_title"></h2>'), $('<img id="admin_vids"></img>'));
 					$('#admin_title').text("Admin Tools");
 					$('#admin_match').append($('<div></div>').text(window.tl_match_ajouteBut).click(function() {
+						corrigeStatut();
+					}),
+					$('<div></div>').text(window.tl_match_modifierStatut).click(function() {
 						nouveauBut(1);
-					}), $('<div></div>').text(window.tl_match_ajouteFusillade).click(function() {
+					})
+					, $('<div></div>').text(window.tl_match_ajouteFusillade).click(function() {
 						nouveauFusillade(1);
 					}), $('<div></div>').text(window.tl_match_corrigePresence).click(function() {
 						corrigePresences();
@@ -1835,7 +1839,17 @@ $('#modalDeleteClip .modal-title').text("Voulez-vous effacer ce clip?");
 				
 			}
 
+			function corrigeStatut() {
+				
+				    $('#modalCorrigeStatut').modal("show");
+				    $('#modalCorrigeStatut .modal-body').empty();
+				     $('#modalCorrigeStatut .modal-footer').empty();
+				      $('#modalCorrigeStatut .modal-title') .text(window.tl_match_modifierStatut)
+               $('#modalCorrigeStatut .modal-body').append($('<div></div>').attr('id', 'divChangeStatut').text("Modif"));
 
+	
+
+			}
 			
 
 			function corrigePresences() {
@@ -3469,6 +3483,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
 				construitDialogue("modalCorrectionBut");
                 construitDialogue("modalCorrectionPunition");
                 construitDialogue("modalCorrigePresences");
+                construitDialogue("modalCorrigeStatut");
                 construitDialogue("modalNouveauBut");
                 construitDialogue("modalNouvellePun");
                 construitDialogue("modalNouveauFusillade");
