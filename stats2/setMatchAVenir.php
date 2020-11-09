@@ -72,7 +72,7 @@ array_push($rangeeJoueur['joueur_id']);
 
 	return json_encode($rangeeJoueur);
 }
-
+}
 
 $strEqDom = "";
 $strEqVis = "";
