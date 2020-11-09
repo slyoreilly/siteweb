@@ -22,7 +22,7 @@ $ligueId = $_POST['ligueId'];
 $mavId = $_POST['mavId'];
 $arenaId = is_numeric($_POST['arenaId']) ? $_POST['arenaId']: 0;
 $arbitreId = $_POST['arbitreId'];
-$appareils_json = $_POST['appareils'];
+$appareils_json = isset($_POST['appareils'])?  $_POST['appareils']:null;
 $appareils = json_decode($appareils_json, true);
 
 $matchId = substr($dateDeb, 0, 4) . "/" . substr($dateDeb, 5, 2) . "/" . substr($dateDeb, 8, 2) . "_" . $eqDom . "_" . $eqVis;
