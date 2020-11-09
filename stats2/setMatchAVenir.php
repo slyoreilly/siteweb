@@ -104,9 +104,13 @@ if ($gVis != 'undefined' && $gVis != "") {$strGVis = "gardienVis='{$gVis}', ";
 }
 if ($jDom == 'undefined'|| $jDom=="" || $jDom==null){
 	$jDom=getAlignement($conn,$eqDom, $defTimeZone);
-} $strJDom = "alignementDom='{$jDom}', ";
+} else{
+	$jDom=json_encode($jDom);
+}$strJDom = "alignementDom='{$jDom}', ";
 if ($jVis == 'undefined' || $jVis=="" || $jVis==null ){
 	$jVis=getAlignement($conn,$eqVis, $defTimeZone);
+}else{
+	$jVis=json_encode($Vis);
 } $strJVis = "alignementVis='{$jVis}', ";
 
 if ($arbitreId != 'undefined' && $arbitreId != "") {$strArb = "arbitreId='{$arbitreId}', ";
