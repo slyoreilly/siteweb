@@ -1852,7 +1852,7 @@ $('#modalDeleteClip .modal-title').text("Voulez-vous effacer ce clip?");
                         datatype : 'json',
                         contentType: "application/json",
                         type : 'POST',
-                        data : {
+                        data : jQuery.param({
 
 							valeur :JSON.stringify( {
 								match_event_id : window.matchID,
@@ -1865,7 +1865,7 @@ $('#modalDeleteClip .modal-title').text("Voulez-vous effacer ce clip?");
 								}),
 							table: "TableEvenement0",
 							mode : "creer"
-						},
+						}),
                         contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
                         success : function(response) {
                         //    console.log(response);
