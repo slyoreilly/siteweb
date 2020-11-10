@@ -1852,20 +1852,20 @@ $('#modalDeleteClip .modal-title').text("Voulez-vous effacer ce clip?");
                         datatype : 'json',
                         contentType: "application/json",
                         type : 'POST',
-                        data : JSON.stringify({
+                        data : {
 
 							valeur :JSON.stringify( {
-						match_event_id : window.matchID,
-						equipe_event_id : 0,
-						joueur_event_ref : 0,
-						code : 10,
-						souscode : 10,
-						chrono : (new Date()).getTime(),
-						noSequence : 0
-					}),
-					table: "TableEvenement0",
-					mode : "creer"
-				}),
+								match_event_id : window.matchID,
+								equipe_event_id : 0,
+								joueur_event_ref : 0,
+								code : 10,
+								souscode : 10,
+								chrono : (new Date()).getTime(),
+								noSequence : 0,
+								}),
+							table: "TableEvenement0",
+							mode : "creer"
+						},
                         contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
                         success : function(response) {
                         //    console.log(response);
