@@ -161,6 +161,7 @@
                 faitCheckBox("otw", "Victoires en prolongation", paramsLigue.reglements.otw, "divReglements");
                 faitCheckBox("afficheNulle", "Permettre les nulles", paramsLigue.reglements.afficheNulle, "divReglements");
                 faitCheckBox("affichePunitions", "Afficher les punitions totales", paramsLigue.reglements.affichePunitions, "divReglements");
+                faitCheckBox("bySideVideoEnabled", "Vidéos séparés domicile-visiteur", paramsLigue.reglements.bySideVideoEnabled, "divReglements");
                 
 				} catch(err) {
 				}
@@ -219,7 +220,8 @@
                         otl : $('#idotl').is(':checked'),
                         otw : $('#idotw').is(':checked'),
                         afficheNulle : $('#idafficheNulle').is(':checked'),
-                        affichePunitions : $('#idaffichePunitions').is(':checked')
+                        affichePunitions : $('#idaffichePunitions').is(':checked'),
+                        bySideVideoEnabled : $('#idbySideVideoEnabled').is(':checked')
 					},
 					style : {
 						arriereplan : $('#inChemin').val(),

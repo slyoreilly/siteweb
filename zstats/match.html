@@ -1870,7 +1870,7 @@ $('#modalDeleteClip .modal-title').text("Voulez-vous effacer ce clip?");
                         success : function(response) {
                         //    console.log(response);
 						recalculeUnMatch();
-                         
+						$('#modalCorrigeStatut').modal("hide");
                         },
                         error : function(xhr, status, error) {
                             var err = eval("(" + xhr.responseText + ")");
