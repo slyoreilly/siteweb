@@ -172,7 +172,7 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 foreach($matchPeriode as $key=>$unMatch){
 	
 	$qSelArena="SELECT * From TableArena
-	WHERE arenaId='{$unMatch['arenaId']}'";
+	WHERE arenaId={$unMatch['arenaId']}";
 	$resArena = mysqli_query($conn,$qSelArena) or die(mysqli_error($conn) . $qSelEqVis);
 	while ($rangeeArena = mysqli_fetch_array($resArena)){
 		$nomArena =$rangeeArena['nomArena'];					
@@ -182,7 +182,7 @@ foreach($matchPeriode as $key=>$unMatch){
 	$abons = array();
 //	$Ia=0;
 	$qSelAbons="SELECT telId, abonAppareilMatch.role  From abonAppareilMatch
-		WHERE matchId='{$unMatch['match_id']}'";
+		WHERE matchId={$unMatch['match_id']}";
 	$resAbons = mysqli_query($conn,$qSelAbons) or die(mysqli_error($conn) . $qSelAbons);
 	while ($rangeeAbons = mysqli_fetch_array($resAbons)){
 		array_push($abons, array("role"=>$rangeeAbons['role'], "telId"=>$rangeeAbons['telId']));
