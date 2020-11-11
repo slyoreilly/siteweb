@@ -151,7 +151,8 @@ foreach($alarms as $alarm){
 						$message = " - mod2".$queryMod. mysqli_error($conn);
 							$log  = $message.' - '.date("F j, Y, g:i:s a").PHP_EOL.
 	        				"-------------------------".PHP_EOL;
-						//	file_put_contents('../test/statutCam.txt', $log, FILE_APPEND);				}
+						//	file_put_contents('../test/statutCam.txt', $log, FILE_APPEND);			
+							}
 			
 			}
 		else {

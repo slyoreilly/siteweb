@@ -169,8 +169,8 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 }
 
 
-foreach($matchPeriode as $key=>$unMatch){
-	error_log("dan foreach ".$unMatch['arenaId'])	;
+foreach($matchPeriode as $unMatch){
+	error_log("dans foreach ".$unMatch['arenaId'])	;
 	$qSelArena="SELECT * From TableArena
 	WHERE arenaId={$unMatch['arenaId']}";
 	$resArena = mysqli_query($conn,$qSelArena) or die(mysqli_error($conn) . $qSelEqVis);
@@ -194,8 +194,8 @@ foreach($matchPeriode as $key=>$unMatch){
 
 
 
-	$unMatch['arena']=$nomArena." / ".$nomGlace;	
-	$unMatch['abons']=$abons;
+	$unMatch->'arena'=$nomArena." / ".$nomGlace;	
+	$unMatch->'abons'=$abons;
 	
 }
 
