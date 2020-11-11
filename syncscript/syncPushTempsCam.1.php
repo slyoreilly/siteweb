@@ -169,7 +169,7 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 }
 
 
-foreach($matchPeriode as $unMatch){
+foreach($matchPeriode as &$unMatch){
 	error_log("dans foreach ".$unMatch['arenaId'])	;
 	$qSelArena="SELECT * From TableArena
 	WHERE arenaId={$unMatch['arenaId']}";
