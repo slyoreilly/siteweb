@@ -110,6 +110,8 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 					$nouveauMatch['date']=$rangeeMatch['date'];
 					$nouveauMatch['periodes']= Array();
 					$nouveauMatch['videos']= Array();
+					$nouveauMatch['abons']= Array();
+					$nouveauMatch['arena']="";
 					$mGameIndex=array_push($matchPeriode,$nouveauMatch)-1;
 				}
 
