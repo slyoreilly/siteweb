@@ -194,8 +194,8 @@ foreach($matchPeriode as $unMatch){
 
 
 
-	$unMatch->'arena'=$nomArena." / ".$nomGlace;	
-	$unMatch->'abons'=$abons;
+	$unMatch['arena']=$nomArena." / ".$nomGlace;	
+	$unMatch['abons']=$abons;
 	
 }
 
