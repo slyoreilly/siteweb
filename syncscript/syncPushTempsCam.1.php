@@ -100,7 +100,7 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 					}
 				}
 				if(!$trouveMatch){
-					$nouveauMatch=Array();
+					$nouveauMatch=array();
 					$nouveauMatch['match_id']=$rangeeMatch['match_id'];
 					$nouveauMatch['arenaId']=$rangeeMatch['arenaId'];
 					$nouveauMatch['ligueId']=$rangeeMatch['ligueRef'];
@@ -108,9 +108,9 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 					$nouveauMatch['eqVis']=$rangeeMatch['eq_vis'];
 					$nouveauMatch['nom']=$rangeeMatch['matchIdRef'];
 					$nouveauMatch['date']=$rangeeMatch['date'];
-					$nouveauMatch['periodes']= Array();
-					$nouveauMatch['videos']= Array();
-					$nouveauMatch['abons']= Array();
+					$nouveauMatch['periodes']= array();
+					$nouveauMatch['videos']= array();
+					$nouveauMatch['abons']= array();
 					$nouveauMatch['arena']="";
 					$mGameIndex=array_push($matchPeriode,$nouveauMatch)-1;
 				}
@@ -170,7 +170,7 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 
 
 foreach($matchPeriode as $key=>$unMatch){
-	
+	error_log("dan foreach ".$unMatch['arenaId'])	;
 	$qSelArena="SELECT * From TableArena
 	WHERE arenaId={$unMatch['arenaId']}";
 	$resArena = mysqli_query($conn,$qSelArena) or die(mysqli_error($conn) . $qSelEqVis);

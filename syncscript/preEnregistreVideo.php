@@ -144,7 +144,7 @@ if(!empty($nomFic))
 
 }
 $ret = json_encode($syncOK);
-error_log("retour preEnregistre: ".$ret)	;
+//error_log("retour preEnregistre: ".$ret)	;
 	echo $ret;
 	
 	if($ret==False)
