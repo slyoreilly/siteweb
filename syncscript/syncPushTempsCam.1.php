@@ -196,6 +196,7 @@ foreach($matchPeriode as $unMatch){
 
 	$unMatch['arena']=$nomArena." / ".$nomGlace;	
 	$unMatch['abons']=$abons;
+	error_log("dans  arena ".$unMatch['arena']." et abons: ".$unMatch['abons'])	;
 	
 }
 
