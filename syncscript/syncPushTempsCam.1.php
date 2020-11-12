@@ -130,7 +130,7 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 					$mVideo['type'] = $rangeeMatch['code'];
 					$mVideo['chrono'] = $rangeeMatch['chrono'];
 					$mVideo['ligueId'] = $rangeeMatch['ligueRef'];
-					$mVideo['equipe'] = $rangeeMatch['equipe_event_id'];
+					$mVideo['equipe'] = $rangeeMatch['scoringEnd'];
 					array_push($matchPeriode[$mGameIndex]['videos'],$mVideo);
 					break;
 
