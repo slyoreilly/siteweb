@@ -55,7 +55,7 @@ $qMatch = "SELECT * FROM (
 				ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)
 
 			WHERE ((TableEvenement0.chrono>$rrs2 
-				AND (TableEvenement0.code=0 OR TableEvenement0.code=2 OR TableEvenement0.code=10))
+				AND (TableEvenement0.code=0 OR TableEvenement0.code=2 OR TableEvenement0.code=10 OR TableEvenement0.code=11))
 				)
 				AND TableMatch.arenaId='{$arena}'
 UNION ALL
