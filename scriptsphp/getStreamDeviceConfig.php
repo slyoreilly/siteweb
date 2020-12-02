@@ -32,7 +32,7 @@ do {
      
     $qStream = "SELECT * FROM Stream
                 WHERE deviceId=$deviceId 
-AND userId=$userId AND updateAt>'{$lastUpdate}'";
+AND userId=$userId AND updatedAt>'{$lastUpdate}'";
       
     $resultStreams = mysqli_query($conn,$qStream) or die(mysqli_error($conn) . $qStream);					
                                         
