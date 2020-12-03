@@ -3,7 +3,7 @@ require '../scriptsphp/defenvvar.php';
 
 //$fichier = $_POST['fichier'];
 //echo $_POST['videos'];
-$maxSec = $_POST['timeout'];
+$maxSec = $_POST['timeout'];  // en milisecondes
 $deviceId = $_POST['deviceId'];
 $userId = $_POST['userId'];
 $lastUpdate = $_POST['lastUpdate'];
@@ -21,8 +21,8 @@ mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 
 $retourStream = array();
 $retourStream['lastUpdate']=$lastUpdate ;
-
-
+$cpt=0;
+$comp =$maxSec-0; ///  Le "0" est tunable, il sert a donner un espèce de marge sur le timeout
 do {
 
 
@@ -51,7 +51,7 @@ AND userId=$userId AND updatedAt>'{$lastUpdate}'";
         flush();
         $cpt = $cpt+5000;
     }  
-    $comp =$maxSec-30000;
+    
     }
      while (($IS==0)&&($cpt<$comp));
     
