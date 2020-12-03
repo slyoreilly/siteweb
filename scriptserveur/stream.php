@@ -35,7 +35,7 @@ $prefix                         = "";
 // Ex: "/tmp/capture/out-0001.ts" => "ts"
 $extension                      = "ts";
 // Defines a log file
-$log_file                       = "/tmp/ffmpeg.log";
+$log_file                       = "/mnt/SyncStats/Ingénierie/InstalFixes/ffmpeg.log";
 // Defines a number of files to send immediately if available for buffer
 $buffer_size                    = 5;
 
