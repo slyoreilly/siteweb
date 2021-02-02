@@ -1,0 +1,31 @@
+# Installation ---
+# 1. In Bitbucket, add FTP_USERNAME, FTP_PASSWORD and FTP_HOST as environment variables.
+# 2. Commit this file (bitbucket-pipelines.yml) to your repo (in the repo root dir)
+# 3. From Bitbucket Cloud > Commits > Commit Number > Run Pipeline > Custom:Init (this will
+#    push everything and initialize GitFTP)
+#
+# Usage ---
+# - On each commit to master branch, it'll push all files to the $FTP_HOST
+# - You also have the option to 'init' (see 'Installation' above) - pushes everything and initialises
+# - Finally you can also 'deploy-all' (from Bitbucket Cloud > Commits > Commit Number > Run Pipeline > Custom:deploy-all)
+#   if multiple deploys fail, you can deploy everything to "catch up"
+#
+image: wearepvtl/bitbucket-pipelines-git-ftp:latest
+
+pipelines:
+  custom: # Pipelines that are triggered manually via the Bitbucket GUI
+    init: # -- First time init
+    - step:
+        script:
+          - git ftp init -u "syl" -p "pr351d3nt" ftp://5.39.81.14:22000/public_html
+    deploy-all: # -- Deploys all files from the selected commit
+    - step:
+        script:
+          - git ftp push -u "syl" -p "pr351d3nt" ftp://5.39.81.14:22000/public_html --all
+  branches: # Automated triggers on commits to branches
+    master: # -- When committing to master branch
+    - step:
+        deployment: production
+        script:
+#          - git ftp push -u "syncsta1" -p "uVTEhAil" ftp://ftp.syncstats.com:21/public_html
+          - git ftp push -u "syl" -p "pr351d3nt" ftp://5.39.81.14:22000/public_html
