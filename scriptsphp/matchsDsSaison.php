@@ -9,6 +9,9 @@ $postdata = file_get_contents("php://input");
 $request = json_decode($postdata);
 $ligueId = $request->ligueId;
 $saisonId = $request->saisonId;
+
+$qVentOff = false;
+if(isset($request->ventOff))
 $qVentOff =  $request->ventOff;
 
 //$ligueId = 3;
