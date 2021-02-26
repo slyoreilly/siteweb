@@ -61,11 +61,11 @@ while($r = mysqli_fetch_assoc($retour)) {
 	$vecMatch[$IM]['gVis']=array();
 	$tmp =  str_replace('"[','[',$r['alignementDom']);
 	$tmp =  str_replace(']"',']',$tmp);
-	$alDom=json_decode($tmp,true);
+	$alDom=json_decode($r['alignementDom'],true);
 	  if(!is_array($alDom)) {$alDom= array();}
 	$tmp =  str_replace('"[','[',$r['alignementVis']);
 	$tmp =  str_replace(']"',']',$tmp);
-	$alVis=json_decode($tmp,true);
+	$alVis=json_decode($r['alignementVis'],true);
 	if(!is_array($alVis)) {$alVis= array();}
 	for($a=0;$a<count($alDom);$a++)
 	{
