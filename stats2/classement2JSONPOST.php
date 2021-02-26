@@ -43,7 +43,7 @@ mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 //////////////////////////////////////////////////////
 
 	
-	
+$equipe=array();	
 	
 	
 if($saisonId=="null"||$saisonId=="undefined"||$saisonId=="")// Sp�cifie par la saison
@@ -70,8 +70,10 @@ while($rangeeSaison=mysqli_fetch_array($rfSaison))
 or die(mysqli_error($conn));  
 $rangeeLigue=mysqli_fetch_assoc($resultLigue);
 $jsonLigue = json_decode($rangeeLigue['cleValeur'],true);
+$nbPunMax = 1000;
+if(isset($jsonLigue['reglements']['nbPunMax'])){
 $nbPunMax = $jsonLigue['reglements']['nbPunMax'];
-
+}
 	
 //$resultSaison = mysql_query("SELECT * FROM TableSaison WHERE saisonId = '{$saisonId}'")
 $resultSaison = mysqli_query($conn,"SELECT * FROM TableSaison WHERE ligueRef = '{$ligueId}'")
@@ -103,7 +105,7 @@ $resultEquipe = mysqli_query($conn,"SELECT TableEquipe.*,abonEquipeLigue.* FROM 
 											AND abonEquipeLigue.debutAbon<='{$dernierMatch}')
 											AND abonEquipeLigue.permission<31")
 								or die(mysqli_error($conn));  
-$equipe=array();
+
 $Ie=0;
 while($rangeeEquipe=mysqli_fetch_array($resultEquipe))
 {
