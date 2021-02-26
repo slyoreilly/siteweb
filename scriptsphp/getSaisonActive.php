@@ -14,8 +14,10 @@ $tableEvent = 'TableEvenement0';
 $tableEquipe = 'TableEquipe';
 $tableMatch = 'TableMatch';
 
-
+$ligueId=null;
+if(isset($_POST['ligueId'])){
 $ligueId = $_POST["ligueId"];
+}
 
 ////////////////////////////////////////////////////////////
 //
