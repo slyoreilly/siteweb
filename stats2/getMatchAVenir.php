@@ -59,12 +59,8 @@ while($r = mysqli_fetch_assoc($retour)) {
 	$vecMatch[$IM]['alVis']=array();
 	$vecMatch[$IM]['gDom']=array();
 	$vecMatch[$IM]['gVis']=array();
-	$tmp =  str_replace('"[','[',$r['alignementDom']);
-	$tmp =  str_replace(']"',']',$tmp);
 	$alDom=json_decode($r['alignementDom'],true);
 	  if(!is_array($alDom)) {$alDom= array();}
-	$tmp =  str_replace('"[','[',$r['alignementVis']);
-	$tmp =  str_replace(']"',']',$tmp);
 	$alVis=json_decode($r['alignementVis'],true);
 	if(!is_array($alVis)) {$alVis= array();}
 	for($a=0;$a<count($alDom);$a++)
@@ -115,9 +111,6 @@ while($r = mysqli_fetch_assoc($retour)) {
 }
 //$adomper= stripslashes(json_encode($vecMatch));
 $adomper= json_encode($vecMatch);
-$adomper= str_replace('\"','"',$adomper);
-$adomper= str_replace('"[','[',$adomper);
-$adomper= str_replace(']"',']',$adomper);
 echo $adomper;
 
 
