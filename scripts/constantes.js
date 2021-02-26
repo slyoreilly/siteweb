@@ -485,7 +485,7 @@ hierarchie[2][4] =34; //"1_4";
 
 motif = new Array();
 
-var iMax = 37;
+var iMax = 38;
 var jMax = 2;
 motif = new Array();
 

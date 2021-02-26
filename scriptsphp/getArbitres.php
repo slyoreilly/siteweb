@@ -10,10 +10,13 @@ $tableUser = 'TableUser';
 
 //$jDomJSON = stripslashes($_POST['jDom']);
 //$jVisJSON = stripslashes($_POST['jVis']);
+if(isset($_POST['arbitreId'])){
 $arbitreId = $_POST['arbitreId'];
+}if(isset($_POST['ligueId'])){
 $ligueId = $_POST['ligueId'];
+}if(isset($_POST['username'])){
 $username = $_POST['username'];
-
+}
 
 // Create connection
 $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
