@@ -37,11 +37,9 @@ mysqli_query($conn, "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_G
 $strRetour.=$mavId;
 $retour = mysqli_query($conn, "SELECT TableMatch.*	
 						FROM TableMatch
-						LEFT JOIN TableSaison
-							ON (TableMatch.ligueRef=TableSaison.ligueRef)
+						/*LEFT JOIN TableSaison
+							ON (TableMatch.ligueRef=TableSaison.ligueRef)*/
 						 WHERE TableMatch.ligueRef='{$ligueId}'
-						
-						 	
 						 GROUP BY TableMatch.mavId")or die(mysqli_error($conn));	
 						 /* AND MatchAVenir.date > (NOW()-INTERVAL 30 DAY) AND TableSaison.dernierMatch>NOW()*/
 $strRetour.= mysqli_num_rows($retour);
