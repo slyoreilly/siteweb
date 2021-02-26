@@ -133,7 +133,7 @@ $dmts = strtotime($dernierMatch)*1000;
 //	 match_event_id = '{$lesMatchs[$Im]}' AND
 $strQuery = "
 
-SELECT TableEvenement0.*, abJoEq.nom_equipe,abJoEq.ficId, 								
+SELECT TableEvenement0.*, MAX(abJoEq.nom_equipe),MAX(abJoEq.ficId), 								
 								 TableJoueur.NomJoueur, TableJoueur.NumeroJoueur ,TableJoueur.ficIdPortrait 
 				FROM TableEvenement0 		
 					INNER JOIN TableMatch 	
