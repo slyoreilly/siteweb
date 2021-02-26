@@ -10,6 +10,9 @@ $tableUser = 'TableUser';
 
 //$jDomJSON = stripslashes($_POST['jDom']);
 //$jVisJSON = stripslashes($_POST['jVis']);
+$arbitreId =null;
+$ligueId = null;
+$username = null;
 if(isset($_POST['arbitreId'])){
 $arbitreId = $_POST['arbitreId'];
 }if(isset($_POST['ligueId'])){

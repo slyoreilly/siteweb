@@ -12,6 +12,9 @@ $tableUser = 'TableUser';
 
 //$jDomJSON = stripslashes($_POST['jDom']);
 //$jVisJSON = stripslashes($_POST['jVis']);
+$ligueId = null;
+$mavId = null;
+
 if(isset($_POST['mavId'])){
 $mavId = $_POST['mavId'];}
 if(isset($_POST['ligueId'])){
