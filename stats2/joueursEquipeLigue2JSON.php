@@ -54,7 +54,7 @@ $Iequipe = 0;
 		//////////////////////////////////
 		$maRep=array();
 		$maRep['equipe']=array();
-				$JSONstring .=  "{\"equipe\": [";
+				$JSONstring =  "{\"equipe\": [";
 				$c=0;
 				$Ieq=0;
 				$rangeeEquipe=null;
