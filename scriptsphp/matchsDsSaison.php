@@ -188,7 +188,7 @@ unset($rangeeEv);
  AND TableMatch.date<'{$dernierMatch}'
  ";*/
  
- $qJoueurs = "SELECT Ligue.*, TableMatch.*,TableEvenement0.*,TableJoueur.*
+ $qJoueurs = "SELECT TableJoueur.*
 								FROM TableMatch 
 								JOIN Ligue
 									ON TableMatch.ligueRef=Ligue.ID_Ligue
