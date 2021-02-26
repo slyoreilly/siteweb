@@ -35,7 +35,7 @@ if (!$conn) {
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
-
+$saisonId =null;
 
 /////////////////////////////////////////////////////////////
 // 
@@ -46,7 +46,7 @@ or die(mysqli_error($conn)." Select saisonId");
 
 while($rangeeSaison=mysqli_fetch_array($rfSaison))
 {
-	echo $rangeeSaison['saisonId'];
+	$saisonId = $rangeeSaison['saisonId'];
 	
 }
 	
