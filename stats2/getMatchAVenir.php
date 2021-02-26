@@ -54,6 +54,7 @@ while($r = mysqli_fetch_assoc($retour)) {
 	if(!is_numeric($mavId)||$r['mavId']==$mavId)
 	{
     $vecMatch[$IM] = $r;
+	$vecMatch[$IM]['cleValeur']=json_decode($r['cleValeur'],true);
 	$vecMatch[$IM]['alDom']=array();
 	$vecMatch[$IM]['alVis']=array();
 	$vecMatch[$IM]['gDom']=array();
