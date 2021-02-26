@@ -40,7 +40,7 @@ $retour = mysqli_query($conn, "SELECT TableMatch.*
 						/*LEFT JOIN TableSaison
 							ON (TableMatch.ligueRef=TableSaison.ligueRef)*/
 						 WHERE TableMatch.ligueRef='{$ligueId}'
-						 GROUP BY TableMatch.mavId")or die(mysqli_error($conn));	
+						 /*GROUP BY TableMatch.mavId*/")or die(mysqli_error($conn));	
 						 /* AND MatchAVenir.date > (NOW()-INTERVAL 30 DAY) AND TableSaison.dernierMatch>NOW()*/
 $strRetour.= mysqli_num_rows($retour);
 
