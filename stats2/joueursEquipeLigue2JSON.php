@@ -9,9 +9,11 @@ $tableJoueur = 'TableJoueur';
 $tableAbon = 'AbonnementLigue';
 $tableUser = 'TableUser';
 
+if(isset($_POST['ligueId'])){
 $ligueId = $_POST['ligueId'];
+}if(isset($_POST['equipeId'])){
 $equipeId = $_POST['equipeId'];
-
+}
 $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
 // Check connection
 if (!$conn) {
