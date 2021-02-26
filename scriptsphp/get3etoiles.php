@@ -88,7 +88,7 @@ unset($rangeeEv);
 mysqli_query($conn,"SET SQL_BIG_SELECTS=1"); 
   
 ////  Sélectionne tous les débuts de matchs dans une saison.
-$qGros = "SELECT TableEquipe.*, Ligue.*, TableMatch.*,TableEvenement0.* 
+$qGros = "SELECT TableMatch.* 
 								FROM TableMatch 
 								JOIN Ligue
 									ON TableMatch.ligueRef=Ligue.ID_Ligue
@@ -136,7 +136,7 @@ $cptM=0;
  */
 while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 	
-	$mesMatchs[$cptM]['nomMatch']=$rangeeEv['match_event_id'];
+	$mesMatchs[$cptM]['nomMatch']=$rangeeEv['matchIdRef'];
 	
 
 	$etoile1 = "";
