@@ -14,6 +14,11 @@ $tableEvent = 'TableEvenement0';
 $tableEquipe = 'TableEquipe';
 $tableSaison = 'TableSaison';
 
+$selection = null;
+$ligue = null;
+$equipe = null;
+$matchId = null;
+
 $selection = $_POST['selection'];
 $ligue = $_POST['ligue'];
 $equipe = $_GET['equipe'];

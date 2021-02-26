@@ -16,6 +16,11 @@ $tableEquipe = 'TableEquipe';
 $tableSaison = 'TableSaison';
 $tableMatch = 'TableMatch';
 
+$saisonId =null ;
+$ligueId = null;
+$equipeId = null;
+$matchId = null;
+
 $saisonId = $_POST['saisonId'];
 $ligueId = $_POST['ligueId'];
 $equipeId = $_POST['equipeId'];
