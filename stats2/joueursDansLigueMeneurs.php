@@ -133,7 +133,7 @@ $dmts = strtotime($dernierMatch)*1000;
 //	 match_event_id = '{$lesMatchs[$Im]}' AND
 $strQuery = "
 
-SELECT TableEvenement0.*, MAX(abJoEq.nom_equipe) as nom_equipe,MAX(abJoEq.ficId) as ficId, 								
+SELECT TableEvenement0.*, MAX(abJoEq.nom_equipe) as nom_eq, MAX(abJoEq.ficId) as fic_id, 								
 								 TableJoueur.NomJoueur, TableJoueur.NumeroJoueur ,TableJoueur.ficIdPortrait 
 				FROM TableEvenement0 		
 					INNER JOIN TableMatch 	
@@ -180,8 +180,8 @@ while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 	$JoueurSommeEvenement[$I0]['joueur_event_ref'] = $rangeeEv['joueur_event_ref'];
 	$JoueurSommeEvenement[$I0]['code'] = $rangeeEv['code'];
 	$JoueurSommeEvenement[$I0]['souscode'] = $rangeeEv['souscode'];
-	$JoueurSommeEvenement[$I0]['nom_equipe'] = $rangeeEv['nom_equipe'];
-	$JoueurSommeEvenement[$I0]['ficId'] = $rangeeEv['ficId'];
+	$JoueurSommeEvenement[$I0]['nom_equipe'] = $rangeeEv['nom_eq'];
+	$JoueurSommeEvenement[$I0]['ficId'] = $rangeeEv['fic_id'];
 	$JoueurSommeEvenement[$I0]['nom'] = $rangeeEv['NomJoueur'];
 	$JoueurSommeEvenement[$I0]['numero'] = $rangeeEv['NumeroJoueur'];
 	$JoueurSommeEvenement[$I0]['ficIdPortrait'] = $rangeeEv['ficIdPortrait'];
