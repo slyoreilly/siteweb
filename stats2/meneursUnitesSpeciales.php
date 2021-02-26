@@ -19,10 +19,17 @@ $ligue = null;
 $equipe = null;
 $matchId = null;
 
-$selection = $_POST['selection'];
-$ligue = $_POST['ligue'];
-$equipe = $_GET['equipe'];
-$matchId = $_GET['matchId'];
+if(isset($_POST['saisonId'])){
+	$saisonId = $_POST['saisonId'];
+	}
+	if(isset($_POST['ligueId'])){
+		$ligueId = $_POST['ligueId'];
+	}
+	if(isset($_POST['equipeId'])){
+			$equipeId = $_POST['equipeId'];
+	}if(isset($_POST['matchId'])){
+				$matchId = $_POST['matchId'];
+			}
 
 ////////////////////////////////////////////////////////////
 //

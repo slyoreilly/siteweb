@@ -21,11 +21,17 @@ $ligueId = null;
 $equipeId = null;
 $matchId = null;
 
+if(isset($_POST['saisonId'])){
 $saisonId = $_POST['saisonId'];
-$ligueId = $_POST['ligueId'];
-$equipeId = $_POST['equipeId'];
-$matchId = $_POST['matchId'];
-
+}
+if(isset($_POST['ligueId'])){
+	$ligueId = $_POST['ligueId'];
+}
+if(isset($_POST['equipeId'])){
+		$equipeId = $_POST['equipeId'];
+}if(isset($_POST['matchId'])){
+			$matchId = $_POST['matchId'];
+		}
 $stringOut=" ";
 
 

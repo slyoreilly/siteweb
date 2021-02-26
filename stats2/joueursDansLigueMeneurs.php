@@ -31,10 +31,12 @@ mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 mysqli_set_charset($conn, "utf8");
 
 
-
+if(isset($_POST['ligueId'])){
 $getLigue = $_POST["ligueId"];
+}
+if(isset($_POST['saisonId'])){
 $saisonId = $_POST["saisonId"];
-
+}
 	
 if($saisonId=="null"||$saisonId=="undefined"||$saisonId=="")// Sp�cifie par la saison
 	{
@@ -144,7 +146,7 @@ SELECT TableEvenement0.*, MAX(abJoEq.nom_equipe) as nom_eq, MAX(abJoEq.ficId) as
 						SELECT equipeId,joueurId, TableEquipe.nom_equipe, TableEquipe.ficId FROM abonJoueurEquipe
                         LEFT JOIN TableEquipe			
 							ON (abonJoueurEquipe.equipeId=TableEquipe.equipe_id)
-						WHERE		 as ficId
+						WHERE
 							debutAbon<='{$dateAbon}'		
 								AND finAbon>'{$dateAbon}') AS abJoEq	
 					ON (TableJoueur.joueur_id=abJoEq.joueurId)			
