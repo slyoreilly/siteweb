@@ -1094,7 +1094,7 @@ function faireBoite(a, id) {
 			//			alert(requete_ajax.responseText);
 			try{
 			boite = eval('(' + requete_ajax.responseText + ')');
-			eval(boite.corps);
+			//eval(boite.corps);
 			}
 			catch(err){}
 		}

@@ -104,7 +104,7 @@ $qGros = "SELECT TableMatch.*
 									";
 $resultEvent = mysqli_query($conn,$qGros) or die(mysqli_error($conn) . " dans " . $qGros);
 
-$qJoueurs = "SELECT Ligue.*, TableMatch.*,TableEvenement0.*,TableJoueur.*
+$qJoueurs = "SELECT TableJoueur.*
 								FROM TableMatch 
 								JOIN Ligue
 									ON TableMatch.ligueRef=Ligue.ID_Ligue

@@ -34,7 +34,6 @@ mysqli_query($conn, "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_G
 //						 GROUP BY MatchAVenir.mavId
 
 // Faudrait refaire en cadrant par rapport à la saison en cours plutôt qu'aux équipes abonnées.
-$strRetour.=$mavId;
 $retour = mysqli_query($conn, "SELECT TableMatch.*	
 						FROM TableMatch
 						/*LEFT JOIN TableSaison
@@ -42,7 +41,6 @@ $retour = mysqli_query($conn, "SELECT TableMatch.*
 						 WHERE TableMatch.ligueRef='{$ligueId}'
 						 /*GROUP BY TableMatch.mavId*/")or die(mysqli_error($conn));	
 						 /* AND MatchAVenir.date > (NOW()-INTERVAL 30 DAY) AND TableSaison.dernierMatch>NOW()*/
-$strRetour.= mysqli_num_rows($retour);
 
 $vecMatch = array();
 $IM=0;
