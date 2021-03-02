@@ -9,9 +9,13 @@ $tableJoueur = 'TableJoueur';
 $tableAbon = 'AbonnementLigue';
 $tableUser = 'TableUser';
 
+$ligueId = 0;
+if(isset($_POST['ligueId'])){
 $ligueId = $_POST['ligueId'];
-$vielledate =$_POST['vielledate'];
-
+}
+//if(isset($_POST['vielledate'])){
+//$vielledate =$_POST['vielledate'];
+//}
 
 $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
  
@@ -22,7 +26,7 @@ if (!$conn) {
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
-$qString="SELECT abonEquipeLigue.*,	TableMatch.* FROM TableMatch 
+$qString="SELECT /*abonEquipeLigue.*,	*/TableMatch.* FROM TableMatch 
 						JOIN abonEquipeLigue 
 							ON (abonEquipeLigue.ligueId=TableMatch.ligueRef)
 						WHERE TableMatch.ligueRef='{$ligueId}' 
