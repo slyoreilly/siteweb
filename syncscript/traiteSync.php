@@ -299,7 +299,7 @@ $nbLigueCons=0;
 				$nbLigueCons++;}
 				}
 			}
-		if($syncMav!=null)
+		if(count($syncMav)>0)
 			{	include 'dechargeMAV.php';
 				include 'dechargeMAV2.php';
 				$lesMAV[$ILigue]=$vecMAV;
