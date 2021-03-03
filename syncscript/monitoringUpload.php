@@ -29,11 +29,6 @@ $content = fread($fp, filesize($tmpName));
 //$contentEsc = mysqli_real_escape_string($content);
 fclose($fp);
 
-if(!get_magic_quotes_gpc())
-{
-    $fileName = addslashes($fileName);
-}
-
 
  $options = array('ftp' => array('overwrite' => true));
  $stream = stream_context_create($options);
