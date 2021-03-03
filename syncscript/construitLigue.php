@@ -148,7 +148,7 @@ while($rangeeUser=mysqli_fetch_array($resultUser))
 						$ligue['equipe'][$IEq]['equipeId']=0;
 						$ligue['equipe'][$IEq]['logo']="rien";
 						$ligue['equipe'][$IEq]['cleValeur']="";
-						$ligue['equipe'][$IEq]['couleur']=$rangeeEquipe['FFFFFF'];
+						$ligue['equipe'][$IEq]['couleur']='FFFFFF';
 						$ligue['equipe'][$IEq]['joueur']=array();
 				
 						$IJ=0;
