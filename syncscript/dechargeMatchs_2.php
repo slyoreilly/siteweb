@@ -812,7 +812,7 @@ foreach ($leMatch as $evenement) {
 				$rMatch = mysqli_fetch_row($testmatch);
 				if (($rMatch[0] != NULL) && (strlen($rMatch[0]) > 2)) {
 					$condMatch = $rMatch[0];
-					$jMerge = json_encode(array_merge((array) json_decode($condMatch), (array) json_decode($evenement['cv'])));
+					$jMerge = json_encode(array_merge((array) json_decode($condMatch),$evenement['cv']));
 				} else {
 					//							$jMerge = $leMatch['cleValeur'];
 					$jMerge = json_encode($evenement['cv']);
