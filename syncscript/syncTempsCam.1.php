@@ -123,7 +123,7 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 					$mVideo['type'] = 0;
 					$mVideo['chrono'] = $rangeeMatch['chrono'];
 					$mVideo['ligueId'] = $rangeeMatch['ligueRef'];
-					$mVideo['equipe'] = $rangeeMatch['equipe_event_id'];
+					$mVideo['equipe'] = $rangeeMatch['scoringEnd'];
 					array_push($matchPeriode[$mGameIndex]['videos'],$mVideo);
 					break;
 
@@ -143,7 +143,7 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 						$mVideo['type'] = 2;
 						$mVideo['chrono'] = $rangeeMatch['chrono'];
 						$mVideo['ligueId'] = $rangeeMatch['ligueRef'];
-						$mVideo['equipe'] = $rangeeMatch['equipe_event_id'];
+						$mVideo['equipe'] = $rangeeMatch['scoringEnd'];
 						array_push($matchPeriode[$mGameIndex]['videos'],$mVideo);
 						break;
 
