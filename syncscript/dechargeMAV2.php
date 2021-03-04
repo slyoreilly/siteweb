@@ -21,7 +21,7 @@ mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 //$jDom = json_decode($jDomJSON, true);
 //$jVis = json_decode($jVisJSON, true);
 // Retiré de la requête suivante: AND dernierMAJ>'{$vdhr}'
-$qString="SELECT abonEquipeLigue.*, TableMatch.*	FROM TableMatch 
+$qString="SELECT TableMatch.*	FROM TableMatch 
 						JOIN abonEquipeLigue 
 							ON (abonEquipeLigue.ligueId=TableMatch.ligueRef)
 						WHERE TableMatch.ligueRef='{$ligueId}' 
