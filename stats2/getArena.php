@@ -55,8 +55,9 @@ if (($username !== 0) && ($username != null)) {
 
 	$retour = mysqli_query($conn, "SELECT /*AbonnementLigue.type,
 	AbonnementLigue.ligueId,
-	 	abonLigueArena.arenaId,
+	 	
 		 abonLigueArena.gabaritId,*/
+		 TableArena.arenaId,
 		 TableArena.nomArena,
 		 TableArena.nomGlace/*,
 		 Gabarits.nomGabarit	*/	 
