@@ -30,7 +30,7 @@ $qString="SELECT TableMatch.*	FROM TableMatch
 							AND TableMatch.date>(NOW()-INTERVAL 1 DAY)
 							AND TableMatch.date<(NOW()+INTERVAL 7 DAY)
 							AND (TableMatch.eq_dom=abonEquipeLigue.equipeId OR TableMatch.eq_vis=abonEquipeLigue.equipeId)
-						GROUP BY mavId";
+						GROUP BY match_id";
 						
 unset($retour);
 $retour = mysqli_query($conn,$qString) or die(mysqli_error($conn));	
