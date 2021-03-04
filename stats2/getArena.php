@@ -53,13 +53,13 @@ $strRetour = $mavId;
 if (($username !== 0) && ($username != null)) {
 
 
-	$retour = mysqli_query($conn, "SELECT AbonnementLigue.type,
+	$retour = mysqli_query($conn, "SELECT /*AbonnementLigue.type,
 	AbonnementLigue.ligueId,
 	 	abonLigueArena.arenaId,
-		 abonLigueArena.gabaritId,
+		 abonLigueArena.gabaritId,*/
 		 TableArena.nomArena,
-		 TableArena.nomGlace,
-		 Gabarits.nomGabarit		 
+		 TableArena.nomGlace/*,
+		 Gabarits.nomGabarit	*/	 
 						FROM TableUser
 						LEFT JOIN AbonnementLigue
 							ON (TableUser.noCompte=AbonnementLigue.userid)
@@ -80,14 +80,14 @@ if (($username !== 0) && ($username != null)) {
 	$vecMatch = array();
 	$IA=0;
 	while ($r = mysqli_fetch_assoc($retour)) {
-		$vecMatch[$IA]['type'] = $r['type'];
-		$vecMatch[$IA]['ligueId'] = $r['ligueId'];
+		//$vecMatch[$IA]['type'] = $r['type'];
+		//$vecMatch[$IA]['ligueId'] = $r['ligueId'];
 		$vecMatch[$IA]['arenaId'] = $r['arenaId'];
-		$vecMatch[$IA]['gabaritId'] = $r['gabaritId'];
-		$vecMatch[$IA]['nomGabarit'] = $r['nomGabarit'];
+		//$vecMatch[$IA]['gabaritId'] = $r['gabaritId'];
+		//$vecMatch[$IA]['nomGabarit'] = $r['nomGabarit'];
 		$vecMatch[$IA]['nomArena'] = $r['nomArena'];
 		$vecMatch[$IA]['nomGlace'] = $r['nomGlace'];
-		if($vecMatch[$IA]['gabaritId']!=null){
+		/*if($vecMatch[$IA]['gabaritId']!=null){
 			$qGab = "SELECT  positionGabarits.posX, positionGabarits.posY, positionGabarits.posGabId,  positionGabarits.role
 			FROM positionGabarits
 				WHERE gabaritId='{$vecMatch[$IA]['gabaritId']}'	";
@@ -102,7 +102,7 @@ if (($username !== 0) && ($username != null)) {
 				$IPG++;
 			}
 
-		}
+		}*/
 		$IA++;
 	}
 	$vecMatch2 = utf8ize($vecMatch);
