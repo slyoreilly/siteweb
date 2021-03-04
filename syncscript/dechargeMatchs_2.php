@@ -252,7 +252,7 @@ foreach ($leMatch as $evenement) {
 
 			$database = 'syncsta1_910';
 
-			$connSB = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+			/*$connSB = mysqli_connect($db_host, $db_user, $db_pwd, $database);
 			// Check connection/
 			if ($connSB) {
 				   //die("Connection failed: " . mysqli_connect_error());
@@ -278,7 +278,7 @@ foreach ($leMatch as $evenement) {
 				break;
 
 				mysqli_close($connSB);
-			}
+			}*/
 		}
 				
 
