@@ -254,9 +254,9 @@ foreach ($leMatch as $evenement) {
 
 			$connSB = mysqli_connect($db_host, $db_user, $db_pwd, $database);
 			// Check connection/
-			if (!$connSB) {
-				   die("Connection failed: " . mysqli_connect_error());
-			}
+			if ($connSB) {
+				   //die("Connection failed: " . mysqli_connect_error());
+			
 			
 //			$maDate=date('Y-m-d H:i:s', $evenement['chrono']/1000);
 
@@ -278,6 +278,7 @@ foreach ($leMatch as $evenement) {
 				break;
 
 				mysqli_close($connSB);
+			}
 		}
 				
 
