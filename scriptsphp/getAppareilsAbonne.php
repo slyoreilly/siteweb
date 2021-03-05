@@ -6,7 +6,9 @@ require '../scriptsphp/defenvvar.php';
 
 $arenaId = $_POST['arenaId'];
 $usager = $_POST['userId'];
-$mavId = $_POST['mavId'];
+$mavId=null;
+if(isset($_POST['mavId'])){
+$mavId = $_POST['mavId'];}
 $matchId=null;
 if(isset($_POST['matchId'])){
 $matchId = $_POST['matchId'];}
@@ -21,7 +23,7 @@ if (!$conn) {
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
-if ($mavId != "null" && $mavId != "undefined") {
+if ($mavId != "null" && $mavId != null && $mavId != "undefined") {
 
 	$rTM = mysqli_query($conn, "SELECT match_id 
 						FROM TableMatch 
