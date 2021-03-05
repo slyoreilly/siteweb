@@ -26,8 +26,8 @@ if(is_numeric($matchId)){
 		$refParString=false;
 	}
 }
-
-
+$match =null;
+$ligueId =null;
 if(isset($_POST['match'])){
 $match = $_POST['match'];
 }
