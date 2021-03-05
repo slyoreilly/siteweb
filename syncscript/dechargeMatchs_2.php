@@ -801,7 +801,7 @@ foreach ($leMatch as $evenement) {
 				/*?><?php*/
 				$qMatch = "SELECT cleValeur, match_id FROM TableMatch WHERE matchIdRef = '{$evenement['match_id']}'";
 				$testmatch = mysqli_query($conn,$qMatch) or die(mysqli_error($conn) . " Select " . $evenement['db_id']);
-				//echo "2";
+				//echo "2";z°
 				if (mysqli_num_rows($testmatch) == 0) {
 					//echo "3";
 					//			include($_SERVER['DOCUMENT_ROOT'] . '/scriptsphp/actualiseMatch.php');
