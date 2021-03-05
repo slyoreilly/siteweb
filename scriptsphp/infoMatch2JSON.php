@@ -28,9 +28,13 @@ if(is_numeric($matchId)){
 }
 
 
+if(isset($_POST['match'])){
 $match = $_POST['match'];
+}
+if(isset($_POST['ligueId'])){
 $ligueId = $_POST['ligueId'];
 
+}
 
 ////////////////////////////////////////////////////////////
 //
