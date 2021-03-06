@@ -59,16 +59,6 @@ $monJoueur=mysqli_fetch_row($rJoueur);
 
 
 
-/////
-
-	$rEquipeVis = mysqli_query($conn,"SELECT * FROM {$tableEquipe} where equipe_id='{$eqVis}'")
-or die(mysqli_error($conn)); 
-	$equipeVis=mysqli_fetch_row($rEquipeVis);
-
-	$ligueId = $equipeDom[3];
-	$rLigue = mysqli_query($conn,"SELECT * FROM Ligue WHERE ID_Ligue= '{$ligueId}'")
-or die(mysqli_error($conn));  
-$ligue = mysqli_fetch_row($rLigue);
 
 	//////////////////////////////////////////////////
 	//
