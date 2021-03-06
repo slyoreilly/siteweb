@@ -259,7 +259,7 @@ while ($row = mysqli_fetch_assoc($resultJoueurs)) {
 									
 $resultVent = mysqli_query($conn, $qVent) or die(mysqli_error($conn) . " dans " . $qVent);
 //echo "/qV".$qVent;
-$lesMatchs = Array();
+$lesMatchs = array();
 $cptM =0;
 while ($row = mysqli_fetch_assoc($resultVent)) {
 	//$cptM = count($lesMatchs);
@@ -389,6 +389,8 @@ $mesMatchs = array();
 //
 //  	Début du gros While, ou on boucle sur les équipes
 //
+$gGagne = "";
+$gPerd = "";
 
 while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 
@@ -466,8 +468,7 @@ while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 		$gardVis = $gV['NomJoueur'];}
 	}
 
-	$gGagne = "";
-	$gPerd = "";
+
 
 	if ($rangeeEv['score_dom'] > $rangeeEv['score_vis']) {$gGagne = $gardDom;
 		$gPerd = $gardVis;
