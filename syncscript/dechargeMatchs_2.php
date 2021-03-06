@@ -217,7 +217,7 @@ foreach ($leMatch as $evenement) {
 		
 		$trouvePun=0;
 
-		$retBut = $evenement['chrono'];
+		$retPun = $evenement['chrono'];
 		// retourner le but, sans correction de chrono.
 
 		if (isset($heure)) {$evenement['chrono'] = $evenement['chrono'] + $heureServeur - $heure;
@@ -230,9 +230,11 @@ foreach ($leMatch as $evenement) {
 			//	break;		 NO BREAK!!!!!!!
 			case 15 :
 			
-				$qSelPun = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND code=4 AND noSequence={$evenement['noseq']}";
+				$qSelPun = "SELECT event_id FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND code=4 AND noSequence={$evenement['noseq']}";
 				$resPun = mysqli_query($conn,$qSelPun) or die(mysqli_error($conn) . $qSelPun);
 				$trouvePun = mysqli_num_rows($resPun);
+				mysqli_data_seek($resPun,0);
+				$punId = mysqli_fetch_row($resPun);
 
 			//	break;		 NO BREAK!!!!!!!
 			case 12 :
@@ -241,8 +243,15 @@ foreach ($leMatch as $evenement) {
 
 				mysqli_query($conn,$qInsM) or die(mysqli_error($conn) . $qInsM);
 				$webPun=array("joueurId"=>$evenement['joueur'],"webId"=>mysqli_insert_id($conn));
-
+				$retObj = array("type"=>"punition","chronoInit"=>$retPun,"chronoFin"=>$evenement['chrono'],"webPun"=>$webPun);
+				array_push($syncOKdetail, $retObj);
 				
+				} else{
+					array_push($syncOK, $retPun);
+					$webPun=array("joueurId"=>$evenement['joueur'],"webId"=>$punId[0]);
+					$retObj = array("type"=>"punition","chronoInit"=>$retPun,"chronoFin"=>$evenement['chrono'],"webPun"=>$webPun);
+					array_push($syncOKdetail, $retObj);
+
 				}
 				
 				/////   Pour DB Syncboard
