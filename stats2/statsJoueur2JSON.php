@@ -34,18 +34,23 @@ mysqli_set_charset($conn, "utf8");
 ////////////////////////////////////////
 ///	Sélectionne les ligues du joueur.
 
-$rJoueur = mysqli_query($conn, "SELECT abonJoueurLigue.*,Ligue.* FROM abonJoueurLigue 
-								JOIN Ligue
-									ON (Ligue.ID_Ligue=abonJoueurLigue.ligueId)
-								WHERE joueurId = '$joueurId'
-								GROUP BY ID_Ligue")or die(mysqli_error($conn));
+$rJoueur = mysqli_query($conn, "SELECT L.ID_Ligue, L.Nom_Ligue 
+						FROM Ligue as L 
+						JOIN 
+							( SELECT aJ.ligueId 
+								FROM abonJoueurLigue as aJ 
+								WHERE joueurId='$joueurId' ) as abons
+						 on abons.ligueId = L.ID_Ligue 
+						 WHERE true group by ID_Ligue")or die(mysqli_error($conn));
+
+
 $IL=0;
 $listeLigue=Array();
 $maLigue=null;
 while($maLigue=mysqli_fetch_array($rJoueur))
 {
 	$listeLigue[$IL]=Array();
-	$listeLigue[$IL]['ligueId']=$maLigue['ligueId'];
+	$listeLigue[$IL]['ligueId']=$maLigue['ID_Ligue'];
 	$listeLigue[$IL]['nom']=$maLigue['Nom_Ligue'];
 	$listeLigue[$IL]['saisons']=Array();
 	$IL++;
