@@ -17,8 +17,6 @@ $tableMatch = 'TableMatch';
 
 $saisonId = $_POST['saisonId'];
 $ligueId = $_POST['ligueId'];
-$equipeId = $_POST['equipeId'];
-$matchId = $_POST['matchId'];
 
 $stringOut=" ";
 
@@ -78,12 +76,12 @@ if($saisonId=="null")// Sp�cifie par la saison
 //if(!strcmp($saisonId,"null")&&strcmp($ligueId,"null"))// Sp�cifie par la ligue
 //{
 //	$saisonId =2;
-	$prSaison = mysqli_query($conn,"SELECT premierMatch FROM TableSaison where saisonId ='{$saisonId}'")
+	$prSaison = mysqli_query($conn,"SELECT premierMatch,dernierMatch  FROM TableSaison where saisonId ='{$saisonId}'")
 or die(mysqli_error($conn)."SELECT premierMatch ");  
-$premierMatch=mysqli_data_seek($prSaison, 0);
-	$drSaison = mysqli_query($conn,"SELECT dernierMatch FROM TableSaison where saisonId ='{$saisonId}'")
-or die(mysqli_error($conn)."SELECT premierMatch ");  
-$dernierMatch=mysqli_data_seek($drSaison, 0);
+mysqli_data_seek($prSaison, 0);
+$rSaison=mysqli_fetch_row($prSaison);
+$premierMatch=$rSaison[0];
+$dernierMatch=$rSaison[1];
 //}
 
 $statsUniSpec = array();
@@ -104,14 +102,7 @@ $qSelEq = "SELECT TableSaison.*, abonEquipeLigue.*
 							AND abonEquipeLigue.finAbon>='{$premierMatch}'  
 							AND abonEquipeLigue.debutAbon<='{$dernierMatch}' 
 							GROUP BY abonEquipeLigue.equipeId";
-$qOld ="SELECT TableMatch.*, TableEvenement0.equipe_event_id 
-						FROM TableEvenement0  
-							JOIN {$tableMatch}
-								ON (TableMatch.matchIdRef=TableEvenement0.match_event_id) 
-						WHERE TableMatch.ligueRef ='{$ligueId}' 
-							AND TableMatch.date>='{$premierMatch}'  
-							AND TableMatch.date<='{$dernierMatch}' 
-						GROUP BY TableEvenement0.equipe_event_id";
+
 
 $rEquipe = mysqli_query($conn,$qSelEq)
 or die(mysqli_error($conn)." Select TableMatch no1"); 
