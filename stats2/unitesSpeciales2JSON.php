@@ -94,11 +94,9 @@ $Im=0;
 //or die(mysql_error());  
 //$rMatchs = mysql_query("SELECT * FROM {$tableMatch} where ligueRef ='{$ligueId}' and date>='{$premierMatch}'  and date<='{$dernierMatch}'")
 //or die(mysql_error()); 
-$qSelEq = "SELECT TableSaison.*, abonEquipeLigue.*
+$qSelEq = "SELECT abonEquipeLigue.equipeId
 						FROM abonEquipeLigue  
-							JOIN TableSaison
-								ON (TableSaison.ligueRef=abonEquipeLigue.ligueId) 
-						WHERE TableSaison.ligueRef ='{$ligueId}' 
+						WHERE abonEquipeLigue.ligueId ='{$ligueId}' 
 							AND abonEquipeLigue.finAbon>='{$premierMatch}'  
 							AND abonEquipeLigue.debutAbon<='{$dernierMatch}' 
 							GROUP BY abonEquipeLigue.equipeId";
