@@ -175,6 +175,8 @@ $Ine = 0;
 
 unset($resultEvent);
 unset($rangeeEv);
+$lesMatchs = array();
+
 ////  Sélectionne tous les débuts de matchs dans une saison.
 /*$qGros = "SELECT TableEquipe.*, Ligue.*, TableMatch.*,TableEvenement0.*
  FROM TableMatch
@@ -259,12 +261,12 @@ while ($row = mysqli_fetch_assoc($resultJoueurs)) {
 									
 $resultVent = mysqli_query($conn, $qVent) or die(mysqli_error($conn) . " dans " . $qVent);
 //echo "/qV".$qVent;
-$lesMatchs = array();
+
 $cptM =0;
 while ($row = mysqli_fetch_assoc($resultVent)) {
 	//$cptM = count($lesMatchs);
 	if ($cptM == 0) {
-		$lesMatchs[0] = Array();
+		$lesMatchs[0] = array();
 		$lesMatchs[0]['matchID'] = $row['match_event_id'];
 		$lesMatchs[0]['ventDom'] = Array();
 		$lesMatchs[0]['ventVis'] = Array();
