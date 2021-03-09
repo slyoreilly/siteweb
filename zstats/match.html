@@ -27,7 +27,7 @@
                            
         <script type="text/javascript" charset="utf-8">
          if(getValue('m')!='1'){
-             document.write('<link rel="alternate" media="only screen and (max-width: 800px)" href="http://syncstats.com/mobile/m_match.html">');
+             document.write('<link rel="alternate" media="only screen and (max-width: 800px)" href="../mobile/m_match.html">');
         }
              var mUrl="/style/ligues/"+getValue("ligueId")+"/perso.css";
              document.write('<link rel="stylesheet" href='+mUrl+' type="text/css"</link>');
@@ -42,7 +42,7 @@
 
         <script type="text/javascript" charset="utf-8">
 			if (screen.width <= 800 && getValue('m')!=1) {
-				window.location = "http://www.syncstats.com/mobile/m_match.html?match=" + getValue('match');
+				window.location = "../mobile/m_match.html?match=" + getValue('match');
 			}
 		/*	if(getValue('m')==1){
 				var isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
