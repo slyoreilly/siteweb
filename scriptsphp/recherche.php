@@ -11,7 +11,9 @@ require '../scriptsphp/defenvvar.php';
 
 
 $search = $_POST['searchString'];
-$type = $_POST['typeRecherche'];
+$type =null;
+if(isset($_POST['typeRecherche'])){
+$type = $_POST['typeRecherche'];}
 
 ////////////////////////////////////////////////////////////
 //
