@@ -62,14 +62,7 @@ function getAlignement($connGA,$eqId,$defTimeZone)
 	//$alignement = "[";
 	while ($rangeeJoueur = mysqli_fetch_array($resultJoueur)) {
 array_push($alignement,$rangeeJoueur['joueur_id']);
-/*		$jDom .= $rangeeJoueur['joueur_id'] . ",";
-	}//Fin du scan des joueurs
-
-	if (!strcmp(",", substr($alignement, -1)))// Pour �viter les vides;
-	{
-		$jDom = substr($alignement, 0, -1);
-	}
-	$alignement .= "]";*/
+ 
 }
 	return json_encode($alignement);
 
@@ -159,61 +152,7 @@ if ($mUpdate) {
 	$retour = $mavId;
 
 } else {
-	//echo "D ";
-	/*
-	mysqli_query($conn,"SET time_zone='{$defTimeZone}'");
-	$resultJoueur = mysqli_query($conn, "SELECT joueur_id
-													FROM TableJoueur
-													JOIN abonJoueurEquipe
-														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
-														WHERE equipeId='{$eqDom}'
-														AND debutAbon<=DATE(NOW())
-														AND finAbon>DATE(NOW())") or die(mysqli_error($conn));
-	mysqli_query($conn,"SET time_zone='+0:00'");
 
-
-	$jDom = "[";
-	while ($rangeeJoueur = mysqli_fetch_array($resultJoueur)) {
-
-		$jDom .= $rangeeJoueur['joueur_id'] . ",";
-	}//Fin du scan des joueurs
-
-	if (!strcmp(",", substr($jDom, -1)))// Pour �viter les vides;
-	{
-		$jDom = substr($jDom, 0, -1);
-	}
-	$jDom .= "]";
-	//fin des joueurs d'une �quipe
-//echo "E ";
-	*/
-
-
-
-/*
-
-mysqli_query($conn,"SET time_zone='{$defTimeZone}'");
-$rJVis = mysqli_query($conn, "SELECT joueur_id
-													FROM TableJoueur
-													JOIN abonJoueurEquipe
-														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
-														WHERE equipeId='{$eqVis}'
-														AND debutAbon<=DATE(NOW())
-														AND finAbon>DATE(NOW())") or die(mysqli_error($conn));
-mysqli_query($conn,"SET time_zone='+0:00'");
-$jVis = "[";
-	while ($rangeeJVis = mysqli_fetch_array($rJVis)) {
-
-		$jVis .= $rangeeJVis['joueur_id'] . ",";
-	}//Fin du scan des joueurs
-//echo "F ";
-	
-	if (!strcmp(",", substr($jVis, -1)))// Pour �viter les vides;
-	{
-		$jVis = substr($jVis, 0, -1);
-	}
-	$jVis .= "]";
-
-*/
 
 
 $alDom= getAlignement($conn, $eqDom, $defTimeZone);
