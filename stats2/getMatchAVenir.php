@@ -53,7 +53,7 @@ mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 function trouveJoueur($joueurs, $joueurId, $requestedTeam){
 	foreach($joueurs as $joueur){
-		if($joueur['joueur_id']==$joueurId){
+		if($joueur['joueurId']==$joueurId){
 			if($joueur['eqId']==$requestedTeam){
 				$joueur['presence']='present';
 			}else{
@@ -203,7 +203,7 @@ while ($r = mysqli_fetch_assoc($retour)) {
 
 			$regDom = trouveEquipe($joueursLigue, $vecMatch[$IM]['eq_dom']);
 			foreach($regDom as $joueurReg){
-				if(!trouveJoueur($vecMatch[$IM]['alDom'],$joueurReg['joueur_id'],$vecMatch[$IM]['eq_dom'])){
+				if(!trouveJoueur($vecMatch[$IM]['alDom'],$joueurReg['joueurId'],$vecMatch[$IM]['eq_dom'])){
 					$joueurReg['presence']='absent';
 					array_push($vecMatch[$IM]['alDom'],$joueurReg );
 				}
@@ -211,7 +211,7 @@ while ($r = mysqli_fetch_assoc($retour)) {
 
 			$regVis = trouveEquipe($joueursLigue, $vecMatch[$IM]['eq_vis']);
 			foreach($regDom as $joueurReg){
-				if(!trouveJoueur($vecMatch[$IM]['alVis'],$joueurReg['joueur_id'],$vecMatch[$IM]['eq_vis'])){
+				if(!trouveJoueur($vecMatch[$IM]['alVis'],$joueurReg['joueurId'],$vecMatch[$IM]['eq_vis'])){
 					$joueurReg['presence']='absent';
 					array_push($vecMatch[$IM]['alVis'],$joueurReg );
 				}
