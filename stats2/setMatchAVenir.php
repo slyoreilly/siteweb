@@ -10,8 +10,9 @@ $tableUser = 'TableUser';
 
 //$jDomJSON = stripslashes($_POST['jDom']);
 //$jVisJSON = stripslashes($_POST['jVis']);
-$jDom = $_POST['jDom'];
-$jVis = $_POST['jVis'];
+
+$jDom =  isset($_POST['jDom'])? $_POST['jDom']:null;
+$jVis =  isset($_POST['jVis'])? $_POST['jVis']:null;
 $gDom = $_POST['gDom'];
 $gVis = $_POST['gVis'];
 $eqDom = $_POST['eqDom'];
