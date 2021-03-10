@@ -90,7 +90,7 @@ $joueursLigue = array();
 $IJ=0;
 $result = mysqli_query($conn, "
 
-SELECT  DISTINCT J.* , (0) as eqId
+SELECT  DISTINCT J.joueur_id as as joueurId, NomJoueur as nomJoueur, NumeroJoueur as noJoueur, position , (0) as eqId
 						FROM TableMatch as M
 						JOIN abonJoueurLigue as aJL
 							ON (M.ligueRef=aJL.ligueId AND M.date BETWEEN aJL.debutAbon AND aJL.finAbon)
@@ -98,7 +98,7 @@ SELECT  DISTINCT J.* , (0) as eqId
                             on(aJL.joueurId = J.joueur_id)
                              WHERE M.mavId='$mavId'
 UNION ALL
-              SELECT    DISTINCT J.*, aEL.equipeId as eqId
+              SELECT    DISTINCT J.joueur_id as as joueurId, NomJoueur as nomJoueur, NumeroJoueur as noJoueur, position , aEL.equipeId as eqId
 						FROM TableMatch as M
                         JOIN abonEquipeLigue as aEL
 							ON (M.ligueRef=aEL.ligueId AND M.date BETWEEN aEL.debutAbon AND aEL.finAbon)
@@ -171,7 +171,7 @@ while ($r = mysqli_fetch_assoc($retour)) {
 			}
 		}*/
 
-		$qGDom = "SELECT joueur_id,NomJoueur,NumeroJoueur,position		
+		$qGDom = "SELECT joueur_id ,NomJoueur,NumeroJoueur,position		
 						FROM TableJoueur
 						 WHERE joueur_id='{$r['gardienDom']}'";
 		$rGDom = mysqli_query($conn, $qGDom) or die(mysqli_error($conn));
