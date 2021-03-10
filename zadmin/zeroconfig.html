@@ -407,6 +407,13 @@
 			window.jsonEqVis.equipeId = mavEnCours.eq_vis;
 			//				creerListeMatchs(window.vecMAV, mavId);
 
+						///////
+			//
+			//   On charge les mavEnCours dans jsonEqDom(Vis) en allant chercher info dans CJSON
+
+			window.jsonEqDom.joueur = new Array();
+			window.jsonEqVis.joueur = new Array();
+
 			construitEquipeDAlignement(mavId);
 
 			console.log("EQEQEQ: " + JSON.stringify(window.jsonEqDom));
@@ -1484,12 +1491,7 @@
 		}
 		function construitEquipeDAlignement() {
 
-			///////
-			//
-			//   On charge les mavEnCours dans jsonEqDom(Vis) en allant chercher info dans CJSON
 
-			window.jsonEqDom.joueur = new Array();
-			window.jsonEqVis.joueur = new Array();
 
 			var iDom = 0;
 			var iVis = 0;
