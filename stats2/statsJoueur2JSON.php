@@ -40,7 +40,7 @@ mysqli_set_charset($conn, "utf8");
 function getLigueIndex($ligues,$ligueId){
 	$i=0;
 foreach($ligues as $uneligue){
-	 if($uneligue['ID_Ligue']==$ligueId){
+	 if($uneligue['ligueId']==$ligueId){
 		 return $i;
 	 }
 	 $i++;
@@ -62,7 +62,7 @@ foreach($saisons as $unesaison){
 function getEquipeIndex($equipes,$equipeId){
 	$i=0;
 foreach($equipes as $uneequipe){
-	 if($uneequipe['equipe_id']==$equipeId){
+	 if($uneequipe['equipeId']==$equipeId){
 		 return $i;
 	 }
 	 $i++;
