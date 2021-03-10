@@ -90,7 +90,7 @@ $joueursLigue = array();
 $IJ=0;
 $result = mysqli_query($conn, "
 
-SELECT  DISTINCT J.joueur_id as as joueurId, NomJoueur as nomJoueur, NumeroJoueur as noJoueur, position , (0) as eqId
+SELECT  DISTINCT J.joueur_id as joueurId, J.NomJoueur as nomJoueur, J.NumeroJoueur as noJoueur, J.position , (0) as eqId
 						FROM TableMatch as M
 						JOIN abonJoueurLigue as aJL
 							ON (M.ligueRef=aJL.ligueId AND M.date BETWEEN aJL.debutAbon AND aJL.finAbon)
@@ -98,7 +98,7 @@ SELECT  DISTINCT J.joueur_id as as joueurId, NomJoueur as nomJoueur, NumeroJoueu
                             on(aJL.joueurId = J.joueur_id)
                              WHERE M.mavId='$mavId'
 UNION ALL
-              SELECT    DISTINCT J.joueur_id as as joueurId, NomJoueur as nomJoueur, NumeroJoueur as noJoueur, position , aEL.equipeId as eqId
+              SELECT    DISTINCT J.joueur_id as joueurId, J.NomJoueur as nomJoueur, J.NumeroJoueur as noJoueur, J.position , aEL.equipeId as eqId
 						FROM TableMatch as M
                         JOIN abonEquipeLigue as aEL
 							ON (M.ligueRef=aEL.ligueId AND M.date BETWEEN aEL.debutAbon AND aEL.finAbon)
