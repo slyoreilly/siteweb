@@ -411,10 +411,9 @@
 			//
 			//   On charge les mavEnCours dans jsonEqDom(Vis) en allant chercher info dans CJSON
 
-			window.jsonEqDom.joueur = new Array();
-			window.jsonEqVis.joueur = new Array();
-
-			construitEquipeDAlignement(window.jsonEqDom.joueur,window.jsonEqDom.joueur);
+			window.jsonEqDom= mavEnCours.alDom;
+			window.jsonEqVis= mavEnCours.alVis;
+//			construitEquipeDAlignement(window.jsonEqDom.joueur,window.jsonEqDom.joueur);
 
 			console.log("EQEQEQ: " + JSON.stringify(window.jsonEqDom));
 			mEqDom = window.jsonEqDom;
@@ -1491,7 +1490,7 @@
 		}
 		function construitEquipeDAlignement(joueursDom, joueursVis) {
 
-
+/*
 
 			var iDom = 0;
 			var iVis = 0;
@@ -1508,9 +1507,11 @@
 					//iVis = i;
 					eqVisCJSON=window.cJSON.equipe[i];
 				}
-			}
+			}*/
+			joueursDom= mavEnCours.alDom;
+			joueursVis= mavEnCours.alVis;
 
-
+/*
 			//		alert("Equipes assignées!");
 			var presence;
 			//var vM = JSON.parse(JSON.stringify(window.vecMAV));
@@ -1616,6 +1617,8 @@
 				}
 				n++;
 			}
+*/
+
 
 			//}
 		}
