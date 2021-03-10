@@ -122,7 +122,7 @@ $Ligues = array();
 while($row=mysqli_fetch_array($result))
 {
 	$indLigue =getLigueIndex($Ligues,$row['ID_Ligue']);
-	if($indLigue=-1){
+	if($indLigue==-1){
 		$mLigue=array();
 		$mLigue['nom']=$row['Nom_Ligue'];
 		$mLigue['ligueId']=$row['ID_Ligue'];
@@ -131,7 +131,7 @@ while($row=mysqli_fetch_array($result))
 		$indLigue=count($Ligues)-1;
 	}
 	$indSaison =getSaisonIndex($Ligues[$indLigue]['saisons'],$row['saisonId']);
-	if($indSaison=-1){
+	if($indSaison==-1){
 		$mSaison=array();
 		$mSaison['saisonId']=$row['saisonId'];
 		$mSaison['pm']=$row['premierMatch'];
@@ -141,7 +141,7 @@ while($row=mysqli_fetch_array($result))
 		$indSaison=count($Ligues[$indLigue]['saisons'])-1;
 	}
 	$indEquipe =getEquipeIndex($Ligues[$indLigue]['saisons'][$indSaison]['equipes'],$row['equipe_id']);
-	if($indEquipe=-1){
+	if($indEquipe==-1){
 		$mEquipe=array();
 		$mEquipe['equipeId']=$row['equipe_id'];
 		$mEquipe['nom']=$row['nom_equipe'];
