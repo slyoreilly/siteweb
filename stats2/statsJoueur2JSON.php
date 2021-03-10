@@ -40,7 +40,7 @@ mysqli_set_charset($conn, "utf8");
 function getLigueIndex($ligues,$ligueId){
 	$i=0;
 foreach($ligues as $uneligue){
-	 if($uneline['ID_Ligue']==$ligueId){
+	 if($uneligne['ID_Ligue']==$ligueId){
 		 return $i;
 	 }
 	 $i++;
@@ -72,7 +72,7 @@ foreach($equipes as $uneequipe){
 }
 
 $result = mysqli_query($conn, "
-SELECT Ligue.ID_Ligue, Ligue.Nom_Ligue, saisonId,premierMatch,dernierMatch nom, SUM(e.PJ) as PJ, TableEquipe.nom_equipe, TableEquipe.equipe_id, SUM(b.B) as Buts,  SUM(Pun.Pun) as Pun,  SUM(P.P) as Passes FROM TableSaison as s1
+SELECT Ligue.ID_Ligue, Ligue.Nom_Ligue, saisonId,premierMatch,dernierMatch, nom, SUM(e.PJ) as PJ, TableEquipe.nom_equipe, TableEquipe.equipe_id, ISNULL(SUM(b.B),0) as Buts,  ISNULL(SUM(Pun.Pun),0) as Pun,  ISNULL(SUM(P.P),0) as Passes FROM TableSaison as s1
 JOIN Ligue 
  on Ligue.ID_Ligue=s1.ligueRef
  JOIN abonJoueurLigue 
