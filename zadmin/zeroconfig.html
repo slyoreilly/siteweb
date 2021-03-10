@@ -408,6 +408,7 @@
 			//				creerListeMatchs(window.vecMAV, mavId);
 
 			construitEquipeDAlignement(mavId);
+
 			console.log("EQEQEQ: " + JSON.stringify(window.jsonEqDom));
 			mEqDom = window.jsonEqDom;
 			mEqVis = window.jsonEqVis;
@@ -1483,19 +1484,27 @@
 		}
 		function construitEquipeDAlignement() {
 
+			///////
+			//
+			//   On charge les mavEnCours dans jsonEqDom(Vis) en allant chercher info dans CJSON
+
 			window.jsonEqDom.joueur = new Array();
 			window.jsonEqVis.joueur = new Array();
 
 			var iDom = 0;
 			var iVis = 0;
+			let eqDomCJSON =null;
+			let eqVisCJSON =null;
 			for (i = 0; i < window.cJSON.equipe.length; i++) {
 				if (mavEnCours.eq_dom == window.cJSON.equipe[i].equipeId) {
 					//							window.jsonEqDom = window.cJSON.equipe[i];
-					iDom = i;
+					//iDom = i;
+					eqDomCJSON=window.cJSON.equipe[i];
 				}
 				if (mavEnCours.eq_vis == window.cJSON.equipe[i].equipeId) {
 					//							window.jsonEqVis = window.cJSON.equipe[i];
-					iVis = i;
+					//iVis = i;
+					eqVisCJSON=window.cJSON.equipe[i];
 				}
 			}
 
@@ -1506,31 +1515,34 @@
 			//			console.log(JSON.stringify(window.jsonEqDom));		
 			var m = 0;
 			var dansAlign = false;
-			while (m < window.cJSON.equipe[iDom].joueur.length) {
+
+			while (m < eqDomCJSON.joueur.length) {
 				var n = 0;
 				dansAlign = false;
-				while (n < mavEnCours.alignementDom.length && dansAlign == false) {
-					if (mavEnCours.alignementDom[n] == window.cJSON.equipe[iDom].joueur[m].joueurId) {
+				while (n < mavEnCours.alDom.length && dansAlign == false) {
+
+					if (mavEnCours.alDom[n].joueurId == eqDomCJSON.joueur[m].joueurId) {
 						dansAlign = true;
-						window.jsonEqDom.joueur.push(window.cJSON.equipe[iDom].joueur[m]);
+						window.jsonEqDom.joueur.push(eqDomCJSON.joueur[m]);
 						window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = "present";
 					}
 					n++;
 				}
 				if (dansAlign == false) {
-					window.jsonEqDom.joueur.push(window.cJSON.equipe[iDom].joueur[m]);
+					window.jsonEqDom.joueur.push(eqDomCJSON.joueur[m]);
 					window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = "absent";
 				}
 				m++;
 			}
 
+
 			var n = 0;
 			dansAlign = false;
-			while (n < mavEnCours.alignementDom.length) {
+			while (n < mavEnCours.alDom.length) {
 				m = 0
 				dansAlign = false;
 				while (m < window.jsonEqDom.joueur.length && dansAlign == false) {
-					if (mavEnCours.alignementDom[n] == window.jsonEqDom.joueur[m].joueurId) {
+					if (mavEnCours.alDom[n].joueurId == window.jsonEqDom.joueur[m].joueurId) {
 						dansAlign = true;
 					}
 					m++;
@@ -1540,7 +1552,7 @@
 					for (j = 0; j < window.cJSON.equipe.length; j++) {
 						m = 0;
 						while (m < window.cJSON.equipe[j].joueur.length) {
-							if (window.cJSON.equipe[j].joueur[m].joueurId == vM[0].alignementDom[n]) {
+							if (mavEnCours.alDom[n].joueurId == window.cJSON.equipe[j].joueur[m].joueurId) {
 								window.jsonEqDom.joueur.push(window.cJSON.equipe[j].joueur[m]);
 								window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = "remplace";
 							}
@@ -1557,19 +1569,19 @@
 			window.jsonEqVis.joueur = [];
 			var m = 0;
 			var dansAlign = false;
-			while (m < window.cJSON.equipe[iVis].joueur.length) {
+			while (m < eqVisCJSON.joueur.length) {
 				var n = 0;
 				dansAlign = false;
 				while (n < mavEnCours.alignementVis.length && dansAlign == false) {
-					if (mavEnCours.alignementVis[n] == window.cJSON.equipe[iVis].joueur[m].joueurId) {
+					if (mavEnCours.alignementVis[n] == eqVisCJSON.joueur[m].joueurId) {
 						dansAlign = true;
-						window.jsonEqVis.joueur.push(window.cJSON.equipe[iVis].joueur[m]);
+						window.jsonEqVis.joueur.push(eqVisCJSON.joueur[m]);
 						window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = "present";
 					}
 					n++;
 				}
 				if (dansAlign == false) {
-					window.jsonEqVis.joueur.push(window.cJSON.equipe[iVis].joueur[m]);
+					window.jsonEqVis.joueur.push(eqVisCJSON.joueur[m]);
 					window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = "absent";
 				}
 				m++;
