@@ -319,16 +319,12 @@
 			function sauvegardeParams(ligue, aDomper, applique) {
 
 				$.ajax({
-					url : "/scriptsphp/setGenerique.php",
+					url : "/scriptsphp/setParamsLigue.php",
 					type : "POST",
 
 					data : jQuery.param({
-						table : "Ligue",
-						mode : "modif",
-						valeur : JSON.stringify({
-							cleValeur : aDomper
-						}),
-						critere : "ID_Ligue=" + window.ligueId
+						cleValeur: aDomper,
+						ligueId : window.ligueId
 					}),
 					contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
 					success : function(response) {
