@@ -150,7 +150,7 @@ $joueur['abonEquipes']=array();
 	while($rangEq=mysqli_fetch_array($resEq))
 	{
 	$joueur['abonEquipes'][$IAL]['equipeId']=$rangEq['equipeId'];
-	$joueur['abonEquipes'][$IAL]['ligueId']=$rangEq['ligueId'];
+	$joueur['abonEquipes'][$IAL]['ligueId']=$rangEq['ID_Ligue'];
 	$joueur['abonEquipes'][$IAL]['debutAbon']=$rangEq['debutAbon'];
 	$joueur['abonEquipes'][$IAL]['finAbon']=$rangEq['finAbon'];
 
@@ -167,14 +167,14 @@ $joueur['abonEquipes']=array();
 	}
 	
 	
-	if(!in_array($rangEq['ligueId'], $listeLigue))
+	if(!in_array($rangEq['ID_Ligue'], $listeLigue))
 	{
 		$ILL=count($ligues);
-	$ligues[$ILL]['ligueId']=	$rangEq['ligueId'];
+	$ligues[$ILL]['ligueId']=	$rangEq['ID_Ligue'];
 	$ligues[$ILL]['nom']=	$rangEq['Nom_Ligue'];
 	$ligues[$ILL]['lieu']=	$rangEq['Lieu'];
 	$ligues[$ILL]['horaire']=	$rangEq['Horaire'];
-		array_push($listeLigue,$rangEq['ligueId']);
+		array_push($listeLigue,$rangEq['ID_Ligue']);
 		
 	}
 	
