@@ -41,7 +41,7 @@ function getLigueIndex($ligues,$ligueId){
 	$i=0;
 foreach($ligues as $uneligue){
 	 if($uneline['ID_Ligue']==$ligueId){
-		 return $i
+		 return $i;
 	 }
 	 $i++;
 	}
@@ -52,7 +52,7 @@ function getSaisonIndex($saisons,$saisonId){
 	$i=0;
 foreach($saisons as $unesaison){
 	 if($unesaison['saisonId']==$saisonId){
-		 return $i
+		 return $i;
 	 }
 	 $i++;
 	}
@@ -63,7 +63,7 @@ function getEquipeIndex($equipes,$equipeId){
 	$i=0;
 foreach($equipes as $uneequipe){
 	 if($uneequipe['equipe_id']==$equipeId){
-		 return $i
+		 return $i;
 	 }
 	 $i++;
 	}
