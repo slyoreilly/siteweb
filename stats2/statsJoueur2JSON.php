@@ -40,7 +40,7 @@ mysqli_set_charset($conn, "utf8");
 function getLigueIndex($ligues,$ligueId){
 	$i=0;
 foreach($ligues as $uneligue){
-	 if($uneligne['ID_Ligue']==$ligueId){
+	 if($uneligue['ID_Ligue']==$ligueId){
 		 return $i;
 	 }
 	 $i++;
