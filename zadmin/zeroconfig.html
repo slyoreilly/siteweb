@@ -149,9 +149,11 @@
 
 					//    window.location.reload(true);
 				},
-				error: function () {
-					//your error code
-				}
+				error: function(xhr, textStatus, error){
+				      console.log(xhr.statusText);
+				      console.log(textStatus);
+				      console.log(error);
+ 					 }
 			});
 
 		}
