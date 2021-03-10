@@ -45,7 +45,7 @@ mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 // Faudrait refaire en cadrant par rapport à la saison en cours plutôt qu'aux équipes abonnées.
 
 
-											}
+								
 
 
 
