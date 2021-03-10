@@ -414,7 +414,7 @@
 			window.jsonEqDom.joueur = new Array();
 			window.jsonEqVis.joueur = new Array();
 
-			construitEquipeDAlignement(mavId);
+			construitEquipeDAlignement(window.jsonEqDom.joueur,window.jsonEqDom.joueur);
 
 			console.log("EQEQEQ: " + JSON.stringify(window.jsonEqDom));
 			mEqDom = window.jsonEqDom;
@@ -1489,7 +1489,7 @@
 				}
 			}
 		}
-		function construitEquipeDAlignement() {
+		function construitEquipeDAlignement(joueursDom, joueursVis) {
 
 
 
@@ -1513,7 +1513,7 @@
 
 			//		alert("Equipes assignées!");
 			var presence;
-			var vM = JSON.parse(JSON.stringify(window.vecMAV));
+			//var vM = JSON.parse(JSON.stringify(window.vecMAV));
 			//			console.log(JSON.stringify(window.jsonEqDom));		
 			var m = 0;
 			var dansAlign = false;
@@ -1525,14 +1525,14 @@
 
 					if (mavEnCours.alDom[n].joueurId == eqDomCJSON.joueur[m].joueurId) {
 						dansAlign = true;
-						window.jsonEqDom.joueur.push(eqDomCJSON.joueur[m]);
-						window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = "present";
+						joueursDom.push(eqDomCJSON.joueur[m]);
+						joueursDom[joueursDom.length - 1].presence = "present";
 					}
 					n++;
 				}
 				if (dansAlign == false) {
-					window.jsonEqDom.joueur.push(eqDomCJSON.joueur[m]);
-					window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = "absent";
+					joueursDom.push(eqDomCJSON.joueur[m]);
+					joueursDom[joueursDom.length - 1].presence = "absent";
 				}
 				m++;
 			}
@@ -1543,8 +1543,8 @@
 			while (n < mavEnCours.alDom.length) {
 				m = 0
 				dansAlign = false;
-				while (m < window.jsonEqDom.joueur.length && dansAlign == false) {
-					if (mavEnCours.alDom[n].joueurId == window.jsonEqDom.joueur[m].joueurId) {
+				while (m < joueursDom.length && dansAlign == false) {
+					if (mavEnCours.alDom[n].joueurId == joueursDom[m].joueurId) {
 						dansAlign = true;
 					}
 					m++;
@@ -1555,8 +1555,8 @@
 						m = 0;
 						while (m < window.cJSON.equipe[j].joueur.length) {
 							if (mavEnCours.alDom[n].joueurId == window.cJSON.equipe[j].joueur[m].joueurId) {
-								window.jsonEqDom.joueur.push(window.cJSON.equipe[j].joueur[m]);
-								window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = "remplace";
+								joueursDom.push(window.cJSON.equipe[j].joueur[m]);
+								joueursDom[joueursDom.length - 1].presence = "remplace";
 							}
 							m++;
 						}
@@ -1568,7 +1568,7 @@
  
 			//////////////////////////////////  Fin Domicile, début visiteur.
 
-			window.jsonEqVis.joueur = [];
+			
 			var m = 0;
 			var dansAlign = false;
 			while (m < eqVisCJSON.joueur.length) {
@@ -1577,14 +1577,14 @@
 				while (n < mavEnCours.alignementVis.length && dansAlign == false) {
 					if (mavEnCours.alignementVis[n] == eqVisCJSON.joueur[m].joueurId) {
 						dansAlign = true;
-						window.jsonEqVis.joueur.push(eqVisCJSON.joueur[m]);
-						window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = "present";
+						joueursVis.joueur.push(eqVisCJSON.joueur[m]);
+						joueursVis[joueursVis.length - 1].presence = "present";
 					}
 					n++;
 				}
 				if (dansAlign == false) {
-					window.jsonEqVis.joueur.push(eqVisCJSON.joueur[m]);
-					window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = "absent";
+					joueursVis.push(eqVisCJSON.joueur[m]);
+					joueursVis[joueursVis.length - 1].presence = "absent";
 				}
 				m++;
 			}
@@ -1594,8 +1594,8 @@
 			while (n < mavEnCours.alignementVis.length) {
 				m = 0
 				dansAlign = false;
-				while (m < window.jsonEqVis.joueur.length && dansAlign == false) {
-					if (mavEnCours.alignementVis[n] == window.jsonEqVis.joueur[m].joueurId) {
+				while (m < joueursVis.length && dansAlign == false) {
+					if (mavEnCours.alignementVis[n] == joueursVis[m].joueurId) {
 						dansAlign = true;
 					}
 					m++;
@@ -1606,8 +1606,8 @@
 						m = 0;
 						while (m < window.cJSON.equipe[j].joueur.length) {
 							if (window.cJSON.equipe[j].joueur[m].joueurId == vM[0].alignementVis[n]) {
-								window.jsonEqVis.joueur.push(window.cJSON.equipe[j].joueur[m]);
-								window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = "remplace";
+								joueursVis.push(window.cJSON.equipe[j].joueur[m]);
+								joueursVis[joueursVis.length - 1].presence = "remplace";
 							}
 							m++;
 						}
