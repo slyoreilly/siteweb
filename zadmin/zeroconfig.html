@@ -394,8 +394,7 @@
 			gardien = new Array();
 			eq = new Array();
 
-			mavEnCours = window.vecMAV[0];
-			//				alert(JSON.stringify(mavEnCours));
+			console.log("MatchEnCours a Render: "+JSON.stringify(mavEnCours));
 			//				return function(){
 			mavId = mavEnCours.mavId;
 			tmpEq = getEquipeDEqId(mavEnCours.eq_dom);
@@ -416,7 +415,7 @@
 			dSD.innerHTML = mEqDom.nom;
 			dSD.onclick = function (mEqDom) {
 				//return function() {
-				boiteDomVis2(1, window.jsonEqDom);
+				RenderEquipe(1, window.jsonEqDom);
 				//}
 			};
 			//)(mEqDom);
@@ -425,7 +424,7 @@
 			dSV.innerHTML = mEqVis.nom;
 			dSV.onclick = function (mEqVis) {
 				//return function() {
-				boiteDomVis2(2, window.jsonEqVis);
+				RenderEquipe(2, window.jsonEqVis);
 				//}
 			};
 
@@ -546,8 +545,8 @@
 
 			divArbJS.appendChild(selArb);
 
-			boiteDomVis2(2, mEqVis);
-			boiteDomVis2(1, mEqDom);
+			RenderEquipe(2, mEqVis);
+			RenderEquipe(1, mEqDom);
 			boiteAlt(window.cJSON.equipe[window.cJSON.equipe.length - 1]);
 			//alert("jsonEqVis " + JSON.stringify(mEqVis));
 
@@ -608,7 +607,7 @@
 		}
 
 
-		function boiteDomVis2(domVis, equipe) {
+		function RenderEquipe(domVis, equipe) {
 			console.log("equipe domvis "+domVis+ " avant render equipe" + JSON.stringify(equipe));
 
 			nomBoite = 'eqDom';
@@ -622,7 +621,7 @@
 			}
 
 
-
+			// Boites header équipe
 			if (domVis == 1) {
 				document.getElementById("divSpinDom").className = "actif";
 				document.getElementById("divSpinVis").className = "inactif";
@@ -667,11 +666,8 @@
 			window.jMAV[domVis - 1] = new Array();
 			window.eq[domVis - 1] = equipe.equipeId;
 			//classeJoueursNom(equipe.joueur);
-			console.log("Equipe: " + JSON.stringify(equipe));
+		
 			for (K = 0; K < equipe.joueur.length; K = K + 1) {
-				//				window.jMAV[boiteId-1]=window.jMAV[boiteId-1]+window.cJSON.equipe[indiceEquipe].joueur[K].joueurId+',';
-
-				//////////// section tableau.
 
 				var strJ = JSON.stringify(equipe.joueur[K].joueurId);
 				var strValBut;
@@ -756,7 +752,7 @@
 					)
 				)
 			}
-			console.log("equipe: " + JSON.stringify(equipe));
+
 			sonEq = getInfoEquipe(equipe);
 			if (domVis == 1) {
 				maDiv = document.getElementById('divSpinDom');
@@ -1304,13 +1300,13 @@
 			divLD.style.cssFloat = "left";
 			divLD.style.height = "auto";
 			divLD.onclick = function () {
-				boiteDomVis2(1, window.jsonEqDom);
+				RenderEquipe(1, window.jsonEqDom);
 			}
 			divLV.style.width = "50%";
 			divLV.style.cssFloat = "left";
 			divLV.style.height = "auto";
 			divLV.onclick = function () {
-				boiteDomVis2(2, window.jsonEqVis);
+				RenderEquipe(2, window.jsonEqVis);
 			}
 			divDateJS = document.createElement('DIV');
 			divDateJS.id = "divDate";
@@ -1555,7 +1551,7 @@
 				}
 				n++;
 			}
-			//	strJDom=window.vecMAV[k].alignementDom;
+ 
 			//////////////////////////////////  Fin Domicile, début visiteur.
 
 			window.jsonEqVis.joueur = [];
@@ -1625,11 +1621,11 @@
 			if (getEquipeActive() == window.eq[0]) {
 				window.jsonEqDom.joueur[window.jsonEqDom.joueur.length] = JSON.parse(joueurIn);
 				window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = 'remplace';
-				boiteDomVis2(1, window.jsonEqDom);
+				RenderEquipe(1, window.jsonEqDom);
 			} else {
 				window.jsonEqVis.joueur[window.jsonEqVis.joueur.length] = JSON.parse(joueurIn);
 				window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = 'remplace';
-				boiteDomVis2(2, window.jsonEqVis);
+				RenderEquipe(2, window.jsonEqVis);
 			}
 			boiteAlt(getEquipeDEqId(window.eq[2]));
 			setMatchAVenir(false);
@@ -1641,11 +1637,11 @@
 			if (domVis == 1) {
 				window.jsonEqDom.joueur[window.jsonEqDom.joueur.length] = JSON.parse(joueurIn);
 				window.jsonEqDom.joueur[window.jsonEqDom.joueur.length - 1].presence = 'remplace';
-				boiteDomVis2(1, window.jsonEqDom);
+				RenderEquipe(1, window.jsonEqDom);
 			} else {
 				window.jsonEqVis.joueur[window.jsonEqVis.joueur.length] = JSON.parse(joueurIn);
 				window.jsonEqVis.joueur[window.jsonEqVis.joueur.length - 1].presence = 'remplace';
-				boiteDomVis2(2, window.jsonEqVis);
+				RenderEquipe(2, window.jsonEqVis);
 			}
 			boiteAlt(getEquipeDEqId(window.eq[2]));
 			setMatchAVenir(false);
@@ -1694,7 +1690,7 @@
 
 					}
 				}
-				boiteDomVis2(boiteOut, equipe);
+				RenderEquipe(boiteOut, equipe);
 				setMatchAVenir(false);
 
 				//	alert(joueurIn);
@@ -1892,11 +1888,11 @@
 			switch (domvis) {
 				case 1:
 					togouleNomDom = -1 * togouleNomDom;
-					boiteDomVis2(1, equipe);
+					RenderEquipe(1, equipe);
 					break;
 				case 2:
 					togouleNomVis = -1 * togouleNomVis;
-					boiteDomVis2(2, equipe);
+					RenderEquipe(2, equipe);
 					break;
 
 				case 3:
@@ -1923,11 +1919,11 @@
 			switch (domvis) {
 				case 1:
 					togouleNomDom = -1 * togouleNomDom;
-					boiteDomVis2(1, equipe);
+					RenderEquipe(1, equipe);
 					break;
 				case 2:
 					togouleNomVis = -1 * togouleNomVis;
-					boiteDomVis2(2, equipe);
+					RenderEquipe(2, equipe);
 					break;
 
 				case 3:
@@ -1952,11 +1948,11 @@
 			switch (domvis) {
 				case 1:
 					togouleNomDom = -1 * togouleNomDom;
-					boiteDomVis2(1, equipe);
+					RenderEquipe(1, equipe);
 					break;
 				case 2:
 					togouleNomVis = -1 * togouleNomVis;
-					boiteDomVis2(2, equipe);
+					RenderEquipe(2, equipe);
 					break;
 
 				case 3:
@@ -1981,11 +1977,11 @@
 			switch (domvis) {
 				case 1:
 					togouleNomDom = -1 * togouleNomDom;
-					boiteDomVis2(1, equipe);
+					RenderEquipe(1, equipe);
 					break;
 				case 2:
 					togouleNomVis = -1 * togouleNomVis;
-					boiteDomVis2(2, equipe);
+					RenderEquipe(2, equipe);
 					break;
 
 				case 3:
