@@ -48,12 +48,6 @@ $content = addslashes(file_get_contents($tmpName));
 //fclose($fp);
 
 
-if(!get_magic_quotes_gpc())
-{
-//	$content2 = addslashes($content);
-    $fileName = addslashes($fileName);
-}
-
 $query = "INSERT INTO TableFichier (contexte, idRef , name, size, type, content ) ".
 "VALUES ('{$contexte}', '{$refId}','{$fileName}', '{$fileSize}', '{$fileType}', '{$content}')";
 
