@@ -1605,7 +1605,7 @@
 					for (j = 0; j < window.cJSON.equipe.length; j++) {
 						m = 0;
 						while (m < window.cJSON.equipe[j].joueur.length) {
-							if (window.cJSON.equipe[j].joueur[m].joueurId == vM[0].alignementVis[n]) {
+							if (window.cJSON.equipe[j].joueur[m].joueurId == mavEnCours.alignementVis[n].joueurId) {
 								joueursVis.push(window.cJSON.equipe[j].joueur[m]);
 								joueursVis[joueursVis.length - 1].presence = "remplace";
 							}
