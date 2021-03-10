@@ -31,9 +31,133 @@ if (!$conn) {
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 mysqli_set_charset($conn, "utf8");
+
+
+///////////////////////////////////
+//
+//   NOUVEAU!!!!!
+
+function getLigueIndex($ligues,$ligueId){
+	$i=0;
+foreach($ligues as $uneligue){
+	 if($uneline['ID_Ligue']==$ligueId){
+		 return $i
+	 }
+	 $i++;
+	}
+
+	return -1;
+}
+function getSaisonIndex($saisons,$saisonId){
+	$i=0;
+foreach($saisons as $unesaison){
+	 if($unesaison['saisonId']==$saisonId){
+		 return $i
+	 }
+	 $i++;
+	}
+
+	return -1;
+}
+function getEquipeIndex($equipes,$equipeId){
+	$i=0;
+foreach($equipes as $uneequipe){
+	 if($uneequipe['equipe_id']==$equipeId){
+		 return $i
+	 }
+	 $i++;
+	}
+
+	return -1;
+}
+
+$result = mysqli_query($conn, "
+SELECT Ligue.ID_Ligue, Ligue.Nom_Ligue, saisonId,premierMatch,dernierMatch nom, SUM(e.PJ) as PJ, TableEquipe.nom_equipe, TableEquipe.equipe_id, SUM(b.B) as Buts,  SUM(Pun.Pun) as Pun,  SUM(P.P) as Passes FROM TableSaison as s1
+JOIN Ligue 
+ on Ligue.ID_Ligue=s1.ligueRef
+ JOIN abonJoueurLigue 
+ on abonJoueurLigue.ligueId=s1.ligueRef
+ LEFT JOIN abonEquipeLigue
+ on abonEquipeLigue.ligueId=Ligue.ID_Ligue
+ JOIN TableEquipe 
+ ON abonEquipeLigue.equipeId=TableEquipe.equipe_id
+ JOIN TableMatch as t1
+on (t1.date BETWEEN s1.premierMatch AND s1.dernierMatch AND t1.ligueRef=s1.ligueRef  AND  (t1.eq_dom=TableEquipe.equipe_id OR t1.eq_vis=TableEquipe.equipe_id ))
+
+Join (
+		SELECT count(*) as PJ, TableEvenement0.match_event_id, Min(TableEvenement0.equipe_event_id) as eq
+		FROM TableEvenement0 
+		where TableEvenement0.code = 3 and TableEvenement0.joueur_event_ref='$joueurId'
+		GROUP by TableEvenement0.match_event_id
+	) as e
+on (TableEquipe.equipe_id=e.eq AND t1.matchIdRef=e.match_event_id )
+
+LEfT Join (
+		SELECT count(*) as B, TableEvenement0.match_event_id, Min(TableEvenement0.equipe_event_id) as eq
+		FROM TableEvenement0 
+		where TableEvenement0.code = 0 and TableEvenement0.joueur_event_ref='$joueurId'
+		GROUP by TableEvenement0.match_event_id
+	) as b
+on (TableEquipe.equipe_id=b.eq AND t1.matchIdRef=b.match_event_id )
+LEfT Join (
+		SELECT count(*) as P, TableEvenement0.match_event_id, Min(TableEvenement0.equipe_event_id) as eq
+		FROM TableEvenement0 
+		where TableEvenement0.code = 1 and TableEvenement0.joueur_event_ref='$joueurId'
+		GROUP by TableEvenement0.match_event_id
+	) as P
+on (TableEquipe.equipe_id=P.eq AND t1.matchIdRef=P.match_event_id )
+LEfT  Join (
+		SELECT count(*) as Pun, TableEvenement0.match_event_id, Min(TableEvenement0.equipe_event_id) as eq
+		FROM TableEvenement0 
+		where TableEvenement0.code = 4 and TableEvenement0.joueur_event_ref='$joueurId'
+		GROUP by TableEvenement0.match_event_id
+	) as Pun
+on (TableEquipe.equipe_id=Pun.eq AND t1.matchIdRef=Pun.match_event_id )
+
+
+where abonJoueurLigue.joueurId='$joueurId'
+group by  saisonId, abonEquipeLigue.equipeId ORder By Ligue.ID_Ligue, saisonId, abonEquipeLigue.equipeId"
+)or die(mysqli_error($conn));
+$Ligues = array();
+while($row=mysqli_fetch_array($result))
+{
+	$indLigue =getLigueIndex($Ligues,$row['ID_Ligue']);
+	if($indLigue>-1){
+		$mLigue=array();
+		$mLigue['nom']=$row['Nom_Ligue'];
+		$mLigue['ligueId']=$row['ID_Ligue'];
+		$mLigue['saisons']=array();
+		array_push($Ligues,$mLigue);
+		$indLigue=count($Ligues)-1;
+	}
+	$indSaison =getSaisonIndex($Ligues[$indLigue]['saisons'],$row['saisonId']);
+	if($indSaison>-1){
+		$mSaison=array();
+		$mSaison['saisonId']=$row['saisonId'];
+		$mSaison['pm']=$row['premierMatch'];
+		$mSaison['dm']=$row['dernierMatch'];
+		$mSaison['equipes']=array();
+		array_push($Ligues[$indLigue]['saisons'],$mSaison);
+		$indSaison=count($Ligues[$indLigue]['saisons'])-1;
+	}
+	$indEquipe =getEquipeIndex($Ligues[$indLigue]['saisons'][$indSaison]['equipes'],$row['equipe_id']);
+	if($indEquipe>-1){
+		$mEquipe=array();
+		$mEquipe['equipeId']=$row['equipe_id'];
+		$mEquipe['nom']=$row['nom_equipe'];
+		$mEquipe['pj']=$row['PJ'];
+		$mEquipe['buts']=$row['Buts'];
+		$mEquipe['passes']=$row['Passes'];
+		$mEquipe['minPun']=$row['Pun'];	
+		array_push($Ligues[$indLigue]['saisons'][$indSaison]['equipes'],$mEquipe);
+		$indEquipe=count($Ligues[$indLigue]['saisons'][$indSaison]['equipes'])-1;
+	}
+
+}
+
 ////////////////////////////////////////
 ///	Sélectionne les ligues du joueur.
-
+/*
 $rJoueur = mysqli_query($conn, "SELECT L.ID_Ligue, L.Nom_Ligue 
 						FROM Ligue as L 
 						JOIN 
@@ -151,8 +275,8 @@ mysqli_query($conn,"SET SQL_BIG_SELECTS=1");
 	}								
 								
 }
-
-echo "{\"Ligues\":".json_encode($listeLigue)."}";
+*/
+echo "{\"Ligues\":".json_encode($Ligues)."}";
 
 		
 mysqli_close($conn);
