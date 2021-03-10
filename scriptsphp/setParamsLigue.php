@@ -25,7 +25,7 @@ mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 			
 	$qSUp = "UPDATE Ligue 
 							SET cleValeur='{$cleValeur}'
-							WHERE videoId='{$ligueId}' ";
+							WHERE ID_Ligue='{$ligueId}' ";
 		mysqli_query($conn,$qSUp) or die(mysqli_error($conn).' Error, query failed'.$qSUp);
 
 
