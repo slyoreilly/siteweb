@@ -30,7 +30,7 @@ mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 
 
 $qVielleSaison="SELECT nbVues FROM Video WHERE videoId='{$videoId}' limit 0,1";
-$resVS=mysqli_query($conn,qVielleSaison) or die(mysqli_error($conn).'Error, query failed'.$qVielleSaison);
+$resVS=mysqli_query($conn,$qVielleSaison) or die(mysqli_error($conn).'Error, query failed'.$qVielleSaison);
 		while ($rVS = mysqli_fetch_array($resVS)) {
 			$aMettre = $rVS[0]+1;
 			

@@ -325,9 +325,9 @@
 					data : jQuery.param({
 						table : "Ligue",
 						mode : "modif",
-						valeur : {
+						valeur : JSON.stringify({
 							cleValeur : aDomper
-						},
+						}),
 						critere : "ID_Ligue=" + window.ligueId
 					}),
 					contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
