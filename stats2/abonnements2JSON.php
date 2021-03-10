@@ -21,9 +21,9 @@ if (!$conn) {
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
-
-
-$ligueIdInter = $_GET['ligueId'];
+$ligueIdInter =null;
+if(isset($_GET['ligueId'])){
+$ligueIdInter = $_GET['ligueId'];}
 $userId = $_GET['userId'];
 
 $ligueId = $ligueIdInter;
