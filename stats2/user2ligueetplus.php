@@ -141,7 +141,7 @@ $joueur['abonEquipes']=array();
 						JOIN Ligue
 							ON (abonEquipeLigue.ligueId=Ligue.ID_Ligue)
 							
-						WHERE joueurId='{$joueurId['joueurId']}'
+						WHERE joueurId='{$joueur['joueurId']}'
 						AND abonJoueurEquipe.finAbon>=abonEquipeLigue.debutAbon
 						AND abonJoueurEquipe.debutAbon<=abonEquipeLigue.finAbon")
 	or die(mysqli_error($conn));  	
@@ -218,7 +218,7 @@ while($rangArb=mysqli_fetch_array($resArb))
 }
 
 
-$JSONstring .="{\"abonnements\": ".json_encode($liste). ",\"joueur\": ".json_encode($joueur). ",\"arbitre\": ".json_encode($arbitre)
+$JSONstring ="{\"abonnements\": ".json_encode($liste). ",\"joueur\": ".json_encode($joueur). ",\"arbitre\": ".json_encode($arbitre)
 				.",\"ligues\": ".json_encode($ligues).",\"equipes\": ".json_encode($equipes)."}";
 	
 	
