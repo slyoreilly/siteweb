@@ -405,15 +405,11 @@
 
 			window.jsonEqVis.nom = tmpEq.nomEquipe;
 			window.jsonEqVis.equipeId = mavEnCours.eq_vis;
-			//				creerListeMatchs(window.vecMAV, mavId);
-
-						///////
 			//
 			//   On charge les mavEnCours dans jsonEqDom(Vis) en allant chercher info dans CJSON
 
 			window.jsonEqDom.joueur= mavEnCours.alDom;
 			window.jsonEqVis.joueur= mavEnCours.alVis;
-//			construitEquipeDAlignement(window.jsonEqDom.joueur,window.jsonEqDom.joueur);
 
 			console.log("EQEQEQ: " + JSON.stringify(window.jsonEqDom));
 			mEqDom = window.jsonEqDom;
@@ -1488,140 +1484,7 @@
 				}
 			}
 		}
-		function construitEquipeDAlignement(joueursDom, joueursVis) {
-
-/*
-
-			var iDom = 0;
-			var iVis = 0;
-			let eqDomCJSON =null;
-			let eqVisCJSON =null;
-			for (i = 0; i < window.cJSON.equipe.length; i++) {
-				if (mavEnCours.eq_dom == window.cJSON.equipe[i].equipeId) {
-					//							window.jsonEqDom = window.cJSON.equipe[i];
-					//iDom = i;
-					eqDomCJSON=window.cJSON.equipe[i];
-				}
-				if (mavEnCours.eq_vis == window.cJSON.equipe[i].equipeId) {
-					//							window.jsonEqVis = window.cJSON.equipe[i];
-					//iVis = i;
-					eqVisCJSON=window.cJSON.equipe[i];
-				}
-			}*/
-			joueursDom= mavEnCours.alDom;
-			joueursVis= mavEnCours.alVis;
-
-/*
-			//		alert("Equipes assignées!");
-			var presence;
-			//var vM = JSON.parse(JSON.stringify(window.vecMAV));
-			//			console.log(JSON.stringify(window.jsonEqDom));		
-			var m = 0;
-			var dansAlign = false;
-
-			while (m < eqDomCJSON.joueur.length) {
-				var n = 0;
-				dansAlign = false;
-				while (n < mavEnCours.alDom.length && dansAlign == false) {
-
-					if (mavEnCours.alDom[n].joueurId == eqDomCJSON.joueur[m].joueurId) {
-						dansAlign = true;
-						joueursDom.push(eqDomCJSON.joueur[m]);
-						joueursDom[joueursDom.length - 1].presence = "present";
-					}
-					n++;
-				}
-				if (dansAlign == false) {
-					joueursDom.push(eqDomCJSON.joueur[m]);
-					joueursDom[joueursDom.length - 1].presence = "absent";
-				}
-				m++;
-			}
-
-
-			var n = 0;
-			dansAlign = false;
-			while (n < mavEnCours.alDom.length) {
-				m = 0
-				dansAlign = false;
-				while (m < joueursDom.length && dansAlign == false) {
-					if (mavEnCours.alDom[n].joueurId == joueursDom[m].joueurId) {
-						dansAlign = true;
-					}
-					m++;
-				}
-				if (!dansAlign) {
-
-					for (j = 0; j < window.cJSON.equipe.length; j++) {
-						m = 0;
-						while (m < window.cJSON.equipe[j].joueur.length) {
-							if (mavEnCours.alDom[n].joueurId == window.cJSON.equipe[j].joueur[m].joueurId) {
-								joueursDom.push(window.cJSON.equipe[j].joueur[m]);
-								joueursDom[joueursDom.length - 1].presence = "remplace";
-							}
-							m++;
-						}
-					}
-
-				}
-				n++;
-			}
- 
-			//////////////////////////////////  Fin Domicile, début visiteur.
-
-			
-			var m = 0;
-			var dansAlign = false;
-			while (m < eqVisCJSON.joueur.length) {
-				var n = 0;
-				dansAlign = false;
-				while (n < mavEnCours.alignementVis.length && dansAlign == false) {
-					if (mavEnCours.alignementVis[n] == eqVisCJSON.joueur[m].joueurId) {
-						dansAlign = true;
-						joueursVis.joueur.push(eqVisCJSON.joueur[m]);
-						joueursVis[joueursVis.length - 1].presence = "present";
-					}
-					n++;
-				}
-				if (dansAlign == false) {
-					joueursVis.push(eqVisCJSON.joueur[m]);
-					joueursVis[joueursVis.length - 1].presence = "absent";
-				}
-				m++;
-			}
-
-			var n = 0;
-			dansAlign = false;
-			while (n < mavEnCours.alignementVis.length) {
-				m = 0
-				dansAlign = false;
-				while (m < joueursVis.length && dansAlign == false) {
-					if (mavEnCours.alignementVis[n] == joueursVis[m].joueurId) {
-						dansAlign = true;
-					}
-					m++;
-				}
-				if (!dansAlign) {
-
-					for (j = 0; j < window.cJSON.equipe.length; j++) {
-						m = 0;
-						while (m < window.cJSON.equipe[j].joueur.length) {
-							if (window.cJSON.equipe[j].joueur[m].joueurId == mavEnCours.alignementVis[n].joueurId) {
-								joueursVis.push(window.cJSON.equipe[j].joueur[m]);
-								joueursVis[joueursVis.length - 1].presence = "remplace";
-							}
-							m++;
-						}
-					}
-
-				}
-				n++;
-			}
-*/
-
-
-			//}
-		}
+	
 
 		function getEquipeActive() {
 			//liste d'equipeId ainsi constituée: équipe active, eqDom, eqVis, eqAlt.
