@@ -5,7 +5,7 @@ $table = $_POST['table'];
 if(strcmp($table, "EvaluationJoueurs")==0)
 {$ou = stripslashes(str_replace("'","",$_POST['ou']));}
 else
-{$ou = str_replace("'","",$_POST['ou']);}
+{$ou = isset($_POST['ou'])? str_replace("'","",$_POST['ou']):NULL;}
 //$ligueId = $_POST['ligueId'];
 
 
