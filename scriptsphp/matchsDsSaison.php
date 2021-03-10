@@ -293,13 +293,13 @@ while ($row = mysqli_fetch_assoc($resultVent)) {
 			$lesMatchs[$cptM - 1]['ventDom'][count($lesMatchs[$cptM - 1]['ventDom'])-1]++;
 			if(array_sum($lesMatchs[$cptM - 1]['ventDom'])==$row['score_vis']+1){
 				$tmpJ = trouveJoueur($row['joueur_event_ref'], $joueurs_array);
-				$lesMatchs[$cptM - 1]['butGagnant'] =$tmpJ['NomJoueur'];
+				$lesMatchs[$cptM - 1]['butGagnant'] = $tmpJ != null ? $tmpJ['NomJoueur']: "";
 			}
 		} else {
 			$lesMatchs[$cptM - 1]['ventVis'][count($lesMatchs[$cptM - 1]['ventVis'])-1]++;
 			if(array_sum($lesMatchs[$cptM - 1]['ventVis'])==$row['score_dom']+1){
 				$tmpJ = trouveJoueur($row['joueur_event_ref'], $joueurs_array);
-				$lesMatchs[$cptM - 1]['butGagnant'] =$tmpJ['NomJoueur'];
+				$lesMatchs[$cptM - 1]['butGagnant'] = $tmpJ != null ? $tmpJ['NomJoueur']: "";
 			}
 		}
 
