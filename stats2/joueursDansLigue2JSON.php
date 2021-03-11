@@ -58,12 +58,14 @@ if (!strcmp($saisonId, "")&& strcmp($getLigue, ""))// Sp�cifie par la ligue
 	$saisonId = trouveSaisonActiveDeLigueId($getLigue,$conn);
 	//	$saisonId =2;
 }
-$prSaison = mysqli_query($conn,"SELECT premierMatch 
+$prSaison = mysqli_query($conn,"SELECT premierMatch, dernierMatch 
 						FROM TableSaison 
 						WHERE saisonId ='{$saisonId}'") or die(mysqli_error($conn) . "query PM: saisonId: " . $saisonId);
-$premierMatch = mysqli_data_seek($prSaison, 0);
-$drSaison = mysqli_query($conn,"SELECT dernierMatch FROM TableSaison where saisonId ='{$saisonId}'") or die(mysqli_error($conn) . "query DM");
-$dernierMatch = mysqli_data_seek($drSaison, 0);
+
+mysqli_data_seek($prSaison, 0);
+$row = mysqli_fetch_row($prSaison);
+$premierMatch = $row[0];
+$dernierMatch =$row[1];
 
 //
 $lesMatchs = array();
