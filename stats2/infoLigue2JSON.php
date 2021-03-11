@@ -141,7 +141,7 @@ $Is=count($jsonSai);
 		$jsonSai[$Is]['saisonActive']=$aSaisonSeul['saisonActive'];
 		$jsonSai[$Is]['pm']=$aSaisonSeul['premierMatch'];
 		$jsonSai[$Is]['dm']=$aSaisonSeul['dernierMatch'];
-		$jsonSai[$Is]['nom']=$aSaison['nom'];
+		$jsonSai[$Is]['nom']=$aSaisonSeul['nom'];
 //		$jsonSai[$Is]['cleValeur']=$aSaison['cleValeur'];		
 		
 //		$jsonSai[$Is]['equipes']=array();						

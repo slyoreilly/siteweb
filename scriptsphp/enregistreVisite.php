@@ -39,7 +39,7 @@ else{
 $userId=0;	
 	
 }
-if($fakeId==""){
+if($fakeId==""||!is_int($fakeId)){
 	$qMaxFake = "SELECT MAX(fakeId) FROM Visites"; 
 	 
 $resMaxFake = mysqli_query($conn, $qMaxFake) or die(mysqli_error($conn));
