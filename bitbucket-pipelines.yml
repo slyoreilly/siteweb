@@ -29,7 +29,7 @@ pipelines:
         script:
 #          - git ftp push -u "syncsta1" -p "uVTEhAil" ftp://ftp.syncstats.com:21/public_html
           - git ftp push -u "syl" -p "pr351d3nt" ftp://5.39.81.14:22000/~/public_html
-            branches: # Automated triggers on commits to branches
+  
     develop: # -- When committing to master branch
     - step:
         deployment: development
