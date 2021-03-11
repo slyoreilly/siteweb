@@ -17,11 +17,11 @@ pipelines:
     init: # -- First time init
     - step:
         script:
-          - git ftp init -vv -u "syl" -p "pr351d3nt" ftp://syncstats.ca:22000/~/public_html
+          - git ftp init -vv  -u "syncsta1" -p "uVTEhAil" ftp://ftp.syncstats.com
     init-dev: # -- First time init
     - step:
         script:
-          - git ftp init -vv --user "sylvain" --passwd "isaac3!" ftp://38.74.47.202/~/siteweb/site-web/
+          - git ftp catchup -vv --user "sylvain" --passwd "isaac3!" ftp://38.74.47.202/~/siteweb/site-web/
     deploy-all: # -- Deploys all files from the selected commit
     - step:
         script:
@@ -32,7 +32,7 @@ pipelines:
         deployment: production
         script:
 #          - git ftp push -u "syncsta1" -p "uVTEhAil" ftp://ftp.syncstats.com:21/public_html
-          - git ftp push -u "syl" -p "pr351d3nt" ftp://5.39.81.14:22000/~/public_html
+          - git ftp push -u "syncsta1" -p "uVTEhAil" ftp://ftp.syncstats.com
   
     develop: # -- When committing to develop branch
     - step:
