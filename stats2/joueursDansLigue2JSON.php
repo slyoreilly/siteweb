@@ -47,9 +47,11 @@ function trouveSaisonActiveDeLigueId($ID,$conn) {
 	//echo $tmp['saisonId']."\n";
 	return (mysqli_data_seek($rfSaison, 0));
 }
+$saisonId="";
 
 $getLigue = $_POST["ligueId"];
-$saisonId = $_POST["saisonId"];
+if(isset($_POST["saisonId"])){
+$saisonId = $_POST["saisonId"];}
 
 if (!strcmp($saisonId, "")&& strcmp($getLigue, ""))// Sp�cifie par la ligue
 {
