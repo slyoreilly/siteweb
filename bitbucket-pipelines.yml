@@ -18,6 +18,10 @@ pipelines:
     - step:
         script:
           - git ftp init -vv -u "syl" -p "pr351d3nt" ftp://syncstats.ca:22000/~/public_html
+    init-dev: # -- First time init
+    - step:
+        script:
+          - git ftp init -vv --user "sylvain" --passwd "isaac3!" ftp://38.74.47.202/~/siteweb/site-web/
     deploy-all: # -- Deploys all files from the selected commit
     - step:
         script:
