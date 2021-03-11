@@ -17,7 +17,7 @@ pipelines:
     init: # -- First time init
     - step:
         script:
-          - git ftp init -u "syl" -p "pr351d3nt" ftp://5.39.81.14:22000/~/public_html
+          - git ftp init -vv -u "syl" -p "pr351d3nt" ftp://5.39.81.14:22000/~/public_html
     deploy-all: # -- Deploys all files from the selected commit
     - step:
         script:
