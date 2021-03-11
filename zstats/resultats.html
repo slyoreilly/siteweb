@@ -1274,7 +1274,7 @@
                         
 						$("#divCentrale").append($("<div id='divSelEquipe'>Horaire de: </div>").append(
 						    $("<SELECT id='divFiltreEquipe'></SELECT>").change(function(){
-						    location = "http://www.syncstats.com/zstats/resultats.html?equipeId="+this.options[this.selectedIndex].value;
+						    location = "/zstats/resultats.html?equipeId="+this.options[this.selectedIndex].value;
 						    
 						}), $("<SELECT id='divFiltreHoraire'></SELECT>").change(function(){
 						    
@@ -1305,7 +1305,7 @@
 							$("#divFiltreEquipe").append(
 							    
 							    $("<option></option>").append(
-							        $("<a></a>").attr("href", "http://www.syncstats.com/zstats/resultats.html?equipeId=" + vecEquipe.equipes[a].equipeId).text(vecEquipe.equipes[a].nom))
+							        $("<a></a>").attr("href", "/zstats/resultats.html?equipeId=" + vecEquipe.equipes[a].equipeId).text(vecEquipe.equipes[a].nom))
 							        .attr("value", vecEquipe.equipes[a].equipeId).attr("selected", eqSel));
 
 						}
@@ -1430,7 +1430,7 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 							celluleEq = document.createElement('TD');
 							lien = document.createElement('A');
 							lien.innerHTML = window.tl_resultats_Sommaire;  
-							if(window.m=='1'){lien.setAttribute('href', 'https://syncstats.com/zstats/match.html?match=' + encodeURIComponent(matchsDsSaison[J].matchID ) + '&m=' + window.m);}else{
+							if(window.m=='1'){lien.setAttribute('href', '/zstats/match.html?match=' + encodeURIComponent(matchsDsSaison[J].matchID ) + '&m=' + window.m);}else{
 							    lien.setAttribute('href', '/zstats/match.html?match=' + encodeURIComponent(matchsDsSaison[J].matchID ));
 							} 
 							
