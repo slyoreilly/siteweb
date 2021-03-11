@@ -35,4 +35,4 @@ pipelines:
         deployment: development
         script:
 #          - git ftp push -u "syncsta1" -p "uVTEhAil" ftp://ftp.syncstats.com:21/public_html
-          - git ftp push -u "syl" -p "pr351d3nt" ftp://5.39.81.14:22000/~/public_html
+          - git ftp push  -vv --user "syl" -passwd "pr351d3nt" sftp://5.39.81.14:22000/~/public_html
