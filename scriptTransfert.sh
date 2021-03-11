@@ -14,7 +14,7 @@ mirror -cR scripts /public_html/scripts
 mirror -cR style /public_html/style
 mirror -cR scripts /public_html/scripts
 mirror -cR syncscript /public_html/syncscript
-mirror -cR scriptsphp /public_html/scriptsphp
+mirror -cR -x scriptsphp/defenvvar.php scriptsphp /public_html/scriptsphp
 mirror -cR zadmin /public_html/zadmin
 mirror -cR zstats /public_html/zstats
 mirror -cR zuser /public_html/zuser
