@@ -1,0 +1,18 @@
+lookatthis/
+phpMyAdmin-old/
+.metadata/
+lookatthis
+<<<<<<< HEAD
+=======
+/**/*.suo
+/**/slnx.sqlite
+/.vs/VSWorkspaceState.json
+backUp
+
+/*/error_log
+scriptserveur/syncsta1_900.sql
+scriptserveur/man
+>>>>>>> a0efb0c1bb5e95f22c61a4f333a9429882c963d5
+/.vs/VSWorkspaceState.json
+/.vs/slnx.sqlite
+/.vs/Site web/v15/.suo

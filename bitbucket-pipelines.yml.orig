@@ -17,7 +17,7 @@ pipelines:
     init: # -- First time init
     - step:
         script:
-          - git ftp init -vv  -u "syncsta1" -p "uVTEhAil" ftp://ftp.syncstats.com/public_html
+          - git ftp init -vv  -u "syncsta1" -p "uVTEhAil" ftp://ftp.syncstats.com
     init-dev: # -- First time init
     - step:
         script:
@@ -32,7 +32,8 @@ pipelines:
         deployment: production
         script:
 #          - git ftp push -u "syncsta1" -p "uVTEhAil" ftp://ftp.syncstats.com:21/public_html
-          - git ftp push -u "syncsta1" -p "uVTEhAil" ftp://ftp.syncstats.com/public_html
+<<<<<<< HEAD
+          - git ftp push -u "syncsta1" -p "uVTEhAil" ftp://ftp.syncstats.com
   
     develop: # -- When committing to develop branch
     - step:
@@ -40,3 +41,6 @@ pipelines:
         script:
 #          - git ftp push -u "syncsta1" -p "uVTEhAil" ftp://ftp.syncstats.com:21/public_html
           - git ftp push  -vv --user "sylvain" --passwd "isaac3!" ftp://38.74.47.202/~/siteweb/site-web/
+=======
+          - git ftp push -u "syl" -p "pr351d3nt" ftp://5.39.81.14:22000/public_html
+>>>>>>> a0efb0c1bb5e95f22c61a4f333a9429882c963d5
