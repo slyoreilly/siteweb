@@ -1,9 +1,5 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableEq = 'TableEquipe';
 $tableLigue = 'Ligue';
 $tableMatch = 'TableMatch';
@@ -16,32 +12,27 @@ $nom = $_POST['nom'];
 $mdp = $_POST['mdp'];
 $courriel = $_POST['courriel'];
 
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
 
-
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
-	mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 	
 
 $erreur=false;
 $qVerif ="SELECT * from TableUser WHERE username='{$nom}'";
-$retVerif= 	 mysql_query($qVerif)or die(mysql_error().$qVerif);
-if(mysql_num_rows($retVerif)>0)
+$retVerif= 	 mysqli_query($conn,$qVerif)or die(mysqli_error($conn).$qVerif);
+if(mysqli_num_rows($retVerif)>0)
 	{$erreur=true;}
 	
 if(!$erreur)
 {
 	$qIns = "INSERT INTO TableUser (username, password, type, sexe,courriel) 
 VALUES ('{$nom}', '{$mdp}', 10, 'M','{$$courriel}')";
-$retIns= 	 mysql_query($qIns)or die(mysql_error().$qIns);
+$retIns= 	 mysqli_query($conn,$qIns)or die(mysqli_error($conn).$qIns);
 	
 }	
 	
@@ -51,7 +42,9 @@ $retIns= 	 mysql_query($qIns)or die(mysql_error().$qIns);
 				echo "0";
 			}
 		
+mysqli_close($conn);
+
 			header("HTTP/1.1 200 OK");
 
+
 ?>
-<?php  ?>

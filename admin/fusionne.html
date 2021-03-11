@@ -95,10 +95,14 @@
 			divBte = document.getElementById('boiteJoueurs');
 			for (var j = 0; j < mEq.length; j++) {
 				mP = document.createElement('P');
+				mP.setAttribute('id','j'+mEq[j].joueurId)
 
 				mP.onclick = (function(mJ) {
 					return function() {
-						getProfilDeJoueurId(mJ, 2);
+					if(window.joueurId==mJ){ 
+					$('#j'+mJ).append('<div></div>').addClass('alert alert-danger').text('Impossible de fusionner à lui-même. Choisir un autre joueur.'); }
+					else{ getProfilDeJoueurId(mJ, 2); }
+						 
 					};
 				})(mEq[j].joueurId);
 				mP.innerHTML = mEq[j].nomJoueur+" ("+ mEq[j].joueurId+") ";

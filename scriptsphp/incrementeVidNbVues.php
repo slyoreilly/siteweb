@@ -1,9 +1,5 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableEq = 'TableEquipe';
 $tableLigue = 'Ligue';
 $tableMatch = 'TableMatch';
@@ -14,18 +10,18 @@ $tableUser = 'TableUser';
 
 $videoId= $_POST['videoId'];
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error($conn));
+}
+
+mysqli_query($conn,"SET NAMES 'utf8'");
+mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 	
-	mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+
 
 //////////////////////////////////
 //
@@ -34,16 +30,17 @@ mysql_query("SET CHARACTER SET 'utf8'");
 
 
 $qVielleSaison="SELECT nbVues FROM Video WHERE videoId='{$videoId}' limit 0,1";
-$resVS=mysql_query($qVielleSaison) or die(mysql_error().'Error, query failed'.$qVielleSaison);
-		while ($rVS = mysql_fetch_array($resVS)) {
+$resVS=mysqli_query($conn,$qVielleSaison) or die(mysqli_error($conn).'Error, query failed'.$qVielleSaison);
+		while ($rVS = mysqli_fetch_array($resVS)) {
 			$aMettre = $rVS[0]+1;
 			
 	$qSUp = "UPDATE Video 
 							SET nbVues='{$aMettre}'
 							WHERE videoId='{$videoId}' ";
-		mysql_query($qSUp) or die(mysql_error().' Error, query failed'.$qSUp);
+		mysqli_query($conn,$qSUp) or die(mysqli_error($conn).' Error, query failed'.$qSUp);
 
 		}
 		
-	
+
+mysqli_close($conn);	
 ?>

@@ -1,5 +1,6 @@
 <?php
 
+require '../scriptsphp/defenvvar.php';
 
 /////////////////////////////////////////////////////////////
 //
@@ -7,13 +8,12 @@
 // 
 ////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-$database = 'syncsta1_900';
+
 
 $search = $_POST['searchString'];
-$type = $_POST['typeRecherche'];
+$type =null;
+if(isset($_POST['typeRecherche'])){
+$type = $_POST['typeRecherche'];}
 
 ////////////////////////////////////////////////////////////
 //
@@ -34,7 +34,9 @@ mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 $ligue = array();
 	$rLigue = mysqli_query($conn,"SELECT  Ligue.*
 								FROM Ligue
-								WHERE Nom_Ligue LIKE '%".$search."%'")
+								WHERE Nom_Ligue LIKE '%".$search."%'
+								 AND cleValeur NOT RLIKE '\"statut\":\"efface\"|\"statut\":\"secret\"'
+								" )
 or die(mysqli_error($conn)); 
 $IL=0;
 	while($rangLigue=mysqli_fetch_assoc($rLigue)){
@@ -56,7 +58,7 @@ $IJ=0;
 	}
 	
 	$match = array();
-	if(!strcmp($type, "match")){
+	if(strcmp($type, "match")==0){
 
 	$datedeb = $search." 00:00:00.000";
 	$datefin = $search." 23:59:59.999";

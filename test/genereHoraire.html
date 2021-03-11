@@ -49,7 +49,7 @@
             }
 
             #divMetaMatch {
-
+				width: 100%;
             }
             #divConteneurs {
                 width: 30%;
@@ -59,7 +59,7 @@
                 border-color:black;
             }
             #divMatchs {
-                margin-left:30px;
+              margin-left:30px;
                 width: 30%;
                 float: left;
                 border-style:solid;
@@ -67,13 +67,27 @@
                 border-color:black;
             }
             #divConfrontations {
-                margin-left:30px;
+               margin-left:30px;
                 width: 30%;
                 float: left;
                                 border-style:solid;
                 border-width:1px;
                 border-color:black;
             }
+			@media print{
+				font-size: small;
+				#divConteneurs, #divConteneurs * {
+					display: none;
+				}
+				#divMatchs {
+					width:100%;
+				}
+				#divConfrontations{
+					display: none;
+				}
+			}
+
+
             /* #divEquipes {
              width:30%;
              float:left;
@@ -1126,18 +1140,18 @@
 
 						} else {
 							$('#divMatchsTr_' + q).append($('<td></td>').append($('<i class="fas fa-unlock"></i>')));
-							//alert($('#divMatchsTr_'+q+' i.fa-unlock').html());
-							$(function() {
+							//console.log($('#divMatchsTr_'+q+' i.fa-unlock').html());
+							//$(function() {
 								$('#divMatchs').on("click", "tr:nth-child(" + tmpQ + ") i.fa-unlock", {
 									ind : q
 								}, function(event) {
-									//     alert(calendrierMatchs[event.data.ind].statut);
+									console.log(calendrierMatchs[event.data.ind].statut);
 									$(this).removeClass("fa-unlock").addClass("fa-lock");
 									calendrierMatchs[event.data.ind].statut = 80;
 									//actualiseVecteurs();
 
 								});
-							});
+							//});
 
 						}
 
@@ -1567,7 +1581,7 @@
 			        unMatchExp.eqDom = vecEquipes[getObjet(confrontations,calendrierMatchs[parseInt(indMatch)].confrontationId).dom].id;
                     unMatchExp.eqVis = vecEquipes[getObjet(confrontations,calendrierMatchs[parseInt(indMatch)].confrontationId).vis].id;
                     unMatchExp.dateDeb =  maDate;
-                    unMatchExp.dateFin = "2020-01-01";
+                    unMatchExp.dateFin = "2050-01-01";
                     unMatchExp.ligueId = getValue("ligueId");
                     unMatchExp.arenaId = getObjet(vecPlages, getObjet(conteneurs,calendrierMatchs[parseInt(indMatch)].conteneurId).plageId).surface;
                     unMatchExp.arbitreId = null;
@@ -1668,7 +1682,7 @@
         <div id="divGauche"></div>
         <div id="divMenuHaut"></div>
 
-        <div id="divCentrale" style="width:100%">
+        <div id="divCentrale" style='width:100%'>
             <div id="tableauDeBord">
                 <input type="button" id="btnCommencer" value="Commencer" onclick="genereBase()">
                 </input>
@@ -1779,14 +1793,15 @@
                     </div>
                     <input type="button" value="Supprimer des plages" onclick="effacePlages()"/>
 
-                </div>
-                <div id="divMetaMatch">
+				</div>
+				<h3 id="h3conteneurs">Conteneurs</h3>
+                <div id="divMetaMatch" >
 
-                    <h3 id="h3conteneurs">Conteneurs</h3>
-                    <div id="divConteneurs"></div>
-                    <div id="divMatchs"></div>
+                    
+                    <div id="divConteneurs" class='border  hidden-print'></div>
+					<div id="divMatchs" class= 'border-success  visible-print-block '></div>
                     <!--h3 id="h3confrontations">Confrontations</h3-->
-                    <div id="divConfrontations"></div>
+                    <div id="divConfrontations" class='border  hidden-print '></div>
                     <!--div id="divConfrontationAction">
                     <input type="button" value="Supprimer des confrontations" onclick="effaceConfrontations()"/>
                     </div-->

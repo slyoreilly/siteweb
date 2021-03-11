@@ -4,7 +4,6 @@
 		<title>Rapport de ligue</title>
 		<script src="http://connect.facebook.net/fr_FR/all.js#xfbml=1"></script>
 		<link rel="shortcut icon" href="/favicon.ico" />
-		<link rel="stylesheet" href="/style/general_v4.css" type="text/css"/>
 		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
 		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
@@ -15,8 +14,11 @@
 			<style>
 		</style>
 		<script type="text/javascript" charset="utf-8">
-				 		gereLangue();
+						 gereLangue();
+						 
+						
 		</script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.3/jquery.timeago.min.js"></script>
 
 		<script type="text/javascript" charset="utf-8">
 			function getArbitres(arbitreId) {
@@ -86,12 +88,11 @@
 			function getEquipements() {
 				var requete_ajax = new XMLHttpRequest();
 
-				var url = "/scriptsphp/getGenerique.php";
+				var url = "/scriptsphp/getStatutCamDeUser.php";
 
-				var strTable = "table=StatutCam";
-				var strOu= "ou='userId'=\"" + getCookie("userId")+"\"";
+				var strOu= "userId=" + getCookie("userId");
 				
-				params = strTable+"&"+strOu;
+				params = strOu;
 				//alert(url);
 				requete_ajax.open('POST', url+"?"+params, true);
 				//				requete_ajax.send(null);
@@ -106,9 +107,33 @@
 					if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
 
 						repRap = eval('(' + requete_ajax.responseText + ')');
-					
+						//repRap.sort(function(a, b){return b.dernierMaJ-a.dernierMaJ});
+
 						var table = $.makeTable(repRap);
 						(table).appendTo("#equipements");
+
+						memoire = $('th:contains("memoire")').index()+1;
+						$('#equipements table tr td:nth-child('+memoire+')').each(function(index){
+							var mMem = parseInt($(this).text());
+							mMem = Math.round(mMem/1000000)+" M";
+							$(this).text(mMem);
+						});
+
+						dernierModif = $('th:contains("Modif")').index()+1;
+						$(' #equipements table tr td:nth-child('+dernierModif+')').each(function(index){
+							var MT = $(this).text();
+							$(this).text("");
+							$(this).append($('<time></time>').addClass("timeago").attr("datetime",MT).text(MT));
+							
+						});
+						dernierMaJ = $('th:contains("MaJ")').index()+1;
+						$(' #equipements table tr td:nth-child('+dernierMaJ+')').each(function(index){
+							var MT = $(this).text();
+							$(this).text("");
+							$(this).append($('<time></time>').addClass("timeago").attr("datetime",MT).text(MT));
+						});
+
+						jQuery("time.timeago").timeago();
 						
 					}
 				};
@@ -483,7 +508,7 @@
 			
 			<div id="Params"><h2>Params de recherche</h2> </div>
 			<div id="dateDeb"><span>Date de début  :</span><input id="iDeb" type="date" value="2010/01/01"></input> </div>
-			<div id="dateFin"><span>Date de fin  : </span><input id="iFin" type="date" value="2020/01/01"></input> </div>
+			<div id="dateFin"><span>Date de fin  : </span><input id="iFin" type="date" value="2030/01/01"></input> </div>
 			
 			<div id="Visites"><h2>Visites</h2> </div>
 			<div id="Videos"><h2>Videos</h2> </div>
@@ -493,7 +518,7 @@
 		<script type="text/javascript" charset="utf-8">
 			//						alert(JSON.stringify(document.getElementById("divCentrale").all));
 	//		alert(document.getElementsByTagName("A")[0].href);
-
+	jQuery(document).ready(function() {
 
 			developper(0);
 			
@@ -517,6 +542,8 @@
 			
 
 	//		alert(document.getElementById("tabResume").href);
+	jQuery("time.timeago").timeago();
+							});
 
 		</script>
 	</body>

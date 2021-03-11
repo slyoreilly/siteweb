@@ -16,11 +16,7 @@
  * 
  */
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableEq = 'TableEquipe';
 $tableLigue = 'Ligue';
 $tableMatch = 'TableMatch';
@@ -29,34 +25,30 @@ $tableJoueur = 'TableJoueur';
 $tableAbon = 'AbonnementLigue';
 $tableUser = 'TableUser';
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+mysqli_set_charset($conn, "utf8");
+
 	
 
 
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
 
 
-
-
-
-$nom = mysql_real_escape_string($_POST['nom']);
-$prenom = mysql_real_escape_string($_POST['prenom']);
+$nom = mysqli_real_escape_string($conn,$_POST['nom']);
+$prenom = mysqli_real_escape_string($conn,$_POST['prenom']);
 $numero = $_POST['numero'];
 $position = $_POST['position'];
 $pseudo = $_POST['pseudo'];
 $taille = $_POST['taille'];
 $poids = $_POST['poids'];
 $anneeNaissance = $_POST['anneeNaissance'];
-$villeOrigine = mysql_real_escape_string($_POST['villeOrigine']);
+$villeOrigine = mysqli_real_escape_string($conn,$_POST['villeOrigine']);
 $code = $_POST['code'];
 $sexe =$_POST['sexe'];
 $joueurId =$_POST['joueurId'];
@@ -74,7 +66,7 @@ $ficId = $_POST['ficId'];
 	if($code==1||$code==41)  // Code 10:  Modifie ligue existante.
 	{
 	$query_update = "UPDATE TableJoueur SET dernierMAJ=NOW(), nom='$nom', prenom='$prenom', NomJoueur='$pseudo',NumeroJoueur='$numero',position='$position', taille='$taille', sexe='$sexe', poids='$poids', anneeNaissance='$anneeNaissance' , villeOrigine='$villeOrigine' , ficIdPortrait='$ficId' WHERE joueur_id= '$joueurId'";	
-	mysql_query($query_update)or die('TableJoueur Update '.mysql_error());	
+	mysqli_query($conn,$query_update)or die('TableJoueur Update '.mysqli_error($conn));	
 	}
 
 	if($code==40)  // Code 10:  Modifie ligue existante.
@@ -86,17 +78,17 @@ $ficId = $_POST['ficId'];
 	VALUES ('$pseudo','$numero','$position','$ligueId','aucune',NULL,'$nom','$prenom', '$taille','$poids','$sexe','$anneeNaissance','$villeOrigine',
 			NOW(),0,0,0)";	
 	//echo $query_insert;
-			$ret =mysql_query($query_insert) or die('TableJoueur Insert '+mysql_error()); 
-	$mes1='TableJoueur Insert '+mysql_error();
+			$ret =mysqli_query($conn,$query_insert) or die('TableJoueur Insert '+mysqli_error($conn)); 
+	$mes1='TableJoueur Insert '.mysqli_error($conn);
 	//echo " que je cherche";
 	
 	if($ret)
 	{$reqSel="SELECT joueur_id FROM TableJoueur WHERE NomJoueur='$pseudo' ORDER BY joueur_id  DESC";
-	$rJID = mysql_query($reqSel)or die('TableJoueur Select '+mysql_error()); 
-	$jId=mysql_fetch_array($rJID);
+	$rJID = mysqli_query($conn,$reqSel)or die('TableJoueur Select '+mysqli_error($conn)); 
+	$jId=mysqli_fetch_array($rJID);
 	$requeteInsertAbon = "INSERT INTO `abonJoueurLigue`(`joueurId`, `ligueId`, `permission`, `debutAbon`, `finAbon`) 
 	VALUES ({$jId['joueur_id']},'$ligueId',30,NOW(),'2050-01-01')";
-		mysql_query($requeteInsertAbon)or die('TableJoueur Abon '+mysql_error()); 
+		mysqli_query($conn,$requeteInsertAbon)or die('TableJoueur Abon '+mysqli_error($conn)); 
 			echo $jId['joueur_id'];
 	
 	}
@@ -109,7 +101,7 @@ $ficId = $_POST['ficId'];
 	//echo "test";
 	}
 
-	
+	mysqli_close($conn);
 /*
 
 if($code<40)

@@ -7,11 +7,7 @@
 // 
 ////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableLigue = 'Ligue';
 $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
@@ -25,48 +21,173 @@ $joueurId = $_GET['joueurId'];
 //
 ////////////////////////////////////////////////////////////
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
+
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+mysqli_set_charset($conn, "utf8");
+
+
+///////////////////////////////////
+//
+//   NOUVEAU!!!!!
+
+function getLigueIndex($ligues,$ligueId){
+	$i=0;
+foreach($ligues as $uneligue){
+	 if(strcmp($uneligue['ligueId'],$ligueId)===0){
+		 return $i;
+	 }
+	 $i++;
+	}
+
+	return -1;
+}
+function getSaisonIndex($saisons,$saisonId){
+	$i=0;
+foreach($saisons as $unesaison){
+	 if($unesaison['saisonId']==$saisonId){
+		 return $i;
+	 }
+	 $i++;
+	}
+
+	return -1;
+}
+function getEquipeIndex($equipes,$equipeId){
+	$i=0;
+foreach($equipes as $uneequipe){
+	 if($uneequipe['equipeId']==$equipeId){
+		 return $i;
+	 }
+	 $i++;
+	}
+
+	return -1;
+}
+
+$result = mysqli_query($conn, "
+SELECT Ligue.ID_Ligue, Ligue.Nom_Ligue, saisonId, premierMatch, dernierMatch, nom, SUM(e.PJ) as PJ, TableEquipe.nom_equipe, TableEquipe.equipe_id, IFNULL(SUM(b.B),0) as Buts,  IFNULL(SUM(Pun.Pun),0) as Pun,  IFNULL(SUM(P.P),0) as Passes FROM TableSaison as s1
+JOIN Ligue 
+ on Ligue.ID_Ligue=s1.ligueRef
+ JOIN abonJoueurLigue 
+ on abonJoueurLigue.ligueId=s1.ligueRef
+ LEFT JOIN abonEquipeLigue
+ on abonEquipeLigue.ligueId=Ligue.ID_Ligue
+ JOIN TableEquipe 
+ ON abonEquipeLigue.equipeId=TableEquipe.equipe_id
+ JOIN TableMatch as t1
+on (t1.date BETWEEN s1.premierMatch AND s1.dernierMatch AND t1.ligueRef=s1.ligueRef  AND  (t1.eq_dom=TableEquipe.equipe_id OR t1.eq_vis=TableEquipe.equipe_id ))
+
+Join (
+		SELECT count(*) as PJ, TableEvenement0.match_event_id, Min(TableEvenement0.equipe_event_id) as eq
+		FROM TableEvenement0 
+		where TableEvenement0.code = 3 and TableEvenement0.joueur_event_ref='$joueurId'
+		GROUP by TableEvenement0.match_event_id
+	) as e
+on (TableEquipe.equipe_id=e.eq AND t1.matchIdRef=e.match_event_id )
+
+LEfT Join (
+		SELECT count(*) as B, TableEvenement0.match_event_id, Min(TableEvenement0.equipe_event_id) as eq
+		FROM TableEvenement0 
+		where TableEvenement0.code = 0 and TableEvenement0.joueur_event_ref='$joueurId'
+		GROUP by TableEvenement0.match_event_id
+	) as b
+on (TableEquipe.equipe_id=b.eq AND t1.matchIdRef=b.match_event_id )
+LEfT Join (
+		SELECT count(*) as P, TableEvenement0.match_event_id, Min(TableEvenement0.equipe_event_id) as eq
+		FROM TableEvenement0 
+		where TableEvenement0.code = 1 and TableEvenement0.joueur_event_ref='$joueurId'
+		GROUP by TableEvenement0.match_event_id
+	) as P
+on (TableEquipe.equipe_id=P.eq AND t1.matchIdRef=P.match_event_id )
+LEfT  Join (
+		SELECT count(*) as Pun, TableEvenement0.match_event_id, Min(TableEvenement0.equipe_event_id) as eq
+		FROM TableEvenement0 
+		where TableEvenement0.code = 4 and TableEvenement0.joueur_event_ref='$joueurId'
+		GROUP by TableEvenement0.match_event_id
+	) as Pun
+on (TableEquipe.equipe_id=Pun.eq AND t1.matchIdRef=Pun.match_event_id )
+
+
+where abonJoueurLigue.joueurId='$joueurId'
+group by  saisonId, abonEquipeLigue.equipeId ORder By Ligue.ID_Ligue, saisonId, abonEquipeLigue.equipeId"
+)or die(mysqli_error($conn));
+$Ligues = array();
+while($row=mysqli_fetch_array($result))
+{
+	$indLigue =getLigueIndex($Ligues,$row['ID_Ligue']);
+	if($indLigue==-1){
+		$mLigue=array();
+		$mLigue['nom']=$row['Nom_Ligue'];
+		$mLigue['ligueId']=$row['ID_Ligue'];
+		$mLigue['saisons']=array();
+		array_push($Ligues,$mLigue);
+		$indLigue=count($Ligues)-1;
+	}
+	$indSaison =getSaisonIndex($Ligues[$indLigue]['saisons'],$row['saisonId']);
+	if($indSaison==-1){
+		$mSaison=array();
+		$mSaison['saisonId']=$row['saisonId'];
+		$mSaison['pm']=$row['premierMatch'];
+		$mSaison['dm']=$row['dernierMatch'];
+		$mSaison['equipes']=array();
+		array_push($Ligues[$indLigue]['saisons'],$mSaison);
+		$indSaison=count($Ligues[$indLigue]['saisons'])-1;
+	}
+	$indEquipe =getEquipeIndex($Ligues[$indLigue]['saisons'][$indSaison]['equipes'],$row['equipe_id']);
+	if($indEquipe==-1){
+		$mEquipe=array();
+		$mEquipe['equipeId']=$row['equipe_id'];
+		$mEquipe['nom']=$row['nom_equipe'];
+		$mEquipe['pj']=$row['PJ'];
+		$mEquipe['buts']=$row['Buts'];
+		$mEquipe['passes']=$row['Passes'];
+		$mEquipe['minPun']=$row['Pun'];	
+		array_push($Ligues[$indLigue]['saisons'][$indSaison]['equipes'],$mEquipe);
+		$indEquipe=count($Ligues[$indLigue]['saisons'][$indSaison]['equipes'])-1;
+	}
 
 }
 
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
-
-
 ////////////////////////////////////////
 ///	Sélectionne les ligues du joueur.
+/*
+$rJoueur = mysqli_query($conn, "SELECT L.ID_Ligue, L.Nom_Ligue 
+						FROM Ligue as L 
+						JOIN 
+							( SELECT aJ.ligueId 
+								FROM abonJoueurLigue as aJ 
+								WHERE joueurId='$joueurId' ) as abons
+						 on abons.ligueId = L.ID_Ligue 
+						 WHERE true group by ID_Ligue")or die(mysqli_error($conn));
 
-$rJoueur = mysql_query("SELECT abonJoueurLigue.*,Ligue.* FROM abonJoueurLigue 
-								JOIN Ligue
-									ON (Ligue.ID_Ligue=abonJoueurLigue.ligueId)
-								WHERE joueurId = '$joueurId'
-								GROUP BY ID_Ligue")or die(mysql_error());
+
 $IL=0;
 $listeLigue=Array();
 $maLigue=null;
-while($maLigue=mysql_fetch_array($rJoueur))
+while($maLigue=mysqli_fetch_array($rJoueur))
 {
 	$listeLigue[$IL]=Array();
-	$listeLigue[$IL]['ligueId']=$maLigue['ligueId'];
+	$listeLigue[$IL]['ligueId']=$maLigue['ID_Ligue'];
 	$listeLigue[$IL]['nom']=$maLigue['Nom_Ligue'];
 	$listeLigue[$IL]['saisons']=Array();
 	$IL++;
 }
 
-$rJoueur2 = mysql_query("SELECT abonEquipeLigue.*, Ligue.*,abonJoueurEquipe.* 
+$rJoueur2 = mysqli_query($conn, "SELECT abonEquipeLigue.*, Ligue.*,abonJoueurEquipe.* 
 								FROM abonEquipeLigue 
 								JOIN abonJoueurEquipe
 									ON (abonJoueurEquipe.equipeId=abonEquipeLigue.equipeId)
 								JOIN Ligue
 									ON (Ligue.ID_Ligue=abonEquipeLigue.ligueId)
-								WHERE joueurId = '$joueurId'")or die(mysql_error());
-while($maLigue2 = mysql_fetch_array($rJoueur2))
+								WHERE joueurId = '$joueurId'")or die(mysqli_error($conn));
+while($maLigue2 = mysqli_fetch_array($rJoueur2))
 {
 	
 		$trouve=false;
@@ -92,10 +213,10 @@ while($maLigue2 = mysql_fetch_array($rJoueur2))
 for($a=0;$a<count($listeLigue);$a++)
 {
 	$ISai=0;
-$rSai = mysql_query("SELECT * 
+$rSai = mysqli_query($conn,"SELECT * 
 								FROM TableSaison 
-								WHERE ligueRef = '{$listeLigue[$a]['ligueId']}'")or die(mysql_error());
-while($rangSai=mysql_fetch_array($rSai))
+								WHERE ligueRef = '{$listeLigue[$a]['ligueId']}'")or die(mysqli_error($conn));
+while($rangSai=mysqli_fetch_array($rSai))
 	{
 	$listeLigue[$a]['saisons'][$ISai]=Array();
 	$listeLigue[$a]['saisons'][$ISai]['saisonId']=$rangSai['saisonId'];
@@ -116,11 +237,11 @@ while($rangSai=mysql_fetch_array($rSai))
 		 			AND chrono<=(UNIX_TIMESTAMP('{$listeLigue[$a]['saisons'][$ISai]['dm']}')*1000) 
 		 			AND TableMatch.ligueRef='{$listeLigue[$a]['ligueId']}'
 		 			ORDER BY equipe_event_id";
-mysql_query("SET SQL_BIG_SELECTS=1");
-	$rMatch = mysql_query($reqMatchs)or die(mysql_error()." reqMatchs");
+mysqli_query($conn,"SET SQL_BIG_SELECTS=1");
+	$rMatch = mysqli_query($conn,$reqMatchs)or die(mysqli_error($conn)." reqMatchs");
 	$IE = -1;
 	$eqId=0;
-	while($rangMatch=mysql_fetch_array($rMatch))
+	while($rangMatch=mysqli_fetch_array($rMatch))
 	{
 		if($rangMatch['equipe_event_id']!=$eqId)
 		{
@@ -154,10 +275,10 @@ mysql_query("SET SQL_BIG_SELECTS=1");
 	}								
 								
 }
-
-echo "{\"Ligues\":".json_encode($listeLigue)."}";
+*/
+echo "{\"Ligues\":".json_encode($Ligues)."}";
 
 		
-
+mysqli_close($conn);
 
 ?>

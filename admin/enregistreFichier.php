@@ -1,9 +1,5 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableEq = 'TableEquipe';
 $tableLigue = 'Ligue';
 $tableMatch = 'TableMatch';
@@ -11,18 +7,27 @@ $tableEvent = 'TableEvenement0';
 $tableJoueur = 'TableJoueur';
 $tableAbon = 'AbonnementLigue';
 $tableUser = 'TableUser';
+$contexte = 'equipe';
 
-$contexte = $_POST['contexte'];
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
+if (isset($_POST['contexte'])){
+    $contexte =$_POST['contexte'];
+}
+$contexte = 'equipe';
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
+$refId = 0;
+if (isset($_POST['refId'])){
+    $refId =$_POST['refId'];
+}
+
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
+
+	
 	
 	//////////////////////////////////////////////////////////////////////
 //
@@ -37,24 +42,20 @@ $tmpName  = $_FILES['userfile']['tmp_name'];
 $fileSize = $_FILES['userfile']['size'];
 $fileType = $_FILES['userfile']['type'];
 
-$fp      = fopen($tmpName, 'r');
-$content = fread($fp, filesize($tmpName));
-$content = addslashes($content);
-fclose($fp);
+//$fp      = fopen($tmpName, 'r');
+$content = addslashes(file_get_contents($tmpName));
+//$content = fread($fp, filesize($tmpName));
+//fclose($fp);
 
-if(!get_magic_quotes_gpc())
-{
-    $fileName = addslashes($fileName);
-}
 
 $query = "INSERT INTO TableFichier (contexte, idRef , name, size, type, content ) ".
-"VALUES ('equipe', '0','{$fileName}', '{$fileSize}', '{$fileType}', '{$content}')";
+"VALUES ('{$contexte}', '{$refId}','{$fileName}', '{$fileSize}', '{$fileType}', '{$content}')";
 
-mysql_query($query) or die("Erreur: "+$query+"\n"+mysql_error());
+mysqli_query($conn,$query) or die("Erreur: ".$query."\n".mysqli_error($conn));
 
 $querySel = "SELECT ficId FROM TableFichier WHERE 1 ORDER BY ficId DESC ";
-$retSel = mysql_query($querySel) or die("Erreur: "+$querySel+"\n"+mysql_error());
-$are = mysql_fetch_row($retSel);
+$retSel = mysqli_query($conn,$querySel) or die("Erreur: ".$querySel."\n".mysqli_error($conn));
+$are = mysqli_fetch_row($retSel);
 echo $are[0];
 
 }
@@ -68,4 +69,6 @@ else echo 0;
 
 //include 'library/closedb.php';
 	
+mysqli_close($conn);
+
 ?>

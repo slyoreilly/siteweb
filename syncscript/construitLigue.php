@@ -1,9 +1,5 @@
-<?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+																																											<?php
+require '../scriptsphp/defenvvar.php';
 $tableEq = 'TableEquipe';
 $tableLigue = 'Ligue';
 $tableMatch = 'TableMatch';
@@ -18,30 +14,25 @@ $tableUser = 'TableUser';
 //$ligueId = $_POST['ligueId'];
 
 
-
-
-
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-
+		
+//$json=json_decode("'".$matchjson."'");
+$connCL = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$connCL) {
+	die("Connection failed: " . mysqli_connect_error());
 }
-	mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+
+mysqli_query($connCL, "SET NAMES 'utf8'");
+mysqli_query($connCL, "SET CHARACTER SET 'utf8'");
 	
 
 ////    Besoin de vieilledate et ligueId
 $compte=0;
 	
 	// Retrieve all the data from the "example" table
-$resultUser = mysql_query("SELECT * FROM TableUser")
-or die(mysql_error());  
-while($rangeeUser=mysql_fetch_array($resultUser))
+$resultUser = mysqli_query($connCL,"SELECT * FROM TableUser")
+or die(mysqli_error($connCL));  
+while($rangeeUser=mysqli_fetch_array($resultUser))
 {
 		if(!strcmp($rangeeUser['username'],$username))
 	{$userSelect =$rangeeUser['noCompte'];
@@ -50,9 +41,9 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 }
 
 
-	$resultLigue = mysql_query("SELECT * FROM {$tableLigue} 
+	$resultLigue = mysqli_query($connCL,"SELECT * FROM {$tableLigue} 
 									WHERE ID_Ligue={$ligueId}")
-	or die(mysql_error());  
+	or die(mysqli_error($connCL));  
 	//$resultJoueur = mysql_query("SELECT * FROM {$tableJoueur}")
 	//or die(mysql_error());  
 		
@@ -75,10 +66,14 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 		$forceSync=false;
 //		echo "ICI";
 	$ligue=array();
-		while($rangeeLigue=mysql_fetch_array($resultLigue))
+		while($rangeeLigue=mysqli_fetch_array($resultLigue))
 			{
 				$ligue['nomLigue']=$rangeeLigue['Nom_Ligue'];
 				$ligue['ligueId']=$rangeeLigue['ID_Ligue'];
+				$ligue['cleValeur']=$rangeeLigue['cleValeur'];
+				$ligue['horaire']=$rangeeLigue['Horaire'];
+				$ligue['lieu']=$rangeeLigue['Lieu'];
+
 				$ligue['equipe']=array();
 				
 				$c=0;
@@ -86,7 +81,7 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 				$resultEquipe = NULL;
 				unset($joueurs);
 				$joueurs=array();
-				$resultEquipe = mysql_query("SELECT TableEquipe.*,abonEquipeLigue.* 
+				$resultEquipe = mysqli_query($connCL,"SELECT TableEquipe.*,abonEquipeLigue.* 
 												FROM abonEquipeLigue
 												JOIN {$tableEq} 
 													ON(TableEquipe.equipe_id=abonEquipeLigue.equipeId)
@@ -94,9 +89,9 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 														AND permission<31
 														AND debutAbon <= NOW() 
 														AND finAbon >= NOW()")
-				or die(mysql_error());  
+				or die(mysqli_error($connCL));  
 				$IEq=0;
-				while($rangeeEquipe=mysql_fetch_array($resultEquipe))
+				while($rangeeEquipe=mysqli_fetch_array($resultEquipe))
 					{
 //					if($rangeeEquipe['ligue_equipe_ref']==$rangeeLigue['ID_Ligue'])
 //						{
@@ -107,10 +102,11 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 						$ligue['equipe'][$IEq]['nomEquipe']=$rangeeEquipe['nom_equipe'];
 						$ligue['equipe'][$IEq]['equipeId']=$rangeeEquipe['equipe_id'];
 						$ligue['equipe'][$IEq]['logo']=$rangeeEquipe['logo'];
+						$ligue['equipe'][$IEq]['couleur']=$rangeeEquipe['couleur1'];
 						$ligue['equipe'][$IEq]['cleValeur']=$rangeeEquipe['cleValeur'];
 						$ligue['equipe'][$IEq]['joueur']=array();	
 						
-						$resultJoueur = mysql_query("SELECT TableJoueur.*, abonJoueurEquipe.* 
+						$resultJoueur = mysqli_query($connCL,"SELECT TableJoueur.*, abonJoueurEquipe.* 
 													FROM abonJoueurEquipe
 													JOIN {$tableJoueur}
 														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
@@ -118,15 +114,15 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 														AND debutAbon <= NOW() 
 														AND finAbon >= NOW()
 															AND UNIX_TIMESTAMP(dernierMAJ)>'{$vielledate}'")
-						or die(mysql_error());  
+						or die(mysqli_error($connCL));  
 						$rangeeJoueur=0;
 						$IJ=0;
 						
 						//if(mysql_num_rows($resultJoueur)==0)
 						//	{unset($ligue['equipe'][$IEq]);
 						//	$IEq--;}
-						$compte+=mysql_num_rows($resultJoueur);
-						while($rangeeJoueur=mysql_fetch_array($resultJoueur))
+						$compte+=mysqli_num_rows($resultJoueur);
+						while($rangeeJoueur=mysqli_fetch_array($resultJoueur))
 							{if($rangeeJoueur['equipeId']==$rangeeEquipe['equipe_id'])
 								{
 									$ligue['equipe'][$IEq]['joueur'][$IJ]['nomJoueur']=	$rangeeJoueur['NomJoueur'];
@@ -152,11 +148,12 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 						$ligue['equipe'][$IEq]['equipeId']=0;
 						$ligue['equipe'][$IEq]['logo']="rien";
 						$ligue['equipe'][$IEq]['cleValeur']="";
+						$ligue['equipe'][$IEq]['couleur']='FFFFFF';
 						$ligue['equipe'][$IEq]['joueur']=array();
 				
 						$IJ=0;
 				
-					$resultJoueur2 = mysql_query("SELECT * 
+					$resultJoueur2 = mysqli_query($connCL,"SELECT * 
 													FROM abonJoueurLigue
 														JOIN TableJoueur
 															ON (TableJoueur.joueur_id=abonJoueurLigue.joueurId)
@@ -165,15 +162,15 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 																AND debutAbon <= NOW() 
 																AND finAbon >= NOW()")
 						
-						or die(mysql_error());  
+						or die(mysqli_error($connCL));  
 						$rangeeJoueur=0;
-												if(mysql_num_rows($resultJoueur2)==0)
+												if(mysqli_num_rows($resultJoueur2)==0)
 							{unset($ligue['equipe'][$IEq]);
 							$IEq--;}
-													$compte+=mysql_num_rows($resultJoueur2);
+													$compte+=mysqli_num_rows($resultJoueur2);
 							
 						
-						while($rangeeJoueur=mysql_fetch_array($resultJoueur2))
+						while($rangeeJoueur=mysqli_fetch_array($resultJoueur2))
 								{
 									$mJoueur=array();
 									if(in_array($rangeeJoueur['joueur_id'],$joueurs)==false)
@@ -204,5 +201,6 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 	
  *///header("HTTP/1.1 200 OK");
 //echo " ".count($AbonSelect);
+mysqli_close($connCL);
 
 ?>

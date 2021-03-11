@@ -1,9 +1,5 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableEq = 'TableEquipe';
 $tableLigue = 'Ligue';
 $tableMatch = 'TableMatch';
@@ -16,29 +12,25 @@ $tableUser = 'TableUser';
 //$jVisJSON = stripslashes($_POST['jVis']);
 
 
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
-	
-	mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 	
 
-function trouveIDParNomUser($nomUser)
+function trouveIDParNomUser($nomUser,$conn)
 {
-$fResultUser = mysql_query("SELECT noCompte 
+$fResultUser = mysqli_query($conn, "SELECT noCompte 
 								FROM TableUser 
 								WHERE username='{$nomUser}'")
-or die(mysql_error());  
-$rU = mysql_fetch_row($fResultUser);
-if (mysql_num_rows($fResultUser)>0)
+or die(mysqli_error($conn));  
+$rU = mysqli_fetch_row($fResultUser);
+if (mysqli_num_rows($fResultUser)>0)
 {
 return $rU[0];
 }
@@ -47,15 +39,15 @@ else{return -1;}
 }
 
 
-$expediteur = trouveIDParNomUser($_POST['expediteur']);
+$expediteur = trouveIDParNomUser($_POST['expediteur'],$conn);
 $recepteur = $_POST['recepteur'];
-$titre = mysql_real_escape_string($_POST['titre']);
-$corps = mysql_real_escape_string($_POST['corps']);
+$titre = mysqli_real_escape_string($conn,$_POST['titre']);
+$corps = mysqli_real_escape_string($conn, $_POST['corps']);
 $cleValeur = $_POST['cleValeur'];
 
 
-	$retour = mysql_query("INSERT INTO TableMessage (expediteur, recepteur, titre, corps, dateEmission,cleValeur) 
-VALUES ('{$expediteur}','{$recepteur}','{$titre}','{$corps}',NOW(),'{$cleValeur}')")or die(mysql_error()." INSERT INTO");
+	$retour = mysqli_query($conn, "INSERT INTO TableMessage (expediteur, recepteur, titre, corps, dateEmission,cleValeur) 
+VALUES ('{$expediteur}','{$recepteur}','{$titre}','{$corps}',NOW(),'{$cleValeur}')")or die(mysqli_error($conn)." INSERT INTO");
 
 ?>
 <?php  ?>

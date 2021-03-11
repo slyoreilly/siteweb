@@ -7,11 +7,8 @@
 // 
 ////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
+require '../scriptsphp/defenvvar.php';
 
-$database = 'syncsta1_900';
 $tableLigue = 'Ligue';
 $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
@@ -28,43 +25,29 @@ $saisonId = $_GET["saisonId"];
 //
 ////////////////////////////////////////////////////////////
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
 
-/////////////////////////////////////////////////////////////
-//
-//
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
-function trouveNomJoueurParID($ID){ 
-
-$resultJoueur = mysql_query("SELECT * FROM TableJoueur WHERE joueur_id = '{$ID}'")
-or die(mysql_error());  
-if($rangeeJoueur=mysql_fetch_array($resultJoueur))
-		  return ($rangeeJoueur['NomJoueur']); 
-else { return ("Anonyme"); }
-} 
 
 
 /////////////////////////////////////////////////////////////
 // 
 //
 
-function trouveSaisonActiveDeLigueId($ID){ 
-$rfSaison = mysql_query("SELECT saisonId FROM TableSaison WHERE ligueRef = '{$ID}' ORDER BY premierMatch DESC")
-or die(mysql_error()." Select saisonId");  
+function trouveSaisonActiveDeLigueId($ID,$conn){ 
+$rfSaison = mysqli_query($conn,"SELECT saisonId FROM TableSaison WHERE ligueRef = '{$ID}' ORDER BY premierMatch DESC")
+or die(mysqli_error($conn)." Select saisonId");  
 //echo mysql_result($rfSaison, 0)."\n";  
 //$tmp= (mysql_fetch_array($rfSaison));
 //echo $tmp['saisonId']."\n";  
- return (mysql_result($rfSaison, 0)); 
+return (mysqli_data_seek($rfSaison, 0));
 } 
 
 //////////////////////////////////////////////////////
@@ -75,29 +58,29 @@ or die(mysql_error()." Select saisonId");
 
 	
 if($saisonId=="null")// Sp�cifie par la saison
-	{$saisonId = trouveSaisonActiveDeLigueId($ligueId);}
+	{$saisonId = trouveSaisonActiveDeLigueId($ligueId,$conn);}
 		
 	
 	
-$resultSaison = mysql_query("SELECT * FROM TableSaison WHERE saisonId = '{$saisonId}'")
-or die(mysql_error());  
-while($rangeeSaison=mysql_fetch_array($resultSaison))
+$resultSaison = mysqli_query($conn,"SELECT * FROM TableSaison WHERE saisonId = '{$saisonId}'")
+or die(mysqli_error($conn));  
+while($rangeeSaison=mysqli_fetch_array($resultSaison))
 {
 	$premierMatch = $rangeeSaison['premierMatch'];
 	$dernierMatch = $rangeeSaison['dernierMatch'];
 	$typeSaison = $rangeeSaison['typeSaison'];
 }
-
-$resultEquipe = mysql_query("SELECT TableEquipe.*,abonEquipeLigue.* FROM TableEquipe 
-								JOIN abonEquipeLigue
-									ON (equipeId=equipe_id) 
-									WHERE ligueId = '{$ligueId}'
-									AND (abonEquipeLigue.finAbon>='{$premierMatch}'
-											AND abonEquipeLigue.debutAbon<='{$dernierMatch}')")
-								or die(mysql_error());  
+$requeteSelect= "SELECT TableEquipe.*,abonEquipeLigue.* FROM TableEquipe 
+JOIN abonEquipeLigue
+	ON (equipeId=equipe_id) 
+	WHERE ligueId = '{$ligueId}'
+	AND (abonEquipeLigue.finAbon>='{$premierMatch}'
+			AND abonEquipeLigue.debutAbon<='{$dernierMatch}')";
+$resultEquipe = mysqli_query($conn,$requeteSelect)
+								or die($requeteSelect." --  ".mysqli_error($conn));  
 $equipe=array();
 $Ie=0;
-while($rangeeEquipe=mysql_fetch_array($resultEquipe))
+while($rangeeEquipe=mysqli_fetch_array($resultEquipe))
 {
 	$equipe[$Ie]['id']=$rangeeEquipe['equipe_id'];
 	$equipe[$Ie]['nom']=$rangeeEquipe['nom_equipe'];
@@ -120,10 +103,10 @@ while($Ie < count($equipe)) {
 unset($resultMatch);
 unset($rangeeMatch);
 		
-$resultMatch = mysql_query("SELECT * FROM $tableMatch WHERE eq_dom = '{$equipe[$Ie]['id']}'")
-or die(mysql_error());  
+$resultMatch = mysqli_query($conn,"SELECT * FROM $tableMatch WHERE eq_dom = '{$equipe[$Ie]['id']}'")
+or die(mysqli_error($conn));  
 
-while($rangeeMatch=mysql_fetch_array($resultMatch))
+while($rangeeMatch=mysqli_fetch_array($resultMatch))
 {
 	if($rangeeMatch['date']>=$premierMatch&&$rangeeMatch['date']<=$dernierMatch)
 	{
@@ -141,10 +124,10 @@ while($rangeeMatch=mysql_fetch_array($resultMatch))
 unset($resultMatch);
 unset($rangeeMatch);
 
-$resultMatch = mysql_query("SELECT * FROM $tableMatch WHERE eq_vis = '{$equipe[$Ie]['id']}'")
-or die(mysql_error());  
+$resultMatch = mysqli_query($conn,"SELECT * FROM $tableMatch WHERE eq_vis = '{$equipe[$Ie]['id']}'")
+or die(mysqli_error($conn));  
 
-while($rangeeMatch=mysql_fetch_array($resultMatch))
+while($rangeeMatch=mysqli_fetch_array($resultMatch))
 {
 	if($rangeeMatch['date']>=$premierMatch&&$rangeeMatch['date']<=$dernierMatch)
 	{

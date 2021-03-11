@@ -7,11 +7,9 @@
 // 
 ////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
 
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
+
 $tableLigue = 'Ligue';
 $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
@@ -23,52 +21,33 @@ $tableUser = 'TableUser';
 // 	Connections � la base de donn�es
 //
 ////////////////////////////////////////////////////////////
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error($conn));
 }
 
-
-function trouveIDParNomUser($user)
-{
-	 $noUser = -1;
-$fResultUser = mysql_query("SELECT * FROM TableUser")
-or die(mysql_error());  
-while($fRangeeUser=mysql_fetch_array($fResultUser))
-{
-		if(!strcmp($fRangeeUser['username'],$user))
-	{$noUser =$fRangeeUser['noCompte'];// Ce sont de INT
-	}
-}
-if (mysql_num_rows($fResultUser)>0)
-{
-return $noUser;
-}
-else{return -1;}
-
-}
-
+mysqli_query($conn,"SET NAMES 'utf8'");
+mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 
 $ligueId = $_GET['ligueId'];
 $inter=$_GET['userId'];
-$userId = trouveIDParNomUser($inter);
 
 
+$result = mysqli_query($conn,"SELECT AbonnementLigue.type FROM AbonnementLigue 
+	JOIN TableUser
+		ON (TableUser.noCompte = AbonnementLigue.userid)
+	WHERE ligueid='$ligueId' AND username='$inter'")
+or die(mysqli_error($conn));  
 
-$result = mysql_query("SELECT type FROM AbonnementLigue WHERE ligueid='{$ligueId}' AND userid='$userId'")
-or die(mysql_error());  
-
-
-if (mysql_num_rows($result)>0)
+if (mysqli_num_rows($result)>0)
 {
-echo mysql_result($result,0,0);	
+$type= mysqli_data_seek($result,0);	
+echo $type;
 }
 else{echo "1000000";}
-
+mysqli_close($conn);
 ?> 
 

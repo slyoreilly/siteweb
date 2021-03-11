@@ -12,6 +12,7 @@
         <script type="text/javascript" charset="utf-8">
             gereLangue();
         </script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-timeago/1.4.3/jquery.timeago.min.js"></script>
         <script type="text/javascript" charset="utf-8">
 
 
@@ -34,6 +35,42 @@
                         if (laTable.cams != null) {
                             var table = $.makeTable(laTable.cams);
                             $("#Systeme").append($('<h2></h2>').text("Surface: "+arenaId),$(table)) ;
+                            memoire = $('th:contains("memoire")').index()+1;
+						$('#Systeme table tr td:nth-child('+memoire+')').each(function(index){
+							var mMem = parseInt($(this).text());
+							mMem = Math.round(mMem/1000000)+" M";
+							$(this).text(mMem);
+						});
+
+						dernierModif = $('th:contains("Modif")').index()+1;
+						$(' #Systeme table tr td:nth-child('+dernierModif+')').each(function(index){
+							var MT = $(this).text();
+							$(this).text("");
+							$(this).append($('<time></time>').addClass("timeago").attr("datetime",MT).text(MT));
+							
+						});
+						dernierMaJ = $('th:contains("MaJ")').index()+1;
+						$(' #Systeme table tr td:nth-child('+dernierMaJ+')').each(function(index){
+							var MT = $(this).text();
+							$(this).text("");
+							$(this).append($('<time></time>').addClass("timeago").attr("datetime",MT).text(MT));
+                        });
+                        vidDetect = $('th:contains("vidDetect")').index()+1;
+						$(' #Systeme table tr td:nth-child('+vidDetect+')').each(function(index){
+							var MT = $(this).text();
+							$(this).text("");
+							$(this).append($('<time></time>').addClass("timeago").attr("datetime",MT).text(MT));
+                        });
+                        vidLoadeChrono = $('th:contains("vidLoadeChrono")').index()+1;
+						$(' #Systeme table tr td:nth-child('+vidLoadeChrono+')').each(function(index){
+							var MT = $(this).text();
+							$(this).text("");
+							$(this).append($('<time></time>').addClass("timeago").attr("datetime",MT).text(MT));
+						});
+
+						jQuery("time.timeago").timeago();
+
+
                         }
                         if (laTable.remotes != null) {
                             var table2 = $.makeTable(laTable.remotes);

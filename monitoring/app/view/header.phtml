@@ -1,0 +1,18 @@
+<?php $controller=$this->getController();
+//print $action;
+?>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel='stylesheet' type='text/css' href='/monitoring/app/style/menu.css' />
+
+</head>
+<body>
+    <div class="nav">
+        <ul>
+            <li><a href="/monitoring/home/index" <?php echo($controller == 'home'?'class="active"':'' );?>>Home</a></li>
+            <li><a href="/monitoring/alarm/index"<?php echo($controller == 'alarm'?'class="active"':'' );?>>Alarmes</a></li>
+            <li><a href="/monitoring/appareil/index"<?php echo($controller == 'appareil'?'class="active"':'' );?>>Appareils</a></li>
+                        </ul>
+</div>

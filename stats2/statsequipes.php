@@ -1,6 +1,6 @@
 
 <html> 
-<title>Statistiques par équipes</title> 
+<title>Statistiques par ï¿½quipes</title> 
 <head> 
 </head> 
 <body> 
@@ -12,15 +12,11 @@
 
 /////////////////////////////////////////////////////////////
 //
-//  Définitions des variables
+//  Dï¿½finitions des variables
 // 
 ////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableLigue = 'Ligue';
 $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
@@ -34,7 +30,7 @@ $equipe = $_POST['equipe'];
 
 ////////////////////////////////////////////////////////////
 //
-// 	Connections à la base de données
+// 	Connections ï¿½ la base de donnï¿½es
 //
 ////////////////////////////////////////////////////////////
 
@@ -78,7 +74,7 @@ return $monMatch;
 
 /////////////////////////////////////////////////////
 //
-//   Trouve ID de la ligue à partir du nom.
+//   Trouve ID de la ligue ï¿½ partir du nom.
 //
 ////////////////////////////////////////////////////
 
@@ -89,12 +85,12 @@ while($rangeeLigue=mysql_fetch_array($resultLigue))
 		if(!strcmp($rangeeLigue['Nom_Ligue'],$ligue))
 	{$ligueSelect =$rangeeLigue['ID_Ligue'];
 	}
-		// Prend le ID de la ligue pour trouver les équipes.
+		// Prend le ID de la ligue pour trouver les ï¿½quipes.
 }
 
 /////////////////////////////////////////////////////
 	//
-//   Trouve ID de l'equipe à partir du nom.
+//   Trouve ID de l'equipe ï¿½ partir du nom.
 //
 ////////////////////////////////////////////////////
 

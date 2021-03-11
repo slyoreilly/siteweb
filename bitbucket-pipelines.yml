@@ -1,17 +1,42 @@
-# This is a sample build configuration for PHP.
-# Check our guides at https://confluence.atlassian.com/x/e8YWN for more examples.
-# Only use spaces to indent your .yml configuration.
-# -----
-# You can specify a custom docker image from Docker Hub as your build environment.
-image: php:7.1.29
+# Installation ---
+# 1. In Bitbucket, add FTP_USERNAME, FTP_PASSWORD and FTP_HOST as environment variables.
+# 2. Commit this file (bitbucket-pipelines.yml) to your repo (in the repo root dir)
+# 3. From Bitbucket Cloud > Commits > Commit Number > Run Pipeline > Custom:Init (this will
+#    push everything and initialize GitFTP)
+#
+# Usage ---
+# - On each commit to master branch, it'll push all files to the $FTP_HOST
+# - You also have the option to 'init' (see 'Installation' above) - pushes everything and initialises
+# - Finally you can also 'deploy-all' (from Bitbucket Cloud > Commits > Commit Number > Run Pipeline > Custom:deploy-all)
+#   if multiple deploys fail, you can deploy everything to "catch up"
+#
+image: wearepvtl/bitbucket-pipelines-git-ftp:latest
 
 pipelines:
-  default:
+  custom: # Pipelines that are triggered manually via the Bitbucket GUI
+    init: # -- First time init
     - step:
-        caches:
-          - composer
         script:
-          - apt-get update && apt-get install -y unzip
-          - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-          - composer install
-          - vendor/bin/phpunit
+          - git ftp init -vv  -u "syncsta1" -p "uVTEhAil" ftp://ftp.syncstats.com
+    init-dev: # -- First time init
+    - step:
+        script:
+          - git ftp catchup -vv --user "sylvain" --passwd "isaac3!" ftp://38.74.47.202/~/siteweb/site-web/
+    deploy-all: # -- Deploys all files from the selected commit
+    - step:
+        script:
+          - git ftp push -u "syl" -p "pr351d3nt" ftp://5.39.81.14:22000/~/public_html --all
+  branches: # Automated triggers on commits to branches
+    master: # -- When committing to master branch
+    - step:
+        deployment: production
+        script:
+#          - git ftp push -u "syncsta1" -p "uVTEhAil" ftp://ftp.syncstats.com:21/public_html
+          - git ftp push -u "syncsta1" -p "uVTEhAil" ftp://ftp.syncstats.com
+  
+    develop: # -- When committing to develop branch
+    - step:
+        deployment: development
+        script:
+#          - git ftp push -u "syncsta1" -p "uVTEhAil" ftp://ftp.syncstats.com:21/public_html
+          - git ftp push  -vv --user "sylvain" --passwd "isaac3!" ftp://38.74.47.202/~/siteweb/site-web/

@@ -1,20 +1,6 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
+require '../scriptsphp/defenvvar.php';
 
-$database = 'syncsta1_900';
-
-
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
 	
 	//////////////////////////////////////////////////////////////////////
 //
@@ -22,11 +8,11 @@ if (!mysql_select_db($database))
 //
 /////////////////////////////////////////////////////////////////////
 $paramsJSON = $_POST['params'];
-$heure = $_POST['heure'];
+//$heure = $_POST['heure'];
 $params = json_decode($paramsJSON,true);
 $mydate=getdate(date("U"));
 //echo "$mydate[weekday], $mydate[month] $mydate[mday], $mydate[year]";
-$dossier=$params['telId'].'/'. $mydate[year].'_'.$mydate[mon].'_'.$mydate[mday];
+$dossier=$params['telId'].'/'. $mydate['year'].'_'.$mydate['mon'].'_'.$mydate['mday'];
 if($dossier==null){
 	$dossier = 'LostNfound';
 }
@@ -40,13 +26,8 @@ $fileType = $_FILES['fichier']['type'];
 
 $fp      = fopen($tmpName, 'r');
 $content = fread($fp, filesize($tmpName));
-$contentEsc = mysql_real_escape_string($content);
+//$contentEsc = mysqli_real_escape_string($content);
 fclose($fp);
-
-if(!get_magic_quotes_gpc())
-{
-    $fileName = addslashes($fileName);
-}
 
 
  $options = array('ftp' => array('overwrite' => true));
@@ -69,6 +50,4 @@ echo "dossier: ".$dossier;
 //
 
 
-//include 'library/closedb.php';
-mysql_close();	
 ?>

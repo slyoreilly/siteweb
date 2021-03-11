@@ -218,7 +218,7 @@
 					</div>
 					<div class="formDroite">
 						<select name="position" id="position">
-							<option id="opt_a" value="a">Avant</option>
+							<option id="opt_a" value="a" selected>Avant</option>
 							<option id="opt_ac" value="ac">Centre</option>
 							<option id="opt_ag" value="ag">Allier gauche</option>
 							<option id="opt_ad" value="ad">Allier droit</option>
@@ -302,7 +302,8 @@
 			}
 
 			var joueurId = getValue('joueurId');
-			if (joueurId != "") {
+			console.log("joueurId: "+joueurId);
+			if (joueurId != null) {
 				getJSONdeJoueurId(joueurId);
 				//alert(joueurId);
 			}

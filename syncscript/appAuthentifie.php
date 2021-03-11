@@ -1,34 +1,25 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-$database = 'syncsta1_900';
-
+require '../scriptsphp/defenvvar.php';
 
 $username = $_POST['username'];
 $mdp =$_POST['password'];
 
 
-
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+ 
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
-	mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
-	
+
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+ 
 	$userSelect=array();
 	
 	// Retrieve all the data from the "example" table
-$resultUser = mysql_query("SELECT * FROM TableUser")
-or die(mysql_error());  
-while($rangeeUser=mysql_fetch_array($resultUser))
+$resultUser = mysqli_query($conn,"SELECT * FROM TableUser")
+or die(mysqli_error($conn));  
+while($rangeeUser=mysqli_fetch_array($resultUser))
 {
 		if(!strcmp($rangeeUser['username'],$username)&&!strcmp($rangeeUser['password'],$mdp))
 	{$userSelect =$rangeeUser;
@@ -47,6 +38,6 @@ while($rangeeUser=mysql_fetch_array($resultUser))
 	
 		echo json_encode($userSelect);
 
-
+mysqli_close($conn);
 
 ?>

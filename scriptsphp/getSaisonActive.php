@@ -7,19 +7,17 @@
 // 
 ////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableLigue = 'Ligue';
 $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
 $tableEquipe = 'TableEquipe';
 $tableMatch = 'TableMatch';
 
-
+$ligueId=null;
+if(isset($_POST['ligueId'])){
 $ligueId = $_POST["ligueId"];
+}
 
 ////////////////////////////////////////////////////////////
 //
@@ -27,38 +25,33 @@ $ligueId = $_POST["ligueId"];
 //
 ////////////////////////////////////////////////////////////
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
 
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+
+$saisonId =null;
 
 /////////////////////////////////////////////////////////////
 // 
 //
 
-function trouveSaisonActiveDeLigueId($ID){ 
-$rfSaison = mysql_query("SELECT saisonId FROM TableSaison WHERE ligueRef = '{$ID}' ORDER BY premierMatch DESC")
-or die(mysql_error()." Select saisonId");  
-//echo mysql_result($rfSaison, 0)."\n";  
-//$tmp= (mysql_fetch_array($rfSaison));
-//echo $tmp['saisonId']."\n";  
- return (mysql_result($rfSaison, 0)); 
-} 
+$rfSaison = mysqli_query($conn,"SELECT saisonId FROM TableSaison WHERE ligueRef = '{$ligueId}' ORDER BY premierMatch DESC LIMIT 0,1")
+or die(mysqli_error($conn)." Select saisonId"); 
 
-
+while($rangeeSaison=mysqli_fetch_array($rfSaison))
+{
+	$saisonId = $rangeeSaison['saisonId'];
 	
-	$saisonId = trouveSaisonActiveDeLigueId($ligueId);
+}
 	
 echo $saisonId;
 	
-
+mysqli_close($conn);
 
 ?>

@@ -1,16 +1,11 @@
 <?php
-$db_host = "localhost";
-$db_user = "syncsta1_u01";
-$db_pwd = "test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 
 //$fichier = $_POST['fichier'];
 //echo $_POST['videos'];
 
 $arenaId = $_POST['arenaId'];
 $usager = $_POST['userId'];
-$mavId = $_POST['mavId'];
 $matchId = $_POST['matchId'];
 
 // Create connection
@@ -23,16 +18,20 @@ if (!$conn) {
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
-if ($mavId != "null" && $mavId != "undefined") {
+if(isset($_POST['mavId'])){
+	$mavId = $_POST['mavId'];
+	if ($mavId != "null" && $mavId != "undefined") {
 
-	$rTM = mysqli_query($conn, "SELECT match_id 
-						FROM TableMatch 
-						WHERE mavId='{$mavId}'") or die(mysqli_error());
-
-	if (mysqli_num_rows($rTM) > 0) {
-		$match_id_vec = mysqli_fetch_row($rTM);
-		$matchId = $match_id_vec[0];
+		$rTM = mysqli_query($conn, "SELECT match_id 
+							FROM TableMatch 
+							WHERE mavId='{$mavId}'") or die(mysqli_error());
+	
+		if (mysqli_num_rows($rTM) > 0) {
+			$match_id_vec = mysqli_fetch_row($rTM);
+			$matchId = $match_id_vec[0];
+		}
 	}
+	
 }
 
 function is_url_exist($url){
@@ -54,12 +53,12 @@ function is_url_exist($url){
 //
 ///		A partir d'un telId et d'un username, trouver les appareils et leurs statuts.
 
-$retourCam = mysqli_query($conn, "SELECT StatutCam.*, TableUser.username
+$retourCam = mysqli_query($conn, "SELECT camId, telId, codeEtat, DATE_FORMAT(StatutCam.dernierModif, '%Y-%m-%dT%TZ') AS Modif , DATE_FORMAT(StatutCam.dernierMaJ, '%Y-%m-%dT%TZ') AS MaJ, batterie, memoire, temperature, TableUser.username
 						FROM StatutCam
 						INNER JOIN TableUser
 							ON (StatutCam.userId=TableUser.username)
 						 WHERE TableUser.username='{$usager}' 
-						 AND StatutCam.arenaId='{$arenaId}'") or die(mysqli_error($conn));
+						 AND StatutCam.arenaId='{$arenaId}' ORDER BY MaJ DESC") or die(mysqli_error($conn));
 
 $querySel = "SELECT StatutRemote.*, TableUser.username, abonAppareilSurface.*
 						FROM StatutRemote
@@ -96,7 +95,7 @@ $trouve=false;
 while ($rangVid = mysqli_fetch_assoc($resultVid)) {
 		if($cptVid==0){
 		$str1= substr($rangVid['chrono'],0,10);
-			$cams[$cptCams]['vidDetect']=date('d/m/Y H:i:s',$str1 );
+			$cams[$cptCams]['vidDetect']=date('c',$str1 );
 		}
 		
 	if(!$trouve){
@@ -104,7 +103,7 @@ while ($rangVid = mysqli_fetch_assoc($resultVid)) {
 		if(is_url_exist("http://5.39.81.14/lookatthis/".$rangVid['nomFichier'])){
 			$trouve=true;
 			$str1= substr($rangVid['chrono'],0,10);
-			$cams[$cptCams]['vidLoadeChrono']=date('d/m/Y H:i:s',$str1 );
+			$cams[$cptCams]['vidLoadeChrono']=date('c',$str1 );
 			$cams[$cptCams]['vidLoade']="<a href='http://5.39.81.14/lookatthis/".$rangVid['nomFichier']."'>Voir</a>";
 		}
 	}

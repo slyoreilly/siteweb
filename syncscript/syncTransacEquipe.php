@@ -1,9 +1,5 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableEq = 'TableEquipe';
 $tableLigue = 'Ligue';
 $tableMatch = 'TableMatch';
@@ -16,20 +12,15 @@ $username = $_POST['username'];
 $password = $_POST['password'];
 $matchjson = stripslashes($_POST['matchjson']);
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
-	
-	
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
 
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 	
 	
 //$json=json_decode("'".$matchjson."'");
@@ -41,25 +32,27 @@ $leMatch = json_decode($matchjson, true);
 	$vieuId = $leMatch['vieuId'];
 
 	
-$retour = mysql_query("INSERT INTO TableEquipe (nom_equipe,logo,ficId, equipeActive,dernierMAJ) 
-VALUES ('{$intEquipe}', '{$intLogo}', 16, 1, NOW())");	
+$retour = mysqli_query($conn,"INSERT INTO TableEquipe (nom_equipe,logo,ficId, equipeActive,dernierMAJ) 
+VALUES ('{$intEquipe}', '{$intLogo}', 16, 1, NOW())") or die(mysqli_error($conn));  	
 //	mysql_query("INSERT INTO {$tableEvent} (joueur_event_ref, equipe_event_id, code, chrono, match_event_id) 
 //VALUES ( 'test	Match2', 'testMatch2', 'testMatch2', 'testMatch2','testMatch2')");	
 	
-	$resultNouveau = mysql_query("SELECT equipe_id FROM TableEquipe WHERE nom_equipe='{$intEquipe}'  ORDER BY equipe_id DESC")
-				or die(mysql_error());  
+	$resultNouveau = mysqli_query($conn,"SELECT equipe_id FROM TableEquipe WHERE nom_equipe='{$intEquipe}'  ORDER BY equipe_id DESC")
+				or die(mysqli_error($conn));  
 	
-	$nId = mysql_fetch_row($resultNouveau);
+	$nId = mysqli_data_seek($resultNouveau,0);
 		$JSONstring = 	"{\"vieuId\": \"".$vieuId."\",";
 		$JSONstring .= 	"\"nouveauId\": \"".$nId[0]."\"}";
 	
 //$retour = mysql_query("INSERT INTO abonJoueurEquipe (joueurId, equipeId, permission, debutAbon, finAbon) 
 //VALUES ('{$nId[0]}', '{$intEquipe}',30, NOW(),'2050-01-01')");	
-$retour = mysql_query("INSERT INTO abonEquipeLigue (equipeId, ligueId, permission, debutAbon, finAbon) 
+$retour = mysqli_query($conn,"INSERT INTO abonEquipeLigue (equipeId, ligueId, permission, debutAbon, finAbon) 
 VALUES ('{$nId[0]}', '{$intLigue}',30, NOW(),'2050-01-01')");	
 
 	
 		echo $JSONstring;
+
+		mysqli_close($conn);
 //		echo "".json_last_error();
 			header("HTTP/1.1 200 OK");
 

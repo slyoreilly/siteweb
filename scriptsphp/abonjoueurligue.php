@@ -1,9 +1,5 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableEq = 'TableEquipe';
 $tableLigue = 'Ligue';
 $tableMatch = 'TableMatch';
@@ -21,15 +17,14 @@ $code = $_POST['code'];
 
 
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 
 //////////////////////////////////
@@ -47,10 +42,10 @@ else
 if($code==60)
 {
 	$query_delete = "UPDATE abonJoueurLigue SET finAbon=NOW()-INTERVAL 1 DAY WHERE ligueId=$ligueId AND joueurId=$joueurId";
-$retour = mysql_query($query_delete)or die('Error, query failed: '.$query_delete1);
+$retour = mysqli_query($conn,$query_delete)or die('Error, query failed: '.mysqli_error($conn).$query_delete1);
 
 
-$retour1 = mysql_query("SELECT * FROM abonJoueurEquipe 
+$retour1 = mysqli_query($conn,"SELECT * FROM abonJoueurEquipe 
 							JOIN abonEquipeLigue 
 							 ON (abonJoueurEquipe.equipeId=abonEquipeLigue.equipeId) 
 							WHERE  joueurId='{$joueurId}' 
@@ -58,13 +53,13 @@ $retour1 = mysql_query("SELECT * FROM abonJoueurEquipe
 								AND abonEquipeLigue.finAbon>DATE(NOW())
 								AND abonEquipeLigue.debutAbon<=DATE(NOW())
 								AND abonJoueurEquipe.finAbon>DATE(NOW())
-								AND abonJoueurEquipe.debutAbon<=DATE(NOW())");
-		if(mysql_num_rows($retour1)>0)			//S'il y avait déjà un abonnement, mettre fin à celui-ci.
-		{while($rangee = mysql_fetch_assoc($retour1))
+								AND abonJoueurEquipe.debutAbon<=DATE(NOW())")or die('Error, query failedrtrtytr: '.mysqli_error($conn));
+		if(mysqli_num_rows($retour1)>0)			//S'il y avait déjà un abonnement, mettre fin à celui-ci.
+		{while($rangee = mysqli_fetch_assoc($retour1))
 			//{$equipe=$rangee['equipeId'];}
 			
 //			$retour.=mysql_query("UPDATE abonJoueurEquipe SET finAbon=NOW() WHERE joueurId='{$lesJoueurs[$Ij]['joueurId']}' AND equipeId=$equipe");
-			$retour.=mysql_query("UPDATE abonJoueurEquipe SET finAbon=NOW() WHERE abonJouEq = {$rangee['abonJouEq']}");
+			$retour.=mysqli_query($conn,"UPDATE abonJoueurEquipe SET finAbon=NOW() WHERE abonJouEq = {$rangee['abonJouEq']}")or die('Error, query faileqdwqd: '.mysqli_error($conn));
 
 		}
 
@@ -80,8 +75,9 @@ else
 	$query_equipe = "INSERT INTO abonJoueurLigue (joueurId, ligueId, permission, debutAbon, finAbon) ".
 "VALUES ($joueurId, $ligueId, 30, ".$pm.",'$dm' )";
 		
-$retour = mysql_query($query_equipe)or die('Error, query failed: '.$query_equipe);
+$retour = mysqli_query($conn,$query_equipe)or die('Error, query failed: '.mysqli_error($conn).$query_equipe);
 }	
 
 	echo $retour ;
+	mysqli_close($conn);
 ?>

@@ -735,7 +735,8 @@
 			matchId = getValue('match');
 			getCommande(matchId);
             ecranId = getValue('ecranId');
-			if(ecranId==""){
+			console.log("ecranId: "+ecranId);
+			if(ecranId==null){
 			getInfoMatch(matchId,2);}
 			else{
 			    getMatchDecranId(ecranId);

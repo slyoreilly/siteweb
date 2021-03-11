@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<HTML>
+	<HEAD>
+		<title>Fusionner des joueurs</title>
+		<link rel="stylesheet" href="/style/dhtmlgoodies_calendar.css" type="text/css">
+		<link rel="stylesheet" href="/style/general.css" type="text/css">
+		<script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
+		<style>
+		</style>
+				<script type="text/javascript" charset="utf-8">
+				 		gereLangue();
+		</script>
+
+	</HEAD>
+	<script type="text/javascript">
+		function getStatsJSON(ligueId, saisonId) {
+			//			return function(){
+
+			var requete_ajax = new XMLHttpRequest();
+
+//			var url = "/stats2/joueursDansLigue2JSON.php";
+			var url = "/stats2/joueursEquipeLigue2JSON.php";
+
+			var strSaisonId = "saisonId=" + saisonId;
+			var strLigueId = "ligueId=" + ligueId;
+			params = strLigueId + '&' + strSaisonId; url ;//= url+"?"+params;
+			//requete_ajax.send(null);
+			//	return requete_ajax.responseText;
+
+			requete_ajax.open('POST', url, true);
+			//				requete_ajax.send(null);
+
+			requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			requete_ajax.setRequestHeader("Content-length", params.length);
+			requete_ajax.setRequestHeader("Connection", "close");
+
+			requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+					//alert(requete_ajax.responseText);
+					statsJSON = eval('(' + requete_ajax.responseText + ')');
+					var mEq=Array();
+					for(var a=0;a<window.statsJSON.equipe.length;a++)
+						{
+							//for(var b=0;b<statsJSON.equipe[a].joueur.length;b++)
+							mEq = mEq.concat(window.statsJSON.equipe[a].joueur);
+							//alert(JSON.stringify(window.statsJSON.equipe[a].joueur));
+							//alert(JSON.stringify(mEq));
+						}
+					inNomJS = document.getElementById('inNomId');
+					inNomJS.onkeyup = function() {
+						//var mEq = jQuery.extend(true, {}, window.statsJSON);
+						var mEq=Array();
+						for(var a=0;a<window.statsJSON.equipe.length;a++)
+						{
+							//for(var b=0;b<statsJSON.equipe[a].joueur.length;b++)
+							mEq.concat(window.statsJSON.equipe[a].joueur);
+//							alert(mEq.length);
+						}
+						//alert(JSON.stringify(mEq));
+						//alert(document.getElementById('inFiltreId').value);
+						var a = 0;
+						while (a < mEq.length) {
+							if(mEq[a].nomJoueur!="null")
+							{
+							if (mEq[a].nomJoueur.toLowerCase().indexOf(document.getElementById('inNomId').value.toLowerCase()) == -1)//Enlever celui à fusionner.
+								mEq.splice(a, 1);
+							else
+								a++;
+							}
+								else
+									{mEq.splice(a, 1);}
+
+						}
+						faitBoite(mEq);
+					};
+					faitBoite(mEq);
+
+				}
+			};
+			requete_ajax.send(params);
+			//				alert(JSON.stringify(listeMatch));
+			//	return vecMAV;
+			//}
+		}
+
+		function faitBoite(mEq) {
+
+			videNoeud('boiteJoueurs');
+			divBte = document.getElementById('boiteJoueurs');
+			for (var j = 0; j < mEq.length; j++) {
+				mP = document.createElement('P');
+				mP.setAttribute('id','j'+mEq[j].joueurId)
+
+				mP.onclick = (function(mJ) {
+					return function() {
+					if(window.joueurId==mJ){ 
+					$('#j'+mJ).append('<div></div>').addClass('alert alert-danger').text('Impossible de fusionner à lui-même. Choisir un autre joueur.'); }
+					else{ getProfilDeJoueurId(mJ, 2); }
+						
+					};
+				})(mEq[j].joueurId);
+				mP.innerHTML = mEq[j].nomJoueur+" ("+ mEq[j].joueurId+") ";
+				divBte.appendChild(mP);
+			}
+
+		}
+
+		function lanceFusion() {
+
+			//			return function(){
+
+			var requete_ajax = new XMLHttpRequest();
+
+			var url = "/scriptsphp/fusionne.php";
+
+			var strJoueurAId = "joueurAId=" + window.pF[0].joueurId;
+			var strJoueurBId = "joueurBId=" + window.pF[1].joueurId;
+			var strUserId = "userId=" + getCookie('userId');
+			selLigJS= document.getElementById('selLig');
+			var strLigueId = "ligueBId=" +selLigJS.options[selLigJS.selectedIndex].value;
+
+			params = strJoueurAId + '&' + strJoueurBId + '&' + strUserId + '&' + strLigueId; url ;//= url+"?"+params;
+			//requete_ajax.send(null);
+			//	return requete_ajax.responseText;
+
+			requete_ajax.open('POST', url, true);
+			//				requete_ajax.send(null);
+
+			requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			requete_ajax.setRequestHeader("Content-length", params.length);
+			requete_ajax.setRequestHeader("Connection", "close");
+
+			requete_ajax.onreadystatechange = function() {//Call a function when the state changes.
+				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+
+					alert(requete_ajax.responseText);
+					// requete_ajax.responseText;
+
+				}
+			};
+			requete_ajax.send(params);
+			//				alert(JSON.stringify(listeMatch));
+			//	return vecMAV;
+			//}
+
+		}
+
+		function faitConfirme() {
+
+			//videNoeud('boiteJoueurs');
+
+			if (document.getElementById('boiteProfil').childNodes.length > 0) {
+				videNoeud('fusionneTop');
+				fT = document.getElementById('fusionneTop');
+				fT.appendChild(document.createTextNode('Cliquez ici pour intégrer les statistiques de ' + window.pF[1].nomJoueur +' ('+window.pF[1].joueurId+')'+ ' au profil de ' + window.pF[0].nomJoueur+' ('+window.pF[0].joueurId+')'));
+				pAtt = document.createElement('P');
+				pAtt.innerHTML = "Attention! Cette opération n'est pas réversible.";
+				pAtt.style.color = 'red';
+				fT.appendChild(pAtt);
+				btnFus = document.createElement('INPUT');
+				btnFus.type = 'button';
+				btnFus.value = "Fusionner!";
+				btnFus.onclick = function() {
+					lanceFusion();
+				};
+				fT.appendChild(btnFus);
+
+			}
+			//divBte.appendChild(mP);}
+
+		}
+
+		function loadXMLDoc() {
+			var requete_ajax;
+			if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+				requete_ajax = new XMLHttpRequest();
+				//	alert("yo1");
+			} else {// code for IE6, IE5
+				requete_ajax = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			requete_ajax.onreadystatechange = function(joueurId) {
+				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+					stringStatsHome = requete_ajax.responseText;
+					//alert(stringStatsHome);
+					var statsJSONHome = eval('(' + stringStatsHome + ')');
+
+				}
+				requete_ajax.open('GET', '/stats/statsJoueur2JSON.php?joueurId=' + window.joueurId, true);
+				requete_ajax.send();
+			};
+		}
+
+		function getProfilDeJoueurId(joueurId, gaucheDroite) {
+			var requete_ajax = new XMLHttpRequest();
+			params = 'joueurId=' + joueurId;
+			requete_ajax.open('POST', '/stats2/profilDeJoueurId.php', true);
+
+			requete_ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			requete_ajax.setRequestHeader("Content-length", params.length);
+			requete_ajax.setRequestHeader("Connection", "close");
+
+			requete_ajax.onreadystatechange = function(joueurId) {
+				if (requete_ajax.readyState == 4 && requete_ajax.status == 200) {
+					if (gaucheDroite == 1) {
+
+						amettre = document.getElementById('fusionneGauche');
+
+					}
+					if (gaucheDroite == 2) {
+
+						//videNoeud('boiteJoueurs');
+						videNoeud('boiteProfil');
+						amettre = document.getElementById('boiteProfil');
+					}
+
+					pF[gaucheDroite - 1] = eval('(' + requete_ajax.responseText + ')');
+					profilJoueur = pF[gaucheDroite - 1];
+					liste = document.createElement('p');
+					zeNom = document.createTextNode(window.profilJoueur.nomJoueur);
+					texteFiche = document.createTextNode('Nom: ' + window.profilJoueur.nom);
+					amettre.appendChild(zeNom);
+					amettre.appendChild(document.createElement('BR'));
+					amettre.appendChild(texteFiche);
+					amettre.appendChild(document.createElement('BR'));
+					texteFiche = document.createTextNode('Prenom: ' + window.profilJoueur.prenom);
+					amettre.appendChild(texteFiche);
+					amettre.appendChild(document.createElement('BR'));
+					texteFiche = document.createTextNode('Taille: ' + window.profilJoueur.taille + ' cm');
+					amettre.appendChild(texteFiche);
+					amettre.appendChild(document.createElement('BR'));
+					texteFiche = document.createTextNode('Poids: ' + window.profilJoueur.poids + ' kg');
+					amettre.appendChild(texteFiche);
+					amettre.appendChild(document.createElement('BR'));
+					texteFiche = document.createTextNode('Ville d\'origine: ' + window.profilJoueur.villeOrigine);
+					amettre.appendChild(texteFiche);
+					amettre.appendChild(document.createElement('BR'));
+					texteFiche = document.createTextNode('Année de naissance: ' + window.profilJoueur.anneeNaissance);
+					amettre.appendChild(texteFiche);
+					amettre.appendChild(document.createElement('BR'));
+					faitConfirme();
+
+				}
+
+			};
+
+			requete_ajax.send(params);
+			//alert(requete_ajax.responseText);
+			return requete_ajax.responseText;
+		}
+
+		function monProfil() {
+
+			var strProfilJoueur = getProfilDeJoueurId(window.joueurId);
+			//alert(strProfilJoueur);
+			profilJoueur = eval('(' + strProfilJoueur + ')');
+			userId = getCookie("userId");
+			//alert('uId :'+userId);
+			var strUser = getJSONdePerso(userId);
+			//alert(strUser);
+			usager = eval('(' + strUser + ')');
+
+			forme = document.createElement('form');
+			forme.setAttribute('method', 'get');
+			forme.setAttribute('action', '/admin/entreprofil.html');
+			amettre = document.getElementById('fusionneGauche');
+			amettre.appendChild(forme);
+
+			liste = document.createElement('p');
+
+			texteFiche = document.createTextNode('Nom: ' + window.profilJoueur.nom);
+
+			amettre.appendChild(texteFiche);
+			amettre.appendChild(document.createElement('BR'));
+			texteFiche = document.createTextNode('joueurId: ' + window.profilJoueur.joueurId);
+
+            amettre.appendChild(texteFiche);
+            amettre.appendChild(document.createElement('BR'));
+			texteFiche = document.createTextNode('Prenom: ' + window.profilJoueur.prenom);
+			amettre.appendChild(texteFiche);
+			amettre.appendChild(document.createElement('BR'));
+			texteFiche = document.createTextNode('Taille: ' + window.profilJoueur.taille + ' cm');
+			amettre.appendChild(texteFiche);
+			amettre.appendChild(document.createElement('BR'));
+			texteFiche = document.createTextNode('Poids: ' + window.profilJoueur.poids + ' kg');
+			amettre.appendChild(texteFiche);
+			amettre.appendChild(document.createElement('BR'));
+			texteFiche = document.createTextNode('Ville d\'origine: ' + window.profilJoueur.villeOrigine);
+			amettre.appendChild(texteFiche);
+			amettre.appendChild(document.createElement('BR'));
+			texteFiche = document.createTextNode('Année de naissance: ' + window.profilJoueur.anneeNaissance);
+			amettre.appendChild(texteFiche);
+			amettre.appendChild(document.createElement('BR'));
+
+			//		loadXMLDoc();
+		}
+
+	</script>
+
+	<body id="body" >
+		<div id="divHaut"></div>
+		<div id="divGauche"></div>
+		<div id="divMenuHaut"></div>
+
+		<div id="divCentrale">
+			<div id="fusionneTop" style="width:100%;margin:20px;">
+				Fusionner deux joueurs ensemble.
+			</div>
+			<div id="fusionneGauche" style="width:40%;float:left;padding:20px;margin:0;">
+				<h2>Joueur A</h2>
+			</div>
+			<div id="fusionneDroite" style="width:40%;float:right;padding:20px;margin:0;">
+				<h2>Joueur B</h2>
+
+				Spécifier une ligue:
+				<select id="selLig"></select></br>
+				Filtre nom:
+				<input type="text" id="inNomId" name="inNom">
+
+				<div id="boiteProfil"></div>
+				<div id="boiteJoueurs"></div>
+			</div>
+
+		</div>
+		<div id="divDroite"></div>
+		<script type="text/javascript" charset="utf-8">
+			var uneString = getJSONdeLigueID(null, null);
+			pF = new Array(2);
+			//if(verifiePermission()<3)
+			//alert(uneString);
+			try {
+				rJSON = eval('(' + uneString + ')');
+
+			} catch(err) {
+				alert('Le serveur éprouve quelques problêmes. Merci de réessayer plus tard.');
+			}
+
+			selLig = document.getElementById("selLig");
+			selLig.onchange = function() {
+				getStatsJSON(this.options[this.selectedIndex].value, "");
+			};
+			for (var J = 0; J < window.rJSON.Ligues.length; J++) {
+
+				opt = document.createElement('OPTION')
+				opt.innerHTML = window.rJSON.Ligues[J].nomLigue;
+				opt.value = window.rJSON.Ligues[J].ligueId;
+				selLig.appendChild(opt);
+
+			}
+			
+			developper(7);
+
+		</script>
+
+		<script type="text/javascript">
+			//alert("uneString");
+			joueurId = getValue('joueurId');
+			getProfilDeJoueurId(joueurId, 1);
+		</script>
+
+	</body>
+</html>

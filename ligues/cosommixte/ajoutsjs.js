@@ -1,6 +1,6 @@
 
-saisonMardi = 209;
-saisonJeudi = 210;
+saisonMardi = 228;
+saisonJeudi = 229;
 
 
 topLiensMardi = [{
@@ -11,19 +11,19 @@ topLiensMardi = [{
 	valeur:"mardi_cosom_montreal.html",
 	texte:"Mardi"
 },{
-	valeur:"nouvelles_cosom_montreal/2018/automne_cosom_montreal/chroniques_mardi_cosom_montreal.html",
+	valeur:"nouvelles_cosom_montreal/2019/hiver_cosom_montreal/chroniques_mardi_cosom_montreal.html",
 	texte:"Chroniques"
 },{
-	valeur:"equipes_cosom_montreal/2018/automne_cosom_montreal/equipes_mardi_cosom_montreal.html",
+	valeur:"equipes_cosom_montreal/2019/hiver_cosom_montreal/equipes_mardi_cosom_montreal.html",
 	texte:"Équipes"
 },{
-	valeur:"horaires_cosom_montreal/2018/automne_cosom_montreal/horaires_mardi_cosom_montreal.html",
+	valeur:"horaires_cosom_montreal/2019/hiver_cosom_montreal/horaires_mardi_cosom_montreal.html",
 	texte:"Horaires"
 },{
-	valeur:"classements_cosom_montreal/2018/automne_cosom_montreal/classements_mardi_cosom_montreal.html",
+	valeur:"classements_cosom_montreal/2019/hiver_cosom_montreal/classements_mardi_cosom_montreal.html",
 	texte:"Classements"
 },{
-	valeur:"statistiques_cosom_montreal/2018/automne_cosom_montreal/statistiques_mardi_cosom_montreal.html",
+	valeur:"statistiques_cosom_montreal/2019/hiver_cosom_montreal/statistiques_mardi_cosom_montreal.html",
 	texte:"Compteurs"
 }
 ];
@@ -37,19 +37,19 @@ topLiensJeudi = [{
 	valeur:"jeudi_cosom_montreal.html",
 	texte:"Jeudi"
 },{
-	valeur:"nouvelles_cosom_montreal/2018/automne_cosom_montreal/chroniques_jeudi_cosom_montreal.html",
+	valeur:"nouvelles_cosom_montreal/2019/hiver_cosom_montreal/chroniques_jeudi_cosom_montreal.html",
 	texte:"Chroniques"
 },{
-	valeur:"equipes_cosom_montreal/2018/automne_cosom_montreal/equipes_jeudi_cosom_montreal.html",
+	valeur:"equipes_cosom_montreal/2019/hiver_cosom_montreal/equipes_jeudi_cosom_montreal.html",
 	texte:"Équipes"
 },{
-	valeur:"horaires_cosom_montreal/2018/automne_cosom_montreal/horaires_jeudi_cosom_montreal.html",
+	valeur:"horaires_cosom_montreal/2019/hiver_cosom_montreal/horaires_jeudi_cosom_montreal.html",
 	texte:"Horaires"
 },{
-	valeur:"classements_cosom_montreal/2018/automne_cosom_montreal/classements_jeudi_cosom_montreal.html",
+	valeur:"classements_cosom_montreal/2019/hiver_cosom_montreal/classements_jeudi_cosom_montreal.html",
 	texte:"Classements"
 },{
-	valeur:"statistiques_cosom_montreal/2018/automne_cosom_montreal/statistiques_jeudi_cosom_montreal.html",
+	valeur:"statistiques_cosom_montreal/2019/hiver_cosom_montreal/statistiques_jeudi_cosom_montreal.html",
 	texte:"Compteurs"
 }
 ];

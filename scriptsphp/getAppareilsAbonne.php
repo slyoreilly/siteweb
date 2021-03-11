@@ -1,17 +1,17 @@
 <?php
-$db_host = "localhost";
-$db_user = "syncsta1_u01";
-$db_pwd = "test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 
 //$fichier = $_POST['fichier'];
 //echo $_POST['videos'];
 
 $arenaId = $_POST['arenaId'];
 $usager = $_POST['userId'];
-$mavId = $_POST['mavId'];
-$matchId = $_POST['matchId'];
+$mavId=null;
+if(isset($_POST['mavId'])){
+$mavId = $_POST['mavId'];}
+$matchId=null;
+if(isset($_POST['matchId'])){
+$matchId = $_POST['matchId'];}
 
 // Create connection
 $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
@@ -23,7 +23,7 @@ if (!$conn) {
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
-if ($mavId != "null" && $mavId != "undefined") {
+if ($mavId != "null" && $mavId != null && $mavId != "undefined") {
 
 	$rTM = mysqli_query($conn, "SELECT match_id 
 						FROM TableMatch 
@@ -47,7 +47,7 @@ $retourCam = mysqli_query($conn, "SELECT StatutCam.*, TableUser.username,abonApp
 								ON (StatutCam.telId=abonAppareilSurface.telId)
 						 WHERE TableUser.username='{$usager}' 
 						 AND (abonAppareilSurface.role>99 OR abonAppareilSurface.role<1 ) 
-						 AND StatutCam.arenaId='{$arenaId}'") or die(mysqli_error($conn));
+						 AND abonAppareilSurface.surfaceId='{$arenaId}'") or die(mysqli_error($conn));
 
 $querySel = "SELECT StatutRemote.*, TableUser.username, abonAppareilSurface.*
 						FROM StatutRemote
@@ -68,10 +68,10 @@ while ($rangSel = mysqli_fetch_assoc($retourCam)) {
 		$cams[$cptCams]['batterie']=$rangSel['batterie'];
 			$cams[$cptCams]['codeEtat']=$rangSel['codeEtat'];
 				$cams[$cptCams]['dernierMaJ']=$rangSel['dernierMaJ'];
-	if($matchId!=null&&$matchId!=""&&$matchId!=undefined){
+	if($matchId!=null&&$matchId!=""){
 	$qCheckMatch = "Select role FROM abonAppareilMatch
 							WHERE matchId='{$matchId}' AND telId='{$rangSel['telId']}'";
-	$rCM = mysqli_query($conn, $qCheckMatch) or die(mysqli_error());
+	$rCM = mysqli_query($conn, $qCheckMatch) or die(mysqli_error($conn));
 
 	if (mysqli_num_rows($rCM) > 0) {
 		$rCM_vec = mysqli_fetch_row($rCM);
@@ -130,11 +130,11 @@ while ($rangSel = mysqli_fetch_assoc($resultSel)) {
 	//		$remotes[$cptRemotes]=	$tmpRem;
 	$remotes[$cptRemotes]['memoire'] = round($rangSel['memoire'] / 1000000);
 
-	if ($matchId != "null" && $matchId != "undefined" && $matchId != null && $matchId != undefined) {
+	if ($matchId != "null" && $matchId != null) {
 
 		$qCheckMatch = "Select role FROM abonAppareilMatch
 							WHERE matchId='{$matchId}' AND telId='{$rangSel['telId']}'";
-		$rCM = mysqli_query($conn, $qCheckMatch) or die(mysqli_error());
+		$rCM = mysqli_query($conn, $qCheckMatch) or die(mysqli_error($conn));
 
 		if (mysqli_num_rows($rCM) > 0) {
 			$rCM_vec = mysqli_fetch_row($rCM);

@@ -1,9 +1,5 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableEq = 'TableEquipe';
 $tableLigue = 'Ligue';
 $tableMatch = 'TableMatch';
@@ -16,19 +12,15 @@ $username = $_POST['username'];
 $password = $_POST['password'];
 
 
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
 
-
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
-	mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+	
 	
 	
 	
@@ -43,8 +35,8 @@ $leMatch = json_decode($matchjson, true);
 
 	if($leMatch['etatSync']==12||$leMatch['etatSync']==10)
 {	
-$retInsEvent = mysql_query("INSERT INTO {$tableEvent} (joueur_event_ref, equipe_event_id, code, chrono,souscode, match_event_id) 
-VALUES ('{$intJoueur}', '{$intEquipe}', '{$intEvent}', '{$leMatch['chrono']}','{$leMatch['souscode']}','{$leMatch['match_id']}')")or die(mysql_error()." INSERT INTO".$leMatch['db_id']);	
+$retInsEvent = mysqli_query($conn,"INSERT INTO {$tableEvent} (joueur_event_ref, equipe_event_id, code, chrono,souscode, match_event_id) 
+VALUES ('{$intJoueur}', '{$intEquipe}', '{$intEvent}', '{$leMatch['chrono']}','{$leMatch['souscode']}','{$leMatch['match_id']}')")or die(mysqli_error($conn)." INSERT INTO".$leMatch['db_id']);	
 //	mysql_query("INSERT INTO {$tableEvent} (joueur_event_ref, equipe_event_id, code, chrono, match_event_id) 
 //VALUES ( 'test	Match2', 'testMatch2', 'testMatch2', 'testMatch2','testMatch2')");	
 }
@@ -57,8 +49,9 @@ if($leMatch['event']==10&&$leMatch['souscode']==10)
 							WHERE matchIdRef = '{$leMatch['match_id']}'
 							";
 	
-$testmatch = mysql_query($qMatch)or die(mysql_error()." Select ".$leMatch['db_id']);	
-	$rMatch = mysql_fetch_row($testmatch);
+$testmatch = mysqli_query($conn,$qMatch) or die(mysqli_error($conn) ." Select ".$leMatch['db_id']);
+$rMatch=mysqli_data_seek($testmatch,0);
+	$rMatch = $rang[0];
 	
 	if(($rMatch[0]!=NULL)&&(strlen($rMatch[0])>2))
 	{
@@ -75,7 +68,7 @@ $testmatch = mysql_query($qMatch)or die(mysql_error()." Select ".$leMatch['db_id
 
 	}
 	
-	mysql_query("UPDATE TableMatch SET cleValeur='{$jMerge}' WHERE matchIdRef = '{$leMatch['match_id']}'");
+	mysqli_query($conn, "UPDATE TableMatch SET cleValeur='{$jMerge}' WHERE matchIdRef = '{$leMatch['match_id']}'");
 	
 }
 	
@@ -94,8 +87,7 @@ $testmatch = mysql_query($qMatch)or die(mysql_error()." Select ".$leMatch['db_id
 	//		echo $matchjson;
 	//	}
 		
-		
+		mysqli_close($conn);
 			header("HTTP/1.1 200 OK");
 
 ?>
-<?php  ?>

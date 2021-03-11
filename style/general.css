@@ -28,7 +28,11 @@ body
 float:left;
 
 }
-
+p{
+font-family: arial;
+font-size: small;
+font-weight: bold;
+}
 a{
 	text-decoration:none;
 	color:#04789D;
@@ -1030,7 +1034,8 @@ div#gradTitre
 	z-index:1;
 }
 
-
+
+
 div#divTitreDoc
 {
 color:#000;
@@ -3894,6 +3899,7 @@ text-align:center;
 border:solid 2px #034D57;	
 /*	box-shadow: 0px 0px 15px rgba(0,168,229,1);*/
 	box-shadow: 0px 0px 10px rgba(3,77,87,1);
+	margin:auto;
 
 }
 

@@ -1,9 +1,5 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableEq = 'TableEquipe';
 $tableLigue = 'Ligue';
 $tableMatch = 'TableMatch';
@@ -22,16 +18,17 @@ $courriel = $_POST['courriel'];
 $code = $_POST['code'];
 $noTel ="0";
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
 
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
-	
+
+
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
+
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 
 //////////////////////////////////
@@ -44,9 +41,9 @@ if($pass==$pass2)
 $erreurPass =0;
 else {$erreurPass =1;}
 
-$resultUser = mysql_query("SELECT * FROM TableUser where username='$usager'")
-or die(mysql_error());  
-$rangUser=mysql_num_rows($resultUser);
+$resultUser = mysqli_query($conn,"SELECT * FROM TableUser where username='$usager'")
+or die(mysqli_error($conn));  
+$rangUser=mysqli_num_rows($resultUser);
 if($rangUser>0)
 $erreurExist = 1;
 else {
@@ -67,7 +64,7 @@ if($code==1)
 	$query_ligue = "INSERT INTO TableUser (username, nom, prenom, password, type, codePostal, courriel, noTel,ref_id,sexe,taille,poid,dateInscription) ".
 "VALUES ('$usager','$nom','$prenom','$pass',30,'$codePostal', '$courriel', '$noTel',0,'M',0,0,NOW())";  //type 30: utilisateur non-payant
 		
-$retour = mysql_query($query_ligue)or die(mysql_error());
+$retour = mysqli_query($conn,$query_ligue)or die(mysqli_error($conn));
 
 $succes=1;
 
@@ -83,7 +80,7 @@ else {
 		if($erreurPass==0)
 	{	
 		$query_update = "UPDATE TableUser SET username='$usager', password='$pass', codePostal='$codePostal', courriel='$courriel', noTel='$noTel' , prenom='$prenom' WHERE username= '$usager'";	
-	mysql_query($query_update)or die(mysql_error());
+	mysqli_query($conn,$query_update)or die(mysqli_error($conn));
 	$succes=1;
 	}
 	
@@ -94,7 +91,7 @@ else {
 		if($erreurPass==0)
 		{	
 	$query_update = "UPDATE TableUser SET username='{$_POST['nouveauUsager']}' WHERE username= '$usager'";	
-		mysql_query($query_update)or die(mysql_error());
+		mysqli_query($conn,$query_update)or die(mysqli_error($conn));
 		$succes=1;
 		}	
 	}
@@ -104,8 +101,8 @@ else {
 		if($erreurPass==0)
 		{	
 		$query_update = "UPDATE TableUser SET password='$pass' WHERE username= '$usager' and password='{$_POST['ancienPass']}'";	
-		$ret=mysql_query($query_update)or die(mysql_error());
-		if(mysql_affected_rows()>0)
+		$ret=mysqli_query($conn,$query_update)or die(mysqli_error($conn));
+		if(mysqli_affected_rows($conn)>0)
 			{$succes=1;}
 		else {
 			$succes=0;
@@ -116,10 +113,10 @@ else {
 	
 	if($code==30)
 	{
-		$ret = mysql_query("SELECT username
+		$ret = mysqli_query($conn,"SELECT username
 						FROM TableUser
-						WHERE username='$usager'")or die(mysql_error());
-		if(mysql_num_rows($ret)>0)
+						WHERE username='$usager'")or die(mysqli_error($conn));
+		if(mysqli_num_rows($ret)>0)
 			{
 				$erreurExist=1;
 				$succes=0;
@@ -135,4 +132,5 @@ else {
 
 $jsonErreur = "{\"succes\":$succes, \"erreurPass\":$erreurPass,\"erreurExist\":$erreurExist,\"usager\":\"$usager\",\"pass\":\"$pass\"}";
 echo $jsonErreur;
+mysqli_close($conn);
 ?>

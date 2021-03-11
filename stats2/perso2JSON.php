@@ -8,11 +8,7 @@
 // 
 ////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableLigue = 'Ligue';
 $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
@@ -25,28 +21,24 @@ $tableUser = 'TableUser';
 //
 ////////////////////////////////////////////////////////////
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
-	
-	mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 
-function trouveIDParNomUser($nomUser)
+function trouveIDParNomUser($nomUser,$conn)
 {
-$fResultUser = mysql_query("SELECT noCompte 
+$fResultUser = mysqli_query($conn,"SELECT noCompte 
 								FROM TableUser 
 								WHERE username='{$nomUser}'")
-or die(mysql_error());  
-$rU = mysql_fetch_row($fResultUser);
-if (mysql_num_rows($fResultUser)>0)
+or die(mysqli_error($conn));  
+$rU = mysqli_fetch_row($fResultUser);
+if (mysqli_num_rows($fResultUser)>0)
 {
 return $rU[0];
 }
@@ -57,14 +49,14 @@ else{return -1;}
 $id = $_POST['id'];
 //echo  $id.", " ;
 if(!is_numeric($id))
-{$id=trouveIDParNomUser($id);}
+{$id=trouveIDParNomUser($id,$conn);}
 
 
-$resultEquipe = mysql_query("SELECT * FROM TableUser WHERE noCompte='{$id}'")
-or die(mysql_error());  
+$resultEquipe = mysqli_query($conn,"SELECT * FROM TableUser WHERE noCompte='{$id}'")
+or die(mysqli_error($conn));  
 $boule=0;
 $JSONstring = "{";
-	while($rangee=mysql_fetch_array($resultEquipe))
+	while($rangee=mysqli_fetch_array($resultEquipe))
 {
 	$uId=$rangee['noCompte'];
 $JSONstring .= "\"username\": \"".$rangee['username']."\",";
@@ -85,10 +77,10 @@ $JSONstring .="\"dateInscription\": \"".$rangee['dateInscription']."\",";
 $JSONstring .="\"joueurs\": [";
 if($uId!=null)
 {
-$resultJoueur = mysql_query("SELECT * FROM TableJoueur WHERE proprio='{$uId}'")
-or die(mysql_error());  
+$resultJoueur = mysqli_query($conn, "SELECT * FROM TableJoueur WHERE proprio='{$uId}'")
+or die(mysqli_error($conn));  
 $boule=0;
-while($rangJoueur=mysql_fetch_array($resultJoueur))
+while($rangJoueur=mysqli_fetch_array($resultJoueur))
 {
 	$boule=1;
 $JSONstring .= "\"".$rangJoueur['joueur_id']."\",";
@@ -101,10 +93,10 @@ $JSONstring .= "\"".$rangJoueur['joueur_id']."\",";
 $JSONstring .="\"arbitres\": [";
 if($uId!=null)
 {
-$resultArbitre = mysql_query("SELECT * FROM TableArbitre WHERE userId='{$uId}'")
-or die(mysql_error());  
+$resultArbitre = mysqli_query($conn,"SELECT * FROM TableArbitre WHERE userId='{$uId}'")
+or die(mysqli_error($conn));  
 $boule=0;
-while($rangArbitre=mysql_fetch_array($resultArbitre))
+while($rangArbitre=mysqli_fetch_array($resultArbitre))
 {
 	$boule=1;
 $JSONstring .= "\"".$rangArbitre['arbitreId']."\",";
@@ -117,7 +109,7 @@ $JSONstring .= "\"".$rangArbitre['arbitreId']."\",";
 
 
 echo $JSONstring;	
-
+mysqli_close($conn);
 
 ?> 
 

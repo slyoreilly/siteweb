@@ -705,6 +705,17 @@ function afficheStatsDom(statsJoueurs, code) {
 
 		}
 
+		if(statsJoueurs.hasOwnProperty('gardiens')){
+			$('#'+strParent).append($('<table></table>').addClass('c_tableau').attr('id','gardien_'+code).append($('<tbody></tbody>').append($('<tr></tr>').addClass('rangeeTitreSommaire').append($('<td></td>').addClass('rangeeTitre').text('Gardiens')))))
+			for(J = 0; J < statsJoueurs.gardiens.length; J = J + 1){
+				mClasse= J % 2 == 0 ?  'lignePaire' : 'ligneImpaire';
+				$('#gardien_'+code+' tbody').append($('<tr></tr>').addClass(mClasse).append(
+					$('<a></a>').attr('href', '/zstats/statsjoueur.html?joueurId=' + statsJoueurs.gardiens[J].joueurId+'&m='+getValue('m')).append(
+						$('<td></td>').text(statsJoueurs.gardiens[J].nom))));
+			}
+
+		}
+
 		//	document.body.rangee.cellule.innerHTML ='yo';
 	} catch(err) {
 		alert('try display fail...');

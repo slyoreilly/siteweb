@@ -7,11 +7,7 @@
 // 
 ////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableLigue = 'Ligue';
 $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
@@ -323,7 +319,7 @@ while($Iae<count($aEnr)) // Tous les matchs a Ãªtre recalculÃ©s pour enregistrem
 
 	$aDate = date('Y-m-d H:i:s', $eqFake[1]/1000);
 								
-	if($eDom==0||$eqFake[2]>20000)  // On force la nouvelle méthode à partir d'une date donnée.
+	if($eDom==0||$eqFake[2]>20000)  // On force la nouvelle mï¿½thode ï¿½ partir d'une date donnï¿½e.
 		{$eDom=floor($eqFake[0]/10000);
 		$ligueId=$eqFake[3];}
 	if($eVis==0||$eqFake[2]>20000)

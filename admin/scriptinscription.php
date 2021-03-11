@@ -1,9 +1,5 @@
 <?php
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableEq = 'TableEquipe';
 $tableLigue = 'Ligue';
 $tableMatch = 'TableMatch';
@@ -36,7 +32,7 @@ if (!mysql_select_db($database))
 
 //////////////////////////////////
 //
-//	Vérifications
+//	Vï¿½rifications
 //
 //////////////////////////////////
 
@@ -57,7 +53,7 @@ $erreurExist = 0;
 
 //////////////////////////////////
 //
-//	Mise à jour des bases de données
+//	Mise ï¿½ jour des bases de donnï¿½es
 //
 //////////////////////////////////
 
@@ -91,7 +87,7 @@ echo "
 <title>Un instant...</title>
 <meta http-equiv=\"REFRESH\" content=\"0;url=http://www.syncstats.com/login.html\"</HEAD>
 <BODY>
-Mise à jour terminée, redirection.
+Mise ï¿½ jour terminï¿½e, redirection.
 </BODY>
 </HTML>
 ";

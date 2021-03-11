@@ -1,0 +1,32 @@
+<?php
+include VIEW."header.phtml";
+?>
+<h1>Créer une alarme</h1>
+<br/>
+
+<?php 
+echo('<p>Choisir l\'operator</p><br/>');
+echo ('<select>');
+echo ('<option value="lt">Plus petit que</option>');
+echo ('<option value="lt">Plus grand que</option>');
+echo ('<option value="equal">Égal à</option>');
+echo ('</select>');
+echo('<p>Valeur du seuil</p><br/>');
+echo ('<input type="text" id="valeur"></input>');
+echo('<p>Courriels à alerter</p><br/>');
+echo ('<input type="text" id="courriel"></input>');
+
+
+
+
+
+//foreach($this->view_data['alarmList'] as $alarm){
+ //   echo($alarm->ringing."<br/>");
+//    echo($alarm->sensorType."<br/>");
+ //   echo($alarm->operand."<br/>");
+  //  echo($alarm->value."<br/>");
+//    echo(json_encode($alarm->target)."<br/>");
+//}
+
+?>
+<?php include VIEW."footer.phtml";?>

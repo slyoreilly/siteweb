@@ -7,20 +7,17 @@
 // 
 ////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableLigue = 'Ligue';
 $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
 $tableEquipe = 'TableEquipe';
 
+$matchId = null;
 
-$matchId = $_GET['matchId'];
-if($matchId=="" OR $matchId==NULL OR $matchId==undefined ){
-$matchId = $_POST['matchId'];
+if(isset($_GET['matchId'])){$matchId = $_GET['matchId'];}
+if($matchId=="" OR $matchId==NULL OR $matchId=='undefined' ){
+	if(isset($_POST['matchId'])){$matchId = $_POST['matchId'];}
 	
 }
 $refParString=true;
@@ -29,11 +26,15 @@ if(is_numeric($matchId)){
 		$refParString=false;
 	}
 }
-
-
+$match =null;
+$ligueId =null;
+if(isset($_POST['match'])){
 $match = $_POST['match'];
+}
+if(isset($_POST['ligueId'])){
 $ligueId = $_POST['ligueId'];
 
+}
 
 ////////////////////////////////////////////////////////////
 //
@@ -41,21 +42,19 @@ $ligueId = $_POST['ligueId'];
 //
 ////////////////////////////////////////////////////////////
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error($conn));
 }
-	mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+
+mysqli_query($conn,"SET NAMES 'utf8'");
+mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 
 if(is_numeric($match)&&is_numeric($ligueId))
 {
-		$rEquipeDom = mysql_query("SELECT TableEquipe.*, Ligue.*, TableMatch.*, TableArena.nomArena,TableArena.nomGlace ,TableEquipe.ficId AS eqFic
+		$rEquipeDom = mysqli_query($conn,"SELECT TableEquipe.*, Ligue.*, TableMatch.*, TableArena.nomArena,TableArena.nomGlace ,TableEquipe.ficId AS eqFic
 								FROM TableMatch 
 								JOIN Ligue
 									ON TableMatch.ligueRef=Ligue.ID_Ligue
@@ -65,9 +64,9 @@ if(is_numeric($match)&&is_numeric($ligueId))
 									TableMatch.arenaId=TableArena.arenaId	
 								WHERE TableMatch.ligueRef='$ligueId' AND TableMatch.date <= DATE_ADD(CURDATE(), INTERVAL 6 DAY)
 								ORDER BY date DESC
-								LIMIT $match,1")or die(mysql_error()); 
+								LIMIT $match,1")or die(mysqli_error($conn)); 
 
-	$rEquipeVis = mysql_query("SELECT TableEquipe.*, Ligue.*, TableMatch.*, TableArena.nomArena,TableArena.nomGlace, TableEquipe.ficId AS eqFic 
+	$rEquipeVis = mysqli_query($conn,"SELECT TableEquipe.*, Ligue.*, TableMatch.*, TableArena.nomArena,TableArena.nomGlace, TableEquipe.ficId AS eqFic 
 								FROM TableMatch 
 								JOIN Ligue
 									ON TableMatch.ligueRef=Ligue.ID_Ligue
@@ -77,13 +76,13 @@ if(is_numeric($match)&&is_numeric($ligueId))
 									TableMatch.arenaId=TableArena.arenaId	
 								WHERE TableMatch.ligueRef='$ligueId' AND TableMatch.date <= DATE_ADD(CURDATE(), INTERVAL 6 DAY)
 								ORDER BY date DESC
-								LIMIT $match,1")or die(mysql_error()); 
+								LIMIT $match,1")or die(mysqli_error($conn)); 
 	
 }
 
 else if(!is_numeric($matchId)OR $refParString){
 
-	$rEquipeDom = mysql_query("SELECT TableEquipe.*, Ligue.*, TableMatch.*, TableArena.nomArena,TableArena.nomGlace, TableEquipe.ficId AS eqFic
+	$rEquipeDom = mysqli_query($conn,"SELECT TableEquipe.*, Ligue.*, TableMatch.*, TableArena.nomArena,TableArena.nomGlace, TableEquipe.ficId AS eqFic
 								FROM TableMatch 
 								JOIN Ligue
 									ON TableMatch.ligueRef=Ligue.ID_Ligue
@@ -92,17 +91,17 @@ else if(!is_numeric($matchId)OR $refParString){
 								LEFT JOIN TableArena ON
 									TableMatch.arenaId=TableArena.arenaId	
 								WHERE TableMatch.matchIdRef='$matchId'")
-or die(mysql_error()); 
+or die(mysqli_error($conn)); 
 
 
-	$rEquipeVis = mysql_query("SELECT TableEquipe.*, Ligue.*, TableMatch.*, TableEquipe.ficId AS eqFic 
+	$rEquipeVis = mysqli_query($conn,"SELECT TableEquipe.*, Ligue.*, TableMatch.*, TableEquipe.ficId AS eqFic 
 								FROM TableMatch 
 								JOIN Ligue
 									ON TableMatch.ligueRef=Ligue.ID_Ligue
 								LEFT JOIN TableEquipe
 									ON TableMatch.eq_vis=TableEquipe.equipe_id
 								WHERE TableMatch.matchIdRef='$matchId'")
-or die(mysql_error()); 
+or die(mysqli_error($conn)); 
 	
 
 
@@ -110,7 +109,7 @@ or die(mysql_error());
 else {
 			$limBas= $matchId;
 					
-	$rEquipeDom = mysql_query("SELECT TableEquipe.*, Ligue.*, TableMatch.*,TableEquipe.ficId AS eqFic
+	$rEquipeDom = mysqli_query($conn,"SELECT TableEquipe.*, Ligue.*, TableMatch.*,TableEquipe.ficId AS eqFic
 								FROM TableMatch 
 								JOIN Ligue
 									ON TableMatch.ligueRef=Ligue.ID_Ligue
@@ -118,10 +117,10 @@ else {
 									ON TableMatch.eq_dom=TableEquipe.equipe_id
 									ORDER BY `match_id` DESC
 									LIMIT $limBas , 1")
-									or die(mysql_error()); 
+									or die(mysqli_error($conn)); 
 
 
-	$rEquipeVis = mysql_query("SELECT TableEquipe.*, Ligue.*, TableMatch.*, TableEquipe.ficId AS eqFic 
+	$rEquipeVis = mysqli_query($conn,"SELECT TableEquipe.*, Ligue.*, TableMatch.*, TableEquipe.ficId AS eqFic 
 								FROM TableMatch 
 								JOIN Ligue
 									ON TableMatch.ligueRef=Ligue.ID_Ligue
@@ -129,7 +128,7 @@ else {
 									ON TableMatch.eq_vis=TableEquipe.equipe_id
 									ORDER BY `match_id` DESC
 									LIMIT $limBas , 1")
-									or die(mysql_error()); 
+									or die(mysqli_error($conn)); 
 
 			
 			
@@ -139,11 +138,14 @@ else {
 }
 	
 
-	$equipeDom=mysql_fetch_assoc($rEquipeDom);
-	$equipeVis=mysql_fetch_assoc($rEquipeVis);
+	$equipeDom=mysqli_fetch_assoc($rEquipeDom);
+	$equipeVis=mysqli_fetch_assoc($rEquipeVis);
 	//////////////////////////////////////////////////
 	//
 	// 	�crit JSON
+
+if(!is_null($equipeDom)&&!is_null($equipeVis)){
+
 	$cV = stripslashes($equipeVis['cleValeur']);
 	if(strlen($cV)==0)
 		$cV="\"\"";	
@@ -171,10 +173,13 @@ else {
 	$JSONstring .= "\"cleValeur\": ".$cV.",";
 	$JSONstring .= "\"date\": \"". $equipeDom['date']."\"}";
 
+	echo $JSONstring;
+}else{
+	echo "{\"ligueId\":".$ligueId." }";
+}
+	
 
 	
-echo $JSONstring;
-	
-mysql_close();
+mysqli_close($conn);
 
 ?>

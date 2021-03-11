@@ -19,11 +19,7 @@ $qVentOff =  $request->ventOff;
 //$saisonId = $_POST["saisonId"];
 //echo $ligueId."  t  ".$saisonId." 2 ";
 
-$db_host = "localhost";
-$db_user = "syncsta1_u01";
-$db_pwd = "test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableLigue = 'Ligue';
 $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
@@ -46,6 +42,7 @@ if (!$conn) {
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 mysqli_set_charset($conn, "utf8");
+mysqli_query($conn, "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY','')");
 }
 
 /////////////////////////////////////////////////////

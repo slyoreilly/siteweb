@@ -11,7 +11,8 @@
         <script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
         <script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
         <script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
-                <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+				<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+				<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
         <script src="/scripts/moment-with-locales.js" type="text/javascript" charset="utf-8"></script>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" http-equiv="X-UA-Compatible" />
@@ -124,6 +125,29 @@
             }
 
 
+			function getJoueursDeLigueID(ligueId) {
+		    
+		    
+			$.ajax({
+					 url : "/stats2/joueursEquipeLigue2JSON.php"/*"http://syncstats.com/scriptsphp/listeEquipes.php"*/,
+					 datatype : 'json',
+					 type : 'POST',
+				data : jQuery.param({
+					ligueId : window.ligueId
+				}),		
+					 contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+					 success : function(response) {
+				   joueursLigue = eval('(' + response+ ')');
+				
+					 },
+					 error : function(xhr, status, error) {
+						 var err = eval("(" + xhr.responseText + ")");
+						 alert(err.Message + "  --  ereur lc2MS");
+					 }
+				 });
+ 
+	 }
+
 
 
 		function getMatchsDeLigueID(saisonId) {
@@ -136,7 +160,8 @@
                         type : 'POST',
                         data : JSON.stringify({
                             saisonId : saisonId,
-                            ligueId : window.ligueId
+                            ligueId : window.ligueId,
+                            ventOff : true
                         }),
                         contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
                         success : function(response) {
@@ -185,7 +210,7 @@
 
 		}
 
-		function setMatchAVenir(match) {
+		function setMatchAVenir(match, reload) {
 
 			$.ajax({
 				url : "/stats2/setMatchAVenir.php",
@@ -205,7 +230,11 @@
 				}),
 				contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
 				success : function(response) {
-					window.location.reload(true);
+					if(reload){
+						window.location.reload(true);
+					}else{
+						faitBoiteProchain();
+					}
 				},
 				error : function(xhr, status, error) {
 					alert(err.Message + "  --  ereur enregistrement Match");
@@ -335,8 +364,47 @@
 			// $('#divDernier').text(JSON.stringify(dernierMatch));
 		}
 
+		function getJSONJoueursEquipes(equipeId, ligueId)//  Fonction similaire utilisée dans zeroconfig.html
+			{
+
+				$.ajax({
+					url : "/stats2/joueursEquipeLigue2JSON.php",
+					type : "POST",
+					data : {
+						ligueId : ligueId,
+						equipeId : equipeId
+					},
+					contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+					success : function(response) {
+						lesJoueursDeLigue = eval("(" + response + ")");
+						$('#divAction').append($('<ul class="list-group"></ul>').attr("id","floatPlayers").css("position","absolute"));
+						for(var b=0;b<lesJoueursDeLigue.equipe.length;b++){
+							
+							for(var a=0;a<lesJoueursDeLigue.equipe[b].joueur.length;a++){
+								$('#floatPlayers').append($('<li class="list-group-item"></li>').text(lesJoueursDeLigue.equipe[b].joueur[a].nomJoueur).hide().on("click",{id:lesJoueursDeLigue.equipe[b].joueur[a].joueurId},function(event){
+									pushPlayer(event.data.id);
+								}));
+							}
+						
+
+						}
+						
+					},
+
+					error : function(xhr, status, error) {
+						var err = eval("(" + xhr.responseText + ")");
+						console.log(err.Message + "  --  ereur joueurEquipeLigue");
+					}
+				});
+
+			}
+
+
 		function faitBoiteProchain() {
+			detruitDialogue("nextGameModal");
+			$('#divProchain').empty();
 			domvis = 0;
+			
 			if (parseInt(eJSON.Equipes[0].equipeId) == parseInt(prochainMatch.eqVisId)) {
 				vecEquipe = prochainMatch.alVis;
 				nomEqVs = prochainMatch.eqDom;
@@ -346,9 +414,76 @@
 				domvis = 1;
 				nomEqVs = prochainMatch.eqVis;
 			}
-			$('#divProchain').append($('<div></div>').text(prochainMatch.date), $('<div></div>').text("  VS " + nomEqVs), $('<input></input>').attr("type", "button").val("Alignement")).on("click", 'input', function() {
-				construitDialogue();
-				$('#divDialogue').append($('<table></table>').append($('<tbody></tbody>')));
+			construitDialogue("nextGameModal");
+
+			$('#divProchain').append($('<div></div>').text(prochainMatch.date), $('<div></div>').text("  VS " + nomEqVs), $('<input></input>').attr("type", "button").val(window.tl_stats_Alignement).on("click", function() {
+				$('#nextGameModal').modal("show");
+						$('#nextGameModal .modal-body').empty();
+						$('#nextGameModal .modal-footer').empty();
+				$('#nextGameModal .modal-title').text("Prochain Match");
+				$('#nextGameModal .modal-body').append($("<input></input>").attr("id","importButton").attr("type", "button").val("Import").on("click", function() {
+					getJSONJoueursEquipes(eJSON.Equipes[0].equipeId, window.ligueId);
+					$('#nextGameModal #divAction').append($("<div></div>").append($('<span></span>').append($('<input></input>').attr("id","importPlayerName").attr("type", "text").on("keyup",function(){
+									$("#floatPlayers li").each(function(){
+										//console.log($('#importPlayerName').val().toLocaleLowerCase()+" / "+$(this).text().toLocaleLowerCase());
+										if($(this).text().toLocaleLowerCase().includes($('#importPlayerName').val().toLocaleLowerCase())){$(this).fadeIn(200)}else{$(this).fadeOut(200);}
+										
+										
+									})
+
+							})),$('<i class="fa fa-floppy-o m-2"></i>').on("click", function() {
+
+
+
+}),$('<i class="fa fa-trash m-2"></i>').on("click",function(){
+	$(this).parent().remove();
+	$("#importButton").show();
+})));
+					
+
+				}));
+				$('#nextGameModal .modal-body').append($("<input></input>").attr("id","createButton").attr("type", "button").val("Create").on("click", function() {
+					$('#nextGameModal #divAction').append($("<div></div>").append( $('<span></span>').append($('<input></input>').attr("id","createPlayerNumber").attr("type", "number")), $('<span></span>').append($('<input></input>').attr("id","createPlayerName").attr("type", "text")), $('<span></span>').append($('<select></select>').attr("id","createPlayerSelectPosition").append($("<option></option>").text("A").val("A"), $("<option></option>").text("D").val("D"), $("<option></option>").text("G").val("G"))),$('<i class="fa fa-floppy-o m-2"></i>').on("click", function() {
+
+$.ajax({
+	url : "/scriptsphp/scriptprofil.php",
+	type : 'POST',
+	data : jQuery.param({
+		nom : "",
+		prenom : "",
+		numero : $('#createPlayerNumber').val(),
+		position : $('#createPlayerSelectPosition').find(":selected").text(),
+		pseudo : $('#createPlayerName').val(),
+		taille : 0,
+		poids : 0,
+		anneeNaissance : 0,
+		villeOrigine : "",
+		code : 40,
+		sexe : "M",
+		ligueId : window.ligueId,
+		ficId : null
+	}),
+	contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+	success : function(response) {
+		setJoueursDansEquipes('{"joueurId":"' + response + '","equipeId":"' + eJSON.Equipes[0].equipeId + '"}');
+		alert("C'est bon");
+		window.location.reload(true);
+	},
+	error : function(xhr, status, error) {
+	}
+});
+
+}),$('<i class="fa fa-trash m-2"></i>').on("click",function(){
+	$(this).parent().remove();
+	$("#createButton").show();
+})));
+
+					$(this).hide();
+
+				}));
+				$('#nextGameModal .modal-body').append($("<div></div>").attr("id", "divAction").val("Import"));
+
+				$('#nextGameModal .modal-body').append($('<table></table>').append($('<tbody></tbody>')));
 				for (var a = 0; a < statsJSONHome.Saisons[selSaison.selectedIndex].joueurs.length; a++) {
 					mJ = statsJSONHome.Saisons[selSaison.selectedIndex].joueurs[a];
 					if (vecEquipe == null) {
@@ -356,7 +491,7 @@
 					} else {
 						joue = estDansAlignement(mJ.joueurId, vecEquipe);
 					}
-					$('#divDialogue tbody').append($('<tr></tr>').append($('<td></td>').append($('<input></input>').attr("type", "checkbox").prop("checked", joue), $('<input></input>').attr("type", "hidden").val(mJ.joueurId)), $('<td></td>').append($('<input></input>').attr("type", "button").val(mJ.numero).on("click", function() {
+					$('#nextGameModal tbody').append($('<tr></tr>').append($('<td></td>').append($('<input></input>').attr("type", "checkbox").prop("checked", joue), $('<input></input>').attr("type", "hidden").val(mJ.joueurId)), $('<td></td>').append($('<input></input>').attr("type", "button").val(mJ.numero).on("click", function() {
 						$(this).off("click");
 
 						$(this).attr("type", "text").parent().append($('<input></input>').attr("type", "button").val("OK!").on("click", function() {
@@ -418,45 +553,80 @@
 					}))));
 
 				}
-				$('#divDialogue').append($("<input></input>").attr("type", "button").val("+ Joueur").on("click", function() {
-					$('#divDialogue tbody').append($("<tr></tr>").append($('<td></td>').append($('<input></input>').attr("type", "button").val("Save!").on("click", function() {
 
-						$.ajax({
-							url : "/scriptsphp/scriptprofil.php",
-							type : 'POST',
-							data : jQuery.param({
-								nom : "",
-								prenom : "",
-								numero : $(this).parent().next().find("input[type=text]").val(),
-								position : $(this).parent().next().next().next().find(":selected").text(),
-								pseudo : $(this).parent().next().next().find("input[type=text]").val(),
-								taille : 0,
-								poids : 0,
-								anneeNaissance : 0,
-								villeOrigine : "",
-								code : 40,
-								sexe : "M",
-								ligueId : window.ligueId,
-								ficId : null
-							}),
-							contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
-							success : function(response) {
-								setJoueursDansEquipes('{"joueurId":"' + response + '","equipeId":"' + eJSON.Equipes[0].equipeId + '"}');
-								alert("C'est bon");
-								window.location.reload(true);
-							},
-							error : function(xhr, status, error) {
-							}
-						});
+				for(var a = 0; a < vecEquipe.length; a++){
+					console.log(vecEquipe[a]+" "+$('#nextGameModal tbody input[value='+vecEquipe[a]+']').length);
+					if($('#nextGameModal tbody input[value='+vecEquipe[a]+']').length==0){
+					mJ = getJoueurDeId2(vecEquipe[a]);
+					console.log(JSON.stringify(mJ));
+					if(mJ!=null){
+					$('#nextGameModal tbody').append($('<tr></tr>').append($('<td></td>').append($('<input></input>').attr("type", "checkbox").prop("checked", joue), $('<input></input>').attr("type", "hidden").val(mJ.joueurId)), $('<td></td>').append($('<input></input>').attr("type", "button").val(mJ.numero).on("click", function() {
+						$(this).off("click");
 
-					})), $('<td></td>').append($('<input></input>').attr("type", "text")), $('<td></td>').append($('<input></input>').attr("type", "text")), $('<td></td>').append($('<select></select>').append($("<option></option>").text("A").val("A"), $("<option></option>").text("D").val("D"), $("<option></option>").text("G").val("G")))));
+						$(this).attr("type", "text").parent().append($('<input></input>').attr("type", "button").val("OK!").on("click", function() {
+							var d = new Date();
+							var tmpD = d.toISOString().split('T');
+							dernierMAJ = tmpD[0] + " " + tmpD[1].split('Z')[0];
+							num = $(this).prev().val();
+							obj = $(this).prev();
+							monId = $(this).parent().parent().find('input[type=hidden]').val();
 
-					$(this).remove();
+							$.ajax({
+								url : "/scriptsphp/setGenerique.php",
+								type : 'POST',
+								data : jQuery.param({
+									table : "TableJoueur",
+									valeur : JSON.stringify({
+										NumeroJoueur : num,
+										dernierMAJ : dernierMAJ
+									}),
+									mode : "modif",
+									critere : "joueur_id='" + monId + "'"
+								}),
+								contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+								success : function(response) {
+									$(obj).attr("type", "button");
+									$(obj).next().remove();
 
-				}));
-				$('#divDialogue').append($('<div></div>').attr('id', 'contBouton').append($('<div></div>').addClass("bouton_2 cliquable").text("Sauvegarder").on("click", function() {
+								},
+								error : function(xhr, status, error) {
+								}
+							});
+						}));
+					})), $('<td></td>').text(mJ.nom), $('<td></td>').append($('<input></input>').attr("type","button").attr("id", "pos_" + mJ.joueurId).addClass("cliquable").val(mJ.position.toUpperCase()).on("click", {
+						mJ2 : mJ
+					}, function(event) {
+					   // alert(JSON.stringify(event.data.mJ2));
+					    
+					   $(this).replaceWith($('<SELECT></SELECT>').attr("id","selActif").append($('<option></option>').val("A").text("Attaquant"),
+					    $('<option></option>').val("A").text("Attaquant"),
+					    $('<option></option>').val("AC").text("Centre"),
+					    $('<option></option>').val("AG").text("Aile Gauche"),
+					    $('<option></option>').val("AD").text("Aile Droite"),
+					    $('<option></option>').val("D").text("Défenseur"),
+					    $('<option></option>').val("G").text("Gardien"))
+					);
+					     $('#selActif').find('option').each(function(){
+					      //   alert($(this).val()+" ==? "+event.data.mJ2.position.toUpperCase());
+                             if($(this).val()==event.data.mJ2.position.toUpperCase()){
+                                  $(this).attr("selected","selected");    
+                              }
+                             });
+					    
+					      $('#selActif').change(function() {
+					         
+                                setPosition(event.data.mJ2.joueurId, this.value);
+                            });
+					   
+
+					}))));
+					}
+					}
+				}
+				
+				$('#nextGameModal .modal-footer').append($('<div></div>').attr('id', 'contBouton').append($('<div></div>').addClass("bouton_2 cliquable").text("Sauvegarder").on("click", function() {
 					unVec = new Array;
-					$('#divDialogue input:checked').each(function() {
+					$('#nextGameModal .modal-body input:checked').each(function() {
 						unVec.push($(this).next().val());
 					});
 					if (domvis == 1) {
@@ -466,12 +636,23 @@
 						prochainMatch.alVis = unVec;
 					}
 
-					setMatchAVenir(prochainMatch);
+					setMatchAVenir(prochainMatch,false);
 				})));
 
-			});
+			}));
 
 			// $('#divProchain').text(JSON.stringify(prochainMatch));
+		}
+
+		function pushPlayer(mId){
+			domvis = 0;
+			
+			if (parseInt(eJSON.Equipes[0].equipeId) == parseInt(prochainMatch.eqVisId)) {
+				prochainMatch.alVis.push(mId);
+			} else {
+				prochainMatch.alDom.push(mId);
+			}
+			setMatchAVenir(prochainMatch,false);
 		}
 
 		function setJoueursDansEquipes(strJou) {
@@ -516,6 +697,22 @@
 
 		}
 
+		function getJoueurDeId2(id){
+			for (var a = 0; a < joueursLigue.equipe.length; a++) {
+				for(var b=0;b< joueursLigue.equipe[a].joueur.length;b++){
+					if (parseInt(joueursLigue.equipe[a].joueur[b].joueurId) == parseInt(id)) {
+						mJ = joueursLigue.equipe[a].joueur[b];
+						mJ.nom=  joueursLigue.equipe[a].joueur[b].nomJoueur;
+						mJ.numero=  joueursLigue.equipe[a].joueur[b].noJoueur;						
+					return mJ;
+				}
+				}
+				
+			}
+			return null;
+
+		}
+
 		function estDansAlignement(id, vecAlign) {
 			for (var a = 0; a < vecAlign.length; a++) {
 				if (parseInt(id) == vecAlign[a]) {
@@ -542,7 +739,7 @@
 				logoEquipe.src = '/admin/afficheImage.php?ficId=' + eJSON.Equipes[0].ficId;
 
 			} catch(err) {
-				alert("pwoblaime");
+				alert("problème code erreur 1542 ");
 			}
 		}
 
@@ -554,7 +751,10 @@
 					if (lesMatchs.matchs[a].statut.length > 0) {
 						matchsPasses.push(lesMatchs.matchs[a]);
 					} else {
-						matchsAvenir.push(lesMatchs.matchs[a]);
+						var toPlace = new Date(lesMatchs.matchs[a].date);
+						var asOfNow = new Date();
+						if(toPlace.getTime()>=asOfNow.getTime()){
+						matchsAvenir.push(lesMatchs.matchs[a]);}
 					}
 				}
 			}
@@ -698,6 +898,7 @@ function appliqueStyleLigue(lesInfos){
 			developper(9);
             getInfoLigue(getCookie('ligueId'));
 			detruitDivGauche();
+			getJoueursDeLigueID(getCookie('ligueId'));
 
 			dSS = document.getElementById('divSelSaison');
 			dSS.innerHTML = window.tl_statseq_Saison + ": ";

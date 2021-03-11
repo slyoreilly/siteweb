@@ -1,9 +1,5 @@
 <?php
-$db_host = "localhost";
-$db_user = "syncsta1_u01";
-$db_pwd = "test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 $tableEq = 'TableEquipe';
 $tableLigue = 'Ligue';
 $tableMatch = 'TableMatch';
@@ -14,19 +10,20 @@ $tableUser = 'TableUser';
 
 //$jDomJSON = stripslashes($_POST['jDom']);
 //$jVisJSON = stripslashes($_POST['jVis']);
-$jDom = $_POST['jDom'];
-$jVis = $_POST['jVis'];
+
+$jDom =  isset($_POST['jDom'])? $_POST['jDom']:null;
+$jVis =  isset($_POST['jVis'])? $_POST['jVis']:null;
 $gDom = $_POST['gDom'];
 $gVis = $_POST['gVis'];
 $eqDom = $_POST['eqDom'];
 $eqVis = $_POST['eqVis'];
 $dateDeb = $_POST['dateDeb'];
-$dateFin = $_POST['dateFin'];
+if(isset($_POST['dateFin'])&&$_POST['dateFin']!="" ){$dateFin = $_POST['dateFin'];}else{$dateFin = '2050-01-01 00:00:00';}
 $ligueId = $_POST['ligueId'];
 $mavId = $_POST['mavId'];
-$arenaId = $_POST['arenaId'];
+$arenaId = is_numeric($_POST['arenaId']) ? $_POST['arenaId']: 0;
 $arbitreId = $_POST['arbitreId'];
-$appareils_json = $_POST['appareils'];
+$appareils_json = isset($_POST['appareils'])?  $_POST['appareils']:null;
 $appareils = json_decode($appareils_json, true);
 
 $matchId = substr($dateDeb, 0, 4) . "/" . substr($dateDeb, 5, 2) . "/" . substr($dateDeb, 8, 2) . "_" . $eqDom . "_" . $eqVis;
@@ -40,7 +37,37 @@ if (!$conn) {
 
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+
+$result = mysqli_query($conn,"select timediff(now(),convert_tz(now(),@@global.time_zone,'+00:00'))");
+$defTimeZone =mysqli_data_seek($result, 0);
 mysqli_query($conn,"SET time_zone='+0:00'");
+
+
+
+function getAlignement($connGA,$eqId,$defTimeZone)
+{
+
+
+
+	mysqli_query($connGA,"SET time_zone='{$defTimeZone}'");
+	$resultJoueur = mysqli_query($connGA, "SELECT joueur_id
+													FROM TableJoueur
+													JOIN abonJoueurEquipe
+														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
+														WHERE equipeId='{$eqId}'
+														AND debutAbon<=DATE(NOW())
+														AND finAbon>DATE(NOW())") or die(mysqli_error($conn));
+	mysqli_query($connGA,"SET time_zone='+0:00'");
+	$alignement=array();
+	//$alignement = "[";
+	while ($rangeeJoueur = mysqli_fetch_array($resultJoueur)) {
+array_push($alignement,$rangeeJoueur['joueur_id']);
+ 
+}
+	return json_encode($alignement);
+
+}
+
 $strEqDom = "";
 $strEqVis = "";
 $strGDom = "";
@@ -48,6 +75,8 @@ $strGVis = "";
 $strJDom = "";
 $strJVis = "";
 $strArb = 0;
+
+$milliseconds = round(microtime(true) * 1000);
 
 //	echo "gDom: ".$gDom."   ";
 
@@ -59,22 +88,28 @@ if ($eqVis != 'undefined') {$strEqVis = "eqVis='{$eqVis}', ";
 } else {$strEqVis = "";
 	$eqVis = 0;
 }
-if ($gDom != 'undefined' && $gDom != undefined) {$strGDom = "gardienDom='{$gDom}', ";
+if ($gDom != 'undefined' && $gDom != "") {$strGDom = "gardienDom='{$gDom}', ";
 } else {$strGDom = "";
 	$gDom = 0;
 }
-if ($gVis != 'undefined' && $gVis != undefined) {$strGVis = "gardienVis='{$gVis}', ";
+if ($gVis != 'undefined' && $gVis != "") {$strGVis = "gardienVis='{$gVis}', ";
 } else {$strGVis = "";
 	$gVis = 0;
 }
-if ($jDom != 'undefined' && $jDom != undefined) {$strJDom = "alignementDom='{$jDom}', ";
-} else {$strJDom = "alignementDom=NULL, ";
-}
-if ($jVis != 'undefined' && $jVis != undefined) {$strJVis = "alignementVis='{$jVis}', ";
-} else {$strJVis = "alignementVis=NULL, ";
-}
-if ($arbitreId != 'undefined') {$strArb = "arbitreId='{$arbitreId}', ";
+if ($jDom == 'undefined'|| $jDom=="" || $jDom==null){
+	$jDom=getAlignement($conn,$eqDom, $defTimeZone);
+} else{
+	$jDom=json_encode($jDom);
+}$strJDom = "alignementDom='{$jDom}', ";
+if ($jVis == 'undefined' || $jVis=="" || $jVis==null ){
+	$jVis=getAlignement($conn,$eqVis, $defTimeZone);
+}else{	
+	$jVis=json_encode($jVis);
+} $strJVis = "alignementVis='{$jVis}', ";
+
+if ($arbitreId != 'undefined' && $arbitreId != "") {$strArb = "arbitreId='{$arbitreId}', ";
 } else {
+	$strArb = "";
 	$arbitreId = 0;
 }
 if ($dateDeb == 'AAAA/MM/JJ 23:59') {$dateDeb = "2000/01/01 00:00";
@@ -117,51 +152,15 @@ if ($mUpdate) {
 	$retour = $mavId;
 
 } else {
-	//echo "D ";
-	
-	$resultJoueur = mysqli_query($conn, "SELECT joueur_id
-													FROM TableJoueur
-													JOIN abonJoueurEquipe
-														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
-														WHERE equipeId='{$eqDom}'
-														AND debutAbon<=DATE(NOW())
-														AND finAbon>DATE(NOW())") or die(mysqli_error($conn));
-	$jDom = "[";
-	while ($rangeeJoueur = mysqli_fetch_array($resultJoueur)) {
 
-		$jDom .= $rangeeJoueur['joueur_id'] . ",";
-	}//Fin du scan des joueurs
 
-	if (!strcmp(",", substr($jDom, -1)))// Pour �viter les vides;
-	{
-		$jDom = substr($jDom, 0, -1);
-	}
-	$jDom .= "]";
-	//fin des joueurs d'une �quipe
-//echo "E ";
-	
-	$rJVis = mysqli_query($conn, "SELECT joueur_id
-													FROM TableJoueur
-													JOIN abonJoueurEquipe
-														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
-														WHERE equipeId='{$eqVis}'
-														AND debutAbon<=DATE(NOW())
-														AND finAbon>DATE(NOW())") or die(mysqli_error($conn));
-	$jVis = "[";
-	while ($rangeeJVis = mysqli_fetch_array($rJVis)) {
 
-		$jVis .= $rangeeJVis['joueur_id'] . ",";
-	}//Fin du scan des joueurs
-//echo "F ";
-	
-	if (!strcmp(",", substr($jVis, -1)))// Pour �viter les vides;
-	{
-		$jVis = substr($jVis, 0, -1);
-	}
-	$jVis .= "]";
+$alDom= getAlignement($conn, $eqDom, $defTimeZone);
+$alVis= getAlignement($conn, $eqVis, $defTimeZone);
+
 	//fin des joueurs d'une �quipe
 $qIns= "INSERT INTO MatchAVenir (matchId, alignementDom, alignementVis, gardienDom, gardienVis, eqDom, eqVis, date, dateFin, ligueId,dernierMAJ,arenaId,arbitreId) 
-VALUES ('{$matchId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$arenaId}','{$arbitreId}')";
+VALUES ('{$matchId}','{$alDom}', '{$alVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$arenaId}','{$arbitreId}')";
 	//echo $qIns;
 	$retour = mysqli_query($conn,$qIns) or die(mysqli_error($conn) . " INSERT INTO MatchAVenir");
 
@@ -205,12 +204,12 @@ if (mysqli_num_rows($rTM) > 0) {
 	$match_id = $match_id_vec[0];
 	$qTMEUp = "UPDATE TableMatch SET matchId='{$matchId}', matchIdRef='{$matchId}',arenaId={$arenaId},
 	 " . $strTMEqDom . $strTMEqVis . $strGDom . $strGVis . $strJDom . $strJVis . $strArb . "
-	date='{$dateDeb}',dateFin='{$dateFin}',ligueRef='{$ligueId}', dernierMAJ=NOW() WHERE mavId='{$mavId}'";
+	date='{$dateDeb}',dateFin='{$dateFin}',ligueRef='{$ligueId}', dernierMAJ=NOW(), TSDMAJ='{$milliseconds}' WHERE mavId='{$mavId}'";
 	$rTM = mysqli_query($conn, $qTMEUp) or die(mysqli_error($conn) . $qTMEUp);
 	$retour = $mavId;
 } else {
-	$rTM = mysqli_query($conn, "INSERT INTO TableMatch (matchId, matchIdRef, mavId, alignementDom, alignementVis, gardienDom, gardienVis, eq_dom, eq_vis, date, dateFin, ligueRef,dernierMAJ,arenaId,arbitreId) 
-VALUES ('{$matchId}','{$matchId}','{$mavId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$arenaId}','{$arbitreId}')") or die(mysqli_error($conn) . " INSERT INTO TableMatch");
+	$rTM = mysqli_query($conn, "INSERT INTO TableMatch (matchId, matchIdRef, mavId, alignementDom, alignementVis, gardienDom, gardienVis, eq_dom, eq_vis, date, dateFin, ligueRef,dernierMAJ, TSDMAJ, arenaId,arbitreId) 
+VALUES ('{$matchId}','{$matchId}','{$mavId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$milliseconds}','{$arenaId}','{$arbitreId}')") or die(mysqli_error($conn) . " INSERT INTO TableMatch");
 	$match_id = mysqli_insert_id($conn);
 }
 
@@ -262,7 +261,7 @@ if ($appareils != null) {
 				mysqli_query($conn, "INSERT INTO abonAppareilMatch (matchId, surfaceId, gabaritId, posGabId, telId, role) 
 					VALUES ('{$match_id}','{$appareils['remotes'][$a]['surfaceId']}','{$appareils['remotes'][$a]['gabaritId']}',
 					'{$appareils['remotes'][$a]['posGabId']}', '{$appareils['remotes'][$a]['telId']}',
-					'{$appareils['remotes'][$a]['role']}')") or die(mysqli_error() . " INSERT INTO abonAppareilMatch");
+					'{$appareils['remotes'][$a]['role']}')") or die(mysqli_error($conn) . " INSERT INTO abonAppareilMatch");
 				$retour = mysqli_error($conn);
 				echo 5;
 			}

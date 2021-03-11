@@ -7,11 +7,8 @@
 // 
 ////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
+require '../scriptsphp/defenvvar.php';
 
-$database = 'syncsta1_900';
 $tableLigue = 'Ligue';
 $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
@@ -28,31 +25,16 @@ $saisonId = $_POST["saisonId"];
 //
 ////////////////////////////////////////////////////////////
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
 }
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
 
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
-/////////////////////////////////////////////////////////////
-// 
-//
-
-function trouveSaisonActiveDeLigueId($ID){ 
-$rfSaison = mysql_query("SELECT saisonId FROM TableSaison WHERE ligueRef = '{$ID}' ORDER BY premierMatch DESC")
-or die(mysql_error()." Select saisonId");  
-//echo mysql_result($rfSaison, 0)."\n";  
-//$tmp= (mysql_fetch_array($rfSaison));
-//echo $tmp['saisonId']."\n";  
- return (mysql_result($rfSaison, 0)); 
-} 
 
 //////////////////////////////////////////////////////
 //
@@ -61,30 +43,42 @@ or die(mysql_error()." Select saisonId");
 //////////////////////////////////////////////////////
 
 	
+$equipe=array();	
 	
 	
+if($saisonId=="null"||$saisonId=="undefined"||$saisonId=="")// Sp�cifie par la saison
+	{
+		$rfSaison = mysqli_query($conn,"SELECT saisonId FROM TableSaison WHERE ligueRef = '{$ligueId}' ORDER BY premierMatch DESC LIMIT 0,1")
+or die(mysqli_error($conn)." Select saisonId"); 
+
+while($rangeeSaison=mysqli_fetch_array($rfSaison))
+{
+	$saisonId= $rangeeSaison['saisonId'];
 	
-if($saisonId=="null"||$saisonId=="undefined")// Sp�cifie par la saison
-	{$saisonId = trouveSaisonActiveDeLigueId($ligueId);}
+}
 		
-	$retPost= Array();
+		}
+		
+	$retPost= array();
 	$retPost['ligueId']=$ligueId;
-	$retPost['saisons']=Array();
+	$retPost['saisons']=array();
 	$JSONstring = "{\"ligueId\": \"".$ligueId."\",";
 	
 	$Is=0;
 	
-	$resultLigue = mysql_query("SELECT * FROM Ligue WHERE ID_Ligue = '{$ligueId}'")
-or die(mysql_error());  
-$rangeeLigue=mysql_fetch_assoc($resultLigue);
+	$resultLigue = mysqli_query($conn,"SELECT * FROM Ligue WHERE ID_Ligue = '{$ligueId}'")
+or die(mysqli_error($conn));  
+$rangeeLigue=mysqli_fetch_assoc($resultLigue);
 $jsonLigue = json_decode($rangeeLigue['cleValeur'],true);
+$nbPunMax = 1000;
+if(isset($jsonLigue['reglements']['nbPunMax'])){
 $nbPunMax = $jsonLigue['reglements']['nbPunMax'];
-
+}
 	
 //$resultSaison = mysql_query("SELECT * FROM TableSaison WHERE saisonId = '{$saisonId}'")
-$resultSaison = mysql_query("SELECT * FROM TableSaison WHERE ligueRef = '{$ligueId}'")
-or die(mysql_error());  
-while($rangeeSaison=mysql_fetch_array($resultSaison))
+$resultSaison = mysqli_query($conn,"SELECT * FROM TableSaison WHERE ligueRef = '{$ligueId}'")
+or die(mysqli_error($conn));  
+while($rangeeSaison=mysqli_fetch_array($resultSaison))
 {
 	
 	
@@ -92,7 +86,7 @@ while($rangeeSaison=mysql_fetch_array($resultSaison))
 	$premierMatch = $rangeeSaison['premierMatch'];
 	$dernierMatch = $rangeeSaison['dernierMatch'];
 	$typeSaison = $rangeeSaison['typeSaison'];
-$retPost['saisons'][$Is]=Array();
+$retPost['saisons'][$Is]=array();
 $retPost['saisons'][$Is]['pm']=$premierMatch;
 $retPost['saisons'][$Is]['dm']=$dernierMatch;
 $retPost['saisons'][$Is]['type']=$typeSaison;
@@ -103,17 +97,17 @@ $retPost['saisons'][$Is]['structureDivision']= json_decode($rangeeSaison['struct
     ///  On ne popule de stats que la saison entière.
 if($saisonId==$rangeeSaison['saisonId']){
 
-$resultEquipe = mysql_query("SELECT TableEquipe.*,abonEquipeLigue.* FROM TableEquipe 
+$resultEquipe = mysqli_query($conn,"SELECT TableEquipe.*,abonEquipeLigue.* FROM TableEquipe 
 								JOIN abonEquipeLigue
 									ON (equipeId=equipe_id) 
 									WHERE ligueId = '{$ligueId}'
 									AND (abonEquipeLigue.finAbon>='{$premierMatch}'
 											AND abonEquipeLigue.debutAbon<='{$dernierMatch}')
 											AND abonEquipeLigue.permission<31")
-								or die(mysql_error());  
-$equipe=array();
+								or die(mysqli_error($conn));  
+
 $Ie=0;
-while($rangeeEquipe=mysql_fetch_array($resultEquipe))
+while($rangeeEquipe=mysqli_fetch_array($resultEquipe))
 {
 	$equipe[$Ie]['id']=$rangeeEquipe['equipe_id'];
 	$equipe[$Ie]['nom']=$rangeeEquipe['nom_equipe'];
@@ -134,7 +128,7 @@ while($rangeeEquipe=mysql_fetch_array($resultEquipe))
 	$equipe[$Ie]['bc']=0;
 	$equipe[$Ie]['dernier10']=array();
 	$equipe[$Ie]['ficId']=$rangeeEquipe['ficId'];
-	$equipe[$Ie]['vecRes']=Array(    //   V-D-N / R-P / D-V
+	$equipe[$Ie]['vecRes']=array(    //   V-D-N / R-P / D-V
 		array(
 			array(
 				0,0
@@ -172,7 +166,7 @@ while($Ie < count($equipe)) {
 
 unset($resultMatch);
 unset($rangeeMatch);
-mysql_query("SET SQL_BIG_SELECTS=1");
+mysqli_query($conn,"SET SQL_BIG_SELECTS=1");
 
 /*$resultMatch = mysql_query("
 SELECT * 
@@ -188,7 +182,7 @@ INNER JOIN(
 								AND statut='F' AND ligueRef='{$ligueId}'
     GROUP BY s1.match_event_id ")*/
    
-   $resultMatch = mysql_query("
+   $resultMatch = mysqli_query($conn,"
     SELECT * 	
 FROM TableMatch 	
 LEFT JOIN(	
@@ -241,9 +235,9 @@ LEFT JOIN(
  * */								
 								
 								
-or die(mysql_error());  
+or die(mysqli_error($conn));  
 
-while($rangeeMatch=mysql_fetch_array($resultMatch))
+while($rangeeMatch=mysqli_fetch_array($resultMatch))
 {
 	if($rangeeMatch['date']>=$premierMatch&&$rangeeMatch['date']<=$dernierMatch)
 	{
@@ -388,6 +382,6 @@ $retPost['customClassement']=$retCC;}
 
 echo json_encode($retPost);
 	
-
+mysqli_close($conn);
 
 ?>

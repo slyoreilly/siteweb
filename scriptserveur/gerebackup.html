@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<?xml version="1.0" encoding="utf-8"?>
+<html>
+<head>
+<title>Gestion de copie de sauvegarde</title>
+	
+		<link rel="shortcut icon" href="/favicon.ico" />
+		
+		<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		
+		<style type="text/css">
+
+
+		</style>
+</head>
+<body id="mbody" >
+
+				<div id="divHaut">
+		</div>
+		
+						<div id="divMenuHaut">
+
+
+						</div>
+		<div class="container">
+				<div class="modal" id ="modalDeleteWarning" tabindex="-1" role="dialog">
+						<div class="modal-dialog" role="document">
+						  <div class="modal-content">
+							<div class="modal-header">
+							  <h5 class="modal-title">Attention</h5>
+							  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							  </button>
+							</div>
+							<div class="modal-body">
+							  <p>Voulez-vous vraiment effacer ces vidéos?</p>
+							</div>
+							<div class="modal-footer">
+							  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+							  <button type="button" id="goEfface" class="btn btn-danger">Fire Ze Missiles</button>
+							</div>
+						  </div>
+						</div>
+					  </div>
+			<ul  class="nav nav-tabs">
+					<li class="m-4" onclick="activateMenu(1)">
+							<a href='#'>Serveurs</a>
+					</li>
+
+				<li  class="m-4"  onclick="activateMenu(2)">
+						<a href='#'>Règles</a>
+				</li>
+
+			<li  class="m-4" onclick="activateMenu(3)">
+					<a href='#'>Actions</a>
+				
+
+
+			</li>
+			<li  class="m-4" onclick="activateMenu(4)">
+					<a href='#'>Output</a>
+	
+	
+	
+			</li>
+
+				</ul>
+				<div id="divRegle" class="page-panel"">
+						<a href='#'>Droite</a>
+				</div>
+
+				<div id="divGauche" class="page-panel">
+						<a href='#'>Gauche</a>
+				</div>
+				<div id="divAction" class="page-panel">
+						<a href='#'>Actions</a>
+					
+	
+	
+				</div>
+				<div id="divOutput" class="page-panel">
+						<a href='#'>Output</a>
+		
+		
+		
+				</div>
+
+		</div>
+		
+			 <script type="text/javascript" charset="utf-8">
+			 $('#divRegle').append($('<div></div>').addClass('form-group').append($('<label></label>').attr('for','plusVieux').text('À partir de:'),
+			 $('<input></input>').attr('id','plusVieux').attr('type','text').addClass('form-control')));
+			 $('#divRegle').append($('<div></div>').addClass('form-group').append($('<label></label>').attr('for','plusNeuf').text("jusqu'à:"),
+			 $('<input></input>').attr('id','plusNeuf').attr('type','text').addClass('form-control')));
+
+			 $('#divRegle').append($('<div></div>').addClass('form-group').append($('<label></label>').attr('for','selPrem').text("Premier Serveur"),
+			 $('<select></select>').attr('id','selPrem').attr('type','text').addClass('form-control')));
+			 $('#divRegle').append($('<div></div>').addClass('form-group').append($('<label></label>').attr('for','selSec').text("Second Serveur"),
+			 $('<select></select>').attr('id','selSec').attr('type','text').addClass('form-control')));
+			 $('#divRegle').append($('<div></div>').addClass('form-group').append($('<label></label>').attr('for','selTiers').text("Tierce Serveur"),
+			 $('<select></select>').attr('id','selTiers').attr('type','text').addClass('form-control')));
+			 $('#divRegle').append(
+			 $('<input></input>').attr('id','btnOkHier').attr('type','button').addClass('form-control').val("Go!").on("click",function(){ applyServerHierarchy($('#plusVieux').val(),10);}));
+
+			
+
+
+		 		vecA=[];
+		 		vecB=[];
+		
+			 listeServeur=[{adresseLongue: 'https://syncstats.com',
+			adresseCourte: 'syncstats.com'},
+			{adresseLongue: 'https://syncstats.ca',
+			adresseCourte: 'syncstats.ca'},
+			{adresseLongue: 'http://syncstats.ddns.net',
+			adresseCourte: 'syncstats.ddns.net'}
+			];
+
+			$('#divGauche').append($('<div></div>').append(
+				$('<p></p>').text('Serveur Source: '),
+			 $('<select></select>').attr('id','idSelSource'),
+			 $('<div></div>').attr('id','resA')
+			));
+
+			$('#divGauche').append($('<div></div>').append(
+				
+			 $('<p></p>').text('Serveur Destination: '),
+			 $('<select></select>').attr('id','idSelDest'),
+			 $('<input></input>').attr('type','button').val("Get Vecteurs").on("click",function(){
+				var servA = listeServeur[$('#idSelSource option:selected').val()].adresseLongue;
+				var servB = listeServeur[$('#idSelDest option:selected').val()].adresseLongue;
+				$.ajax({url: servA+"/scriptserveur/getListeVideos.php", success: function(result){
+					vecA = JSON.parse(result);
+					console.log(result);
+					console.log(vecA.length +' éléments');
+				    $("#resA").text(vecA.length +' éléments');
+  				},
+				  error: function (jqXhr, textStatus, errorMessage) { // error callback 
+        $('p').append('Error: ' + errorMessage);
+    }});
+				  
+				  $.ajax({url: servB+"/scriptserveur/getListeVideos.php", success: function(result){
+					vecB = JSON.parse(result);
+					console.log(result);
+					console.log(vecB.length +' éléments');
+				    $("#resB").text(vecB.length +' éléments');
+ 					 }, error: function (jqXhr, textStatus, errorMessage) { // error callback 
+        $('p').append('Error: ' + errorMessage);
+    }
+					  });
+
+			 }),
+			 $('<div></div>').attr('id','resB')
+			));
+
+
+
+		 	
+				for(var a=0; a<listeServeur.length;a++){
+					$('#idSelSource').append($('<option></option>').text(listeServeur[a].adresseCourte).val(a));
+					$('#idSelDest').append($('<option></option>').text(listeServeur[a].adresseCourte).val(a));
+					$('#selPrem').append($('<option></option>').text(listeServeur[a].adresseCourte).val(a));
+					$('#selSec').append($('<option></option>').text(listeServeur[a].adresseCourte).val(a));
+					$('#selTiers').append($('<option></option>').text(listeServeur[a].adresseCourte).val(a));
+				}
+
+
+				$('#divAction').append($('<input></input>').attr('type','button').val("Démarrer l'analyse").on("click",function(){
+				
+				vecDouble=[];
+				vecSeulA=[];
+				vecSeulB=[];
+				
+
+				if(vecA.length>vecB.length){
+					petitVec=vecB;
+					grandVec=vecA;
+				    grandVecA=true;
+				}else{
+					petitVec=vecA;
+					grandVec=vecB;
+				    grandVecA=false;
+				}
+				
+				for(var a=0;a<petitVec.length;a++){
+					posGrandVec=grandVec.indexOf(petitVec[a]);
+					if(posGrandVec==-1){
+						if(grandVecA){
+							vecSeulB.push(petitVec[a]);
+						}else{
+							vecSeulA.push(petitVec[a]);
+						}
+					}else{
+						vecDouble.push(petitVec[a]);
+						grandVec.splice(posGrandVec,1);
+					}
+				}
+
+				if(grandVecA){
+					vecSeulA=grandVec;
+				}else{
+					vecSeulB=grandVec;
+				}
+
+				if(grandVecA){
+					$('#divAction').append(
+						$('<p></p>').text(vecDouble.length+' éléments sont doublés'),
+						$('<p></p>').text(vecSeulA.length+' ne sont que sur le serveur A'),
+						$('<p></p>').text(vecSeulB.length+' ne sont que sur le serveur B'),
+					)
+				}else{
+					$('#divAction').append(
+						$('<p></p>').text(vecDouble.length+' éléments sont doublés'),
+						$('<p></p>').text(vecSeulA.length+' ne sont que sur le serveur A'),
+						$('<p></p>').text(vecSeulB.length+' ne sont que sur le serveur B'),
+					)
+				}
+
+				$('#divAction').append(
+					$('<span></span>').text('Télécharger '),
+					$('<input></input>').attr('type','text').attr('id','nbDownload').val(10),
+					$('<span></span>').text(' éléments du serveur A vers le serveur B'),
+					$('<input></input>').attr('type','button').val('Go!').on("click",function(){
+						nbDownload=$('#nbDownload').val();
+						console.log(window.vecSeulA);
+						console.log(nbDownload);
+						$.ajax({url: listeServeur[$('#idSelDest option:selected').val()].adresseLongue+"/scriptserveur/downloadInterServer.php",
+						data: {fichiers: JSON.stringify(window.vecSeulA.slice(0,nbDownload)),
+						source: listeServeur[$('#idSelSource option:selected').val()].adresseLongue},
+						type: "POST",
+						 success: function(result){
+					
+					console.log(result);
+					
+ 						 }, error: function (jqXhr, textStatus, errorMessage) { // error callback 
+        				$('p').append('Error: ' + errorMessage);
+					    }
+					  });
+					}),
+					$('<div></div>').append(
+						$('<input></input>').attr('type','button').val('Voir Doublons').on("click",voirDoublons())
+					)
+				)
+
+
+				}));
+
+
+				function activateMenu(a){
+					$('.page-panel').hide();
+
+					switch(a){
+						case 1:
+						$('#divGauche').show();
+						break;
+						case 2:
+						$('#divRegle').show();
+						break;
+						case 3:
+						$('#divAction').show();
+						break;
+						case 4:
+						$('#divOutput').show();
+						break;
+					}
+				}
+
+				function applyServerHierarchy(plusVieux,maxTraite){
+console.log(plusVieux);
+console.log($('#plusNeuf').val());
+console.log($('#selPrem').val());
+console.log($('#selSec').val());
+console.log($('#selTiers').val());
+
+
+					$.ajax({url: "http://syncstats.ddns.net/scriptserveur/pointeursParHierarchie.php",
+									data: {plusVieux: plusVieux,
+										maxTraite: maxTraite,
+									plusNeuf:$('#plusNeuf').val(),
+									hierarchie:[listeServeur[$('#selPrem').val()].adresseCourte,listeServeur[$('#selSec').val()].adresseCourte,listeServeur[$('#selTiers').val()].adresseCourte]},
+									type: "POST",
+									 success: function(result){ 
+										 resApplyServer = eval('('+result+')');
+											$('#divOutput').append($('<div></div>').text("Next OK: "+resApplyServer.nextOK));
+											$('#divOutput').append($('<div></div>').text("Retour: "+resApplyServer.retour));
+											if(resApplyServer.continue){
+												applyServerHierarchy(resApplyServer.nextOK),maxTraite;
+											}
+									 }, error: function (jqXhr, textStatus, errorMessage) { // error callback 
+        							$('p').append('Error: ' + errorMessage);
+									    }
+									  });
+
+
+				}
+		 	
+		 	
+			
+			function voirDoublons(){
+				$.ajax({url: "https://syncstats.com/scriptserveur/getPointeursVideos.php",
+						data: {fichiers: JSON.stringify(window.vecDouble)},
+						type: "POST",
+						 success: function(result){
+							lesFics = JSON.parse(result);
+							$('#divOutput').empty();
+							$('#divOutput').append($('<input></input>').attr("type","button").val("check all").on("click",function(){
+								$('#divOutput table input[type=checkbox]').prop("checked", true);	
+							}),
+							$('<input></input>').attr("type","button").val("uncheck all").on("click",function(){
+								$('#divOutput table input[type=checkbox]').prop("checked", false);	
+							}),
+							$('<div></div>').addClass("border border-success").append($('<span></span>').text("Point checked to "),
+							$('<select></select>').attr('id','selPointSource').append($('<option></option>').text($('#idSelSource option:selected').text()).val(listeServeur[$('#idSelSource option:selected').val()].adresseCourte),
+								$('<option></option>').text($('#idSelDest option:selected').text()).val(listeServeur[$('#idSelDest option:selected').val()].adresseCourte)),
+							
+							$('<input></input>').attr("type","button").val("GO").on("click",function(){
+								var vecCoche = $("#divOutput tr ").map(function() {
+									if(
+										$(this).find('input[type=checkbox]').prop("checked")
+									) {
+										return $(this).find('.videoId').val()
+									}}).get();
+
+								$.ajax({url: "https://syncstats.com/scriptserveur/setPointeursVideos.php",
+									data: {fichiers: JSON.stringify(vecCoche),
+									destination:$('#selPointSource option:selected').val()},
+									type: "POST",
+									 success: function(result){ 
+										 voirDoublons();
+									 }, error: function (jqXhr, textStatus, errorMessage) { // error callback 
+        							$('p').append('Error: ' + errorMessage);
+									    }
+									  });
+							})
+							),
+							$('<div></div>').addClass("border border-danger").append($('<span></span>').text("Delete checked on "),
+							$('<select></select>').attr('id','selDeleteSource').append($('<option></option>').text($('#idSelSource option:selected').text()).val($('#idSelSource option:selected').val()),
+								$('<option></option>').text($('#idSelDest option:selected').text()).val($('#idSelDest option:selected').val())),
+							
+							$('<input></input>').attr("type","button").attr("data-toggle","modal").attr("data-target","#modalDeleteWarning").val("GO").on("click",function(){
+								$("#modalDeleteWarning").show();
+								$('#goEfface').on("click",function(){
+									var vecCoche = $("#divOutput tr ").map(function() {
+									if(
+										$(this).find('input[type=checkbox]').prop("checked")
+									) {
+										return $(this).find('.nomFichier').text();
+									}}).get();
+
+								$.ajax({url: listeServeur[$('#selDeleteSource option:selected').val()].adresseLongue+"/scriptserveur/deleteVideos.php",
+									data: {fichiers: JSON.stringify(vecCoche)},
+									type: "POST",
+									 success: function(result){ }, error: function (jqXhr, textStatus, errorMessage) { // error callback 
+        							$('p').append('Error: ' + errorMessage);
+									    }
+									  });
+
+								});
+
+							})
+							)
+							
+							);
+							$('#divOutput').append($('<table></table>').addClass("table table-striped table-bordered").append($('<tbody></tbody>')));
+								for(var a=0;a<lesFics.length&&a<10000;a++){
+									$('#divOutput tbody').append($('<tr></tr>').append(
+										$('<td></td>').addClass("nomFichier").text(lesFics[a].nomFichier).append(
+											$('<input></input>').addClass("videoId").attr("type","hidden").val(lesFics[a].videoId)
+										),
+										$('<td></td>').text(lesFics[a].emplacement),
+										$('<td></td>').text(lesFics[a].lienOK),
+										$('<td></td>').append($('<a></a>').attr('href','http://'+lesFics[a].emplacement+"/lookatthis/"+lesFics[a].nomFichier).text("lien")),
+										$('<td></td>').append($('<input></input>').attr('type','checkbox'))
+									));
+								}
+					
+ 						 }, error: function (jqXhr, textStatus, errorMessage) { // error callback 
+        				$('p').append('Error: ' + errorMessage);
+					    }
+					  });
+
+				
+			}
+			
+		 		
+		 		
+
+		 		
+		 	</script>
+
+
+
+</body>
+</html>

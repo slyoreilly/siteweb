@@ -1,0 +1,21 @@
+.bouton_1 {background-color:#354c92}
+.cliquable,#contBabillard .simpleMessage .cliquable {color:#000022}
+#barreNav a {color:#000022}
+#barreNav a:hover {color:#354c92}
+#barreNav >ul >li:hover {background-color:#000022}
+#barreNav >ul >li:hover {color:#354c92}
+#ulMeneurs a {color:#354c92}
+#ulMeneurs {background-color:#000022}
+#ulMeneurs a:hover {color:#000022}
+#ulMeneurs >li {background-color:#000022}
+#ulMeneurs >li {color:#354c92}
+#ulMeneurs >li:hover {background-color:#354c92}
+#ulMeneurs >li:hover {color:#000022}
+#ulMeneurs >li.active {background-color:#354c92}
+#ulMeneurs >li.active {color:#000022}
+#barreNav ul {background-color:#354c92}
+.bg {background-image: url('/style/ligues/109/background_briquesBleues.jpg')}
+.titreOnglet.actif {background-color: #000022color: #354c92}
+.titreOnglet.passif {background-color: #354c92color: #000022}
+.couleur1 {background-color: #000022}
+td.titreTableau {color: #000022}

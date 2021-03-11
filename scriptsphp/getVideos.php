@@ -7,29 +7,15 @@
 // 
 ////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-
-$database = 'syncsta1_900';
-
-////////////////////////////////////////////////////////////
-//
-// 	Connections � la base de donn�es
-//
-////////////////////////////////////////////////////////////
-
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
+require '../scriptsphp/defenvvar.php';
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error($conn));
 }
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+
+mysqli_query($conn,"SET NAMES 'utf8'");
+mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 
 
 
@@ -63,13 +49,13 @@ if(strcmp($ligueId,""))
 //Anciennement TableMatch.matchIdRef
 
 
-$rChrono = mysql_query($reqChrono)
-or die(mysql_error());  
+$rChrono = mysqli_query($conn, $reqChrono)
+or die(mysqli_error($conn));  
 
 $IM=0;
 $recentsVideos = Array();
 $iRef=0;
-while ($rangChrono = mysql_fetch_array($rChrono))
+while ($rangChrono = mysqli_fetch_array($rChrono))
 {
 		if($rangChrono['angleOk']>=0){
 			if($iRef!=$rangChrono['reference']){
@@ -134,11 +120,11 @@ if(strcmp($ligueId,""))
 				ON (Video.nomMatch = TableMatch.match_id)
 			WHERE ligueRef={$ligueId} ORDER BY nbVues DESC";
 }
-			$rPop = mysql_query($reqPop)
-or die(mysql_error());  
+			$rPop = mysqli_query($conn,$reqPop)
+or die(mysqli_error($conn));  
 
 $plusVuesVideos = Array();
-while ($rangPop = mysql_fetch_array($rPop))
+while ($rangPop = mysqli_fetch_array($rPop))
 {
 	if($rangPop['angleOk']>=0){
 	
@@ -176,12 +162,12 @@ if(strcmp($ligueId,""))
 				ON (Video.nomMatch = TableMatch.match_id)
 			WHERE ligueRef={$ligueId} ORDER BY eval DESC";
 }
-$rTop = mysql_query($reqTop)
-or die(mysql_error());  
+$rTop = mysqli_query($conn,$reqTop)
+or die(mysqli_error($conn));  
 
 $IM=0;
 $topVideos = Array();
-while ($rangTop = mysql_fetch_array($rTop))
+while ($rangTop = mysqli_fetch_array($rTop))
 {
 		if($rangTop['angleOk']>=0){
 	

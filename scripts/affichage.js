@@ -47,7 +47,7 @@ function gereLangue() {
 function gereLangue_mob() {
 	langue = (getCookie("langue") == undefined) ? "fr" : getCookie("langue");
 	document.write('<script type="text/javascript" charset="utf-8" src="/scripts/texte_' + langue + '.js"></script>');
-	document.write('<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>');
+    document.write('<script src=""https://code.jquery.com/jquery-3.3.1.js" integrity = "sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin = "anonymous""></script>');
 
 }
 
@@ -90,38 +90,25 @@ console.log("Z");
 		}
 	}
 	
-console.log("N");
-	divLangueSel = $('<select></select>').attr("id", "divLangue").on("change",function() {
-		console.log("P");
-		if ($(this).val() == 'en' && window.langue == "fr") {
-			setCookie("langue", "en", 3000);
-			window.location.reload(true);
-			// Do something for option "b"
-		} else if ($(this).val() == 'fr' && window.langue == "en") {
-			setCookie("langue", "fr", 3000);
-			window.location.reload(true);
-		}
-	});
-console.log("O");
-try{
-$('#divLangue').append($('<option></option>').text("EN").val('en'), $('<option></option>').text("FR").val('fr'));
-}catch(err){console.log(err.message);}
-console.log("Q");
+//console.log("N");
+	
+
+//console.log("Q");
 
 
 
 	divContact = document.createElement('DIV');
 	divContact.innerHTML = "Contact: <a href=\"mailto:info&#64syncstats.com\" class=\"lien\">info" + "@" + "syncstats.com</a>";
-console.log("V "+$('#divTitreDoc').length);
+//console.log("V "+$('#divTitreDoc').length);
 //try{
-console.log("Y");
+//console.log("Y");
 //demandeInfoLigue();
 $('#divTitreDoc').append($("<div></div>").attr('id', 'divBoiteID').addClass("optionHautDroit"));
-console.log("X");
+//console.log("X");
 $('#divBoiteID').append($('<ul></ul>').attr('id', 'menuBoiteID'));
-console.log("W");
+//console.log("W");
 	if (usager1 === undefined || usager1 === null) {
-console.log("R");
+//console.log("R");
 		/*toLog = document.createElement('H2');
 		// toLog.style.width='20%';
 		toLog.id = 'toLog';
@@ -151,30 +138,40 @@ console.log("R");
 			connexion();
 		};*/
 		//toLog.appendChild(lien2);
-		$('#divTitreDoc').append($('<div></div>').attr("id","affUser").addClass("optionHautDroit").css("text-align","right").append(
-			$('<p></p>').attr("id","toLog").css("text-align","right").css("padding","0 2px").append(
+        $('#menuBoiteID').append($('<li></li>')/*.attr("id","affUser").addClass("optionHautDroit").css("text-align","right")*/.append(
+			$('<div></div>').attr("id","toLog").css("text-align","right").css("padding","0 2px").append(
 				$('<a></a>').text(window.tl_general_signin).addClass("cliquable").attr("href",'/zuser/inscription.html'),
 				$('<span></span>').text(" | "),
-				$('<a></a>').text(window.tl_general_login).addClass("cliquable").on("click",function(){connexion(); }),
-				$('#divLangue')				
+                $('<a></a>').text(window.tl_general_login).addClass("cliquable").on("click", function () { connexion(); })
+               
+                /*,
+				$('#divLangue')				*/
 			)
-		));
-		console.log("T");
+        ));
+       
+		//console.log("T");
 		/*affUserJS = document.createElement('div');
 		affUserJS.id = "affUser";
 		affUserJS.textAlign = "right";
 		affUserJS.className = "optionHautDroit";
 		affUserJS.appendChild(toLog);
 		toLog.style.padding = "0 2px";
-		
-		$(toLog).append($('#divLangue'));*/
+		*/
+       // $('#affUser').append($('#divLangue'));
 //$("#affUser"));
 //		divTitre.appendChild(affUserJS);
-console.log("U");
-		$("toLog").prepend($('<div id="divSearch"></div>').hide().append($('<img></img>').attr("src", "/images/icones/delete.png").attr("id", "iconeDelete").css({
-			"width" : "24px",
-			"height" : "24px"
-		}), $('<input></input>').attr("type", "text").attr("id", "editSearch"), $('<i class="fas fa-search"></i>').attr("id", "iconeSearch")));
+        console.log("U");
+        $('#menuBoiteID').prepend($('<li></li>').append(
+       // $('#affUser').prepend(
+            $('<div id="divSearch"></div>').css("float","right").append(
+                $('<img></img>').attr("src", "/images/icones/delete.png").attr("id", "iconeDelete").css({
+			    "width" : "24px",
+			    "height" : "24px"
+                }),
+                $('<input></input>').attr("type", "text").attr("id", "editSearch").hide(),
+                $('<i class="fas fa-search"></i>').attr("id", "iconeSearch"))
+        ));
+        console.log("U2");
 
 		//////////////////////////////////////////
 		////  Boîte de recherche
@@ -245,10 +242,22 @@ console.log("U");
 
 		boiteRecherche();
 
-		$('#menuBoiteID').append($('<li></li>').append($('#divLangue')));
+		
 
 	}// fin du else
-
+    $('#menuBoiteID').append($('<li></li>').append(
+        $("<select></select>").attr("id", "divLangue").on("change", function () {
+            //console.log("P");
+            if ($(this).val() == 'en' && window.langue == "fr") {
+                setCookie("langue", "en", 3000);
+                window.location.reload(true);
+                // Do something for option "b"
+            } else if ($(this).val() == 'fr' && window.langue == "en") {
+                setCookie("langue", "fr", 3000);
+                window.location.reload(true);
+            }
+        }).append($('<option></option>').text("EN").val('en'), $('<option></option>').text("FR").val('fr'))
+    ));
 	genereMenu_dev();
 	//	barreTitreContexte();
 //	afficheLigueId();
@@ -256,9 +265,10 @@ console.log("U");
 
 function boiteRecherche(){
 	$(function() {
-			$('#divSearch').hide();
+            $('#editSearch').hide();
 			$('#iconeSearch').hover(function() {
-				$('#divSearch').show(400);
+                $('#divSearch').show(400);
+                $('#editSearch').show(400);
 				
 			});
 		});
@@ -427,8 +437,8 @@ function peupleDivBas() {
 	menuAproposJS.id = 'menuApropos';
 	tApropos = document.createElement('A');
 	tContactez = document.createElement('A');
-	tApropos.innerHTML = "À propos de nous";
-	tApropos.href = "http://www.journaldestmichel.com/%C3%89conomie/Affaires/2013-04-24/article-3226532/strongstrongGrace-a-deux-Michelois-Larbitrage-au-hockey-simplifie-strongstrong/1";
+	tApropos.innerHTML = "Notre Équipe";
+	tApropos.href = "/zdoc/notreequipe.html";
 	tContactez.innerHTML = "Contactez-nous";
 	tContactez.href = "mailto:info" + "@" + "syncstats.com";
 	menuAproposJS.appendChild(tApropos);
@@ -459,23 +469,25 @@ function peupleDivBas() {
 	menuSuivezJS.appendChild(mIF3);
 	//	document.getElementsByTagName('body')[0].insertBefore(mIF2, document.getElementsByTagName('body')[0].firstChild);
 
-	menuDiscJS = document.createElement('div');
-	menuDiscJS.id = 'menuDisc';
-	imgDiscJS = document.createElement('IMG');
-	imgDiscJS.id = "imgDisc";
-	imgDiscJS.src = "/images/logoFondNoir.png";
-	menuDiscJS.appendChild(imgDiscJS);
+
+
+$('#divBas').append(
+	$('<div></div>').attr('id','menuDisc').append(
+		$('<a></a>').attr('href','/').append(
+			$('<img></img>').attr('src',"/images/logoFondNoir.png").attr('id',"imgDisc")
+		)));
+
+	$('#divBas').append($('<a></a>').attr('href', '#').click(function() {
+		window.open('https://www.sitelock.com/verify.php?site=syncstats.com', 'SiteLock', 'width=600,height=600,left=160,top=170');
+	}).append($('<img></img>').addClass("img-responsive").attr('title', 'SiteLock').attr('src', '//shield.sitelock.com/shield/syncstats.com')));
+
+
 	if (document.documentElement.clientWidth >= 500) {
 		$('<script async></script>').attr("src", "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js").appendTo(divBasJS);
 		$('<ins></ins>').attr("class", "adsbygoogle").attr("style", "display:inline-block;width:728px;height:90px").attr("data-ad-client", "ca-pub-2263794877114969").attr("data-ad-slot", "8589452732").appendTo(divBasJS);
 		( adsbygoogle = window.adsbygoogle || []).push({});
 	}
 
-	divBasJS.appendChild(menuDiscJS);
-
-	$(divBasJS).append($('<a></a>').attr('href', '#').click(function() {
-		window.open('https://www.sitelock.com/verify.php?site=syncstats.com', 'SiteLock', 'width=600,height=600,left=160,top=170');
-	}).append($('<img></img>').addClass("img-responsive").attr('title', 'SiteLock').attr('src', '//shield.sitelock.com/shield/syncstats.com')));
 
 }
 
@@ -504,7 +516,7 @@ function genereMenu_dev() {
 		menu_n1 = document.createElement('UL');
 		divMenuHautJS.appendChild(menu_n1);
 		menu_n1.id = 'menu';
-
+/*
 		for (var k = 0; k < hierarchie.length; k++) {
 			i_n1 = document.createElement('LI');
 			menu_n1.appendChild(i_n1);
@@ -519,7 +531,7 @@ function genereMenu_dev() {
 			i_n1.appendChild(a_n1);
 			
 
-		}// Fin du for hierarchie
+		}// Fin du for hierarchie  */
 	}
 }
 
@@ -698,7 +710,7 @@ function genereBoites() {
 	genBoiteContexte(2);
 	genBoiteContexte(3);
 	genBoiteContexte(4);
-	genBoiteContexte(5);
+//	genBoiteContexte(5);
 	if (getCookie('ligueId') == 86)
 		faireBoite(1, 10);
 	else
@@ -727,8 +739,8 @@ function genereBoites() {
 	 faireBoite(1,3);
 	 faireBoite(4, 5);*/
 	faireBoite(3, 5);
-	faireBoite(4, 1);
-	faireBoite(5, 6);
+	faireBoite(4, 6);
+	//faireBoite(5, 6);
 	//faireBoiteTest(1);
 	$('<script async></script>').attr("src", "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js").appendTo('#divDroite');
 	$('<ins></ins>').attr("class", "adsbygoogle").attr("style", "display:inline-block;width:300px;height:250px").attr("data-ad-client", "ca-pub-2263794877114969").attr("data-ad-slot", "9575808332").appendTo('#divDroite');
@@ -1082,7 +1094,7 @@ function faireBoite(a, id) {
 			//			alert(requete_ajax.responseText);
 			try{
 			boite = eval('(' + requete_ajax.responseText + ')');
-			eval(boite.corps);
+			//eval(boite.corps);
 			}
 			catch(err){}
 		}

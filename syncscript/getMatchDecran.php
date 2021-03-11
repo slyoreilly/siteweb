@@ -1,9 +1,5 @@
 <?php
-$db_host = "localhost";
-$db_user = "syncsta1_u01";
-$db_pwd = "test";
-
-$database = 'syncsta1_900';
+require '../scriptsphp/defenvvar.php';
 
 
 $ecranId = $_POST['ecranId'];
@@ -52,6 +48,7 @@ if($tmpArray['dernierMAJ']>$recentMAJ){
 }
 }
 	
+mysqli_close($conn);
 	echo utf8_encode($recentMatchId);
 	header("Content-Type: application/json", true);
 		header("HTTP/1.1 200 OK");

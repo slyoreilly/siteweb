@@ -30,8 +30,8 @@ tl_general_Dimanche = "Dimanche";
 
 tl_titreNouvPhoto = "Charger une nouvelle photo";
 tl_sousTitreNouvPhoto = "Sélectionner un fichier sur votre ordinateur";
-tl_titreIndex="Du Hockey intelligent";
-tl_sousTitreIndex="Application mobile qui remplace les feuilles de match pour une gestion automatique de statistiques des ligues ou tournois de hockey.";
+tl_titreIndex="Du Sport intelligent";
+tl_sousTitreIndex="Choisissez les faits saillants à conserver en vidéo directement pendant la partie ! Le sommaire de la partie (statistiques et reprises) est généré automatiquement et disponible en ligne aussitôt que nos appareils sont connectés à internet.";
 
 tl_produitH1Admin="Pour l'organisateur";
 tl_produitH1Joueur="Pour les joueurs";
@@ -68,7 +68,7 @@ tl_produitDescSB1="Est un scoreboard qui est contrôlé à distance via notre ap
 
 tl_produits_titreAvantages="Des ajouts incroyables qui bonifieront vos matchs";
 
-tl_produits_h1ProdSyncStats="L'application Hockey";
+tl_produits_h1ProdSyncStats="L'application de marquage sportif";
 tl_produits_h1ProdWebSite="Site web complet";
 tl_produits_h1ProdSyncCam="Vidéos auto-édités";
 tl_produits_h1SyncBoard="Tableau indicateur intelligent";
@@ -82,7 +82,7 @@ tl_produits_li122="Utilisateurs, joueurs, équipes,";
 tl_produits_li123="Horaires, classements,";
 tl_produits_li124="Et BIEN plus...";
 
-tl_produits_li131="De simples téléphones Android suffisent";
+tl_produits_li131="Nous vous fournissons l'équipement nécessaire";
 tl_produits_li132="Installer où vous le voulez: pas de limite sur la quantité";
 tl_produits_li133="Profiter de la du même coup des statistiques du site";
 tl_produits_li134="Un simple clic de bouton \"start\" et \"Stop\"";
@@ -91,6 +91,15 @@ tl_produits_li141="Contrôlé WiFi par l'application SyncStats";
 tl_produits_li142="Affiche le pointage, le temps, les équipes...";
 tl_produits_li143="Même les statistiques et les vidéos!";
 
+
+tl_produits_li151="Hockey sur glace, Hockey-balle, Ringuette";
+tl_produits_li152="Baseball";
+tl_produits_li153="Soccer";
+tl_produits_li154="Pensez-y et dites-le nous";
+
+tl_produits_li161="Patinoires";
+tl_produits_li162="Gymnases";
+tl_produits_li163="Terrains extérieurs";
 
 tl_indexBulle1="Vos stats détaillées";
 tl_indexBulle2="Découvrez SyncStats";
@@ -182,6 +191,7 @@ tl_match_FiletDesert ="Filet Désert";
 		tl_match_Fusillade ="Fusillade";
 		tl_match_corrigePresence = "Corriger les alignements";
 tl_match_ajouteBut = "Ajouter un but";
+tl_match_modifierStatut = "Modifier le statut du match";
 tl_match_ajouteFusillade = "Ajouter un évènement de fusillade";
 tl_match_avertissementTrouvePasJoueur = "Vous ne trouvez pas votre joueur? Fermez cette fenêtre et aller dans Corriger les alignements";
 
@@ -248,6 +258,7 @@ tl_resultats_ButsVis = "Buts - vis";
 	tl_stats_equipes = "equipes";
 	tl_stats_AvNum = "Av. Num.";
 	tl_stats_DesavNum = "Désav. Num.";	
+	tl_stats_Alignement = "Alignement";	
 ///////////  Meneurs.html;
 
 tl_meneurs_Meneurs = "Meneurs";
