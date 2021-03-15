@@ -33,7 +33,7 @@ $stream = stream_context_create($options);
 $chemin = $_SERVER["DOCUMENT_ROOT"]."/".$POST['app']."/".$POST['channel']."/".$fileName;   // Pour SyncStats.com
 
 $retByte =file_put_contents($chemin, $content, 0, $stream); 
-
+$retByte > 0 ? http_response_code(200) :  http_response_code(409);
 http_response_code(200);
  } else{
 	error_log("POURQUOI!!!!");	
