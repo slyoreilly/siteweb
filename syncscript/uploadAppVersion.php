@@ -16,6 +16,7 @@ $headers = apache_request_headers();
 if(strcasecmp($headers['confirmation-key'],'z0d2N9IvAifAoZZgVqDfGDB2QGakzuo9pmb0MOIf')){
 	error_log("ecriture de l'image: header non valide. On se fait hacker? ");
     error_log("HTTP/1.1 403 Forbidden");	
+    http_response_code(403);
 }else{
 
     if($_FILES['fichier']['size'] > 0)
