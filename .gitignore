@@ -10,3 +10,4 @@ backUp
 /*/error_log
 scriptserveur/syncsta1_900.sql
 scriptserveur/man
+scriptsphp/defenvvar.php
