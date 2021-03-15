@@ -20,7 +20,7 @@ if(strcasecmp($headers['confirmation-key'],'z0d2N9IvAifAoZZgVqDfGDB2QGakzuo9pmb0
 
     if($_FILES['fichier']['size'] > 0)
 {
-$fileName = $_FILES['fichier']['name'];
+$fileName = $_FILES['fichier']['filetowrite'];
 $tmpName  = $_FILES['fichier']['tmp_name'];
 $fileSize = $_FILES['fichier']['size'];
 $fileType = $_FILES['fichier']['type'];
