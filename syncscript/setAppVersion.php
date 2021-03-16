@@ -9,6 +9,21 @@ $versionName="";
 $channel ="alpha";
 $isActive = false;
 
+// Takes raw data from the request
+$json = file_get_contents('php://input');
+
+// Converts it into a PHP object
+$data = json_decode($json);
+
+$app =$data->app;
+$channel =$data->channel;
+$versionCode=$data->versionCode;
+$versionName=$data->versionName;
+$isActive =$data->isActive;
+
+
+
+/*
 if(isset($_POST['app'])){
     $app = $_POST['app'];
 }else{
@@ -28,7 +43,7 @@ if(isset($_POST['versionName'])){
 }
 if(isset($_POST['isActive'])){
     $isActive = $_POST['isActive'];
-}
+}*/
 echo 'b';
 
 if($OK){
