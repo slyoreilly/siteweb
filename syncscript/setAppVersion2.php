@@ -8,13 +8,7 @@ $versionName="";
 $channel ="alpha";
 $isActive = false;
 
-$opts = getopt('',['app:','channel','versionCode:','versionName:','isaActive']);
-if ($val !== false) {
-	echo var_export($val, true);
-}
-else {
-	echo "Could not get value of command line option\n";
-}
+$opts = getopt('',['app:','channel','versionCode:','versionName:','isActive']);
 
 
 //////////////////////////////////////////////
@@ -80,7 +74,7 @@ $qGet ="SELECT systemconfigId
     }
 
     $res = mysqli_query($conn,$qSet) or die("Erreur dans le set de set AppVersion "+"\n"+mysqli_error($conn));
-    http_response_code(200);
+    echo '200';
 
 
 mysqli_close($conn);
@@ -88,7 +82,7 @@ mysqli_close($conn);
 
 else{
 
-    http_response_code(412);
+  echo '412';
 }
 
 
