@@ -2,7 +2,7 @@
 <?php
 require '../scriptsphp/defenvvar.php';
 
-
+echo 'a'
 $OK = true;
 $versionName="";
 $channel ="alpha";
@@ -65,6 +65,7 @@ $qGet ="SELECT systemconfigId
             AND versionName='{$versionName}'"
 
     }
+    echo 'a'
 
     $res = mysqli_query($conn,$qSet) or die("Erreur dans le set de set AppVersion "+"\n"+mysqli_error($conn));
 
@@ -72,6 +73,7 @@ if($res=false){
     http_response_code(409);
 }else{http_response_code(200);}
     
+echo 'a'
 
 
 mysqli_close($conn);
