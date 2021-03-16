@@ -69,7 +69,7 @@ $qGet ="SELECT systemconfigId
     echo 'a';
 
     $res = mysqli_query($conn,$qSet) or die("Erreur dans le set de set AppVersion "."\n".mysqli_error($conn));
-
+error_log($qSet);
 if($res=false){
     http_response_code(409);
 }else{http_response_code(200);}
