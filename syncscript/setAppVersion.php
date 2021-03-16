@@ -29,7 +29,7 @@ if(isset($_POST['versionName'])){
 if(isset($_POST['isActive'])){
     $isActive = $_POST['isActive'];
 }
-
+echo 'b';
 
 if($OK){
 
@@ -81,6 +81,7 @@ mysqli_close($conn);
 }
 
 else{
+    echo 'c';
 
     http_response_code(412);
 }
