@@ -12,14 +12,6 @@ require '../scriptsphp/defenvvar.php';
     mysqli_query($conn,"SET NAMES 'utf8'");
     mysqli_query($conn,"SET CHARACTER SET 'utf8'"); 
     
-    $qGet ="SELECT systemconfigId 
-            FROM SystemConfig 
-            WHERE app='{$app}'
-                AND channel='{$channel}'
-                AND versionCode='{$versionCode}'
-                AND versionName='{$versionName}'
-                 " ;
-
 $app = $_POST['app'];
 $channel =$_POST['channel'];
 $versionCode =$_POST['version'];
@@ -42,7 +34,7 @@ $qGet ="SELECT systemconfigId
             echo "http://vieuxsite.sm.syncstats.ca/android/".$app."/".$channel."/".$app.".apk";
         }
     }else{
-        echo "nb trucs: ".mysqli_num_rows($res)."  et la derniere erreur: ".mysqli_error($conn);
+        echo "nb trucs: ".mysqli_num_rows($res)."  et la derniere erreur: ".$qGet;
     }
 
 ?>
