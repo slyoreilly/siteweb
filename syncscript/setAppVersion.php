@@ -69,10 +69,11 @@ $qGet ="SELECT systemconfigId
     $res = mysqli_query($conn,$qGet) or die("Erreur dans le get de set AppVersion "."\n".mysqli_error($conn));
 
     echo "qGet: ".$qGet." num_rows: ".mysqli_num_rows($res);
-    $res =false;
     if(mysqli_num_rows($res)==0){
+        echo 'd';
         $qSet = "INSERT INTO SystemConfig (app, channel, versionCode, versionName, isActive, lastUpdate) 
                 VALUES ('{$app}','{$channel}','{$versionCode}','{$versionName}','{$isActive}',NOW())";
+                echo 'e';
     }else{
 
         $qSet = "UPDATE SystemConfig 
@@ -84,6 +85,7 @@ $qGet ="SELECT systemconfigId
 
     }
     echo 'a';
+    $res =false;
 
     $res = mysqli_query($conn,$qSet) or die("Erreur dans le set de set AppVersion "."\n".mysqli_error($conn));
 error_log($qSet);
