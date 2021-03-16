@@ -68,7 +68,7 @@ $qGet ="SELECT systemconfigId
              " ;
     $res = mysqli_query($conn,$qGet) or die("Erreur dans le get de set AppVersion "."\n".mysqli_error($conn));
 
-    echo "qGet: ".$qGet;
+    echo "qGet: ".$qGet." num_rows: ".mysqli_num_rows($res);
     $res =false;
     if(mysqli_num_rows($res)==0){
         $qSet = "INSERT INTO SystemConfig (app, channel, versionCode, versionName, isActive, lastUpdate) 
