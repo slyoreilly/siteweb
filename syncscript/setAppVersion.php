@@ -2,7 +2,7 @@
 <?php
 require '../scriptsphp/defenvvar.php';
 http_response_code(500);
-
+header('http/1.0 404 not found');
 echo 'a'
 $OK = true;
 $versionName="";
@@ -86,7 +86,7 @@ else{
 }
 
 http_response_code(500);
-
+header('http/1.0 404 not found');
 
 ?>
 
