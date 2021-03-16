@@ -1,6 +1,9 @@
 
 <?php
-require '/var/www/html/scriptsphp/defenvvar.php';
+    $db_host="192.168.1.99";
+    $db_user="syncsta1_u01";
+    $db_pwd="test";
+    $database="syncsta1_901";
 
 
 $OK = true;
