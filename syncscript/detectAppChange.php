@@ -42,7 +42,7 @@ $qGet ="SELECT systemconfigId
             echo "http://vieuxsite.sm.syncstats.ca/android/".$app."/".$channel."/".$app.".apk";
         }
     }else{
-        echo "";
+        echo "nb trucs: ".mysqli_num_rows($res)."  et la derniere erreur: ".mysqli_error($conn);
     }
 
 ?>
