@@ -63,7 +63,7 @@ $qGet ="SELECT systemconfigId
         WHERE  app='{$app}'
             AND channel='{$channel}'
             AND versionCode='{$versionCode}'
-            AND versionName='{$versionName}'"
+            AND versionName='{$versionName}'";
 
     }
     echo 'a';
