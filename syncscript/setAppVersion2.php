@@ -8,7 +8,7 @@ $versionName="";
 $channel ="alpha";
 $isActive = false;
 
-$opts = getopt('',['app:','channel','versionCode:','versionName:','isaActive');
+$opts = getopt('',['app:','channel','versionCode:','versionName:','isaActive']);
 if ($val !== false) {
 	echo var_export($val, true);
 }
