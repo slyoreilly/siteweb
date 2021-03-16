@@ -3,7 +3,7 @@
 require '../scriptsphp/defenvvar.php';
 http_response_code(500);
 header('http/1.0 404 not found');
-echo 'a'
+echo 'a';
 $OK = true;
 $versionName="";
 $channel ="alpha";
@@ -51,7 +51,7 @@ $qGet ="SELECT systemconfigId
             AND versionCode='{$versionCode}'
             AND versionName='{$versionName}'
              " ;
-    $res = mysqli_query($conn,$qGet) or die("Erreur dans le get de set AppVersion "+"\n"+mysqli_error($conn));
+    $res = mysqli_query($conn,$qGet) or die("Erreur dans le get de set AppVersion "."\n".mysqli_error($conn));
     $res =false;
     if(mysqli_num_rows($res)==0){
         $qSet = "INSERT INTO SystemConfig (app, channel, versionCode, versionName, isActive, lastUpdate) 
@@ -66,15 +66,15 @@ $qGet ="SELECT systemconfigId
             AND versionName='{$versionName}'"
 
     }
-    echo 'a'
+    echo 'a';
 
-    $res = mysqli_query($conn,$qSet) or die("Erreur dans le set de set AppVersion "+"\n"+mysqli_error($conn));
+    $res = mysqli_query($conn,$qSet) or die("Erreur dans le set de set AppVersion "."\n".mysqli_error($conn));
 
 if($res=false){
     http_response_code(409);
 }else{http_response_code(200);}
     
-echo 'a'
+echo 'a';
 
 
 mysqli_close($conn);
