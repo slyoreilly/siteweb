@@ -1,6 +1,7 @@
 
 <?php
 require '../scriptsphp/defenvvar.php';
+http_response_code(500);
 
 echo 'a'
 $OK = true;
@@ -84,6 +85,7 @@ else{
     http_response_code(412);
 }
 
+http_response_code(500);
 
 
 ?>
