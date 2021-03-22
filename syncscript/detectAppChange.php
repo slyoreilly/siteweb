@@ -23,6 +23,7 @@ $qGet ="SELECT systemconfigId
         WHERE app='{$app}'
             AND channel='{$channel}'
             AND versionCode>'{$versionCode}'
+            ORDER BY versionCode DESC LIMIT 1
              " ;
     $res = mysqli_query($conn,$qGet) or die("Erreur dans le get de set AppVersion "."\n".mysqli_error($conn));
 
@@ -31,7 +32,7 @@ $qGet ="SELECT systemconfigId
             echo "http://syncstats.com/android/".$app."/".$channel."/".$app.".apk";
         }
         else{
-            echo "http://vieuxsite.sm.syncstats.ca/android/".$app."/".$channel."/".$app.".apk";
+            echo "http://fileserver.sm.syncstats.ca/android/".$app."/".$channel."/".$app.".apk";
         }
     }else{
         echo " ";
