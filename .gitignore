@@ -2,14 +2,14 @@ lookatthis/
 phpMyAdmin-old/
 .metadata/
 lookatthis
-/.vs/VSWorkspaceState.json
-/.vs/slnx.sqlite
-/.vs/Site web/v15/.suo
-/.vs/Site web/v15/.suo
-=========
 /**/*.suo
 /**/slnx.sqlite
 /.vs/VSWorkspaceState.json
+backUp
+
+/*/error_log
+scriptserveur/syncsta1_900.sql
+scriptserveur/man
 backUp
 
 /*/error_log
