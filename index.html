@@ -253,7 +253,7 @@ section.choisi a{
 $( document ).ready(function() {
 				
 				elParent = document.getElementById('divCentrale');
-				//elParent.style.height="80%";
+
 				elParent.style.minHeight = "400px";
 				dIndex1 = document.getElementById('divIndex1');
 
@@ -261,22 +261,8 @@ $( document ).ready(function() {
 				titreIndexJS.innerHTML = window.tl_titreIndex;
 				sousTitreIndexJS = document.getElementById('sousTitreIndex');
 				sousTitreIndexJS.innerHTML = window.tl_sousTitreIndex;
-/*
-				bulle1 = document.getElementById('bulle1Id');
-				bulle1.onclick = function() {
-					window.location.href = window.menus[0].lien;
-				}
-				inBulle1 = document.getElementById('inBulle1Id');
-				inBulle2 = document.getElementById('inBulle2Id');
-				bulle2 = document.getElementById('bulle2Id');
-				bulle2.onclick = function() {
-					window.location.href = window.menus[28].lien;
-				}
-				inBulle1.innerHTML = window.tl_indexBulle1;
-				inBulle2.innerHTML = window.tl_indexBulle2;*/
-				
-				
-				//$('#divIndex1').css('width','40%');
+			
+
 				$('#divIndex2BS').append($('<h1 id="rechercheRapide"></h1>').text("Recherche rapide"));
 				$('#divIndex2BS').append($('<div class="boiteRecherche" id="IDL"></div>').append($('<p></p>').attr("id","titreLigue").text('Ligue')).append($('<input></input>').attr("type", "text").attr('id', 'recherche-ligue')));
 				$('#divIndex2BS').append($('<div class="boiteRecherche" id="IDJ"></div>').append($('<p></p>').attr("id","titreJoueur").text('Joueur')).append($('<input></input>').attr("type", "text").attr('id', 'recherche-joueur')));
@@ -451,6 +437,10 @@ $( document ).ready(function() {
 				 			$('#recherche-match').val(window.tl_index_hintAAAMMJJ);
 				 			$('#recherche-joueur').val(window.tl_index_hintJoueur);
 				 			$('#recherche-ligue').val(window.tl_index_hintLigue);
+							 langue = (getCookie("langue") == undefined) ? "fr" : getCookie("langue");
+							 langue == "en" ? $('#banniereRedirection').attr("src", "/images/banniereRedirectionEn.png"): $('#banniereRedirection').attr("src", "/images/banniereRedirectionfr.png");
+							 langue == "en" ? $('#vidYoutube').attr("src", "https://www.youtube.com/embed/oeI8eqZ1MQY?rel=0"): $('#vidYoutube').attr("src", "https://www.youtube.com/embed/sgPJSg5qnIo?rel=0");
+
 				 		}
 
 		</script>
@@ -465,56 +455,7 @@ $( document ).ready(function() {
 
 				</div>
 				<div id="menuDivHaut">
-					<!--div id="divMenu">
-
-						<ul id="menu">
-							<li id="1_1">
-								<a href="/zstats/accueilligue.html">Stats</a>
-								<ul>
-									<li>
-										<a href="/zstats/accueilligue.html">Home</a>
-									</li>
-									<li>
-										<a href="/zstats/statistiques.html">Standings</a>
-									</li>
-									<li>
-										<a href="/zstats/meneurs.html">Leaders</a>
-									</li>
-									<li>
-										<a href="/zstats/resultats.html">Results</a>
-									</li>
-									<li>
-										<a href="/zuser/monprofil.html">My profile</a>
-									</li>
-
-								</ul>
-							</li>
-							<li id="1_4">
-								<a href="/zdoc/videos.html">Infos</a>
-								<ul>
-									<li>
-										<a href="/zdoc/videos.html">Infos</a>
-									</li>
-									<li>
-										<a href="/zdoc/videos.html">Video</a>
-									</li>
-									<li>
-										<a href="/zdoc/demarrer.html">Start with SyncStats</a>
-									</li>
-									<li>
-										<a href="/zdoc/faq.html">FAQ</a>
-									</li>
-
-								</ul>
-
-							</li>
-							<li id="1_5">
-
-								<a href="/produits.html">Products</a>
-
-							</li>
-						</ul>
-					</div-->
+					
 				</div>
 			</div>
 		</div>
@@ -536,6 +477,21 @@ $( document ).ready(function() {
 											<h1 id="titreIndex">Smart Hockey</h1>
 										<div class="container-fluid">
 											<div class="row">
+												<div class="col-12">
+													
+								
+														<a href="http://syncstats.live"><img id="banniereRedirection" src="/images/banniereRedirectionFr.png"></img></a>
+
+										
+										
+				
+												</div>
+
+
+		
+								
+											</div>
+											<div class="row">
 													<div class="col-12">
 														
 									
@@ -546,32 +502,12 @@ $( document ).ready(function() {
 											
 					
 													</div>
-													<!--div class="col-6">
-															<div id="versInfos" class="boutonRedirige vert cliquable">
-																	Apprenez sur SyncStats >>>>>> 
-											
-															</div>											
-					
-													</div-->
-									
-														<!--div id="bulle2Id" class="divBulle bleu cliquable">
-															<div id="inBulle2Id">
-																Discover SyncStats
-															</div>
-									
-														</div-->
+
 														<div class="col-12">
-																<iframe width="100%" height="auto" src="https://www.youtube.com/embed/sgPJSg5qnIo?rel=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+																<iframe id="vidYoutube" width="100%" height="auto" src="https://www.youtube.com/embed/sgPJSg5qnIo?rel=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 									
 														</div>
-														<!--div id="ligueVedette" class="boutonRedirige bleu cliquable">
-															Voir notre ligue en vedette >>>>>> 
-									
-														</div/-->
-					
-														
-									
-									
+			
 									
 												</div>
 												<div class="row">
