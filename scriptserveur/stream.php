@@ -15,19 +15,12 @@
  */
 
 
-$channel= $_GET["channel"];
-// --------------------------------------------------------------
-// User Tweakable parameters
-// --------------------------------------------------------------
-//
-//  Appelé comme ça:  sudo php /var/www/html/scriptserveur/stream.php | ffmpeg -i - -r 12 -s 1280x720 -vb 1000k -f ogg - | oggfwd -p -n "Mon premier fax" 192.168.1.99 8000 syncstats /rpi01
-//
-// Defines how many digits your FFMPEG segments have 
+// Defines how many digits your FFMPEG segments have
 // Ex: "/tmp/capture/out-0001.ts" => 4
 $digits                         = 10;
 // Defines the path to your segments to merge
 // Ex: "/tmp/capture/out-0001.ts" => "/tmp/capture"
-$path                           = "/mnt/SyncStats/Ingénierie/InstalFixes/capture/";
+$path                           = "/mnt/syncstats/";
 // Defines a prefix for your segments ex "out-0001.ts"
 // Ex: "/tmp/capture/out-0001.ts" => "out-"
 $prefix                         = "";
@@ -35,9 +28,10 @@ $prefix                         = "";
 // Ex: "/tmp/capture/out-0001.ts" => "ts"
 $extension                      = "ts";
 // Defines a log file
-$log_file                       = "/mnt/SyncStats/Ingénierie/InstalFixes/ffmpeg.log";
+$log_file                       = "/var/log/syncstats/ffmpeg.log";
 // Defines a number of files to send immediately if available for buffer
 $buffer_size                    = 5;
+
 
 /**
  * 
@@ -80,7 +74,7 @@ function displayChunk( $file_path ){
     }
 }
 
-// Script start
+function getFileList($path){
 
 // Attempt to read the directory content
 $fileList                       = array();
@@ -97,25 +91,59 @@ while (($c                      = readdir($d))!==false) {
 }
 closedir($d);
 
-
-// Attempt to parse the file list and determine the current chunk
 sort($fileList);
+
+
+    return $fileList;
+}
+
+
+function getCurrent($fileList){
+
+    // Attempt to parse the file list and determine the current chunk
 $current                        = 0;
 if( count($fileList) > 1 ){
     $current                    = $fileList[count($fileList)-1];
 }
-if( count($fileList) <  $buffer_size ){
-    $buffer_size                = count( $fileList);
+
+
+
+return $current;
 }
-$fileList                       = array_slice($fileList,count($fileList)-$buffer_size,$buffer_size-1);
+
+
+
+function getBufferFileList($fileList,$buffer_size){
+
+    if( count($fileList) <  $buffer_size ){
+        $buffer_size                = count( $fileList);
+    }
+    $fileList                       = array_slice($fileList,count($fileList)-$buffer_size,$buffer_size-1);
+
+    return $fileList;
+}
+
+function fillingBuffer($fileList){
 
 // Read the X latest files (fill the buffer in ...)
 writeLog("Filling the buffer");
 foreach($fileList as $k) {
     displayChunk( getChunkName($k));
 }
+
+}
+
+// Script start
+$fileList                       = getFileList($path);
+$current                        = getCurrent($fileList);
+$fileList                       = getBufferFileList($fileList,$buffer_size);
+
+fillingBuffer($fileList);
+
+
 $timeout                        = 60;
 $noactivity                     = 0;
+$retrial                        = 2;
 
 // Start an endless stream loop
 while ( true ) {
@@ -129,6 +157,13 @@ while ( true ) {
         } else {
                 sleep(1);
                 $noactivity++;
+                if($noactivity%10==1){
+
+                    $fileList                       = getFileList($path);
+                    $current                        = getCurrent($fileList);
+                    $fileList                       = getBufferFileList($fileList,$buffer_size);
+                    fillingBuffer($fileList);
+                }
                 writeLog( $file_path.":".$noactivity);
                 // go home live, you're finished
                 if ($noactivity >= $timeout) {

@@ -21,3 +21,4 @@ mirror -cR zuser /public_html/zuser
 mirror -cR zdoc /public_html/zdoc
 mirror -cR zarbitre /public_html/zarbitre"
 echo "Script de copie terminé."
+x
