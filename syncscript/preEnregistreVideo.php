@@ -10,7 +10,8 @@ $params = array();
 error_log("preEnregistre: ".$_POST['videos']);
 $params =json_decode($_POST['videos'],true);
 $heure = $_POST['heure'];
-$emplacement = $_POST['emplacement'];
+$emplacementTmp =  parse_url($_POST['emplacement']);
+$emplacement = $emplacementTmp['host'].$emplacementTmp['path'];
 $avanceServeur=time()*1000-$heure;
 
 
