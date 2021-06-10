@@ -22,6 +22,7 @@ $qGet ="SELECT systemconfigId
         FROM SystemConfig 
         WHERE app='{$app}'
             AND channel='{$channel}'
+            AND isActive=1
             AND versionCode>'{$versionCode}'
             ORDER BY versionCode DESC LIMIT 1
              " ;
