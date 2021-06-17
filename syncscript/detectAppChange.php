@@ -30,7 +30,7 @@ $qGet ="SELECT systemconfigId
 
     if(mysqli_num_rows($res)>0){
         if(!strcmp($channel,"stable")){
-            echo "http://syncstats.ca/android/".$app."/".$channel."/".$app.".apk";
+            echo "https://syncstats.ca/android/".$app."/".$channel."/".$app.".apk";
         }
         else{
             echo "http://fileserver.sm.syncstats.ca/android/".$app."/".$channel."/".$app.".apk";
