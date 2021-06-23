@@ -63,11 +63,12 @@ $leagueString = "";
 
 
 if(IS_NULL($leagueId)){
-	$rfCAT = mysqli_query($conn,"SELECT * FROM CamActionTemplate WHERE leagueId IS NULL AND  ({$eventTypeString})")
+	$rfCAT = mysqli_query($conn,"SELECT * FROM CamActionTemplate WHERE LeagueId IS NULL AND  ({$eventTypeString})")
 	or die(mysqli_error($conn)." Select EventType leagueId null"); 
 }else{
-	$rfCAT = mysqli_query($conn,"SELECT * FROM CamActionTemplate WHERE (leagueId IS NULL OR {$leagueString}) AND ({$eventTypeString})")
-	or die(mysqli_error($conn)." Select EventType leagueId null"); 
+	$qCAT = "SELECT * FROM CamActionTemplate WHERE (LeagueId IS NULL OR {$leagueString}) AND ({$eventTypeString})";
+	$rfCAT = mysqli_query($conn,$qCAT)
+	or die(mysqli_error($conn)." Select EventType leagueId null :".$qCAT); 
 }
 
 while($rangeeCAT=mysqli_fetch_array($rfCAT))
