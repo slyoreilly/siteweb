@@ -12,13 +12,13 @@ require '../scriptsphp/defenvvar.php';
 
 $eventTypeId=null;
 if(isset($_POST['eventTypeIds'])){
-$eventTypeId = $_POST["eventTypeIds"];
-$eventTypeIdArray = json_decode($eventTypeId);
+$eventTypeIdArray = $_POST["eventTypeIds"];
+//$eventTypeIdArray = json_decode($eventTypeId);
 }
 $leagueId=null;
 if(isset($_POST['leagueIds'])){
-$leagueId = $_POST["leagueIds"];
-$leagueArray = json_decode($leagueId);
+$leagueArray = $_POST["leagueIds"];
+//$leagueArray = json_decode($leagueId);
 }
 ////////////////////////////////////////////////////////////
 //
@@ -43,7 +43,7 @@ $saisonId =null;
 //
 
 $eventTypeString = "";
-	foreach($s as $eventTypeIdArray){
+	foreach($eventTypeIdArray as $s){
 		$eventTypeString  = $eventTypeString . "EventTypeId = '{$s}' OR ";
 	}
 	if(strlen($eventTypeString)>4){
@@ -53,7 +53,7 @@ $eventTypeString = "";
 
 
 $leagueString = "";
-	foreach($s as $leagueArray){
+	foreach($leagueArray as $s){
 		$leagueString  = $leagueString . "LeagueId = '{$s}' OR ";
 	}
 	if(strlen($leagueString)>4){
