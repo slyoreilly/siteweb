@@ -12,12 +12,12 @@ require '../scriptsphp/defenvvar.php';
 
 $eventTypeIdArray=array();
 if(isset($_POST['eventTypeIds'])){
-$eventTypeIdArray = $_POST["eventTypeIds"];
+$eventTypeIdArray = array($_POST["eventTypeIds"]);
 //$eventTypeIdArray = json_decode($eventTypeId);
 }
 $leagueArray=array();
 if(isset($_POST['leagueIds'])){
-$leagueArray = $_POST["leagueIds"];
+$leagueArray = array($_POST["leagueIds"]);
 //$leagueArray = json_decode($leagueId);
 }
 ////////////////////////////////////////////////////////////
@@ -64,11 +64,11 @@ $leagueString = "";
 
 if(count($leagueArray)==0){
 	$qCAT = "SELECT * FROM CamActionTemplate WHERE LeagueId IS NULL AND  ({$eventTypeString})";
-	$rfCAT = mysqli_query($conn,$qCAT)
+	$rfCAT = mysqli_query($conn, $qCAT)
 	or die(mysqli_error($conn)." Select EventType leagueArray null".$qCAT." ||| ".$eventTypeIdArray); 
 }else{
 	$qCAT = "SELECT * FROM CamActionTemplate WHERE (LeagueId IS NULL OR {$leagueString}) AND ({$eventTypeString})";
-	$rfCAT = mysqli_query($conn,$qCAT)
+	$rfCAT = mysqli_query($conn, $qCAT)
 	or die(mysqli_error($conn)." Select EventType leagueArray not null :".$qCAT." ||| ".$eventTypeIdArray." ||| ".$leagueArray); 
 }
 
