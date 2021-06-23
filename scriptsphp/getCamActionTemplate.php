@@ -69,7 +69,7 @@ if(IS_NULL($leagueArray)){
 }else{
 	$qCAT = "SELECT * FROM CamActionTemplate WHERE (LeagueId IS NULL OR {$leagueString}) AND ({$eventTypeString})";
 	$rfCAT = mysqli_query($conn,$qCAT)
-	or die(mysqli_error($conn)." Select EventType leagueArray not null :".$qCAT." ||| ".$eventTypeIdArray); 
+	or die(mysqli_error($conn)." Select EventType leagueArray not null :".$qCAT." ||| ".$eventTypeIdArray." ||| ".$leagueArray); 
 }
 
 while($rangeeCAT=mysqli_fetch_array($rfCAT))
