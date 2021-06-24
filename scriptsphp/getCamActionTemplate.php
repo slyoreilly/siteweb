@@ -60,7 +60,7 @@ $leagueString = "";
 		$leagueString= substr($leagueString, 0, -3);
 	}
 	
-
+	$camActionTemplate=null;
 
 if(count($leagueArray)==0){
 	$qCAT = "SELECT * FROM CamActionTemplate WHERE LeagueId IS NULL AND  ({$eventTypeString})";
@@ -79,9 +79,8 @@ while($rangeeCAT=mysqli_fetch_array($rfCAT))
 }
 if(is_null($camActionTemplate)){
 	echo $qCAT;
-}
-	
-echo json_encode($camActionTemplate);
+}else{
+echo json_encode($camActionTemplate);}
 	
 mysqli_close($conn);
 
