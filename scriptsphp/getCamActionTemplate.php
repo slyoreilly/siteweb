@@ -12,12 +12,12 @@ require '../scriptsphp/defenvvar.php';
 
 $eventTypeIdArray=array();
 if(isset($_POST['eventTypeIds'])){
-$eventTypeIdArray = array($_POST["eventTypeIds"]);
+$eventTypeIdArray = json_decode($_POST["eventTypeIds"]);
 //$eventTypeIdArray = json_decode($eventTypeId);
 }
 $leagueArray=array();
 if(isset($_POST['leagueIds'])){
-$leagueArray = array($_POST["leagueIds"]);
+$leagueArray = json_decode($_POST["leagueIds"]);
 //$leagueArray = json_decode($leagueId);
 }
 ////////////////////////////////////////////////////////////
