@@ -67,7 +67,7 @@ if(count($leagueArray)==0){
 	$rfCAT = mysqli_query($conn, $qCAT)
 	or die(mysqli_error($conn)." Select EventType leagueArray null".$qCAT." ||| ".$eventTypeIdArray); 
 }else{
-	$qCAT = "SELECT * FROM CamActionTemplate WHERE (LeagueId IS NULL OR {$leagueString}) AND ({$eventTypeString})";
+	$qCAT = "SELECT * FROM CamActionTemplate WHERE (LeagueId IS NULL OR {$leagueString}) AND ({$-})";
 	$rfCAT = mysqli_query($conn, $qCAT)
 	or die(mysqli_error($conn)." Select EventType leagueArray not null :".$qCAT." ||| ".$eventTypeIdArray." ||| ".$leagueArray); 
 }
@@ -77,8 +77,11 @@ while($rangeeCAT=mysqli_fetch_array($rfCAT))
 	$camActionTemplate[] = $rangeeCAT;
 	
 }
+if(is_null($camActionTemplate)){
+	echo $qCAT;
+}
 	
-echo json_encode($camActionTemplate);;
+echo json_encode($camActionTemplate);
 	
 mysqli_close($conn);
 
