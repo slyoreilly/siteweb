@@ -214,7 +214,7 @@ while ($r = mysqli_fetch_assoc($retour)) {
 			}
 
 			$regVis = trouveEquipe($joueursLigue, $vecMatch[$IM]['eq_vis']);
-			foreach($regDom as $joueurReg){
+			foreach($regVis as $joueurReg){
 				if(!trouveJoueur($vecMatch[$IM]['alVis'],$joueurReg['joueurId'],$vecMatch[$IM]['eq_vis'])){
 					$joueurReg['presence']='absent';
 					array_push($vecMatch[$IM]['alVis'],$joueurReg );

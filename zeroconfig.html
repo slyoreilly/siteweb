@@ -152,7 +152,8 @@
 					} else {
 						k++;
 					}
-				}
+				} 
+				///   Juste appelé si on ne trouve pas les équipes du match.
 				if (!boule && tMavId == -1) {
 					jsonEqDom = JSON.parse(JSON.stringify(window.cJSON.equipe[0]));
 					jsonEqVis = JSON.parse(JSON.stringify(window.cJSON.equipe[1]));
@@ -185,9 +186,12 @@
 				//				alert(iDom);
 				//				alert(JSON.stringify(window.cJSON.equipe[iDom]));
 
+
+				// On regarde chacun des régulier
 				while (m < window.cJSON.equipe[iDom].joueur.length) {
 					var n = 0;
 					dansAlign = false;
+					//Avec ce régulier, on scan l'alignement pour voir s'il y est. On choisi présent ou absent.
 					while (n < vM[k].alignementDom.length && dansAlign == false) {
 						if (vM[k].alignementDom[n] == window.cJSON.equipe[iDom].joueur[m].joueurId) {
 							dansAlign = true;
@@ -205,15 +209,18 @@
 
 				var n = 0;
 				dansAlign = false;
+				// Pour tout l'alignement d'un match
 				while (n < vM[k].alignementDom.length) {
 					m = 0;
 					dansAlign = false;
+					//  On trouve si ce membre de l'alignement est aussi sur la liste de l'équipe.
 					while (m < jsonEqDom.joueur.length && dansAlign == false) {
 						if (vM[k].alignementDom[n] == jsonEqDom.joueur[m].joueurId) {
 							dansAlign = true;
 						}
 						m++;
 					}
+					// S'il n'est pas sur la liste de l'équipe, on trouve ce joueur et on l'ajoute à la liste de l'équipe. 
 					if (!dansAlign) {
 
 						for ( j = 0; j < window.cJSON.equipe.length; j++) {
@@ -236,9 +243,11 @@
 				jsonEqVis.joueur = new Array();
 				var m = 0;
 				var dansAlign = false;
+				// On regarde chacun des régulier
 				while (m < window.cJSON.equipe[iVis].joueur.length) {
 					var n = 0;
 					dansAlign = false;
+					//Avec ce régulier, on scan l'alignement pour voir s'il y est. On choisi présent ou absent.
 					while (n < vM[k].alignementVis.length && dansAlign == false) {
 						if (vM[k].alignementVis[n] == window.cJSON.equipe[iVis].joueur[m].joueurId) {
 							dansAlign = true;
