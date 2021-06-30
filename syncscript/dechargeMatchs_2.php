@@ -852,7 +852,7 @@ foreach ($leMatch as $evenement) {
 		$matchAEnr = parseMatchID($evenement['match_id']);
 		if (isset($matchAEnr['ligueId'])) {$ligueId = $matchAEnr['ligueId'];
 		}
-		if (isset($evenement['noseq'])) {$noseq = $evenement['noseq'];
+		if (isset($evenement['noseq'])) {$noseq = intval($evenement['noseq']);
 		}else{$noseq=0;}
 		
 		$trouvePun=0;
