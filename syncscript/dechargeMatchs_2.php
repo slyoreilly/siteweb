@@ -870,7 +870,7 @@ foreach ($leMatch as $evenement) {
 			//	break;		 NO BREAK!!!!!!!
 			case 15 :
 			
-				$qSelPun = "SELECT event_id FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND code='{$evenement['code']}' AND noSequence={$evenement['noseq']}";
+				$qSelPun = "SELECT event_id FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND code='{$evenement['code']}' AND noSequence={$noseq}";
 				$resPun = mysqli_query($conn,$qSelPun) or die(mysqli_error($conn) . $qSelPun);
 				$trouvePun = mysqli_num_rows($resPun);
 				mysqli_data_seek($resPun,0);
