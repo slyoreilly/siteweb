@@ -4,7 +4,9 @@ require '../scriptsphp/defenvvar.php';
 $username = $_POST['username'];
 $recentSync = $_POST['recentSync'];
 $dernierMatch = $_POST['nomMatch'];
+//$arena = $_POST['arenaId'];
 $heure = $_POST['heure'];
+//$maxSec = $_POST['timeout'];
 $avanceServeur = time() * 1000 - $heure;
 $rSServ = $recentSync + $avanceServeur;
 //rrs2: Plus recent sync du telephone corrigé àa l'heure serveur et boosté de 1 s.
@@ -23,7 +25,8 @@ unset($chronoRetour);
 unset($resultChrono);
 unset($rangeeChrono);
 
-$rrs2 = $rSServ + 1000;
+$rrs2 = $rSServ;// + 1000;
+//$cpt=0;
 
 ////////////////////  Sortir tous les matchs récents de l'utilisateur.
 //

@@ -11,7 +11,6 @@ $avanceServeur = time() * 1000 - $heure;
 $rSServ = $recentSync + $avanceServeur;
 //rrs2: Plus recent sync du telephone corrigé àa l'heure serveur et boosté de 1 s.
 
-// Create connection
 $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
 // Check connection
 if (!$conn) {
@@ -26,13 +25,8 @@ unset($chronoRetour);
 unset($resultChrono);
 unset($rangeeChrono);
 
-$rrs2 = $rSServ;
+$rrs2 = $rSServ+1000;
 $cpt=0;
-
-
-//echo $rrs2."  ";
-//echo $maxSec."  ";
-//echo $heure."  ";
 
 ////////////////////  Sortir tous les matchs récents de l'utilisateur.
 //
@@ -40,7 +34,6 @@ $cpt=0;
 
 do {
 
-//echo " -- ". $cpt." -- ";
 
 $chronoRetour = array();
 $matchRetour = array();
