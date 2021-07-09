@@ -882,7 +882,7 @@ foreach ($leMatch as $evenement) {
 				$qInsM = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code,noSequence) VALUES ('{$evenement['match_id']}','{$evenement['eqId']}','{$evenement['joueur']}','{$evenement['chrono']}','{$evenement['sc']}','{$evenement['code']}','{$noseq}')";
 
 				mysqli_query($conn,$qInsM) or die(mysqli_error($conn) . $qInsM);
-				$retObj = array("type"=>"generic","chronoInit"=>$retPun,"chronoFin"=>$evenement['chrono'],"db_id"=>$evenement['db_id'], "webId"=>$evenement['event_id']);
+				$retObj = array("type"=>"generic","chronoInit"=>$retPun,"chronoFin"=>$evenement['chrono'],"db_id"=>$evenement['db_id'], "webId"=>mysqli_insert_id($conn));
 				array_push($syncOKdetail, $retObj);
 				
 				} else{
