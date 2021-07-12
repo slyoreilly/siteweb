@@ -20,21 +20,18 @@ $tableEquipe = 'TableEquipe';
 //
 ////////////////////////////////////////////////////////////
 
-$lien1=mysql_connect($db_host, $db_user, $db_pwd);
-if (!$lien1)
-    die("Can't connect to database");
-mysql_set_charset('utf8',$lien1);
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
+// Create connection
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error($conn));
 }
 
+mysqli_query($conn,"SET NAMES 'utf8'");
+mysqli_query($conn,"SET CHARACTER SET 'utf8'");
+
 $numDelFiles=0;
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
+
 
 $fic=$_POST["fic"];
 
@@ -51,8 +48,9 @@ else{echo __DIR__.'/../lookatthis/'.$fic;
 
 $qDel="DELETE FROM Video
 		 WHERE nomFichier='{$fic}'  LIMIT 1";
-$resCam=mysql_query($qDel) or die(mysql_error().' damn');
+$resCam=mysqli_query($conn,$qDel) or die(mysqli_error($conn).' damn');
 
 echo "Number of files deleted: ".$numDelFiles;
+mysqli_close($conn);
 
 ?>
