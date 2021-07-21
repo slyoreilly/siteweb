@@ -47,7 +47,7 @@ $chronoRetour = array();
 $matchRetour = array();
 
 $qMatch="SELECT e.event_id, e.chrono,e.matchIdRef,e.eq_dom,e.eq_vis,e.ligueRef,e.match_id,
-e.arenaId,e.date, '5' as 'type', e.scoringEnd, e.code as 'code', '0' as 'souscode' , L1.LeagueId,L1.defaultDuration, L1.ActivationFlags,L1.ActivationArgs,EventType.Code as 'CATcode' FROM(
+e.arenaId,e.date, '0' as 'type', e.scoringEnd, e.code as 'code', '0' as 'souscode' , L1.LeagueId,L1.defaultDuration, L1.ActivationFlags,L1.ActivationArgs,EventType.Code as 'CATcode' FROM(
 
 SELECT TableEvenement0.event_id, MAX(chrono) as chrono,MAX(TableMatch.matchIdRef) as matchIdRef,MAX(TableMatch.eq_dom) as eq_dom, MAX(TableMatch.eq_vis) as eq_vis,MAX(TableMatch.ligueRef) as ligueRef,MAX(TableMatch.match_id) as match_id,
 MAX(TableMatch.arenaId) as arenaId,MAX(TableMatch.date) as date, '0' as 'type', TableEvenement0.equipe_event_id as scoringEnd , TableEvenement0.code,TableEvenement0.souscode
