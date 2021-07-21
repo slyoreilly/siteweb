@@ -3,10 +3,18 @@ require '../scriptsphp/defenvvar.php';
 
 $username = $_POST['username'];
 $recentSync = $_POST['recentSync'];
-//$dernierMatch = $_POST['nomMatch'];
-$arena = $_POST['arenaId'];
+if (isset($_POST['nomMatch'])) {$dernierMatch = $_POST['nomMatch'];
+}
+$arena = 0;
+$addArenaDependance='';
+if (isset( $_POST['arenaId'])) {$arena = $_POST['arenaId'];
+	$addArenaDependance=" AND TableMatch.arenaId='{$arena}' ";
+}
+
 $heure = $_POST['heure'];
-$maxSec = $_POST['timeout'];
+$maxSec = 0;
+if (isset( $_POST['timeout'])) {$maxSec = $_POST['timeout'];
+}
 $avanceServeur = time() * 1000 - $heure;
 $rSServ = $recentSync + $avanceServeur;
 //rrs2: Plus recent sync du telephone corrigé àa l'heure serveur et boosté de 1 s.
@@ -53,7 +61,7 @@ FROM TableEvenement0
 	
 
 	WHERE TableEvenement0.chrono>$rrs2 
-			AND TableMatch.arenaId='{$arena}' 
+			" . $addArenaDependance ."
 			AND TableUser.username='{$username}'
 GROUP BY event_id
 ) e INNER JOIN EventType
@@ -83,7 +91,7 @@ FROM Clips
 			ON (EventType.EventTypeId=CamActionTemplate.EventTypeId)
 	) as L2 on ((L2.LeagueId=TableMatch.ligueRef OR L2.LeagueId=0) AND L2.Code='5' )
 	WHERE Clips.chrono>$rrs2 
-		AND TableMatch.arenaId='{$arena}' AND TableUser.username='{$username}')  
+	" . $addArenaDependance ." AND TableUser.username='{$username}')  
 
 
 ORDER BY  matchIdRef, chrono";
@@ -259,8 +267,30 @@ foreach($matchPeriode as &$unMatch){
 	//error_log("dans  arena ".$unMatch['arena']." et abons: ".$unMatch['abons'])	;
 	
 }
+if($maxSec>0){
+$qLigues = "SELECT * FROM Ligue
+			INNER JOIN AbonnementLigue
+				ON (Ligue.ID_Ligue=AbonnementLigue.ligueid)
+			INNER JOIN TableUser
+				ON (AbonnementLigue.userid=TableUser.noCompte)
+			WHERE  TableUser.username='{$username}'";
+					
+				
+					
+						mysqli_query($conn,"SET SQL_BIG_SELECTS=1");
+					$resultLigues = mysqli_query($conn, $qLigues) or die(mysqli_error($conn) . $qLigues);							
 
+					$vecLigues = array();
+					$IL2=0;
+while($r = mysqli_fetch_array($resultLigues)) {
 
+    $vecLigues[]=$r;
+    $vecLigues[$IL2]['ligueId']=$r['ID_Ligue'];
+    $vecLigues[$IL2]['nomLigue']=$r['Nom_Ligue'];
+    $IL2++;
+    }
+
+}
 
 $repSite = array();
 
@@ -271,8 +301,9 @@ $repSite = array();
 
 $repSite['heure'] = time();
 $repSite['matchPeriode'] = $matchPeriode;
+$repSite['ligues'] =$vecLigues;
+
 //$repSite['ligues'] = $Ligues;
-//$repSite['ligues'] =$vecLigues;
 //$repSite['equipes'] = $Equipes;
 $repSite['matchs'] = $matchs;
 //$repSite['info']=$resultMatch;
