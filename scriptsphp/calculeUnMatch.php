@@ -149,7 +149,7 @@ $qNiou ="UPDATE TableMatch
 		$retour = mysqli_query($connC1M, $qNiou);
 	}
 }
-echo $qNiou;
+//echo $qNiou;
 
 }
 mysqli_close($connC1M);
