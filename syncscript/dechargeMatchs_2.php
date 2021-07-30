@@ -887,7 +887,7 @@ foreach ($leMatch as $evenement) {
 				
 				} else{
 					array_push($syncOK, $retPun);
-					$retObj = array("type"=>"generic","chronoInit"=>$retPun,"chronoFin"=>$evenement['chrono'],"webId"=>$evId,"db_id"=>"{$evenement['db_id']}");
+					$retObj = array("type"=>"generic","chronoInit"=>$retPun,"chronoFin"=>$evenement['chrono'],"webId"=>$evId[0],"db_id"=>"{$evenement['db_id']}");
 					array_push($syncOKdetail, $retObj);
 
 				}
