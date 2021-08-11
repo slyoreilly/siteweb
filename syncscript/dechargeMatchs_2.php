@@ -83,7 +83,8 @@ foreach ($leMatch as $evenement) {
 					);
 					$context  = stream_context_create($options);
 					$result = file_get_contents($url, false, $context);
-					if ($result === FALSE) { /* Handle error */ }
+					if ($result === FALSE) { 						error_log("erreur dans calcule match, l. 86",0);
+					}
 					$memNoMatchId=$noMatchId;
 	}
 //$message = "Seq evenement: ".$evenement['type'].PHP_EOL;
@@ -922,7 +923,10 @@ foreach ($leMatch as $evenement) {
 					);
 					$context  = stream_context_create($options);
 					$result = file_get_contents($url, false, $context);
-					if ($result === FALSE) { /* Handle error */ }
+					if ($result === FALSE) {
+						error_log("erreur dans calcule match, 926",0);
+
+					}
 					$memNoMatchId=$noMatchId;
 	}
 
