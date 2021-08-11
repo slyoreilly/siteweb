@@ -69,7 +69,8 @@ foreach ($leMatch as $evenement) {
 	
 	// Regarder si on a un nouveau match. Si oui (et que ce n'est pas le premier), calculer l'ancien.
 	if($memNoMatchId!=$noMatchId){
-					$url = 'http://syncstats.com/scriptsphp/calculeUnMatch.php';
+					$url = __DIR__ . '/calculeUnMatch.php';
+					#$url = 'http://syncstats.com/scriptsphp/calculeUnMatch.php';
 					$data = array('noMatchId' => $memNoMatchId);
 
 					// use key 'http' even if you send the request to https://...
@@ -481,7 +482,7 @@ foreach ($leMatch as $evenement) {
 			$noMatch = mysqli_fetch_row($resMatch);
 
 			$noMatchId = $noMatch[0];
-			include ($_SERVER['DOCUMENT_ROOT'] . '/scriptsphp/calculeUnMatch.php');
+			include (__DIR__ . '/scriptsphp/calculeUnMatch.php');
 
 				
 
@@ -906,7 +907,9 @@ foreach ($leMatch as $evenement) {
 
 /// Voir explications début du foreach
 	if($noMatchId!=0){
-					$url = 'http://syncstats.com/scriptsphp/calculeUnMatch.php';
+		 
+		$url = __DIR__ . '/calculeUnMatch.php';
+		#$url = 'http://syncstats.com/scriptsphp/calculeUnMatch.php';
 					$data = array('noMatchId' => $noMatchId);
 
 					// use key 'http' even if you send the request to https://...

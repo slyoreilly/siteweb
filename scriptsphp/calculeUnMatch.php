@@ -97,6 +97,8 @@ $compteVis = mysqli_query($connC1M, "SELECT TableEvenement0.*,EventType.GameValu
 								   WHERE match_event_id = '{$matchIdRef}' 
 									AND GameValue>0 
 									AND equipe_event_id = '{$eVis}'") or die(mysqli_error($connC1M));
+$cDom =0;
+$cVis=0;
 
 while ($rangCDom = mysqli_fetch_array($compteDom)) {
 	
