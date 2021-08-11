@@ -908,9 +908,11 @@ foreach ($leMatch as $evenement) {
 
 /// Voir explications début du foreach
 	if($noMatchId!=0){
-		 
-		$url = __DIR__ . '/calculeUnMatch.php';
-		#$url = 'http://syncstats.com/scriptsphp/calculeUnMatch.php';
+		 if($workEnv=="production"){
+		$url = 'http://syncstats.com/scriptsphp/calculeUnMatch.php';
+		 }else{
+			$url = 'http://vieuxsite.sm.syncstats.ca/scriptsphp/calculeUnMatch.php';
+		 }
 					$data = array('noMatchId' => $noMatchId);
 
 					// use key 'http' even if you send the request to https://...
