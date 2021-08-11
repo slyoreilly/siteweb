@@ -84,17 +84,17 @@ $fini = mysqli_num_rows($matchFini);
 ///Compte le score
 $compteDom = mysqli_query($connC1M, "SELECT TableEvenement0.*,EventType.GameValue 
 								FROM TableEvenement0 
-								WHERE match_event_id = '{$matchIdRef}' 
 								JOIN EventType 
 								   ON (TableEvenement0.code=EventType.Code)
+								   WHERE match_event_id = '{$matchIdRef}' 
 									AND GameValue>0 
 									AND equipe_event_id =  '{$eDom}'") or die(mysqli_error($connC1M));
 
 $compteVis = mysqli_query($connC1M, "SELECT TableEvenement0.*,EventType.GameValue
 								FROM TableEvenement0 
-								WHERE match_event_id = '{$matchIdRef}' 
 								JOIN EventType 
 								   ON (TableEvenement0.code=EventType.Code)
+								   WHERE match_event_id = '{$matchIdRef}' 
 									AND GameValue>0 
 									AND equipe_event_id = '{$eVis}'") or die(mysqli_error($connC1M));
 
