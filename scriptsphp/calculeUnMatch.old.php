@@ -82,31 +82,19 @@ $matchFini = mysqli_query($connC1M, "SELECT *
 $fini = mysqli_num_rows($matchFini);
 
 ///Compte le score
-$compteDom = mysqli_query($connC1M, "SELECT TableEvenement0.*,EventType.GameValue 
+$compteDom = mysqli_query($connC1M, "SELECT * 
 								FROM TableEvenement0 
 								WHERE match_event_id = '{$matchIdRef}' 
-								JOIN EventType 
-								   ON (TableEvenement0.code=EventType.Code)
-									AND GameValue>0 
+									AND code=0 
 									AND equipe_event_id =  '{$eDom}'") or die(mysqli_error($connC1M));
 
-$compteVis = mysqli_query($connC1M, "SELECT TableEvenement0.*,EventType.GameValue
+$compteVis = mysqli_query($connC1M, "SELECT * 
 								FROM TableEvenement0 
 								WHERE match_event_id = '{$matchIdRef}' 
-								JOIN EventType 
-								   ON (TableEvenement0.code=EventType.Code)
-									AND GameValue>0 
+									AND code=0 
 									AND equipe_event_id = '{$eVis}'") or die(mysqli_error($connC1M));
-
-while ($rangCDom = mysqli_fetch_array($compteDom)) {
-	
-	$cDom =$cDom +$rangCDom['GameValue'] ;
-}			
-while ($rangCVis = mysqli_fetch_array($compteVis)) {
-	
-	$cVis =$cVis +$rangCVis['GameValue'] ;
-}			
-
+$cDom = mysqli_num_rows($compteDom);
+$cVis = mysqli_num_rows($compteVis);
 
 if ($fini > 0) {
 
