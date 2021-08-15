@@ -69,7 +69,11 @@ foreach ($leMatch as $evenement) {
 	
 	// Regarder si on a un nouveau match. Si oui (et que ce n'est pas le premier), calculer l'ancien.
 	if($memNoMatchId!=$noMatchId){
-					$url = __DIR__ . '/calculeUnMatch.php';
+		if($workEnv=="production"){
+			$url = 'http://syncstats.com/scriptsphp/calculeUnMatch.php';
+			 }else{
+				$url = 'http://vieuxsite.sm.syncstats.ca/scriptsphp/calculeUnMatch.php';
+			 }
 					#$url = 'http://syncstats.com/scriptsphp/calculeUnMatch.php';
 					$data = array('noMatchId' => $memNoMatchId);
 
