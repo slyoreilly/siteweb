@@ -7,6 +7,7 @@ require '../scriptsphp/defenvvar.php';
 $usager = $_POST['username'];
 $arenaId = $_POST['arenaId'];
 $telId = $_POST['telId'];
+$remoteId = $_POST['telId'];
 $batterie = $_POST['batterie'];
 $memoire = $_POST['memoire'];
 $temperature = round($_POST['temperature']);
@@ -65,7 +66,7 @@ $mTemps= $dt->format('Y-m-d H:i:s');
 					$queryMod = "UPDATE StatutRemote SET dernierModif ='{$mTemps}', memoire = '{$memoire}', version = '{$version}', batterie = '{$batterie}'
 					,temperature='{$temperature}', dernierMaJ='{$mTemps}', userId = '{$usager}',settings='{$settings}', arenaId = '{$arenaId}', codeEtat = '{$codeEtat}'
 						WHERE telId='{$telId}'";
-								mysqli_query($conn,$queryMod) or die("Erreur: ".$queryMod."\n"+mysqli_error($conn));
+								mysqli_query($conn,$queryMod) or die("Erreur: ".$queryMod."\n".mysqli_error($conn));
 				echo "- MOD2";
 				}
 		echo "- MOD";
