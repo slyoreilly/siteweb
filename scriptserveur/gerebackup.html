@@ -114,8 +114,8 @@
 			adresseCourte: 'syncstats.com'},
 			{adresseLongue: 'https://syncstats.ca',
 			adresseCourte: 'syncstats.ca'},
-			{adresseLongue: 'http://syncstats.ddns.net',
-			adresseCourte: 'syncstats.ddns.net'}
+			{adresseLongue: 'https://fileserver.sm.syncstats.ca/',
+			adresseCourte: 'fileserver.sm.syncstats.ca'}
 			];
 
 			$('#divGauche').append($('<div></div>').append(
@@ -275,7 +275,7 @@ console.log($('#selSec').val());
 console.log($('#selTiers').val());
 
 
-					$.ajax({url: "http://syncstats.ddns.net/scriptserveur/pointeursParHierarchie.php",
+					$.ajax({url: "https://fileserver.sm.syncstats.ca//scriptserveur/pointeursParHierarchie.php",
 									data: {plusVieux: plusVieux,
 										maxTraite: maxTraite,
 									plusNeuf:$('#plusNeuf').val(),
