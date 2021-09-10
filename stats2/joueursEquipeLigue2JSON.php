@@ -158,7 +158,7 @@ $Iequipe = 0;
 										}
 								}//Fin du scan des joueurs
 								
-								
+								/*
 								$resultJoueur2 = mysqli_query($conn,"SELECT * 
 													FROM TableJoueur
 																WHERE Ligue={$ligueId}")
@@ -178,7 +178,7 @@ $Iequipe = 0;
 								array_push($joueurs,$rangeeJoueur['joueur_id']);
 								$Ij++;
 										}
-								}//Fin du scan des joueurs
+								}*///Fin du scan des joueurs
 				$Iligue++;
 
 
