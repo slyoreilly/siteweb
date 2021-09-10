@@ -8,8 +8,17 @@ $tableJoueur = 'TableJoueur';
 $tableAbon = 'AbonnementLigue';
 $tableUser = 'TableUser';
 
-$pm = $_POST['premierMatch'];
-$dm = $_POST['dernierMatch'];
+
+$pm=null;
+if(isset($_POST['premierMatch'])){
+	$pm = $_POST['premierMatch'];}
+
+$dm=null;
+	if(isset($_POST['dernierMatch'])){
+		$dm = $_POST['dernierMatch'];}
+	
+
+
 $joueurId = $_POST['joueurId'];
 $ligueId = $_POST['ligueId'];
 $code = $_POST['code'];
@@ -33,7 +42,7 @@ mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 //
 
 
-if($premierMatch==undefined||$premierMatch=="")
+if($premierMatch==null||$premierMatch=="")
 {$pm='NOW()';}
 else
 {$pm="'".$pm."'";}
