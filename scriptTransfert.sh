@@ -12,7 +12,7 @@ mirror -cR stats2 /public_html/stats2
 mirror -cR scripts /public_html/scripts
 mirror -cR style /public_html/style
 mirror -cR -x syncscript/detectAppChange.php syncscript /public_html/syncscript
-mirror -cR -x scriptsphp/defenvvar.php scriptsphp /public_html/scriptsphp
+mirror -cR -X scriptsphp/defenvvar.php scriptsphp /public_html/scriptsphp
 mirror -cR zadmin /public_html/zadmin
 mirror -cR zstats /public_html/zstats
 mirror -cR zuser /public_html/zuser
