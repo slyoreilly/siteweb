@@ -47,7 +47,7 @@ if($premierMatch==null||$premierMatch=="")
 else
 {$pm="'".$pm."'";}
 	
-/// Code 60: Effacer les abonnements
+/// Code 60: Effacer les abonnements completement de joueur a une ligue. 
 if($code==60)
 {
 	$query_delete = "UPDATE abonJoueurLigue SET finAbon=NOW()-INTERVAL 1 DAY WHERE ligueId=$ligueId AND joueurId=$joueurId";
@@ -58,11 +58,7 @@ $retour1 = mysqli_query($conn,"SELECT * FROM abonJoueurEquipe
 							JOIN abonEquipeLigue 
 							 ON (abonJoueurEquipe.equipeId=abonEquipeLigue.equipeId) 
 							WHERE  joueurId='{$joueurId}' 
-								AND abonEquipeLigue.ligueId=$ligueId
-								AND abonEquipeLigue.finAbon>DATE(NOW())
-								AND abonEquipeLigue.debutAbon<=DATE(NOW())
-								AND abonJoueurEquipe.finAbon>DATE(NOW())
-								AND abonJoueurEquipe.debutAbon<=DATE(NOW())")or die('Error, query failedrtrtytr: '.mysqli_error($conn));
+								AND abonEquipeLigue.ligueId=$ligueId")or die('Error, query failedrtrtytr: '.mysqli_error($conn));
 		if(mysqli_num_rows($retour1)>0)			//S'il y avait déjà un abonnement, mettre fin à celui-ci.
 		{while($rangee = mysqli_fetch_assoc($retour1))
 			//{$equipe=$rangee['equipeId'];}
