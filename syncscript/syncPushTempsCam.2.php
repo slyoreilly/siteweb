@@ -40,11 +40,14 @@ $cpt=0;
 //
 ///					Pour les évènements, voir plus bas.
 
+$vecLigues = array();
+
 do {
 
 
 $chronoRetour = array();
 $matchRetour = array();
+
 
 $qMatch="SELECT e.event_id, e.chrono,e.matchIdRef,e.eq_dom,e.eq_vis,e.ligueRef,e.match_id,
 e.arenaId,e.date, '0' as 'type', e.scoringEnd, e.code as 'code', '0' as 'souscode' , L1.LeagueId,L1.defaultDuration, L1.ActivationFlags,L1.ActivationArgs,EventType.Code as 'CATcode' FROM(
@@ -280,7 +283,7 @@ $qLigues = "SELECT * FROM Ligue
 						mysqli_query($conn,"SET SQL_BIG_SELECTS=1");
 					$resultLigues = mysqli_query($conn, $qLigues) or die(mysqli_error($conn) . $qLigues);							
 
-					$vecLigues = array();
+					
 					$IL2=0;
 while($r = mysqli_fetch_array($resultLigues)) {
 
