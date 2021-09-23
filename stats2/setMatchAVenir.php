@@ -56,7 +56,7 @@ function getAlignement($connGA,$eqId,$defTimeZone)
 														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
 														WHERE equipeId='{$eqId}'
 														AND debutAbon<=DATE(NOW())
-														AND finAbon>DATE(NOW())") or die(mysqli_error($conn));
+														AND finAbon>DATE(NOW())") or die(mysqli_error($connGA));
 	mysqli_query($connGA,"SET time_zone='+0:00'");
 	$alignement=array();
 	//$alignement = "[";
@@ -259,7 +259,7 @@ if ($appareils != null) {
 			if ($appareils['remotes'][$a]['abon'] == true) {
 				echo 4;
 				mysqli_query($conn, "INSERT INTO abonAppareilMatch (matchId, surfaceId, gabaritId, posGabId, telId, role) 
-					VALUES ('{$match_id}','{$appareils['remotes'][$a]['surfaceId']}','{$appareils['remotes'][$a]['gabaritId']}',
+					VALUES ('{$match_id}','{$arenaId}','{$appareils['remotes'][$a]['gabaritId']}',
 					'{$appareils['remotes'][$a]['posGabId']}', '{$appareils['remotes'][$a]['telId']}',
 					'{$appareils['remotes'][$a]['role']}')") or die(mysqli_error($conn) . " INSERT INTO abonAppareilMatch");
 				$retour = mysqli_error($conn);
@@ -267,7 +267,7 @@ if ($appareils != null) {
 			}
 			else{
 					mysqli_query($conn, "INSERT INTO abonAppareilMatch (matchId, surfaceId, gabaritId, posGabId, telId, role) 
-					VALUES ('{$match_id}','{$appareils['remotes'][$a]['surfaceId']}','{$appareils['remotes'][$a]['gabaritId']}',
+					VALUES ('{$match_id}','{$arenaId}','{$appareils['remotes'][$a]['gabaritId']}',
 					'{$appareils['remotes'][$a]['posGabId']}', '{$appareils['remotes'][$a]['telId']}',
 					'0')") or die(mysqli_error($conn) . " INSERT INTO abonAppareilMatch");
 				$retour = mysqli_error($conn);
@@ -276,9 +276,9 @@ if ($appareils != null) {
 		} else {
 			//	echo 5;
 			if ($appareils['remotes'][$a]['abon'] == true) {
-				mysqli_query($conn, "UPDATE abonAppareilMatch SET surfaceId='{$appareils['remotes'][$a]['surfaceId']}',gabaritId='{$appareils['remotes'][$a]['gabaritId']}',posGabId='{$appareils['remotes'][$a]['posGabId']}', role='{$appareils['remotes'][$a]['role']}' WHERE matchId='{$match_id}' and telId = '{$appareils['remotes'][$a]['telId']}'") or die(mysqli_error($conn) . " UPDATE INTO abonAppareilMatch");
+				mysqli_query($conn, "UPDATE abonAppareilMatch SET surfaceId='{$arenaId}',gabaritId='{$appareils['remotes'][$a]['gabaritId']}',posGabId='{$appareils['remotes'][$a]['posGabId']}', role='{$appareils['remotes'][$a]['role']}' WHERE matchId='{$match_id}' and telId = '{$appareils['remotes'][$a]['telId']}'") or die(mysqli_error($conn) . " UPDATE INTO abonAppareilMatch");
 			} else {
-				mysqli_query($conn, "UPDATE abonAppareilMatch SET surfaceId='{$appareils['remotes'][$a]['surfaceId']}',gabaritId='{$appareils['remotes'][$a]['gabaritId']}',posGabId='{$appareils['remotes'][$a]['posGabId']}', role='0' WHERE matchId='{$match_id}' and telId = '{$appareils['remotes'][$a]['telId']}'") or die(mysqli_error($conn) . " UPDATE INTO abonAppareilMatch");
+				mysqli_query($conn, "UPDATE abonAppareilMatch SET surfaceId='{$arenaId}',gabaritId='{$appareils['remotes'][$a]['gabaritId']}',posGabId='{$appareils['remotes'][$a]['posGabId']}', role='0' WHERE matchId='{$match_id}' and telId = '{$appareils['remotes'][$a]['telId']}'") or die(mysqli_error($conn) . " UPDATE INTO abonAppareilMatch");
 			//	mysqli_query($conn, "DELETE FROM abonAppareilMatch WHERE matchId='{$match_id}' and telId = '{$appareils['remotes'][$a]['telId']}'") or die(mysqli_error() . " DELETE INTO abonAppareilMatch");
 			}
 		}
