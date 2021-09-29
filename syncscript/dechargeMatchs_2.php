@@ -107,7 +107,7 @@ foreach ($leMatch as $evenement) {
 		}
 		if (isset($evenement['noseq'])) {$noseq = $evenement['noseq'];
 		}else{$noseq=0;}
-
+		$noseq=$evenement['db_id'];
 		$retBut = $evenement['chrono'];
 		// retourner le but, sans correction de chrono.
 
