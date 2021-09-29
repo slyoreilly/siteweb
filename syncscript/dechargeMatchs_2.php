@@ -125,7 +125,7 @@ foreach ($leMatch as $evenement) {
 				$arrCheckPasses= array();
 				$arrCheckPlus= array();
 				$arrCheckMoins= array();
-				$qSelButs = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND code=0 AND equipe_event_id='{$evenement['eqId']}' AND noSequence={$evenement['db_id']}";
+				$qSelButs = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND code=0  AND noSequence={$evenement['db_id']}";
 				$resButs = mysqli_query($conn,$qSelButs) or die(mysqli_error($conn) . $qSelButs);
 
 				$trouveBut = mysqli_num_rows($resButs);
