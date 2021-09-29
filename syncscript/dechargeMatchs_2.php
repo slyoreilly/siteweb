@@ -120,7 +120,7 @@ foreach ($leMatch as $evenement) {
 				$qDel = "DELETE FROM TableEvenement0 WHERE chrono='{$evenement['chrono']}' AND match_event_id='{$evenement['match_id']}'";
 				mysqli_query($conn,$qDel) or die(mysqli_error($conn) . $qDel);
 			//	break;		 NO BREAK!!!!!!!
-			case 15 :
+			case 15 :  // Vérifie ou met à jour
 				$arrCheckButs= array();
 				$arrCheckPasses= array();
 				$arrCheckPlus= array();
@@ -131,11 +131,15 @@ foreach ($leMatch as $evenement) {
 				$trouveBut = mysqli_num_rows($resButs);
 				if($trouveBut>0){
 					
+					mysqli_query($conn,"UPDATE TableEvenement0 SET match_event_id='{$evenement['match_id']}', equipe_event_id='{$evenement['eqId']}' ,joueur_event_ref='{$evenement['m']}', code =0 , souscode='{$evenement['sc']}'  WHERE event_id ={$evenement['eventId']}") or die(mysqli_error($conn)." sur erreur update but");	
+
+
 					while ($rangBut = mysqli_fetch_array($resButs)) {
 						$arrCheckButs=array("joueurId"=>$rangBut['joueur_event_ref'],"webId"=>$rangBut['event_id']);
 						$chronoBut=$rangBut['chrono'];
 					}
 					$qSelPasses = "SELECT * FROM TableEvenement0 WHERE match_event_id='{$evenement['match_id']}' AND code=1 AND chrono='{$chronoBut}'";
+					mysqli_query($conn,"UPDATE TableEvenement0 SET match_event_id='{$evenement['match_id']}', equipe_event_id='{$evenement['eqId']}' ,joueur_event_ref='{$evenement['m']}', code =1 , souscode='{$evenement['sc']}'  WHERE event_id ={$evenement['eventId']}") or die(mysqli_error($conn)." sur erreur update passe");	
 					$resPasses = mysqli_query($conn,$qSelPasses) or die(mysqli_error($conn) . $qSelPasses);
 					while ($rangPasses = mysqli_fetch_array($resPasses)) {
 						array_push($arrCheckPasses,array("joueurId"=>$rangPasses['joueur_event_ref'],"webId"=>$rangPasses['event_id']));
