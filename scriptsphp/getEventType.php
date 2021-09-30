@@ -9,9 +9,9 @@
 
 require '../scriptsphp/defenvvar.php';
 
-
-$sportId=null;
-if(isset($_POST['sportId'])){
+$event=Array();
+$sportIds=null;
+if(isset($_POST['sportIds'])){
 $sportIds = $_POST["sportIds"];
 $sportIdArray = json_decode($sportIds);
 }
@@ -38,7 +38,7 @@ $saisonId =null;
 // 
 //
 
-if(IS_NULL($sportId)){
+if(!empty($sportIds)){
 	$rfEventType = mysqli_query($conn,"SELECT * FROM EventType WHERE 1")
 	or die(mysqli_error($conn)." Select EventType Sport null"); 
 }else{
@@ -53,7 +53,7 @@ if(IS_NULL($sportId)){
 
 
 	$rfEventType = mysqli_query($conn,"SELECT * FROM EventType WHERE {$sportString} ")
-	or die(mysqli_error($conn)." Select EventType Sport set to {$sportId} "); 
+	or die(mysqli_error($conn)." Select EventType Sport set to {$sportIds} "); 
 }
 while($rangeeEvent=mysqli_fetch_array($rfEventType))
 {

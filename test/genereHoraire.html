@@ -500,13 +500,24 @@
 
 				vielEssai = 1000000;
 				//			equipes = Array();
-				macroTentative = 60;
+				macroTentative = 1000;
 				/// Le tableau 3D equipes va contenir [les nom des équipes] x [Les semaines] x [Les plages]. Dans le tableau, c'est booléan. Match ou non.
 				equipesMatchParSemaine = Array();
 				/// Le tableau 2D equipesMatchParSemaine va contenir [les nom des équipes] x [Les semaines] = nombre de match joué dans une semaine.
 				//
-				while (essais < macroTentative) {//  On fera ce nombre d'essai pour obetnir la solution optimale.
+				vecCpt = Array()
+					for(var f=0; f< semaines.length;f++){
+						vecCpt[f]=0;
+					}
+					strVec=""
+					for(var g=0;g< semaines.length;g++){
+						strVec = strVec +" "+vecCpt[g];
+					}
+					console.log("vec Dist succc"+strVec);
 
+				while (essais < macroTentative) {//  On fera ce nombre d'essai pour obetnir la solution optimale.
+					console.log(essais/macroTentative*100);
+					$('#progression').html(essais/macroTentative*100);
 					// Initialisation pour un nouvel essai
 
 					for (var a = 0; a < vecEquipes.length; a++) {
@@ -565,7 +576,7 @@
                                     lesMatch[b].dom = i;
                                     lesMatch[b].vis = j;
                                     confBooke++;
-//                                    alert(JSON.stringify(confrontations[b])+" et b:"+b );
+									//           alert(JSON.stringify(confrontations[b])+" et b:"+b );
                                  }
                             }
                         }
@@ -576,13 +587,17 @@
 					semaineMatchs = Array();
 
 					cptTentative = 0;
-					MaxTentative = 10 + semaines.length;
+					MaxTentative = 50 + semaines.length;
 					Tentative2 = 100;
-					a = 0;
+					reculeTentative=10;
+					cptRecule=0;
 
+					a = 0;
+					echec=false;
 					//  Ici, on va itérer sur toutes les semaines. On va voir si on peut placer tous les matchs en suivant certaines règles.
 
 					while (a < semaines.length && cptTentative < MaxTentative) {
+						initIndMatchPris = indMatchPris.length;
 						semaineMatchs[a] = Array();
 						cpt = 0;
 						recom = true;
@@ -596,10 +611,11 @@
 							retourPlace = placeMatchSemaine(a, indMatchPris);
 							///  placeMatchSemaine va nous dire si l'algorythme est parvenu à inscrire correctement le match.
 							if (retourPlace == 1) {
-								//        alert("Reste de la place dans la semaine ... "+a);
+								 //       console.log("Reste de la place dans la semaine ... "+a);
 								recom = true;
 							} else {
-								//          alert("Semaine ... "+a+" complète! ");
+								vecCpt[a]++;
+								  //        console.log("Semaine ... "+a+" complète!");
 								recom = false;
 							}
 
@@ -638,7 +654,16 @@
 						cptTentative++;
 						// $('#divProgression').empty();
 						// $('#divProgression').append($('<div></div>').text("Micro tentative " +cptTentative+ " sur "+MaxTentative));
-
+						if(recom==false && cptTentative==MaxTentative){console.log("Succès de la semaine en Micro tentative " +cptTentative+ " sur "+MaxTentative);
+						}
+						if(recom==true && cptTentative==MaxTentative){//console.log("Micro tentative " +cptTentative+ " sur "+MaxTentative+" on recule");
+						echec=true;
+						/*if(cptRecule<reculeTentative){
+							cptTentative=0;
+							cptRecule++;
+							a=a-1;
+							indMatchPris = indMatchPris.slice(0,initIndMatchPris)}else{cptRecule=0;}*/
+						}
 					}// Fin du petit while
 
 					if (cptTentative == MaxTentative) {
@@ -648,26 +673,33 @@
 
 					}
 					expEquipes = equipes;
+					console.log("Echec? "+echec);
+					if(echec==false){
+						resAnal = analyse();
+						alert(resAnal);
+						if (resAnal) {
+							construitCalendrier();
+							alert(JSON.stringify(calendrierMatchs));
+								alert("Un gagnant");
+							afficheResultat();
 
-					resAnal = analyse();
-					//alert(resAnal);
-					if (resAnal) {
-						construitCalendrier();
-						//alert(JSON.stringify(calendrierMatchs));
-						//	alert("Un gagnant");
-						afficheResultat();
-
-					}
-					actualiseVecteurs();
-
+						}
+						actualiseVecteurs();
+					}	
 					//                                               $('#divCentrale').append(
 					//               $('<div></div>').text("SommeVar2: "+superSommeVar2),$('<br/>'));
 
 					essais++;
+					echec=false;
 					//	$('#divProgression').empty().append($('<div></div>').text("Macro tentative " + essais + " sur " + macroTentative));
 					//alert("Macro tentative " +essais+ " sur "+macroTentative);
-
+					strVec=""
+					for(var g=0;g< semaines.length;g++){
+						strVec = strVec +" "+vecCpt[g];
+					}
+					console.log("vec Dist succc"+strVec);
 				} // Fin du gros while;
+
 			}
 
 			function construitExpEquipes() {
@@ -1711,6 +1743,17 @@
                     <option value="3">3</option>
                 </select>
 
+            </div>
+			<div id="suivi">
+                <span id="pSuivi" >
+                    Progression: 
+				</span>
+                <span id="progression" >
+
+				</span>
+                <span >
+					%
+				</span>
             </div>
             <div id="divParam">
                 <h3>Équipes</h3>
