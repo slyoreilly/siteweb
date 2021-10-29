@@ -241,34 +241,36 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 
 
 foreach($matchPeriode as &$unMatch){
-	error_log("dans foreach ".$unMatch['arenaId'])	;
-	$qSelArena="SELECT * From TableArena
-	WHERE arenaId={$unMatch['arenaId']}";
-	$resArena = mysqli_query($conn,$qSelArena) or die(mysqli_error($conn) . $qSelEqVis);
-	while ($rangeeArena = mysqli_fetch_array($resArena)){
-		$nomArena =$rangeeArena['nomArena'];					
-		$nomGlace = $rangeeArena['nomGlace'];	
+
+	if(!is_null($unMatch['arenaId'])){
+		error_log("dans foreach ".$unMatch['arenaId'])	;
+		$qSelArena="SELECT * From TableArena
+			WHERE arenaId={$unMatch['arenaId']}";
+		$resArena = mysqli_query($conn,$qSelArena) or die(mysqli_error($conn) . $qSelArena);
+		while ($rangeeArena = mysqli_fetch_array($resArena)){
+			$nomArena =$rangeeArena['nomArena'];					
+			$nomGlace = $rangeeArena['nomGlace'];	
+		}
+		
+		$abons = array();
+	//	$Ia=0;
+		$qSelAbons="SELECT telId, abonAppareilMatch.role  From abonAppareilMatch
+			WHERE matchId={$unMatch['match_id']}";
+		$resAbons = mysqli_query($conn,$qSelAbons) or die(mysqli_error($conn) . $qSelAbons);
+		while ($rangeeAbons = mysqli_fetch_array($resAbons)){
+			array_push($abons, array("role"=>$rangeeAbons['role'], "telId"=>$rangeeAbons['telId']));
+	//		$abons[$Ia]=array();
+	//		$abons[$Ia]['role'] =$rangeeAbons['role'];					
+	//		$abons[$Ia]['telId'] =$telId = $rangeeAbons['telId'];	
+	//		$Ia++;
+		}
+
+
+
+		$unMatch['arena']=$nomArena." / ".$nomGlace;	
+		$unMatch['abons']=$abons;
+		//error_log("dans  arena ".$unMatch['arena']." et abons: ".$unMatch['abons'])	;
 	}
-	
-	$abons = array();
-//	$Ia=0;
-	$qSelAbons="SELECT telId, abonAppareilMatch.role  From abonAppareilMatch
-		WHERE matchId={$unMatch['match_id']}";
-	$resAbons = mysqli_query($conn,$qSelAbons) or die(mysqli_error($conn) . $qSelAbons);
-	while ($rangeeAbons = mysqli_fetch_array($resAbons)){
-		array_push($abons, array("role"=>$rangeeAbons['role'], "telId"=>$rangeeAbons['telId']));
-//		$abons[$Ia]=array();
-//		$abons[$Ia]['role'] =$rangeeAbons['role'];					
-//		$abons[$Ia]['telId'] =$telId = $rangeeAbons['telId'];	
-//		$Ia++;
-	}
-
-
-
-	$unMatch['arena']=$nomArena." / ".$nomGlace;	
-	$unMatch['abons']=$abons;
-	//error_log("dans  arena ".$unMatch['arena']." et abons: ".$unMatch['abons'])	;
-	
 }
 if($maxSec>0){
 $qLigues = "SELECT * FROM Ligue

@@ -14,26 +14,24 @@ $ligueBId = $_POST['ligueBId'];
 $nomUser = $_POST['userId'];
 //fusionne B dans A.
 
+$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+// Check connection
+if (!$conn) {
+	die("Connection failed: " . mysqli_connect_error());
+}
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
+mysqli_query($conn, "SET NAMES 'utf8'");
+mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 	
 
 function trouveIDParNomUser($nomUser)
 {
-$fResultUser = mysql_query("SELECT noCompte 
+$fResultUser = mysqli_query($conn,"SELECT noCompte 
 								FROM TableUser 
 								WHERE username='{$nomUser}'")
-or die(mysql_error());  
-$rU = mysql_fetch_row($fResultUser);
-if (mysql_num_rows($fResultUser)>0)
+or die(mysqli_error($conn));  
+$rU = mysqli_fetch_row($fResultUser);
+if (mysqli_num_rows($fResultUser)>0)
 {
 return $rU[0];
 }
@@ -47,27 +45,27 @@ else{return -1;}
 //
 //////////////////////////////////
 
-$fJA = mysql_query("SELECT proprio
+$fJA = mysqli_query($conn,"SELECT proprio
 								FROM TableJoueur 
 								WHERE joueur_id='{$joueurAId}'")
-or die(mysql_error()+' jA');  
-$rJA = mysql_fetch_row($fJA);
+or die(mysqli_error($conn)+' jA');  
+$rJA = mysqli_fetch_row($fJA);
 $pJA=$rJA[0];
 //echo $pJA;
-$fJB = mysql_query("SELECT proprio
+$fJB = mysqli_query($conn,"SELECT proprio
 								FROM TableJoueur 
 								WHERE joueur_id='{$joueurBId}'")
-or die(mysql_error()+' jB');  
-$rJB = mysql_fetch_row($fJB);
+or die(mysqli_error($conn)+' jB');  
+$rJB = mysqli_fetch_row($fJB);
 $pJB=$rJB[0];
 //echo $pJB;
-$fL = mysql_query("SELECT type
+$fL = mysqli_query($conn"SELECT type
 								FROM AbonnementLigue 
 								WHERE userid='{$userId}'
 								AND ligueid='{$ligueBId}'")
-or die(mysql_error()+' L');  
-$rL = mysql_fetch_row($fL);
-if (mysql_num_rows($fL)>0)
+or die(mysqli_error($conn)+' L');  
+$rL = mysqli_fetch_row($fL);
+if (mysqli_num_rows($fL)>0)
 {
 $pL=-1;
 }
@@ -124,30 +122,30 @@ if($erreur==0)
 			if($pJB!=0)
 				$nP=$pJB;
 		$query_update = "UPDATE TableJoueur SET proprio={$nP} WHERE joueur_id={$joueurAId}";	
-	mysql_query($query_update);	
+	mysqli_query($conn,$query_update);	
 	
-	mysql_query("DELETE FROM `TableJoueur` WHERE joueur_id={$joueurBId}");
+	mysqli_query($conn,"DELETE FROM `TableJoueur` WHERE joueur_id={$joueurBId}");
 		
-	mysql_query("UPDATE abonJoueurLigue SET joueurId={$joueurAId} WHERE joueurId={$joueurBId}");	
-	mysql_query("UPDATE abonJoueurEquipe SET joueurId={$joueurAId} WHERE joueurId={$joueurBId}");	
-	mysql_query("UPDATE TableEvenement0 SET joueur_event_ref='{$joueurAId}' WHERE joueur_event_ref='{$joueurBId}'");	
-	$fAD=mysql_query("SELECT * 
+	mysqli_query($conn,"UPDATE abonJoueurLigue SET joueurId={$joueurAId} WHERE joueurId={$joueurBId}");	
+	mysqli_query($conn,"UPDATE abonJoueurEquipe SET joueurId={$joueurAId} WHERE joueurId={$joueurBId}");	
+	mysqli_query($conn,"UPDATE TableEvenement0 SET joueur_event_ref='{$joueurAId}' WHERE joueur_event_ref='{$joueurBId}'");	
+	$fAD=mysqli_query($conn,"SELECT * 
 					FROM MatchAVenir
 					WHERE alignementDom
-					LIKE '%\"".$joueurBId."\"%'")or die(mysql_error());
-		while($rAD=mysql_fetch_array($fAD))
+					LIKE '%\"".$joueurBId."\"%'")or die(mysqli_error($conn));
+		while($rAD=mysqli_fetch_array($fAD))
 		{
 			$aRemp = str_replace($joueurBId,$joueurAId,$rAD['alignementDom']);
-			mysql_query("UPDATE MatchAVenir SET alignementDom={$aRemp} WHERE mavId={$rAD['mavId']}");
+			mysqli_query($conn,"UPDATE MatchAVenir SET alignementDom={$aRemp} WHERE mavId={$rAD['mavId']}");
 		}	
-	$fAV=mysql_query("SELECT * 
+	$fAV=mysqli_query($conn,"SELECT * 
 					FROM MatchAVenir
 					WHERE alignementVis
-					LIKE '%\"".$joueurBId."\"%'")or die(mysql_error());
-		while($rAV=mysql_fetch_array($fAV))
+					LIKE '%\"".$joueurBId."\"%'")or die(mysqli_error($conn));
+		while($rAV=mysqli_fetch_array($fAV))
 		{
 			$aRemp = str_replace($joueurBId,$joueurAId,$rAV['alignementVis']);
-			mysql_query("UPDATE MatchAVenir SET alignementVis={$aRemp} WHERE mavId={$rAV['mavId']}");
+			mysqli_query($conn, "UPDATE MatchAVenir SET alignementVis={$aRemp} WHERE mavId={$rAV['mavId']}");
 		}					
 	echo "Fusion terminée.";
 }
