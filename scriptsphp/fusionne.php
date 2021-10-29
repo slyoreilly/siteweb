@@ -24,21 +24,6 @@ mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 	
 
-function trouveIDParNomUser($nomUser)
-{
-$fResultUser = mysqli_query($conn,"SELECT noCompte 
-								FROM TableUser 
-								WHERE username='{$nomUser}'")
-or die(mysqli_error($conn));  
-$rU = mysqli_fetch_row($fResultUser);
-if (mysqli_num_rows($fResultUser)>0)
-{
-return $rU[0];
-}
-else{return -1;}
-
-}
-
 //////////////////////////////////
 //
 //	V�rifications
@@ -59,7 +44,7 @@ or die(mysqli_error($conn)+' jB');
 $rJB = mysqli_fetch_row($fJB);
 $pJB=$rJB[0];
 //echo $pJB;
-$fL = mysqli_query($conn"SELECT type
+$fL = mysqli_query($conn,"SELECT type
 								FROM AbonnementLigue 
 								WHERE userid='{$userId}'
 								AND ligueid='{$ligueBId}'")
