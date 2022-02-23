@@ -140,7 +140,7 @@ $Sommaire['eqVis']=$mEqVis;
 $Sommaire['eqDomId']=$mEqDomId;
 $Sommaire['eqVisId']=$mEqVisId;
 
-	$qEC="SELECT 
+	$qEV="SELECT 
 	TableEvenement0.event_id,
 	TableEvenement0.souscode,
 	TableEvenement0.chrono as mChrono,
