@@ -89,33 +89,17 @@ if($TP){$sc =$sc +3;}
 		$cPas++;
 	}
 	$sPas = 0;
+	$cPas2 = 0;
 	while ($tabPasses = mysqli_fetch_array($resultPasse)) {
-		if ($cPas != 0 && $sPas == 0) {
-			mysqli_query($conn,"UPDATE TableEvenement0 SET joueur_event_ref='{$passeurs[$sPas]}' ,souscode ='{$sc}' WHERE match_event_id='{$butMAJ->matchId}'
-														AND code=1 
-														AND chrono='{$tabButs['chrono']}'
-														AND joueur_event_ref='{$tabPasses['joueur_event_ref']}'
-														LIMIT 1");
-
-		}
-		
-		if ($cPas == 2 && $sPas == 1) {
-			mysqli_query($conn,"UPDATE TableEvenement0 SET joueur_event_ref='{$passeurs[$sPas]}'  ,souscode ='{$sc}' WHERE match_event_id='{$butMAJ->matchId}'
-														AND code=1 
-														AND chrono='{$tabButs['chrono']}'
-														AND joueur_event_ref='{$tabPasses['joueur_event_ref']}'
-														LIMIT 1");
+		if($tabPasses['joueur_event_ref']!="0"){
+		mysqli_query($conn,"UPDATE TableEvenement0 SET joueur_event_ref='{$passeurs[$sPas]}' ,souscode ='{$sc}' WHERE event_id='{$tabPasses['event_id']}'
+		LIMIT 1");}
+		else{
+			mysqli_query($conn,"UPDATE TableEvenement0 SET code=15 WHERE event_id='{$tabPasses['event_id']}'
+			LIMIT 1");
 		}
 		$sPas++;
-
 	}
-	echo "cpas: " . $cPas . "  sPas: " . $sPas . "  " . $butMAJ -> passeur1Id . "  " . $butMAJ -> passeur2Id;
-	while ($sPas > $cPas) {			mysqli_query($conn,"UPDATE TableEvenement0 SET  code ='15' WHERE match_event_id='{$butMAJ->matchId}'
-	AND code=1 AND chrono='{$tabButs['chrono']}'");
-
-		$sPas--;
-	}
-	//echo "cpas: " . $cPas . "  sPas: " . $sPas . "  " . $butMAJ -> passeur1Id . "  " . $butMAJ -> passeur2Id . " noSeq: " . $butMAJ -> noSeq;
 
 	while ($sPas < $cPas) {
 		$retour = mysqli_query($conn,"INSERT INTO TableEvenement0 (match_event_id,equipe_event_id,joueur_event_ref,code, souscode,chrono,noSequence) 
