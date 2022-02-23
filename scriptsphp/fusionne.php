@@ -50,7 +50,7 @@ $fL = mysqli_query($conn,"SELECT type
 								AND ligueid='{$ligueBId}'")
 or die(mysqli_error($conn)+' L');  
 $rL = mysqli_fetch_row($fL);
-if (mysqli_num_rows($fL)>0)
+if (mysqli_num_rows($fL)==0)
 {
 $pL=-1;
 }
@@ -110,9 +110,50 @@ if($erreur==0)
 	mysqli_query($conn,$query_update);	
 	
 	mysqli_query($conn,"DELETE FROM `TableJoueur` WHERE joueur_id={$joueurBId}");
+
 		
 	mysqli_query($conn,"UPDATE abonJoueurLigue SET joueurId={$joueurAId} WHERE joueurId={$joueurBId}");	
-	mysqli_query($conn,"UPDATE abonJoueurEquipe SET joueurId={$joueurAId} WHERE joueurId={$joueurBId}");	
+
+
+	$breakAndRetry=false;
+
+	do{
+		$qSelAbonJLA = "SELECT *
+		FROM abonJoueurLigue
+		WHERE joueurId={$joueurAId} ORDER BY ligueId, debutAbon ASC";
+		
+		$fSAJA = mysqli_query($conn,$qSelAbonJLA);	
+
+		while($rSAJA=mysqli_fetch_array($fSAJA)&&!$breakAndRetry)
+		{
+
+			while($rSAJAT=mysqli_fetch_array($fSAJA)&&!$breakAndRetry)
+			{
+				if($rSAJA['ligueId']==$rSAJAT['ligueId']&&$rSAJA['abonJouLig']!=$rSAJAT['abonJouLig']){
+					if($rSAJA['finAbon']>$rSAJAT['debutAbon']){
+						mysqli_query($conn,"UPDATE abonJoueurLigue SET finAbon={$rSAJAT['finAbon']} WHERE abonJouLig={$rSAJA['abonJouLig']}");
+						mysqli_query($conn,"DELETE FROM `abonJoueurLigue` WHERE abonJouLig={$rSAJAT['abonJouLig']}");
+					
+					}
+					$breakAndRetry = true;
+
+				}
+
+			}
+			
+		}	
+	} while($breakAndRetry);
+
+
+
+
+	mysqli_query($conn,"UPDATE abonJoueurEquipe SET joueurId={$joueurAId} WHERE joueurId={$joueurBId}");
+	
+	
+
+
+
+	
 	mysqli_query($conn,"UPDATE TableEvenement0 SET joueur_event_ref='{$joueurAId}' WHERE joueur_event_ref='{$joueurBId}'");	
 	$fAD=mysqli_query($conn,"SELECT * 
 					FROM MatchAVenir

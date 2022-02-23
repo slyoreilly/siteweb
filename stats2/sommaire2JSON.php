@@ -140,8 +140,7 @@ $Sommaire['eqVis']=$mEqVis;
 $Sommaire['eqDomId']=$mEqDomId;
 $Sommaire['eqVisId']=$mEqVisId;
 
-
-	$qEv="SELECT 
+	$qEC="SELECT 
 	TableEvenement0.event_id,
 	TableEvenement0.souscode,
 	TableEvenement0.chrono as mChrono,
@@ -169,45 +168,54 @@ $Sommaire['eqVisId']=$mEqVisId;
 		LEFT JOIN
 	Video ON (Video.reference = TableEvenement0.event_id)
 		AND nomMatch = '{$matchPourVideos}'
-		LEFT JOIN
-	(SELECT 
-	   TableEvenement0.joueur_event_ref,
+	LEFT JOIN(
+        SELECT 
+	   		TableEvenement0.joueur_event_ref,
 			TableEvenement0.chrono,
-			TableEvenement0.event_id,
+			TableEvenement0.event_id as premier_passeur,
 			TableJoueur.NomJoueur,
-		   TableJoueur.NumeroJoueur,
+		   	TableJoueur.NumeroJoueur,
 			Passeur2.NomJoueur AS P2nomJoueur,
-		  Passeur2.NumeroJoueur AS P2noJoueur,
-		   Passeur2.joueur_event_ref AS P2jId
-	FROM
-		TableEvenement0
-	INNER JOIN TableJoueur ON (TableEvenement0.joueur_event_ref = TableJoueur.joueur_id)
-	INNER JOIN TableMatch ON (TableMatch.matchIdRef = TableEvenement0.match_event_id)
-	LEFT JOIN (SELECT 
-		joueur_event_ref,
-			chrono,
-			event_id,
-			TableJoueur.NomJoueur,
-			TableJoueur.NumeroJoueur
-	FROM
-		TableEvenement0
-	INNER JOIN TableJoueur ON (TableEvenement0.joueur_event_ref = TableJoueur.joueur_id)
-	INNER JOIN TableMatch ON (TableMatch.matchIdRef = TableEvenement0.match_event_id)
+		  	Passeur2.NumeroJoueur AS P2noJoueur,
+		   	Passeur2.joueur_event_ref AS P2jId
+		FROM
+			TableEvenement0
+		INNER JOIN TableJoueur ON (TableEvenement0.joueur_event_ref = TableJoueur.joueur_id)
+		INNER JOIN TableMatch ON (TableMatch.matchIdRef = TableEvenement0.match_event_id)
+		LEFT JOIN (
+        	SELECT 
+              	event_id,
+		    	joueur_event_ref,
+				chrono,
+				TableJoueur.NomJoueur,
+				TableJoueur.NumeroJoueur
+			FROM
+				TableEvenement0
+               	INNER JOIN TableJoueur ON (TableEvenement0.joueur_event_ref = TableJoueur.joueur_id)
+               	INNER JOIN TableMatch ON (TableMatch.matchIdRef = TableEvenement0.match_event_id)    
+				WHERE event_id IN (
+    				SELECT if(COUNT(*) >1, MAX(event_id),NULL) as max_event_id
+                 	FROM TableEvenement0 
+        			INNER JOIN TableMatch ON (TableMatch.matchIdRef = TableEvenement0.match_event_id)  
+        		 	WHERE TableEvenement0.code = 1
+						AND match_id = '{$matchPourVideos}' 
+                	GROUP BY chrono
+    			)
+    	) AS Passeur2 ON (
+                (Passeur2.chrono = TableEvenement0.chrono)
+            	)
+		
+		WHERE
+			TableEvenement0.code = 1
+			AND match_id = '{$matchPourVideos}' AND ((TableEvenement0.event_id <> Passeur2.event_id) OR Passeur2.event_id IS NULL )
+    ) AS Passeur1 ON (Passeur1.chrono = TableEvenement0.chrono) 
 	WHERE
-		TableEvenement0.code = 1
-			AND match_id = '{$matchPourVideos}'
-	ORDER BY TableEvenement0.event_id DESC limit 1) AS Passeur2 ON (Passeur2.chrono = TableEvenement0.chrono)
-		AND (Passeur2.event_id <> TableEvenement0.event_id )
-	WHERE
-		TableEvenement0.code = 1
-			AND match_id = '{$matchPourVideos}'
-	order by event_id limit 1 ) AS Passeur1 ON (Passeur1.chrono = TableEvenement0.chrono)
-	WHERE
-	(match_id = '{$matchPourVideos}')
+		(match_id = '{$matchPourVideos}')
 		AND (TableEvenement0.code = 0)
 		AND (Video.type = 0 OR Video.type IS NULL)
 	ORDER BY TableEvenement0.chrono , angleOk DESC";
 
+	
 
 $setupMySql = mysqli_query($conn,"SET SQL_BIG_SELECTS=1" ) or die('Cannot complete SETUP BIG SELECTS because: ' . mysqli_error($conn));
 $resultEvent = mysqli_query($conn,$qEv) or die(mysqli_error($conn));  	
