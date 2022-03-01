@@ -91,7 +91,7 @@ if ($eqVis != 'undefined') {$strTMEqVis = "eq_vis='{$eqVis}', ";
 														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
 														WHERE equipeId='{$eqDom}'
 														AND debutAbon<=DATE(NOW())
-														AND finAbon>DATE(NOW())") or die(mysqli_error());
+														AND finAbon>DATE(NOW())") or die(mysqli_error($conn));
 	$jDom = "[";
 	while ($rangeeJoueur = mysqli_fetch_array($resultJoueur)) {
 
@@ -111,7 +111,7 @@ if ($eqVis != 'undefined') {$strTMEqVis = "eq_vis='{$eqVis}', ";
 														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
 														WHERE equipeId='{$eqVis}'
 														AND debutAbon<=DATE(NOW())
-														AND finAbon>DATE(NOW())") or die(mysqli_error());
+														AND finAbon>DATE(NOW())") or die(mysqli_error($conn));
 	$jVis = "[";
 	while ($rangeeJVis = mysqli_fetch_array($rJVis)) {
 
@@ -126,12 +126,12 @@ if ($eqVis != 'undefined') {$strTMEqVis = "eq_vis='{$eqVis}', ";
 	//fin des joueurs d'une �quipe
 
 	$retour = mysqli_query($conn, "INSERT INTO MatchAVenir (matchId, alignementDom, alignementVis, gardienDom, gardienVis, eqDom, eqVis, date, dateFin, ligueId,dernierMAJ,arenaId,arbitreId) 
-VALUES ('{$matchId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$arenaId}','{$arbitreId}')") or die(mysqli_error() . " INSERT INTO MatchAVenir");
+VALUES ('{$matchId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$arenaId}','{$arbitreId}')") or die(mysqli_error($conn) . " INSERT INTO MatchAVenir");
 
 	$ret = mysqli_query($conn, "SELECT mavId 
 						FROM MatchAVenir 
 						WHERE 1 
-						ORDER BY mavId DESC") or die(mysqli_error());
+						ORDER BY mavId DESC") or die(mysqli_error($conn));
 	$tmp = mysqli_fetch_row($ret);
 	$retour = $tmp[0];
 	$mavId = $retour;
@@ -146,21 +146,21 @@ VALUES ('{$matchId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVi
 $ret = mysqli_query($conn, "SELECT nom_equipe
 						FROM TableEquipe 
 						WHERE equipe_id='{$eqDom}'
-						") or die(mysqli_error());
+						") or die(mysqli_error($conn));
 $tmp = mysqli_fetch_row($ret);
 $strNomEqDom = $tmp[0];
 
 $ret = mysqli_query($conn, "SELECT nom_equipe
 						FROM TableEquipe 
 						WHERE equipe_id='{$eqVis}'
-						") or die(mysqli_error());
+						") or die(mysqli_error($conn));
 $tmp = mysqli_fetch_row($ret);
 $strNomEqVis = $tmp[0];
 
 $matchId = substr($dateDeb, 0, 4) . "/" . substr($dateDeb, 5, 2) . "/" . substr($dateDeb, 8, 2) . "_" . $strNomEqDom . "_" . $strNomEqVis . "_" . $ligueId;
 
 	$rTM = mysqli_query($conn, "INSERT INTO TableMatch (matchId, matchIdRef, mavId, alignementDom, alignementVis, gardienDom, gardienVis, eq_dom, eq_vis, date, dateFin, ligueRef,dernierMAJ,arenaId,arbitreId) 
-VALUES ('{$matchId}','{$matchId}','{$mavId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$arenaId}','{$arbitreId}')") or die(mysqli_error() . " INSERT INTO TableMatch");
+VALUES ('{$matchId}','{$matchId}','{$mavId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$arenaId}','{$arbitreId}')") or die(mysqli_error($conn) . " INSERT INTO TableMatch");
 	$match_id = mysqli_insert_id($conn);
 
 
@@ -171,13 +171,13 @@ if ($appareils != null) {
 
 			if ($appareils['cams'][$a]['abon'] == 1) {
 				mysqli_query($conn, "INSERT INTO abonAppareilMatch (matchId, surfaceId, gabaritId, posGabId, telId, role) 
-					VALUES ('{$match_id}','{$appareils['cams'][$a]['surfaceId']}','{$appareils['cams'][$a]['gabaritId']}','{$appareils['cams'][$a]['posGabId']}', '{$appareils['cams'][$a]['telId']}','{$appareils['cams'][$a]['role']}')") or die(mysqli_error() . " INSERT INTO abonAppareilMatch");
-				$retour = mysqli_error();
+					VALUES ('{$match_id}','{$appareils['cams'][$a]['surfaceId']}','{$appareils['cams'][$a]['gabaritId']}','{$appareils['cams'][$a]['posGabId']}', '{$appareils['cams'][$a]['telId']}','{$appareils['cams'][$a]['role']}')") or die(mysqli_error($conn) . " INSERT INTO abonAppareilMatch");
+				$retour = mysqli_error($conn);
 			}
 			else{
 				mysqli_query($conn, "INSERT INTO abonAppareilMatch (matchId, surfaceId, gabaritId, posGabId, telId, role) 
-					VALUES ('{$match_id}','{$appareils['cams'][$a]['surfaceId']}','{$appareils['cams'][$a]['gabaritId']}','{$appareils['cams'][$a]['posGabId']}', '{$appareils['cams'][$a]['telId']}','0')") or die(mysqli_error() . " INSERT INTO abonAppareilMatch");
-				$retour = mysqli_error();
+					VALUES ('{$match_id}','{$appareils['cams'][$a]['surfaceId']}','{$appareils['cams'][$a]['gabaritId']}','{$appareils['cams'][$a]['posGabId']}', '{$appareils['cams'][$a]['telId']}','0')") or die(mysqli_error($conn) . " INSERT INTO abonAppareilMatch");
+				$retour = mysqli_error($conn);
 			}
 		
 	}
@@ -190,16 +190,16 @@ if ($appareils != null) {
 				mysqli_query($conn, "INSERT INTO abonAppareilMatch (matchId, surfaceId, gabaritId, posGabId, telId, role) 
 					VALUES ('{$match_id}','{$appareils['remotes'][$a]['surfaceId']}','{$appareils['remotes'][$a]['gabaritId']}',
 					'{$appareils['remotes'][$a]['posGabId']}', '{$appareils['remotes'][$a]['telId']}',
-					'{$appareils['remotes'][$a]['role']}')") or die(mysqli_error() . " INSERT INTO abonAppareilMatch");
-				$retour = mysqli_error();
+					'{$appareils['remotes'][$a]['role']}')") or die(mysqli_error($conn) . " INSERT INTO abonAppareilMatch");
+				$retour = mysqli_error($conn);
 				echo 5;
 			}
 			else{
 					mysqli_query($conn, "INSERT INTO abonAppareilMatch (matchId, surfaceId, gabaritId, posGabId, telId, role) 
 					VALUES ('{$match_id}','{$appareils['remotes'][$a]['surfaceId']}','{$appareils['remotes'][$a]['gabaritId']}',
 					'{$appareils['remotes'][$a]['posGabId']}', '{$appareils['remotes'][$a]['telId']}',
-					'0')") or die(mysqli_error() . " INSERT INTO abonAppareilMatch");
-				$retour = mysqli_error();
+					'0')") or die(mysqli_error($conn) . " INSERT INTO abonAppareilMatch");
+				$retour = mysqli_error($conn);
 				
 			}
 			}
