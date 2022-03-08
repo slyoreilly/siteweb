@@ -194,14 +194,16 @@ while ($r = mysqli_fetch_assoc($retour)) {
 		
 			foreach($alDom as $unJoueurId){
 		        $joueur = trouveJoueur($joueursLigue,$unJoueurId,$vecMatch[$IM]['eq_dom']);
-			    array_push($vecMatch[$IM]['alDom'],$joueur );
+				if($joueur!=false){
+			    array_push($vecMatch[$IM]['alDom'],$joueur );}
 			}
 		
 
 
 			foreach($alVis as $unJoueurId){
 		        $joueur = trouveJoueur($joueursLigue,$unJoueurId,$vecMatch[$IM]['eq_vis']);
-			    array_push($vecMatch[$IM]['alVis'],$joueur );
+				if($joueur!=false){
+			    array_push($vecMatch[$IM]['alVis'],$joueur );}
 			}
 			
 
