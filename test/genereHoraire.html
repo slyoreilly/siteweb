@@ -1608,7 +1608,7 @@
 			        uneDate = moment(getObjet(conteneurs,calendrierMatchs[parseInt(indMatch)].conteneurId).date).format("YYYY/MM/DD");
 			        uneHeure=getObjet(vecPlages,getObjet(conteneurs,calendrierMatchs[parseInt(indMatch)].conteneurId).plageId).heure;
 			        uneMinute=getObjet(vecPlages,getObjet(conteneurs,calendrierMatchs[parseInt(indMatch)].conteneurId).plageId).minutes;
-			        maDate = uneDate+" "+uneHeure+":"+uneMinute;
+			        maDate = uneDate + " " + uneHeure + ":" + uneMinute;
                     var unMatchExp={};
 			        unMatchExp.eqDom = vecEquipes[getObjet(confrontations,calendrierMatchs[parseInt(indMatch)].confrontationId).dom].id;
                     unMatchExp.eqVis = vecEquipes[getObjet(confrontations,calendrierMatchs[parseInt(indMatch)].confrontationId).vis].id;
