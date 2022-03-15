@@ -124,7 +124,7 @@ if ($eqVis != 'undefined') {$strTMEqVis = "eq_vis='{$eqVis}', ";
 	}
 	$jVis .= "]";
 	//fin des joueurs d'une �quipe
-
+/*
 	$retour = mysqli_query($conn, "INSERT INTO MatchAVenir (matchId, alignementDom, alignementVis, gardienDom, gardienVis, eqDom, eqVis, date, dateFin, ligueId,dernierMAJ,arenaId,arbitreId) 
 VALUES ('{$matchId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$arenaId}','{$arbitreId}')") or die(mysqli_error($conn) . " INSERT INTO MatchAVenir");
 
@@ -135,7 +135,7 @@ VALUES ('{$matchId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVi
 	$tmp = mysqli_fetch_row($ret);
 	$retour = $tmp[0];
 	$mavId = $retour;
-
+*/
 
 
 ////////////////////
