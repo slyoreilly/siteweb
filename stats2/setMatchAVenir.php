@@ -209,7 +209,7 @@ if (mysqli_num_rows($rTM) > 0) {
 	$retour = $mavId;
 } else {
 	$rTM = mysqli_query($conn, "INSERT INTO TableMatch (matchId, matchIdRef, mavId, alignementDom, alignementVis, gardienDom, gardienVis, eq_dom, eq_vis, date, dateFin, ligueRef,dernierMAJ, TSDMAJ, arenaId,arbitreId) 
-VALUES ('{$matchId}','{$matchId}','{$mavId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$milliseconds}','{$arenaId}','{$arbitreId}')") or die(mysqli_error($conn) . " INSERT INTO TableMatch");
+VALUES ('{$matchId}','{$matchId}', NULL ,'{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$milliseconds}','{$arenaId}','{$arbitreId}')") or die(mysqli_error($conn) . " INSERT INTO TableMatch");
 	$match_id = mysqli_insert_id($conn);
 }
 
