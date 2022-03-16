@@ -153,7 +153,7 @@
 					nomSemaines.push(semaines[a].nom);
 					semaines[a].id = a;
 					//alert(JSON.stringify(semaines[a].nom));
-					semaines[a].date = moment(premierMatch).day(7 * a).format("dddd, DD MMM YYYY");
+					semaines[a].date = moment(premierMatch).day(7 * a).format("YYYY/MM/DD");
 					// alert(JSON.stringify(semaines[a].date));
 				}
 
@@ -790,7 +790,7 @@
 						conteneurs[iCont].id = iCont;
 						conteneurs[iCont].semaineId = semaines[a].id;
 						conteneurs[iCont].plageId = vecPlages[b].id;
-						conteneurs[iCont].date = moment(semaines[a].date).add(parseInt(vecPlages[b].jour), 'day').format("dddd, DD MMM YYYY");
+						conteneurs[iCont].date = moment(semaines[a].date).add(parseInt(vecPlages[b].jour), 'day').format("YYYY/MM/DD");
 						iCont++;
 					}
 				}
