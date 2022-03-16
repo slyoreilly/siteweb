@@ -149,11 +149,11 @@
 				for (var a = 0; moment(premierMatch).day(7 * a) < moment(dernierMatch); a++) {
 
 					semaines[a] = {};
-					semaines[a].nom = moment(premierMatch).day(7 * a).format("dddd, DD MMM YYYY");
+					semaines[a].nom = moment(premierMatch).day(7 * a).format("dddd, DD MMM YYYY").toString();
 					nomSemaines.push(semaines[a].nom);
 					semaines[a].id = a;
 					//alert(JSON.stringify(semaines[a].nom));
-					semaines[a].date = moment(premierMatch).day(7 * a).format("dddd, DD MMM YYYY");
+					semaines[a].date = moment(premierMatch).day(7 * a).format("dddd, DD MMM YYYY").toString();
 					// alert(JSON.stringify(semaines[a].date));
 				}
 
@@ -790,7 +790,7 @@
 						conteneurs[iCont].id = iCont;
 						conteneurs[iCont].semaineId = semaines[a].id;
 						conteneurs[iCont].plageId = vecPlages[b].id;
-						conteneurs[iCont].date = moment(semaines[a].date).add(parseInt(vecPlages[b].jour), 'day').format("dddd, DD MMM YYYY");
+						conteneurs[iCont].date = moment(semaines[a].date).add(parseInt(vecPlages[b].jour), 'day').format("dddd, DD MMM YYYY").toString();
 						iCont++;
 					}
 				}
@@ -1605,7 +1605,7 @@
 			    lesExpMatchs= new Array();
 			    $('#divMatchs input:checked').each(function(indice){
 			        indMatch = $(this).parent().next().children().first().val();
-			        uneDate = moment(getObjet(conteneurs,calendrierMatchs[parseInt(indMatch)].conteneurId).date).format("YYYY/MM/DD");
+			        uneDate = moment(getObjet(conteneurs,calendrierMatchs[parseInt(indMatch)].conteneurId).date).format("YYYY/MM/DD").toString();
 			        uneHeure=getObjet(vecPlages,getObjet(conteneurs,calendrierMatchs[parseInt(indMatch)].conteneurId).plageId).heure;
 			        uneMinute=getObjet(vecPlages,getObjet(conteneurs,calendrierMatchs[parseInt(indMatch)].conteneurId).plageId).minutes;
 			        maDate = uneDate + " " + uneHeure + ":" + uneMinute;
