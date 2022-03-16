@@ -161,7 +161,7 @@ $strNomEqVis = $tmp[0];
 $matchId = substr($dateDeb, 0, 4) . "/" . substr($dateDeb, 5, 2) . "/" . substr($dateDeb, 8, 2) . "_" . $strNomEqDom . "_" . $strNomEqVis . "_" . $ligueId;
 $qQuery ="INSERT INTO TableMatch (matchId, matchIdRef, mavId, alignementDom, alignementVis, gardienDom, gardienVis, eq_dom, eq_vis, date, dateFin, ligueRef,dernierMAJ,arenaId,arbitreId) 
 VALUES ('{$matchId}','{$matchId}', NULL ,'{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$arenaId}','{$arbitreId}')";
-echo $qQuery;
+//echo $qQuery;
 $rTM = mysqli_query($conn, $qQuery) or die(mysqli_error($conn) . " INSERT INTO TableMatch");
 	$match_id = mysqli_insert_id($conn);
 
