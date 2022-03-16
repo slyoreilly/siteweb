@@ -168,6 +168,7 @@ $rTM = mysqli_query($conn, $qQuery) or die(mysqli_error($conn) . " INSERT INTO T
 
 if ($appareils != null) {
 	//echo 1;
+	if($appareils['cams']!=null){
 	for ($a = 0; $a < count($appareils['cams']); $a++) {
 	//echo 2;
 
@@ -183,7 +184,8 @@ if ($appareils != null) {
 			}
 		
 	}
-
+}
+if($appareils['remotes']!=null){
 	for ($a = 0; $a < count($appareils['remotes']); $a++) {
 	//echo 3;
 						echo 3;
@@ -205,7 +207,7 @@ if ($appareils != null) {
 				
 			}
 			}
-
+		}
 }
 }
 echo 1;
