@@ -38,7 +38,7 @@ $arbitreId = $unMatch['arbitreId'];
 $appareils_json = $unMatch['appareils'];
 $appareils = json_decode($appareils_json, true);
 
-$matchId = substr($dateDeb, 0, 4) . "/" . substr($dateDeb, 5, 2) . "/" . substr($dateDeb, 8, 2) . "_" . $eqDom . "_" . $eqVis;
+//$matchId = substr($dateDeb, 0, 4) . "/" . substr($dateDeb, 5, 2) . "/" . substr($dateDeb, 8, 2) . "_" . $eqDom . "_" . $eqVis;
 
 
 $strEqDom = "";
