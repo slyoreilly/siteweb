@@ -149,7 +149,7 @@
 				for (var a = 0; moment(premierMatch).day(7 * a) < moment(dernierMatch); a++) {
 
 					semaines[a] = {};
-					semaines[a].nom = moment(premierMatch).day(7 * a).format("dddd, DD MMM YYYY").join(' ');
+					semaines[a].nom = String(moment(premierMatch).day(7 * a).format("dddd, DD MMM YYYY"));
 					nomSemaines.push(semaines[a].nom);
 					semaines[a].id = a;
 					//alert(JSON.stringify(semaines[a].nom));
