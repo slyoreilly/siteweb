@@ -69,7 +69,7 @@ $strGVis = "";
 $strJDom = "alignementDom=NULL, ";
 $strJVis = "alignementVis=NULL, ";
 
-if ($arbitreId != 'undefined') {$strArb = "arbitreId='{$arbitreId}', ";
+if ($arbitreId != 'undefined' && $arbitreId != '' ) {$strArb = "arbitreId='{$arbitreId}', ";
 } else {
 	$arbitreId = 0;
 }
