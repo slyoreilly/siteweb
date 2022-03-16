@@ -158,10 +158,11 @@ $tmp = mysqli_fetch_row($ret);
 $strNomEqVis = $tmp[0];
 
 $matchId = substr($dateDeb, 0, 4) . "/" . substr($dateDeb, 5, 2) . "/" . substr($dateDeb, 8, 2) . "_" . $strNomEqDom . "_" . $strNomEqVis . "_" . $ligueId;
-
-	$rTM = mysqli_query($conn, "INSERT INTO TableMatch (matchId, matchIdRef, mavId, alignementDom, alignementVis, gardienDom, gardienVis, eq_dom, eq_vis, date, dateFin, ligueRef,dernierMAJ,arenaId,arbitreId) 
-VALUES ('{$matchId}','{$matchId}','{$mavId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$arenaId}','{$arbitreId}')") or die(mysqli_error($conn) . " INSERT INTO TableMatch");
-	$match_id = mysqli_insert_id($conn);
+$qQuery ="INSERT INTO TableMatch (matchId, matchIdRef, mavId, alignementDom, alignementVis, gardienDom, gardienVis, eq_dom, eq_vis, date, dateFin, ligueRef,dernierMAJ,arenaId,arbitreId) 
+VALUES ('{$matchId}','{$matchId}','{$mavId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$arenaId}','{$arbitreId}')";
+echo $qQuery;
+//$rTM = mysqli_query($conn, $qQuery) or die(mysqli_error($conn) . " INSERT INTO TableMatch");
+//	$match_id = mysqli_insert_id($conn);
 
 /*
 if ($appareils != null) {
