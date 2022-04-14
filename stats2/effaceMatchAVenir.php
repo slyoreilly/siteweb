@@ -12,7 +12,7 @@ $tableUser = 'TableUser';
 //$jDomJSON = stripslashes($_POST['jDom']);
 //$jVisJSON = stripslashes($_POST['jVis']);
 
-$mavId = $_POST['mavId'];
+$matchId = $_POST['matchId'];
 
 
 // Create connection
@@ -25,14 +25,11 @@ if (!$conn) {
 mysqli_query($conn,"SET NAMES 'utf8'");
 mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 	
-	
-$retour = mysqli_query($conn,"DELETE 
-						FROM MatchAVenir 
-						WHERE mavId='{$mavId}'")or die(mysqli_error());	
+
 
 $retour = mysqli_query($conn,"DELETE 
 						FROM TableMatch 
-						WHERE mavId='{$mavId}'")or die(mysqli_error());	
+						WHERE match_id='{$matchId}'")or die(mysqli_error($conn));	
 
 
 ?>
