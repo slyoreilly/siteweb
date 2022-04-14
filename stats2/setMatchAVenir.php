@@ -196,18 +196,18 @@ $strNomEqVis = $tmp[0];
 
 $matchId = substr($dateDeb, 0, 4) . "/" . substr($dateDeb, 5, 2) . "/" . substr($dateDeb, 8, 2) . "_" . $strNomEqDom . "_" . $strNomEqVis . "_" . $ligueId;
 
-if($match_id==null){
+if($match_id!=null){
 
-$rTM = mysqli_query($conn, "SELECT match_id 
+/*$rTM = mysqli_query($conn, "SELECT match_id 
 						FROM TableMatch 
 						WHERE mavId='{$mavId}'") or die(mysqli_error($conn));
-
-if (mysqli_num_rows($rTM) > 0) {
-	$match_id_vec = mysqli_fetch_row($rTM);
-	$match_id = $match_id_vec[0];
+*/
+//if (mysqli_num_rows($rTM) > 0) {
+//	$match_id_vec = mysqli_fetch_row($rTM);
+//	$match_id = $match_id_vec[0];
 	$qTMEUp = "UPDATE TableMatch SET matchId='{$matchId}', matchIdRef='{$matchIdRef}',arenaId={$arenaId},
 	 " . $strTMEqDom . $strTMEqVis . $strGDom . $strGVis . $strJDom . $strJVis . $strArb . "
-	date='{$dateDeb}',dateFin='{$dateFin}',ligueRef='{$ligueId}', dernierMAJ=NOW(), TSDMAJ='{$milliseconds}' WHERE mavId='{$mavId}'";
+	date='{$dateDeb}',dateFin='{$dateFin}',ligueRef='{$ligueId}', dernierMAJ=NOW(), TSDMAJ='{$milliseconds}' WHERE match_id='{$match_id}'";
 	$rTM = mysqli_query($conn, $qTMEUp) or die(mysqli_error($conn) . $qTMEUp);
 	$retour = $mavId;
 } else {
@@ -216,7 +216,7 @@ VALUES ('{$matchId}','{$matchId}',null,'{$jDom}', '{$jVis}','{$gDom}','{$gVis}',
 	$match_id = mysqli_insert_id($conn);
 }
 
-}
+//}
 
 if ($appareils != null) {
 	//echo 1;
