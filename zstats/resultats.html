@@ -328,7 +328,7 @@
 						var k = 0;
 						listeMatch = new Array();
 						while (k < vecMAV.length) {
-							listeMatch[k] = vecMAV[k].mavId;
+							listeMatch[k] = vecMAV[k].matchId;
 							k++;
 						}
 						loadConditions++;
@@ -564,8 +564,8 @@
 				var url = "/scriptsphp/getEvaluationsMatchs.php";
 
 				var strLigueId = "ligueId=" + match.ligueId;
-				var strMavId = "mavId=" + match.mavId;
-				params = strLigueId + '&' + strMavId;
+				var strMatchId = "matchId=" + match.matchId;
+				params = strLigueId + '&' + strMatchId;
 				//		console.log(url+'?'+param);
 				//requete_ajax.send(null);
 				//	return requete_ajax.responseText;
@@ -671,7 +671,6 @@
 
 	
 				vecMAV = Array();
-				vecMAV.mavId = -1;
 				vecMAV.ligueId = ligueId;
 				vecMAV.date = "AAAA-MM-JJ HH:MM";
 				vecMAV.dateFin = "2030-01-01 00:00";
@@ -887,7 +886,6 @@
                 
                
                     $('#div_dem').text('Démarrer').click(function(){
-                        //var strMAVId = (no == 1000000) ? "" : window.matchsDsSaison[no].mavId;
                      $.ajax({
                      url: "/scriptsphp/setGenerique.php",
                         type: 'POST',
@@ -1007,13 +1005,6 @@
 			function sauvegardeMAV(no) {
 
 				var j = 0;
-				/*
-				 while(j<window.vecMAV.length)
-				 {
-				 if(window.vecMAV[j].mavId==no)
-				 vecInd=j;
-				 j++;
-				 }	*/
 				if(window.click_save==false){
 					window.click_save=true;
 				mDate = $('#modalModifMatch #inDateMatch').val();

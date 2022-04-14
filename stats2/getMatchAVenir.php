@@ -41,13 +41,8 @@ if (!$conn) {
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
-//						 GROUP BY MatchAVenir.mavId
 
 // Faudrait refaire en cadrant par rapport à la saison en cours plutôt qu'aux équipes abonnées.
-
-
-								
-
 
 
 /////////////////////////
@@ -129,7 +124,7 @@ $retour = mysqli_query($conn, "SELECT TableMatch.*
 						/*LEFT JOIN TableSaison
 							ON (TableMatch.ligueRef=TableSaison.ligueRef)*/
 						 WHERE TableMatch.ligueRef='{$ligueId}'
-						 /*GROUP BY TableMatch.mavId*/") or die(mysqli_error($conn));
+						 ") or die(mysqli_error($conn));
 /* AND MatchAVenir.date > (NOW()-INTERVAL 30 DAY) AND TableSaison.dernierMatch>NOW()*/
 
 $vecMatch = array();

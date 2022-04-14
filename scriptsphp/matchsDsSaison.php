@@ -489,7 +489,6 @@ while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 	$JS2['matchId'] = $rangeeEv['match_id'];
 	$JS2['matchID'] = $matchID;
 	$JS2['date'] = $rangeeEv['date'];
-	$JS2['mavId'] = $rangeeEv['mavId'];
 	$mE = trouveFic($rangeeEv['eq_dom'], $fic_array);
 	$JS2['eqDom'] = $mE['nom_equipe'];
 	$JS2['coulDom'] = $mE['couleur1'];
