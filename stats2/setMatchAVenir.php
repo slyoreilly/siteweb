@@ -21,12 +21,13 @@ $dateDeb = $_POST['dateDeb'];
 if(isset($_POST['dateFin'])&&$_POST['dateFin']!="" ){$dateFin = $_POST['dateFin'];}else{$dateFin = '2050-01-01 00:00:00';}
 $ligueId = $_POST['ligueId'];
 $mavId = $_POST['mavId'];
+$match_id =  isset($_POST['matchId'])? $_POST['matchId']:null;
 $arenaId = is_numeric($_POST['arenaId']) ? $_POST['arenaId']: 0;
 $arbitreId = $_POST['arbitreId'];
 $appareils_json = isset($_POST['appareils'])?  $_POST['appareils']:null;
 $appareils = json_decode($appareils_json, true);
 
-$matchId = substr($dateDeb, 0, 4) . "/" . substr($dateDeb, 5, 2) . "/" . substr($dateDeb, 8, 2) . "_" . $eqDom . "_" . $eqVis;
+$matchIdRef = substr($dateDeb, 0, 4) . "/" . substr($dateDeb, 5, 2) . "/" . substr($dateDeb, 8, 2) . "_" . $eqDom . "_" . $eqVis;
 
 // Create connection
 $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
@@ -130,7 +131,7 @@ if ($eqVis != 'undefined') {$strTMEqVis = "eq_vis='{$eqVis}', ";
 //$jVis = json_decode($jVisJSON, true);
 
 //mysqli_query("SET time_zone='-4:00'")or die(mysqli_error());
-	$mUpdate=false;
+/*	$mUpdate=false;
 
 if(isset($mavId)&&$mavId!=""){
 $retour = mysqli_query($conn, "SELECT * 
@@ -145,7 +146,7 @@ if (mysqli_num_rows($retour) > 0){
 
 if ($mUpdate) {
 	
-	$qUpMAV = "UPDATE MatchAVenir SET matchId='{$matchId}',arenaId={$arenaId}, " . $strEqDom . $strEqVis . $strGDom . $strGVis . $strJDom . $strJVis . $strArb . "
+	$qUpMAV = "UPDATE MatchAVenir SET matchId='{$matchIdRef}',arenaId={$arenaId}, " . $strEqDom . $strEqVis . $strGDom . $strGVis . $strJDom . $strJVis . $strArb . "
 	date='{$dateDeb}',dateFin='{$dateFin}',ligueId='{$ligueId}', dernierMAJ=NOW() WHERE mavId='{$mavId}'";
 	//echo $qUpMAV;
 	$retour = mysqli_query($conn, $qUpMAV) or die(mysqli_error($conn) . $qUpMAV);
@@ -173,7 +174,7 @@ VALUES ('{$matchId}','{$alDom}', '{$alVis}','{$gDom}','{$gVis}','{$eqDom}','{$eq
 	$mavId = $retour;
 
 }
-
+*/
 ////////////////////
 //
 //	Section TableMatch
@@ -195,6 +196,8 @@ $strNomEqVis = $tmp[0];
 
 $matchId = substr($dateDeb, 0, 4) . "/" . substr($dateDeb, 5, 2) . "/" . substr($dateDeb, 8, 2) . "_" . $strNomEqDom . "_" . $strNomEqVis . "_" . $ligueId;
 
+if($match_id==null){
+
 $rTM = mysqli_query($conn, "SELECT match_id 
 						FROM TableMatch 
 						WHERE mavId='{$mavId}'") or die(mysqli_error($conn));
@@ -202,7 +205,7 @@ $rTM = mysqli_query($conn, "SELECT match_id
 if (mysqli_num_rows($rTM) > 0) {
 	$match_id_vec = mysqli_fetch_row($rTM);
 	$match_id = $match_id_vec[0];
-	$qTMEUp = "UPDATE TableMatch SET matchId='{$matchId}', matchIdRef='{$matchId}',arenaId={$arenaId},
+	$qTMEUp = "UPDATE TableMatch SET matchId='{$matchId}', matchIdRef='{$matchIdRef}',arenaId={$arenaId},
 	 " . $strTMEqDom . $strTMEqVis . $strGDom . $strGVis . $strJDom . $strJVis . $strArb . "
 	date='{$dateDeb}',dateFin='{$dateFin}',ligueRef='{$ligueId}', dernierMAJ=NOW(), TSDMAJ='{$milliseconds}' WHERE mavId='{$mavId}'";
 	$rTM = mysqli_query($conn, $qTMEUp) or die(mysqli_error($conn) . $qTMEUp);
@@ -211,6 +214,8 @@ if (mysqli_num_rows($rTM) > 0) {
 	$rTM = mysqli_query($conn, "INSERT INTO TableMatch (matchId, matchIdRef, mavId, alignementDom, alignementVis, gardienDom, gardienVis, eq_dom, eq_vis, date, dateFin, ligueRef,dernierMAJ, TSDMAJ, arenaId,arbitreId) 
 VALUES ('{$matchId}','{$matchId}','{$mavId}','{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$milliseconds}','{$arenaId}','{$arbitreId}')") or die(mysqli_error($conn) . " INSERT INTO TableMatch");
 	$match_id = mysqli_insert_id($conn);
+}
+
 }
 
 if ($appareils != null) {

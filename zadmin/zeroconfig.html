@@ -139,7 +139,7 @@
 				type: 'POST',
 				data: jQuery.param({
 					jDom: window.jMAV[0], jVis: window.jMAV[1], gDom: window.gardien[0], gVis: window.gardien[1], eqDom: window.eq[0], eqVis: window.eq[1], dateDeb: document.getElementById('dateDeb').value, dateFin: document.getElementById('dateFin').value,
-					ligueId: window.ligueId, mavId: window.mavId, arbitreId: document.getElementById('selArbId').options[document.getElementById('selArbId').selectedIndex].value, arenaId: window.mavEnCours.arenaId
+					ligueId: window.ligueId, arbitreId: document.getElementById('selArbId').options[document.getElementById('selArbId').selectedIndex].value, arenaId: window.mavEnCours.arenaId
 				}),
 				contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
 				success: function (response) {
@@ -165,7 +165,7 @@
 				url: "/stats2/getMatchAVenir.php",
 				type: "POST",
 				data: {
-					mavId: window.mavId,
+					matchId: window.matchId,
 					ligueId: window.ligueId
 				},
 				dataType: "html",
@@ -396,7 +396,7 @@
 
 			console.log("MatchEnCours a Render: "+JSON.stringify(mavEnCours));
 			//				return function(){
-			mavId = mavEnCours.mavId;
+			//mavId = mavEnCours.mavId;
 			tmpEq = getEquipeDEqId(mavEnCours.eq_dom);
 			console.log(JSON.stringify(tmpEq));
 			window.jsonEqDom.nom = tmpEq.nomEquipe;
@@ -997,7 +997,7 @@
 				})(strJ);
 				cellFlecheGauche.appendChild(aFG);
 				cellFlecheGauche.appendChild(aFD);
-				if (window.mavId != -1 && window.perm < 19)
+				if (window.matchId != -1 && window.perm < 19)
 					//		rangee.appendChild(cellFlecheGauche);
 
 					var lesElems = new Array();
@@ -1941,9 +1941,10 @@
 		selectOnglet(0);
 		getCritere();
 
-		mavId = (getValue('mavId') != "") ? getValue('mavId') : 1;
+	//	mavId = (getValue('mavId') != "") ? getValue('mavId') : 1;
+		matchId = (getValue('matchID') != "") ? getValue('matchID') : 1;
 
-		console.log("mavId: " + getValue('mavId') + " / " + mavId);
+	//	console.log("mavId: " + getValue('mavId') + " / " + mavId);
 		getJSONJoueursEquipes(null, ligueId);
 
 
