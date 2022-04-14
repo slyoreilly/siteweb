@@ -145,7 +145,7 @@ $strNomEqVis = $tmp[0];
 
 $matchId = substr($dateDeb, 0, 4) . "/" . substr($dateDeb, 5, 2) . "/" . substr($dateDeb, 8, 2) . "_" . $strNomEqDom . "_" . $strNomEqVis . "_" . $ligueId;
 
-if($match_id!=null){
+if(is_numeric($match_id)){
 
 	$qTMEUp = "UPDATE TableMatch SET matchId='{$matchId}', matchIdRef='{$matchIdRef}',arenaId={$arenaId},
 	 " . $strTMEqDom . $strTMEqVis . $strGDom . $strGVis . $strJDom . $strJVis . $strArb . "
