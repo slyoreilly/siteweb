@@ -18,22 +18,6 @@ if (!$conn) {
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
-if(isset($_POST['mavId'])){
-	$mavId = $_POST['mavId'];
-	if ($mavId != "null" && $mavId != "undefined") {
-
-		$rTM = mysqli_query($conn, "SELECT match_id 
-							FROM TableMatch 
-							WHERE mavId='{$mavId}'") or die(mysqli_error());
-	
-		if (mysqli_num_rows($rTM) > 0) {
-			$match_id_vec = mysqli_fetch_row($rTM);
-			$matchId = $match_id_vec[0];
-		}
-	}
-	
-}
-
 function is_url_exist($url){
     $ch = curl_init($url);    
     curl_setopt($ch, CURLOPT_NOBODY, true);

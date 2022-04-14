@@ -156,22 +156,22 @@ if($erreur==0)
 	
 	mysqli_query($conn,"UPDATE TableEvenement0 SET joueur_event_ref='{$joueurAId}' WHERE joueur_event_ref='{$joueurBId}'");	
 	$fAD=mysqli_query($conn,"SELECT * 
-					FROM MatchAVenir
+					FROM TableMatch
 					WHERE alignementDom
 					LIKE '%\"".$joueurBId."\"%'")or die(mysqli_error($conn));
 		while($rAD=mysqli_fetch_array($fAD))
 		{
 			$aRemp = str_replace($joueurBId,$joueurAId,$rAD['alignementDom']);
-			mysqli_query($conn,"UPDATE MatchAVenir SET alignementDom={$aRemp} WHERE mavId={$rAD['mavId']}");
+			mysqli_query($conn,"UPDATE TableMatch SET alignementDom={$aRemp} WHERE match_id={$rAD['match_id']}");
 		}	
 	$fAV=mysqli_query($conn,"SELECT * 
-					FROM MatchAVenir
+					FROM TableMatch
 					WHERE alignementVis
 					LIKE '%\"".$joueurBId."\"%'")or die(mysqli_error($conn));
 		while($rAV=mysqli_fetch_array($fAV))
 		{
 			$aRemp = str_replace($joueurBId,$joueurAId,$rAV['alignementVis']);
-			mysqli_query($conn, "UPDATE MatchAVenir SET alignementVis={$aRemp} WHERE mavId={$rAV['mavId']}");
+			mysqli_query($conn, "UPDATE TableMatch SET alignementVis={$aRemp} WHERE match_id={$rAV['match_id']}");
 		}					
 	echo "Fusion terminée.";
 }
