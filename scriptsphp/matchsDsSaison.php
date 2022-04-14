@@ -54,15 +54,6 @@ mysqli_query($conn, "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_G
 //
 ////////////////////////////////////////////////////
 
-function trouveIDParNomLigue($nomLi) {
-	$resultLigue = mysqli_query($conn, "SELECT * FROM Ligue WHERE 1") or die(mysqli_error($conn) . " dans trouveIDParNomLigue");
-	while ($rangeeLigue = mysqli_fetch_array($resultLigue)) {
-		if (!strcmp($rangeeLigue['Nom_Ligue'], $nomLi)) {$LigueID = $rangeeLigue['ID_Ligue'];
-			// Ce sont de INT
-		}
-	}
-	return $LigueID;
-}
 
 
 function trouveJoueur($joueurId, $array_joueur) {
@@ -495,6 +486,7 @@ while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 
 	$mMatch = trouveMatch($matchID, $lesMatchs);
 
+	$JS2['matchId'] = $rangeeEv['match_id'];
 	$JS2['matchID'] = $matchID;
 	$JS2['date'] = $rangeeEv['date'];
 	$JS2['mavId'] = $rangeeEv['mavId'];

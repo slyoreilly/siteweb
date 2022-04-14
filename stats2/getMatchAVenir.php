@@ -13,10 +13,11 @@ $tableUser = 'TableUser';
 //$jDomJSON = stripslashes($_POST['jDom']);
 //$jVisJSON = stripslashes($_POST['jVis']);
 $ligueId = null;
-$mavId = null;
 
-if (isset($_POST['mavId'])) {
-	$mavId = $_POST['mavId'];
+$matchId = null;
+
+if (isset($_POST['matchId'])) {
+	$matchId = $_POST['matchId'];
 }
 if (isset($_POST['ligueId'])) {
 	$ligueId = $_POST['ligueId'];
@@ -99,7 +100,7 @@ $result = mysqli_query($conn, "
 							ON (aEL.equipeId=aJE.equipeId AND M.date BETWEEN aJE.debutAbon AND aJE.finAbon)
                         Join TableJoueur as J
                             on(aJE.joueurId = J.joueur_id)
-                                            WHERE M.mavId='$mavId'
+                                            WHERE M.match_id='$matchId'
 				
 UNION ALL							
 											SELECT  DISTINCT J.joueur_id as joueurId, J.NomJoueur as nomJoueur, J.NumeroJoueur as noJoueur, J.position , (0) as eqId
@@ -108,7 +109,7 @@ UNION ALL
 							ON (M.ligueRef=aJL.ligueId AND M.date BETWEEN aJL.debutAbon AND aJL.finAbon)
                         Join TableJoueur as J
                             on(aJL.joueurId = J.joueur_id)
-                             WHERE M.mavId='$mavId'
+                             WHERE M.match_id='$matchId'
 											
 											") or die(mysqli_error($conn));
 											while ($r = mysqli_fetch_assoc($result)) 
@@ -137,8 +138,9 @@ $IM = 0;
 
 while ($r = mysqli_fetch_assoc($retour)) {
 
-	if (!is_numeric($mavId) || $r['mavId'] == $mavId) {
+	if (!is_numeric($matchId) || $r['match_id'] == $matchId) {
 		$vecMatch[$IM] = $r;
+		$vecMatch[$IM]['matchId'] =$matchId;
 		$vecMatch[$IM]['cleValeur'] = json_decode($r['cleValeur'], true);
 		$vecMatch[$IM]['alDom'] = array();
 		$vecMatch[$IM]['alVis'] = array();

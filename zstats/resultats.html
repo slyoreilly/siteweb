@@ -221,17 +221,17 @@
 			    
 			}
 			
-			function getAppareilsAbonne(arenaId,mavId){
+			function getAppareilsAbonne(arenaId,matchId){
 //          return function(){
 
                 var requete_ajax = new XMLHttpRequest();
 
                 var url = "/scriptsphp/getAppareilsAbonne.php";
 
-                var strMAVId = "userId=" + getCookie("userId");
+                var strUserId = "userId=" + getCookie("userId");
                 var strLigueId = "arenaId=" + arenaId;
-                var strMavId = "mavId=" + mavId;
-                params = strMAVId + '&' + strLigueId+'&' + strMavId;
+                var strMatchId = "matchId=" + matchId;
+                params = strUserId + '&' + strLigueId+'&' + strMatchId;
                 //      console.log(url+'?'+param);
                 //requete_ajax.send(null);
                 //  return requete_ajax.responseText;
@@ -305,9 +305,9 @@
 
 				var url = "/stats2/getMatchAVenir.php";
 
-				var strMAVId = "mavId=" + window.mavId;
+				var strMatchId = "matchId=" + window.matchId;
 				var strLigueId = "ligueId=" + window.ligueId;
-				params = strMAVId + '&' + strLigueId;
+				params = strMatchId + '&' + strLigueId;
 				//		console.log(url+'?'+param);
 				//requete_ajax.send(null);
 				//	return requete_ajax.responseText;
@@ -1068,6 +1068,7 @@
                 var strDateFin = (no == 1000000) ? "2050-01-01" :  window.matchsDsSaison[no].dateFin;
                 var strLigueId = "ligueId=" + window.ligueId;
                 var strMAVId = (no == 1000000) ? "" : window.matchsDsSaison[no].mavId;
+                var strMatchId = (no == 1000000) ? "" : window.matchsDsSaison[no].matchId;
                 var strArbId = (no == 1000000) ? undefined :  window.matchsDsSaison[no].arbitreId;
                 
                 var appareils = {};
@@ -1118,7 +1119,7 @@
                      url:  "/stats2/setMatchAVenir.php",
                         type: 'POST',
                       data: jQuery.param({ jDom: strJDom, jVis : strJVis, gDom : strGDom, gVis : strGVis, eqDom : mEqDom, eqVis : mEqVis, dateDeb : strDateDeb, dateFin : strDateFin,
-                              ligueId : window.ligueId , mavId : strMAVId, arbitreId : strArbId, arenaId : mArena, appareils: JSON.stringify(appareils) }) ,
+                              ligueId : window.ligueId , matchId : strMatchId, arbitreId : strArbId, arenaId : mArena, appareils: JSON.stringify(appareils) }) ,
                        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
                        success: function (response) {
                                                        getMatchsdeLigueID(window.saisonId);
@@ -1616,7 +1617,7 @@ $('#rangeeMatch' + J).append($(cellEqDom));
 
 								lien2 = document.createElement('A');
 								lien2.innerHTML = "Preparer match";
-								lien2.href = '/zadmin/zeroconfig.html?mavId=' + matchsDsSaison[J].matchID + '&ligueId=' + window.ligueId;
+								lien2.href = '/zadmin/zeroconfig.html?matchId=' + matchsDsSaison[J].matchId + '&ligueId=' + window.ligueId;
 
 								celluleEq.appendChild(lien2);
 								
