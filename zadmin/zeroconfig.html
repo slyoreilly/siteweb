@@ -139,7 +139,7 @@
 				type: 'POST',
 				data: jQuery.param({
 					jDom: window.jMAV[0], jVis: window.jMAV[1], gDom: window.gardien[0], gVis: window.gardien[1], eqDom: window.eq[0], eqVis: window.eq[1], dateDeb: document.getElementById('dateDeb').value, dateFin: document.getElementById('dateFin').value,
-					ligueId: window.ligueId, arbitreId: document.getElementById('selArbId').options[document.getElementById('selArbId').selectedIndex].value, arenaId: window.mavEnCours.arenaId
+					ligueId: window.ligueId, matchId: window.matchId, arbitreId: document.getElementById('selArbId').options[document.getElementById('selArbId').selectedIndex].value, arenaId: window.mavEnCours.arenaId
 				}),
 				contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
 				success: function (response) {
