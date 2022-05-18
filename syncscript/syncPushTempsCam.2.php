@@ -292,7 +292,27 @@ while($r = mysqli_fetch_array($resultLigues)) {
     $vecLigues[]=$r;
     $vecLigues[$IL2]['ligueId']=$r['ID_Ligue'];
     $vecLigues[$IL2]['nomLigue']=$r['Nom_Ligue'];
-    $IL2++;
+	$vecLigues[$IL2]['sportId']=1;
+    $cleValeur=json_decode($r['cleValeur']);
+	if(!is_null($cleValeur)){
+		if(!is_null($cleValeur->parametres)){
+			if(strcmp($cleValeur->parametres->sport,"baseball")==0){
+				$vecLigues[$IL2]['sportId']=2;
+			}
+			if(strcmp($cleValeur->parametres->sport,"dek")==0){
+				$vecLigues[$IL2]['sportId']=3;
+			}
+			if(strcmp($cleValeur->parametres->sport,"basketball")==0){
+				$vecLigues[$IL2]['sportId']=4;
+			}
+			if(strcmp($cleValeur->parametres->sport,"soccer")==0){
+				$vecLigues[$IL2]['sportId']=5;
+			}
+		}
+	}
+
+
+	$IL2++;
     }
 
 }
