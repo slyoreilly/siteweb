@@ -45,18 +45,40 @@ if (!$conn) {
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
+$premierVideo =  isset($_POST['premierVideo'])? $_POST['premierVideo']:null;
+$dernierVideo =  isset($_POST['dernierVideo'])? $_POST['dernierVideo']:null;
+$ligueId =  isset($_POST['ligueId'])? $_POST['ligueId']:null;
 
-
-$fichiers=json_decode($_POST['fichiers']);
-$destination=$_POST['destination'];
+;
 $mesFics= array();
-for($a=0;$a<count($fichiers);$a++){
-    $rFichiers = mysqli_query($conn," UPDATE Video set emplacement='{$destination}' WHERE videoId = '{$fichiers[$a]}'");
+
+    $rFichiers = mysqli_query($conn,"SELECT videoId, nomFichier,emplacement, nomMatch 
+    from Video 
+    JOIN TableMatch 
+    ON Video.nomMatch=TableMatch.match_id 
+    where TableMatch.ligueRef={$ligueId} 
+    group by nomFichier") 
+    or die(mysqli_error($conn)." Select saisonId"); 
+    
+    while($rangFichier=mysqli_fetch_assoc($rFichiers))
+    {
+        $monFic=array();
+        $monFic['videoId']=$rangFichier['videoId'];
+        $monFic['emplacement']=$rangFichier['emplacement'];
+        $monFic['nomFichier']=$rangFichier['nomFichier'];
+        $monFic['nomMatch']=$rangFichier['nomMatch'];
+       // $monFic['lienOK']= file_exists("http://"+$rangFichier['emplacement']+"/lookatthis/"+$rangFichier['nomFichier']);
+       //$monFic['lienOK']=true;
+        array_push($mesFics,$monFic);
+        
+    }
+    
 
 
-}
 
- mysqli_close($conn);
+echo json_encode($mesFics);
+
+ 
  
 
 	

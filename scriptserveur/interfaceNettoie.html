@@ -20,216 +20,259 @@
 		</script>
 
 		<script type="text/javascript" charset="utf-8">
+					function faitTableau(inp){
+						console.log(inp);
+						if(inp==undefined){
+						}
+						else{
+							window.videos = inp
 
-			function afficheSommaireButs(rSMB) {
-				div1 = document.getElementById('tabButs');
-				if (window.vPerm < 19) {
-					$(div1).append('<div></div>').append('<h2 id="admin_title"></h2>', '<img id="admin_vids"></img>');
-					$('#admin_title').text("Admin Tools").css("margin;10px", "display;inline");
-					$('#admin_vids').attr("src", "/images/icones/movie.png").attr("alt", "Video").on("click", {
-						rjson : rSMB
-					}, function(event) {
-						construitDialogue();
-						rJSON_loc = event.data.rjson;
-						//		alert(JSON.stringify(rJSON));
-						dial = document.getElementById('divDialogue');
-						$('<div id="divt"></div>').text("Available cams").appendTo(dial);
-						var arrayCam = [];
-						for (var a = 0; a < rJSON_loc.buts.length; a++) {
-							//				alert("but"+a);
-							for (var b = 0; b < rJSON_loc.buts[a].video.length; b++) {
-								//					alert("vid"+rJSON.buts[a].video[b].cam);
-								if (jQuery.inArray(rJSON_loc.buts[a].video[b].cam, arrayCam) < 0) {
-									arrayCam.push(rJSON_loc.buts[a].video[b].cam);
-								}
+						}
+						$('#tableVideo').remove();
+						$('#divCentrale').append(
+				$('<table></table>').addClass("table table-striped").attr('id', 'tableVideo').append(
+					$('<thead></thead>').append(
+						$('<tr></tr>').append(
+							$('<th></th>').text('Action'),
+							$('<th></th>').addClass("cliquable").text('videoId').attr("id", "videoId"),
+							$('<th></th>').addClass("cliquable").text('nomFichier').attr("id", "nomFichier"),
+							$('<th></th>').addClass("cliquable").text('emplacement').attr("id", "emplacement"),
+							$('<th></th>').addClass("cliquable").text('nomMatch').attr("id", "nomMatch"),
+							$('<th></th>').addClass("cliquable").text('trouve').attr("id", "trouve"),
+							$('<th></th>').addClass("cliquable").text('taille').attr("id", "taille"),
+							$('<th></th>').addClass("cliquable").text('basename').attr("id", "basename")
+						)
+					),
+					$('<tbody></tbody>')
+				));
+
+						tableVideo = document.getElementById('tableVideo');
+						if($('#idSelSource option:selected').val()>0){
+							var filteredVideos = window.videos.filter(filtreServeur);
+						}else {
+							var filteredVideos = window.videos;
+						}
+						
+						for (K = 0; K < filteredVideos.length; K = K + 1) {
+							$(tableVideo).find('tbody').append(
+								$('<tr></tr>').append(
+									$('<td></td>').append($("<input></input>").attr("type", "checkbox").addClass("action").val(false).on("click", ()=>{})),
+									$('<td></td>').addClass("videoId").text(filteredVideos[K].videoId),
+									$('<td></td>').addClass("nomFichier").text(filteredVideos[K].nomFichier),
+									$('<td></td>').addClass("emplacement").text(filteredVideos[K].emplacement),
+									$('<td></td>').addClass("nomMatch").text(filteredVideos[K].nomMatch),
+									$('<td></td>').addClass("trouve").text(filteredVideos[K].trouve),
+									$('<td></td>').addClass("taille").text(filteredVideos[K].taille),
+									$('<td></td>').addClass("basename").text(filteredVideos[K].basename)
+									)
+								)
 							}
-						}
-						//			alert(arrayCam.length);
-						for (var a = 0; a < arrayCam.length; a++) {
-							$('<div></div>').attr("id", "ligneCam_" + a).addClass("ligneBloc").appendTo(dial);
-							$('<div></div>').attr("id", "blocGauche_" + a).addClass("blocGauche").text("Camera #" + arrayCam[a]).appendTo($('#ligneCam_' + a));
-							$('<div></div>').attr("id", "blocDroit_" + a).addClass("blocDroit").appendTo($('#ligneCam_' + a));
-							$('<div></div>').attr("id", "cellTableProm_" + a).addClass("cliquable cellTableCourt").appendTo($("#blocDroit_" + a)).append('<img src="/images/icones/arrow-up-double.png" alt="promote"></img>');
-							$('<div></div>').attr("id", "cellTableDem_" + a).addClass("cliquable cellTableCourt").appendTo($("#blocDroit_" + a)).append('<img src="/images/icones/arrow-down-double.png" alt="demote"></img>')
-							$('<div></div>').attr("id", "cellTableDel_" + a).addClass("cliquable cellTableCourt").appendTo($("#blocDroit_" + a)).append('<img src="/images/icones/delete.png" alt="delete"></img>')
-						}
-						$('[id^=cellTableDel_]').on("click", {
-							arrayCam : arrayCam
-						}, function(event) {
-							var id = $(this).attr("id").split('_')[1];
-							var camId = event.data.arrayCam[id];
-							$('#blocDroit_' + id).fadeOut(200, function() {
-								$('<div></div>').attr("id", "askErase").addClass("blocDroit").text("Do you really want to erase this camera?").appendTo($('#ligneCam_' + id)).fadeIn();
-								$('<br></br>').appendTo('#askErase');
-								$('<div></div>').addClass("cliquable cellTableCourt").text("Yup!").appendTo('#askErase').on("click", {
-									camId : camId
-								}, function(event) {
+							window.filteredVideos = filteredVideos;
+							return filteredVideos;
+						} 
+
+					function faitRangee(){
+
+
+					}
+
+					function getListeVideos(appelant){
 									$.ajax({
-										url : "/scriptsphp/effaceCam.php",
+										url : "https://syncstats.ca/scriptserveur/getListeVideos.php",
 										type : "POST",
 										data : {
-											camId : event.data.camId,
-											matchId : window.matchID
+											premierVideo : $('#debut').val(),
+											dernierVideo : $('#fin').val(),
+											ligueId : $('#ligueId').val(),
+											
 										},
-										dataType : "html"
+										dataType : "html",
+              					         success: function (response) {
+											
+
+												console.log(eval("(" +response+ ")"));
+
+												getVideosOrphelins(eval("(" +response+ ")"));
+											
+											
+
+ 							               },
+                        				error:  function(xhr, status, error) {
+                             				console.log("Erreur!: "+xhr.responseText );
+                              					//alert(err.Message+"  --  erreur getVideosOrphelins");
+                               				 }
 									});
-
-									//				window.location.reload(true);
-								});
-								$('<div></div>').addClass("cliquable cellTableCourt").text("Noooo!").appendTo('#askErase').on("click", function() {
-									$('#askErase').remove();
-									$('[id^=blocDroit]').show();
-								});
-
-							});
-						});
-
-						$('.cellTableCourt').css("margin", "10px");
-
-					});
-					$(div1).append('<hline></hline>');
-				}
-				//div1.id = "divSommaireButs";
-						if (rSMB.buts[J].video.length > 0) {
-
-							var mBut = rSMB.buts[J];
-							strV = mBut.video[0];
-							pVids = document.createElement('A');
-							//			pVids[a].innerHTML= UrlExists("../lookatthis/" + strV.fic)?" Cam  "+b+" ":"";
-							imgVid = document.createElement('IMG');
-							imgVid.src = "/images/icones/movie.png";
-							imgVid.alt = "Video";
-
-
-							pVids.appendChild(imgVid);
-							//				pVids.innerHTML= " Video Replay ";
-							pVids.id = "../lookatthis/" + strV.fic;
-							pVids.className = "cliquable";
-							pVids.onclick = (function(mBut) {
-								return function() {
-
-									function surVideoChoisi(strV) {
-										//							alert(strV);
-										videNoeud('ficheVid');
-										document.getElementsByTagName('SOURCE')[0].src = "../lookatthis/" + strV.fic;
-										vidSVC = document.getElementById('vid1');
-										vidSVC.style.display="block";										
-										vidSVC.load();
-										$("[class*='etoile']").css({
-											'display' : 'inline',
-											'cursor' : 'pointer',
-											'font-size' : 'large'
-										}).html("&#10029");
-
-
-										if (eval == null) {
-											for (var b = 1; b <= 5; b++) {
-												$('.etoile' + b).on("mouseover", {
-													classe : b
-												}, colori).on("mouseout", {
-													classe : b
-												}, decolori);
-												$('.etoile' + b).on("click", {
-													classe : b
-												}, function(event) {
-													$.post('/scriptsphp/evalueVid.php', {
-														videoId : strV.videoId,
-														eval : event.data.classe
-													});
-													setCookie('videoId_eval_' + strV.videoId, event.data.classe, 1000);
-													$("[class*='etoile']").off('mouseover');
-													$("[class*='etoile']").off('mouseout');
-													$("[class*='etoile']").off('click');
-												});
-											}
-
-										} 
-										
-										$('<div id="divAngleOk"></div>').appendTo('#ficheVid').append($('<div></div>').attr("class", "selectAngleOk").append($('<img src="/images/icones/check.png" width="16" height="16"></img>'), $('<div></div>').text("That angle shows the goal")).click(function() {
-											$.post('/scriptsphp/changeAngleOk.php', {
-												changeAngle : 1,
-												videoId : strV.videoId
-											});
-										}), $('<div></div>').attr("class", "selectAngleOk").append($('<img src="/images/icones/delete.png" width="16" height="16"></img>'), $('<div></div>').text("That angle doesn't show the goal")).click(function() {
-											$.post('/scriptsphp/changeAngleOk.php', {
-												changeAngle : -1,
-												videoId : strV.videoId
-											});
-										}));
-
-										$('<div id="scoreBut"></div>').appendTo('#ficheVid').text(parseInt(strV.eval).toFixed(1) + " / 5").css({
-											"font-size" : 'larger',
-											'text-align' : 'center'
-										});
-										$.post('/scriptsphp/incrementeVidNbVues.php', {
-											videoId : strV.videoId
-										});
-
-									}
-
-									vidIndex = 0;
-									strV = mBut.video[vidIndex];
-									construitDialogue();
-
-									dial = document.getElementById('divDialogue');
-									div12 = document.createElement('DIV');
-									$(div12).css('float', 'left').attr("id","vidCont");
-
-									dial.appendChild(div12);
-									$('<div id="ficheVid"></div>').insertAfter(div12);
-
-									$(dial).prepend('<div id="divEnteteVid"></div>');
-
-
-								};
-							})(mBut);
-						}// Fin du If video
-
-						var lesLiens = new Array();
-						lesLiens[0] = null;
-						lesLiens[1] = null;
-						lesLiens[2] = '/zstats/statsjoueur.html?joueurId=' + rSMB.buts[J].marqueurId;
-						lesLiens[3] = '/zstats/statsjoueur.html?joueurId=' + rSMB.buts[J].passeur1Id;
-						lesLiens[4] = '/zstats/statsjoueur.html?joueurId=' + rSMB.buts[J].passeur2Id;
-						lesLiens[5] = null;
-						lesLiens[6] = null;
-
-						for ( K = 0; K < lesCols.length; K++) {
-							cellule = document.createElement('TD');
-							if (lesCols[K] != undefined) {
-								if (lesLiens[K] != null) {
-									lien = document.createElement('A');
-									lien.innerHTML = lesCols[K];
-									lien.href = lesLiens[K];
-									cellule.appendChild(lien);
-								} else {
-
-									if (K == 6 && rSMB.buts[J].video.length > 0) {
-										cellule.appendChild(pVids);
-									} else {
-										ptexte = document.createElement('P');
-
-										ptexte.innerHTML = lesCols[K];
-										//					texte = document.createTextNode(lesCols[K]);
-										cellule.appendChild(ptexte);
-									}
 								}
-							}
-							J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
-							rangee.appendChild(cellule);
+							function getReferencesVideosParLigue(){
+									$.ajax({
+										url : "https://syncstats.com/scriptserveur/getReferencesVideosParLigue.php",
+										type : "POST",
+										data : {
+											premierVideo : $('#debut').val(),
+											dernierVideo : $('#fin').val(),
+											ligueId : $('#ligueId').val(),
+											
+										},
+										dataType : "html",
+              					         success: function (response) {
+												faitTableau(eval("(" +response+ ")"));
+											
+
+ 							               },
+                        				error:  function(xhr, status, error) {
+                             				var err = eval("(" + xhr.responseText + ")");
+                              					alert(err.Message+"  --  erreur getVideosOrphelins");
+                               				 }
+									});
+								}
+					function filtreServeur(serveur) {
+//						console.log(serveur.emplacement+" "+$('#idSelSource option:selected').text());
+						 return (strcmp(serveur.emplacement,$('#idSelSource option:selected').text())==0);
 						}
 
-//					}
+					function getVideosOrphelins(fichiers){
+									$.ajax({
+										url : "getVideosOrphelins.php",
+										type : "POST",
+										data : {
+											premierVideo : 1350000000000,
+											dernierVideo : 1700000000000,
+											fichiers: fichiers
+										},
+              					         success: function (response) {
+											faitTableau(eval("(" +response+ ")"));
+ 							               },
+                        				error:  function(xhr, status, error) {
+                             				var err = eval("(" + xhr.responseText + ")");
+                              					alert(err.Message+"  --  erreur getVideosOrphelins");
+                               				 }
+									});
+								}
+					function getListeVideosParReference(serveur, fichiers, from){
+						var step = 100;
+						console.log("On fait le "+(from/fichiers.length*100)+" %")
+						if(from==0){
+						window.newFichiers =[]}
 
-					//	document.body.rangee.cellule.innerHTML ='yo';
-//				} catch(err) {
-//					alert(err.message);
-//				}
-				//////////////////////////////////////////////////////////
+						$.ajax({
+										url : "https://"+serveur+"/scriptserveur/getListeVideosDeReferences.php",
+										type : "POST",
+										data : {
+											fichiers: fichiers.slice(from, from+step)
+										},
+              					         success: function (response) {
+											vecRet = eval("(" +response+ ")");
+											for(var a=0;a<vecRet.length;a++){
+													window.newFichiers.push(vecRet[a]);
+												}
+											if (from+step >=fichiers.length){ 
+												faitTableau(window.newFichiers);
+											}
+											else{
+												getListeVideosParReference(serveur, fichiers, from+step);
+											}
+ 							               },
+                        				error:  function(xhr, status, error) {
+											console.log("Erreur, serveur!: "+serveur );
+											console.log("Erreur, fichiers!: "+fichiers );
+											console.log("Erreur!: "+xhr.responseText );
+                               				 }
+									});
 
-				//////////////////////////////////////////////////////////
 
-			}
+
+
+
+					}
+
+
+
+						$( document ).ready(function() {
+							$('#okFiltres').click(function(){getReferencesVideosParLigue()});
+							$('#okOrphelins').click(function(){getListeVideos()});
+							$('#verifEmplacements').click(function(){getListeVideosParReference($('#idSelSource option:selected').text(),window.filteredVideos,0)});
+
+							listeServeur=[{adresseLongue: 'https://syncstats.com',
+			adresseCourte: 'syncstats.com'},
+			{adresseLongue: 'https://syncstats.ca',
+			adresseCourte: 'syncstats.ca'},
+			{adresseLongue: 'https://fileserver.sm.syncstats.ca/',
+			adresseCourte: 'fileserver.sm.syncstats.ca'}
+			];
+			$('#divGauche').append($('<div></div>').append(
+				$('<p></p>').text('Serveur Source: '),
+			 $('<select></select>').attr('id','idSelSource'),
+			 $('<p></p>').text('Serveur Action: '),
+			 $('<select></select>').attr('id','idSelAction'),
+			));
+			$('#idSelSource').on("change",function(){faitTableau()}).append($('<option></option>').text("Tout").val(0));
+
+			for(var a=1; a<=listeServeur.length;a++){	
+					$('#idSelSource').append($('<option></option>').text(listeServeur[a-1].adresseCourte).val(a));
+				}
+			$('#idSelAction').on("change",function(){faitTableau()}).append($('<option></option>').text("Choisir").val(0));
+			for(var a=1; a<=listeServeur.length;a++){	
+					$('#idSelAction').append($('<option></option>').text(listeServeur[a-1].adresseCourte).val(a));
+				}
+
+
+				$('#divCentrale').append($('<input></input>').attr("type","button").attr("data-toggle","modal").attr("data-target","#modalDeleteWarning").val("GO Efface les cochés").on("click",function(){
+								$("#modalDeleteWarning").show();
+								$('#goEfface').on("click",function(){
+									var vecCoche = $("#tableVideo tr ").map(function() {
+									if(
+										$(this).find('input[type=checkbox]').prop("checked")
+									) {
+										return $(this).find('.basename').text();
+									}}).get();
+
+								$.ajax({url: "https://"+$("#idSelSource option:selected").text()+"/scriptserveur/deleteVideos.php",
+									data: {fichiers: JSON.stringify(vecCoche)},
+									type: "POST",
+									 success: function(result){ }, error: function (jqXhr, textStatus, errorMessage) { // error callback 
+        							$('p').append('Error: ' + errorMessage);
+									    }
+									  });
+
+								});
+
+							}),
+							$('<input></input>').attr("type","button").attr("data-toggle","pointers").attr("data-target","#modalSetPointersWarning").val("GO redéfini les pointeurs").on("click",function(){
+								$("#modalSetPointersWarning").show();
+								$('#goSetPointers').on("click",function(){
+									var vecCoche = $("#tableVideo tr ").map(function() {
+									if(
+										$(this).find('input[type=checkbox]').prop("checked")
+									) {
+										return $(this).find('.videoId').text();
+									}}).get();
+
+								$.ajax({url: "https://syncstats.com/scriptserveur/setPointeursVideos.php",
+									data: {fichiers: JSON.stringify(vecCoche),
+									destination: $("#idSelAction option:selected").text()},
+									type: "POST",
+									 success: function(result){ }, error: function (jqXhr, textStatus, errorMessage) { // error callback 
+        							$('p').append('Error: ' + errorMessage);
+									    }
+									  });
+
+								});
+
+							}),
+							$('<input></input>').attr("type","checkbox").attr("id","checkAll"), $('<label></label>').attr("for","checkAll").text("Tout cocher")
+				)
+
+				$("#checkAll").click(function() {
+  $("input[type=checkbox]").prop("checked", $(this).prop("checked"));
+});
+
+$("input[type=checkbox]").click(function() {
+  if (!$(this).prop("checked")) {
+    $("#checkAll").prop("checked", false);
+  }
+});
+
+						})
 
 
 		</script>
@@ -237,36 +280,70 @@
 	</HEAD>
 	<body id="mbody">
 
-		<div id="divHaut"></div>
+		<div id="divHaut">
+			<div>
+				<h2>Filtres</h2>
+				<span>LigueId </span><input type="number" id="ligueId"/><br/>
+				<span>Début </span><input type="number" id="debut"/><br/>
+				<span>Fin </span><input type="number" id="fin"/><br/>
+				<input type="button" value="GO!" id="okFiltres"/><br/>
+			</div>
+			<div>
+				<h2>Vérification des orphelins</h2>
+				<input type="button" value="Vérfier Orphelins" id="okOrphelins"/><br/>
+			</div>
+			<div>
+				<h2>Validation des emplacements </h2>
+				<input type="button" value="Vérfier Emplacements" id="verifEmplacements"/><br/>
+			</div>
+
+		</div>
 		<div id="divGauche"></div>
 		<div id="divMenuHaut"></div>
 
 		<div id="divCentrale">
-
+			<div class="modal" id ="modalSetPointersWarning" tabindex="-1" role="dialog">
+				<div class="modal-dialog" role="document">
+				  <div class="modal-content">
+					<div class="modal-header">
+					  <h5 class="modal-title">Attention</h5>
+					  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					  </button>
+					</div>
+					<div class="modal-body">
+					  <p>Voulez-vous vraiment replacers les pointeurs de ces vidéos?</p>
+					</div>
+					<div class="modal-footer">
+					  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					  <button type="button" id="goSetPointers" class="btn btn-danger">Fire Ze Missiles</button>
+					</div>
+				  </div>
+				</div>
+			  </div>
+			  <div class="modal" id ="modalDeleteWarning" tabindex="-1" role="dialog">
+				<div class="modal-dialog" role="document">
+				  <div class="modal-content">
+					<div class="modal-header">
+					  <h5 class="modal-title">Attention</h5>
+					  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					  </button>
+					</div>
+					<div class="modal-body">
+					  <p>Voulez-vous vraiment effacer ces vidéos?</p>
+					</div>
+					<div class="modal-footer">
+					  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					  <button type="button" id="goEfface" class="btn btn-danger">Fire Ze Missiles</button>
+					</div>
+				  </div>
+				</div>
+			  </div>
 		</div>
 		<div id="divDroite"></div>
 		<script type="text/javascript" charset="utf-8">
-			//						alert(JSON.stringify(document.getElementById("divCentrale").all));
-			//		alert(document.getElementsByTagName("A")[0].href);
 
-			developper(22);
-			detruitDivGauche();
-			vecTab = ['tabResume', 'tabButs', 'tabPun', 'tabStatsDom', 'tabStatsVis'];
-			vecNomTab = [window.tl_match_Resume, window.tl_stats_Buts, window.tl_match_Penalites, window.tl_resultats_Domicile, window.tl_resultats_Visiteur];
-			vPerm = verifiePermission();
-
-//			faitEntete();
-			selectOnglet(0);
-
-			//		alert(document.getElementById("tabResume").id);
-
-			etoileConditions = 0;
-			var matchID = getValue('match');
-			getInfoMatch(matchID);
-
-			getStatsJSON('H', matchID);
-			getStatsJSON('V', matchID);
-			//		alert(document.getElementById("tabResume").href);
 
 		</script>
 	</body>

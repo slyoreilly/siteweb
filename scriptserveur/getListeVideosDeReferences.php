@@ -1,3 +1,6 @@
+
+
+
 <?php
 header("Access-Control-Allow-Origin: https://syncstats.com");
 header("Access-Control-Allow-Origin: http://syncstats.com");
@@ -24,40 +27,51 @@ header("Access-Control-Allow-Origin: http://syncstats.ca");
         exit(0);
     }
 
-////////////////////////////////////////////////////////////
-//
-// 	Connections � la base de donn�es
-//
-////////////////////////////////////////////////////////////
 
-$db_host="localhost";
-$db_user="syncsta1_u01";
-$db_pwd="test";
-$database = 'syncsta1_900';
+    $fichiers =  isset($_POST['fichiers'])? $_POST['fichiers']:null;
+    $retArray = array();
+    if($fichiers!=null){
 
-// Create connection
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($conn, "SET NAMES 'utf8'");
-mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+        foreach ($fichiers as $fichier)
+        {
 
 
+            $files = glob("../lookatthis/".$fichier['nomFichier']."*");
+            // Process through each file in the list
+            // and output its extension
+            if (count($files) > 0)
+                foreach ($files as $file) // Devrait en avoir que 1.
+                    {
+                        $info = pathinfo($file);
+                        $filesize = filesize("../lookatthis/".$info['basename']); // bytes
+        
+                        $fichier['trouve']= true;
+                        $fichier['taille']= round($filesize / 1024 / 1024, 1);
+                        $fichier['basename']= $info['basename'];
 
-$fichiers=json_decode($_POST['fichiers']);
-$destination=$_POST['destination'];
-$mesFics= array();
-for($a=0;$a<count($fichiers);$a++){
-    $rFichiers = mysqli_query($conn," UPDATE Video set emplacement='{$destination}' WHERE videoId = '{$fichiers[$a]}'");
+                    }
+            else{
+                $fichier['trouve']= false;
+                $fichier['taille']= "0";
+                $fichier['basename']= "null";
+            }
+            $retArray[] =  $fichier;
 
 
-}
 
- mysqli_close($conn);
- 
+        }
 
+
+
+    }
+
+
+
+$listeJSON = json_encode($retArray);
+
+echo $listeJSON;
 	
+
 ?>
+
+
