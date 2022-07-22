@@ -346,7 +346,7 @@ console.log($('#selTiers').val());
 									if(
 										$(this).find('input[type=checkbox]').prop("checked")
 									) {
-										return $(this).find('.nomFichier').text();
+										return $(this).find('.nomMatch').text();
 									}}).get();
 
 								$.ajax({url: listeServeur[$('#selDeleteSource option:selected').val()].adresseLongue+"/scriptserveur/deleteVideos.php",
