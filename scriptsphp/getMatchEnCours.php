@@ -224,7 +224,7 @@ if(!is_null($mArenaId)){$Sommaire['arenaId']=$mArenaId;}
 $setupMySql = mysqli_query($conn,"SET SQL_BIG_SELECTS=1" ) or die('Cannot complete SETUP BIG SELECTS because: ' . mysqli_error($conn));
 $resultEvent = mysqli_query($conn,$qEv) or die(mysqli_error($conn));  	
 $buts=array();
-$Sommaire['qEv']=$qEv;
+//$Sommaire['qEv']=$qEv;
 
 while($rangeeEv=mysqli_fetch_array($resultEvent))
 	{
@@ -237,16 +237,21 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 			$unBut['marqueur']=$rangeeEv['NomJoueur'];
 			$unBut['noMarqueur']=$rangeeEv['NumeroJoueur'];
 			$unBut['marqueurId']=$rangeeEv['joueur_event_ref'];
-			
+			$unBut['but_event_id']=$rangeeEv['event_id'];
+
 			if(!is_null($rangeeEv['passeur1Id'])){			
 				$unBut['passeur1Id']=$rangeeEv['passeur1Id'];
 				$unBut['passeur1']=$rangeeEv['passeur1'];
-				$unBut['noPasseur1']=$rangeeEv['noPasseur1'];}
+				$unBut['noPasseur1']=$rangeeEv['noPasseur1'];
+				$unBut['passe1_event_id']=$rangeeEv['event_id'];
+			}
 
 			if(!is_null($rangeeEv['passeur2Id'])){			
 				$unBut['passeur2Id']=$rangeeEv['passeur2Id'];
 				$unBut['passeur2']=$rangeeEv['passeur2'];
-				$unBut['noPasseur2']=$rangeeEv['noPasseur2'];}
+				$unBut['noPasseur2']=$rangeeEv['noPasseur2'];
+				$unBut['passe2_event_id']=$rangeeEv['event_id'];
+			}
 
 
 
