@@ -237,12 +237,18 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 			$unBut['marqueur']=$rangeeEv['NomJoueur'];
 			$unBut['noMarqueur']=$rangeeEv['NumeroJoueur'];
 			$unBut['marqueurId']=$rangeeEv['joueur_event_ref'];
-			$unBut['passeur1Id']=$rangeeEv['passeur1Id'];
-			$unBut['passeur1']=$rangeeEv['passeur1'];
-			$unBut['noPasseur1']=$rangeeEv['noPasseur1'];
-			$unBut['passeur2Id']=$rangeeEv['passeur2Id'];
-			$unBut['passeur2']=$rangeeEv['passeur2'];
-			$unBut['noPasseur2']=$rangeeEv['noPasseur2'];
+			
+			if(!is_null($rangeeEv['passeur1Id'])){			
+				$unBut['passeur1Id']=$rangeeEv['passeur1Id'];
+				$unBut['passeur1']=$rangeeEv['passeur1'];
+				$unBut['noPasseur1']=$rangeeEv['noPasseur1'];}
+
+			if(!is_null($rangeeEv['passeur2Id'])){			
+				$unBut['passeur2Id']=$rangeeEv['passeur2Id'];
+				$unBut['passeur2']=$rangeeEv['passeur2'];
+				$unBut['noPasseur2']=$rangeeEv['noPasseur2'];}
+
+
 
 
 			$qualif=0;
