@@ -142,7 +142,7 @@ $Sommaire['eqVis']=$mEqVis;
 $Sommaire['eqDomId']=$mEqDomId;
 $Sommaire['eqVisId']=$mEqVisId;
 $Sommaire['ligueId']=$mLigueId;
-$Sommaire['arenaId']=$mArenaId;
+if(!is_null($mArenaId)){$Sommaire['arenaId']=$mArenaId;}
 
 	$qEv="SELECT 
 	TableEvenement0.event_id,
