@@ -59,6 +59,8 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 	$mEqVis=$rangeeEv['NEvis'];
 	$mEqDomId=$rangeeEv['eqDomId'];
 	$mEqVisId=$rangeeEv['eqVisId'];
+	$mLigueId = $rangeeEv['ligueRef'];
+	$mArenaId = $rangeeEv['arenaId'];
 }
 
 
@@ -139,6 +141,8 @@ $Sommaire['eqDom']=$mEqDom;
 $Sommaire['eqVis']=$mEqVis;
 $Sommaire['eqDomId']=$mEqDomId;
 $Sommaire['eqVisId']=$mEqVisId;
+$Sommaire['ligueId']=$mLigueId;
+$Sommaire['arenaId']=$mArenaId;
 
 	$qEv="SELECT 
 	TableEvenement0.event_id,
