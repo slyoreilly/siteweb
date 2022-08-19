@@ -158,6 +158,8 @@ if(!is_null($mArenaId)){$Sommaire['arenaId']=$mArenaId;}
 	Passeur1.P2jId AS passeur2Id,
 	Passeur1.P2nomJoueur AS passeur2,
 	Passeur1.P2noJoueur AS noPasseur2,
+	Passeur1.premier_passeur AS passeur1_eventId
+	Passeur1.P2eId AS passeur2_eventId
 	TableJoueur.NomJoueur,
 	TableJoueur.NumeroJoueur,
 	Video.*,
@@ -182,7 +184,8 @@ if(!is_null($mArenaId)){$Sommaire['arenaId']=$mArenaId;}
 		   	TableJoueur.NumeroJoueur,
 			Passeur2.NomJoueur AS P2nomJoueur,
 		  	Passeur2.NumeroJoueur AS P2noJoueur,
-		   	Passeur2.joueur_event_ref AS P2jId
+		   	Passeur2.joueur_event_ref AS P2jId,
+			Passeur2.event_id AS P2eId
 		FROM
 			TableEvenement0
 		INNER JOIN TableJoueur ON (TableEvenement0.joueur_event_ref = TableJoueur.joueur_id)
@@ -244,14 +247,14 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 				$unBut['passeur1Id']=$rangeeEv['passeur1Id'];
 				$unBut['passeur1']=$rangeeEv['passeur1'];
 				$unBut['noPasseur1']=$rangeeEv['noPasseur1'];
-				$unBut['passe1_event_id']=$rangeeEv['event_id'];
+				$unBut['passe1_event_id']=$rangeeEv['passeur1_eventId'];
 			}
 
 			if(!is_null($rangeeEv['passeur2Id'])){			
 				$unBut['passeur2Id']=$rangeeEv['passeur2Id'];
 				$unBut['passeur2']=$rangeeEv['passeur2'];
 				$unBut['noPasseur2']=$rangeeEv['noPasseur2'];
-				$unBut['passe2_event_id']=$rangeeEv['event_id'];
+				$unBut['passe2_event_id']=$rangeeEv['passeur2_eventId'];
 			}
 
 
