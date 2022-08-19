@@ -158,8 +158,8 @@ if(!is_null($mArenaId)){$Sommaire['arenaId']=$mArenaId;}
 	Passeur1.P2jId AS passeur2Id,
 	Passeur1.P2nomJoueur AS passeur2,
 	Passeur1.P2noJoueur AS noPasseur2,
-	Passeur1.premier_passeur AS passeur1_eventId
-	Passeur1.P2eId AS passeur2_eventId
+	Passeur1.premier_passeur AS passeur1_eventId,
+	Passeur1.P2eId AS passeur2_eventId,
 	TableJoueur.NomJoueur,
 	TableJoueur.NumeroJoueur,
 	Video.*,
