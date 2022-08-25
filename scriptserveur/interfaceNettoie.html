@@ -63,7 +63,7 @@
 									$('<td></td>').addClass("nomMatch").text(filteredVideos[K].nomMatch),
 									$('<td></td>').addClass("trouve").text(filteredVideos[K].trouve),
 									$('<td></td>').addClass("taille").text(filteredVideos[K].taille),
-									$('<td></td>').addClass("basename").text(filteredVideos[K].basename)
+									$('<td></td>').addClass("basename").text(filteredVideos[K].basename==null?filteredVideos[K].basename.explode('?')[0]:filteredVideos[K].basename)
 									)
 								)
 							}
@@ -223,7 +223,7 @@
 									if(
 										$(this).find('input[type=checkbox]').prop("checked")
 									) {
-										return $(this).find('.basename').text();
+										return $(this).find('.basename').text()
 									}}).get();
 
 								$.ajax({url: "https://"+$("#idSelSource option:selected").text()+"/scriptserveur/deleteVideos.php",
