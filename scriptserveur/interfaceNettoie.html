@@ -63,7 +63,7 @@
 									$('<td></td>').addClass("nomMatch").text(filteredVideos[K].nomMatch),
 									$('<td></td>').addClass("trouve").text(filteredVideos[K].trouve),
 									$('<td></td>').addClass("taille").text(filteredVideos[K].taille),
-									$('<td></td>').addClass("basename").text(filteredVideos[K].basename==null?filteredVideos[K].nomFichier.explode('?')[0]:filteredVideos[K].basename)
+									$('<td></td>').addClass("basename").text(filteredVideos[K].basename==null?filteredVideos[K].nomFichier.split('?')[0]:filteredVideos[K].basename)
 									)
 								)
 							}
@@ -150,6 +150,9 @@
 								}
 					function getListeVideosParReference(serveur, fichiers, from){
 						var step = 100;
+						for (var i = 0; i < fichiers.length; i++) {
+								fichiers[i].nomFichier = fichiers[i].nomFichier.split('?')[0];
+						}
 						console.log("On fait le "+(from/fichiers.length*100)+" %")
 						if(from==0){
 						window.newFichiers =[]}
