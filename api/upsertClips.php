@@ -25,7 +25,6 @@ foreach ($clips as $unClip) {
 
 
 		if (isset($heure)) {
-			$retClip = $evenement['chrono'];
 			// retourner le but, sans correction de chrono.
 			$unClip['chrono'] = $unClip['chrono'] + $heureServeur - $heure;
 		}
@@ -40,8 +39,8 @@ foreach ($clips as $unClip) {
 				
 
 				
-				array_push($syncOK, $retClip);
 				$retObj = array("id"=>$unClip["id"],"SyncKey"=>$webIdClip);
+				array_push($syncOK, $retObj);
 		
 	}
 
