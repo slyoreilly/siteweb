@@ -13,7 +13,8 @@ if (!$conn) {
 mysqli_query($conn,"SET NAMES 'utf8'");
 mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 	
-$clips = $_POST['clips'];
+$clips = json_decode($_POST['clips']);
+
 $heure = $_POST['heure'];
 $heureServeur = time()*1000;
 
