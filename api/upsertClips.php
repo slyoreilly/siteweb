@@ -1,8 +1,6 @@
 <?php
 
 include_once ($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR . "syncstatsconfig.php");
-require("../scriptsphp/calculeMatch2.php");  /// N'appelle rien, défini seulement la fonction
-											 /// CalculeMatch(ligueId);
 
 require '../scriptsphp/defenvvar.php';
 // Create connection
