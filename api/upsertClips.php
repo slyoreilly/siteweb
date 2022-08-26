@@ -30,7 +30,7 @@ foreach ($clips as $unClip) {
 
 			
 
-				$qInsM = "INSERT INTO Clips (matchId, chrono, scoringEnd, type) VALUES ('{$unClip['matchLongId']}','{$unClip['chrono']}',Null,5)";
+				$qInsM = "INSERT INTO Clips (matchId, chrono, scoringEnd, type) VALUES ('{$unClip['GameStringID']}','{$unClip['chrono']}',Null,5)";
 
 				mysqli_query($conn,$qInsM) or die(mysqli_error($conn) . $qInsM);
 				$webIdClip=mysqli_insert_id($conn);
