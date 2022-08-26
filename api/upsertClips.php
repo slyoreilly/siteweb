@@ -17,7 +17,7 @@ mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 $preClips =null;
 if(isset($_POST['clips'])){
 	$preClips = $_POST["clips"];
-	$clips = json_decode($preClips);
+	$clips = json_decode($preClips, true);
 	}
 	
 
