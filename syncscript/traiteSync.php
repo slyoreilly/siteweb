@@ -231,7 +231,7 @@ function vieuAnouveau($vieu)
 function vieuAnouveauEq($vieu)
 {
 	global $retTransE;
-	if(is_array($retTransJ))
+	if(is_array($retTransE))
 	{
 		foreach($retTransE as $chE){
 				if($chE['vieuId']==$vieu)
