@@ -49,6 +49,83 @@ $chronoRetour = array();
 $matchRetour = array();
 
 
+
+$qMatch="SELECT e.event_id, e.chrono,e.matchIdRef,e.eq_dom,e.eq_vis,e.ligueRef,e.match_id,
+e.arenaId,e.date, '0' as 'type', e.scoringEnd, e.code as 'code', '0' as 'souscode' , 
+L1.LeagueId, L1.CamActionTemplateId, L1.defaultDuration, L1.ActivationFlags, L1.ActivationArgs,EventType.Code as 'CATcode' FROM(
+
+    SELECT TableEvenement0.event_id, MAX(chrono) as chrono,MAX(TableMatch.matchIdRef) as matchIdRef,MAX(TableMatch.eq_dom) as eq_dom, MAX(TableMatch.eq_vis) as eq_vis,
+    MAX(TableMatch.ligueRef) as ligueRef,MAX(TableMatch.match_id) as match_id,
+    MAX(TableMatch.arenaId) as arenaId,MAX(TableMatch.date) as date, '0' as 'type', TableEvenement0.equipe_event_id as scoringEnd , TableEvenement0.code,TableEvenement0.souscode
+    
+    FROM TableEvenement0 
+	    
+    INNER JOIN TableMatch 
+		ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)
+	INNER JOIN AbonnementLigue
+		ON (TableMatch.ligueRef=AbonnementLigue.ligueid)
+	INNER JOIN TableUser
+		ON (AbonnementLigue.userid=TableUser.noCompte)
+	
+
+	WHERE TableEvenement0.chrono>$rrs2 
+			" . $addArenaDependance ."
+			AND TableUser.username='{$username}'
+GROUP BY event_id
+) e INNER JOIN EventType
+ on (EventType.Code=e.code)    
+ INNER JOIN  CamActionTemplate L1 on ( L1.EventTypeId = (
+		SELECT EventTypeId FROM CamActionTemplate 
+        WHERE LeagueId = e.ligueRef OR LeagueId=0 
+        ORDER BY LeagueId DESC LIMIT 1 
+	 
+)   AND (
+    L1.LeagueId = (
+		SELECT LeagueId FROM CamActionTemplate 
+        WHERE (LeagueId = e.ligueRef OR LeagueId=0) and EventTypeId=EventType.EventTypeId
+        ORDER BY LeagueId DESC LIMIT 1 
+))
+
+)
+
+UNION
+
+
+(
+SELECT Clips.clipId, chrono,TableMatch.matchIdRef,TableMatch.eq_dom,TableMatch.eq_vis,TableMatch.ligueRef,TableMatch.match_id,
+TableMatch.arenaId,TableMatch.date, '5' as 'type', Clips.scoringEnd, '5' as 'code', '0' as 'souscode' , 
+L2.LeagueId,  L2.CamActionTemplateId, L2.defaultDuration, L2.ActivationFlags,L2.ActivationArgs, '5' as 'CATcode'
+FROM Clips 
+	INNER JOIN TableMatch
+		ON (Clips.matchId=TableMatch.matchIdRef) 
+	INNER JOIN AbonnementLigue
+		ON (TableMatch.ligueRef=AbonnementLigue.ligueid) 
+	INNER JOIN TableUser
+		ON (AbonnementLigue.userid=TableUser.noCompte) 
+    INNER JOIN EventType 
+        on (EventType.Code='5')
+        INNER JOIN  CamActionTemplate L2 on ( L2.EventTypeId = (
+            SELECT CamActionTemplate.EventTypeId FROM CamActionTemplate 
+            WHERE CamActionTemplate.LeagueId = TableMatch.ligueRef OR CamActionTemplate.LeagueId=0 
+            ORDER BY CamActionTemplate.LeagueId DESC LIMIT 1 
+         
+    )  AND (
+        L2.LeagueId = (
+            SELECT CamActionTemplate.LeagueId FROM CamActionTemplate 
+            WHERE (CamActionTemplate.LeagueId = TableMatch.ligueRef OR LeagueId=0)   and EventTypeId=EventType.EventTypeId
+            ORDER BY LeagueId DESC LIMIT 1 
+        )
+    )
+    ) 
+    
+	WHERE Clips.chrono>$rrs2 
+	" . $addArenaDependance ." AND TableUser.username='{$username}') 
+
+
+ORDER BY  matchIdRef, chrono";
+
+/*
+
 $qMatch="SELECT e.event_id, e.chrono,e.matchIdRef,e.eq_dom,e.eq_vis,e.ligueRef,e.match_id,
 e.arenaId,e.date, '0' as 'type', e.scoringEnd, e.code as 'code', '0' as 'souscode' , L1.LeagueId,L1.defaultDuration, L1.ActivationFlags,L1.ActivationArgs,EventType.Code as 'CATcode' FROM(
 
@@ -97,8 +174,8 @@ FROM Clips
 	" . $addArenaDependance ." AND TableUser.username='{$username}')  
 
 
-ORDER BY  matchIdRef, chrono";
-
+ORDER BY  matchIdRef, chrono";*/
+/*
 $qMatch_old = "SELECT * FROM (
     SELECT TableEvenement0.event_id, chrono,TableMatch.matchIdRef,TableMatch.eq_dom,TableMatch.eq_vis,TableMatch.ligueRef,TableMatch.match_id,
 		TableMatch.arenaId,TableMatch.date, '0' as 'type', TableEvenement0.equipe_event_Id as scoringEnd , TableEvenement0.code,TableEvenement0.souscode, L1.LeagueId,L1.defaultDuration,L1.ActivationFlags,L1.ActivationArgs, L1.Code as 'CATcode'
@@ -137,7 +214,7 @@ $qMatch_old = "SELECT * FROM (
 				AND TableMatch.arenaId='{$arena}' AND TableUser.username='{$username}') t 
 
 
-ORDER BY  matchIdRef, chrono,  t.LeagueId DESC ";
+ORDER BY  matchIdRef, chrono,  t.LeagueId DESC ";*/
   
 
 					
