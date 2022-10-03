@@ -194,8 +194,8 @@ foreach ($leMatch as $evenement) {
 					$retObj = array("type"=>"but","chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webBut"=>$arrInsButs,"webPasses"=>$arrInsPasses,"webPlus"=>$arrInsPlus,"webMoins"=>$arrInsMoins );
 					array_push($syncOKdetail, $retObj);
 				}else{
-					array_push($syncOK, $chronoBut);
-					$retObj = array("type"=>"but","chronoInit"=>$chronoBut,"chronoFin"=>$evenement['chrono'],"webBut"=>$arrCheckButs,"webPasses"=>$arrCheckPasses,"webPlus"=>$arrCheckPlus,"webMoins"=>$arrCheckMoins );
+					array_push($syncOK, $retBut);
+					$retObj = array("type"=>"but","chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webBut"=>$arrCheckButs,"webPasses"=>$arrCheckPasses,"webPlus"=>$arrCheckPlus,"webMoins"=>$arrCheckMoins );
 					array_push($syncOKdetail, $retObj);
 
 
