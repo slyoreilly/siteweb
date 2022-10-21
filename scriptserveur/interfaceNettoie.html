@@ -116,8 +116,6 @@
 										dataType : "html",
               					         success: function (response) {
 												faitTableau(eval("(" +response+ ")"));
-											
-
  							               },
                         				error:  function(xhr, status, error) {
                              				var err = eval("(" + xhr.responseText + ")");
@@ -181,10 +179,6 @@
 											console.log("Erreur!: "+xhr.responseText );
                                				 }
 									});
-
-
-
-
 
 					}
 

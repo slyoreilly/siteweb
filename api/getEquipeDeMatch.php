@@ -34,7 +34,7 @@ $matchID = $_POST['matchId'];
 
 $resultEquipe = mysqli_query($conn,"SELECT TableMatch.*, TEdom.nom_equipe AS NEdom,TEvis.nom_equipe AS NEvis, TEdom.equipe_id AS eqDomId,TEvis.equipe_id AS eqVisId,
  TEdom.logo AS logoDom,TEvis.logo AS logoVis, TEdom.couleur1 AS couleur1Dom,TEvis.couleur1 AS couleur1Vis, TEdom.cleValeur AS cvDom,TEvis.cleValeur AS cvVis,
- TEdom.dernierMAJ AS dMAJDom, TEvis.dernierMAJ AS dMAJDom
+ TEdom.dernierMAJ AS dMAJDom, TEvis.dernierMAJ AS dMAJVis
 									 FROM TableMatch 
 									JOIN TableEquipe AS TEdom 
 										ON (TableMatch.eq_dom=TEdom.equipe_id)

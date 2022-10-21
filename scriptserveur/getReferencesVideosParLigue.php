@@ -45,8 +45,8 @@ if (!$conn) {
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
-$premierVideo =  isset($_POST['premierVideo'])? $_POST['premierVideo']:null;
-$dernierVideo =  isset($_POST['dernierVideo'])? $_POST['dernierVideo']:null;
+$premierVideo =  isset($_POST['premierVideo'])? floor($_POST['premierVideo']/1000):1400000000;
+$dernierVideo =  isset($_POST['dernierVideo'])? floor($_POST['dernierVideo']/1000):time();
 $ligueId =  isset($_POST['ligueId'])? $_POST['ligueId']:null;
 
 ;
@@ -56,7 +56,7 @@ $mesFics= array();
     from Video 
     JOIN TableMatch 
     ON Video.nomMatch=TableMatch.match_id 
-    where TableMatch.ligueRef={$ligueId} 
+    where TableMatch.ligueRef={$ligueId} AND TableMatch.date>FROM_UNIXTIME($premierVideo) AND TableMatch.date<FROM_UNIXTIME($dernierVideo) 
     group by nomFichier") 
     or die(mysqli_error($conn)." Select saisonId"); 
     
