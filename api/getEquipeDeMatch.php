@@ -146,7 +146,7 @@ if(mysqli_num_rows($resultEquipe)>0){
 
 	$resultDom = mysqli_query($conn,"SELECT *  
 										FROM TableEquipe 
-									   WHERE equipeId = '{$domicile}'");
+									   WHERE equipe_id = '{$domicile}'");
 
 	while($rangeeDom=mysqli_fetch_array($resultDom))
 	{
@@ -163,7 +163,7 @@ if(mysqli_num_rows($resultEquipe)>0){
 
 	$resultVis = mysqli_query($conn,"SELECT *  
 										FROM TableEquipe 
-									   WHERE equipeId = '{$visiteur}'");
+									   WHERE equipe_id = '{$visiteur}'");
 
 	while($rangeeVis=mysqli_fetch_array($resultVis))
 	{
