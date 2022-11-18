@@ -38,11 +38,11 @@ $arenaId = null;
 
 
 if(isset($_POST['matchId'])){$matchID = $_POST['matchId'];}
-if(isset($_POST['domicile'])){$matchID = $_POST['domicile'];}
-if(isset($_POST['visiteur'])){$matchID = $_POST['visiteur'];}
-if(isset($_POST['date'])){$matchID = $_POST['date'];}
-if(isset($_POST['ligueId'])){$matchID = $_POST['ligueId'];}
-if(isset($_POST['arenaId'])){$matchID = $_POST['arenaId'];}
+if(isset($_POST['domicile'])){$domicile = $_POST['domicile'];}
+if(isset($_POST['visiteur'])){$visiteur = $_POST['visiteur'];}
+if(isset($_POST['date'])){$date = $_POST['date'];}
+if(isset($_POST['ligueId'])){$ligueId = $_POST['ligueId'];}
+if(isset($_POST['arenaId'])){$arenaId = $_POST['arenaId'];}
 	
 //////////////////////////////////////////////
 
