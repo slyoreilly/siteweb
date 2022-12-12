@@ -89,7 +89,7 @@ JOIN EventType
    WHERE match_event_id = '{$matchIdRef}' 
 	AND GameValue>0 
 	AND equipe_event_id =  '{$eDom}'";
-$compteDom = mysqli_query($connC1M, ) or die(mysqli_error($connC1M));
+$compteDom = mysqli_query($connC1M, $qComptDom) or die(mysqli_error($connC1M));
 
 $compteVis = mysqli_query($connC1M, "SELECT TableEvenement0.*,EventType.GameValue
 								FROM TableEvenement0 
