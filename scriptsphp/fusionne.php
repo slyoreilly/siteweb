@@ -30,6 +30,19 @@ mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 //
 //////////////////////////////////
 
+$fResultUser = mysqli_query($conn, "SELECT noCompte 
+								FROM TableUser 
+								WHERE username='{$nomUser}'")
+or die(mysqli_error($conn));  
+$rU = mysqli_fetch_row($fResultUser);
+if (mysqli_num_rows($fResultUser)>0)
+{
+	$userId = $rU[0];
+}
+
+
+
+
 $fJA = mysqli_query($conn,"SELECT proprio
 								FROM TableJoueur 
 								WHERE joueur_id='{$joueurAId}'")

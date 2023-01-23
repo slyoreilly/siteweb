@@ -503,7 +503,7 @@ function trouveIndiceMenu(menu_id) {
 }
 
 function genereMenu_dev() {
-	divHautJS = document.getElementById("divBas");
+	divHautJS = document.getElementById("divHaut");
 
 	if (document.getElementById("menuDivHaut") == null) {
 		divMenuHautJS = document.createElement("DIV");
