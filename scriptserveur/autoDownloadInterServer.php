@@ -37,7 +37,8 @@ if (($key = array_search('.', $liste)) !== false) {
     unset($liste[$key]);
 }
 
-$source=$_POST['source'];   
+$source=$_POST['source'];  
+$maxDownload=0;
 $maxDownload=$_POST['maxDownload'];   
 
 	/// Get de destination

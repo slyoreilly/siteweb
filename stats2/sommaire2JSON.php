@@ -457,13 +457,12 @@ $rFus = mysqli_query($conn,"SELECT TableEvenement0.*, Video.*, TableJoueur.*,Tab
 or die(mysqli_error($conn));  	
 
 $fusillade =Array();
-	$IF=0;
-
 $bufEvent=0;
 while($rangFus=mysqli_fetch_array($rFus))
 	{
-		$uneFus=array();
+
 		if($rangFus['event_id']!=$bufEvent){
+		$uneFus=array();
 
 		if($rangFus['souscode']==1)
 		{
@@ -477,14 +476,10 @@ while($rangFus=mysqli_fetch_array($rFus))
 			$uneFus['equipe']=$rangFus['nom_equipe'];
 			$uneFus['but']=false;
 		}
-
-
-
 			//if(!is_null($rangeeEv['videoId'])){
 			$uneFus['video']=array();
 			//}
 			array_push($fusillade,$uneFus);
-			
 			$bufEvent= $rangFus['event_id'];
 		}
 
@@ -504,11 +499,6 @@ while($rangFus=mysqli_fetch_array($rFus))
 		$key = key($fusillade);
 		$fusillade[$key]=$uneFus;
 		reset($fusillade);
-		
-
-
-
-
 	}
 
 
