@@ -90,13 +90,6 @@ console.log("Z");
 		}
 	}
 	
-//console.log("N");
-	
-
-//console.log("Q");
-
-
-
 	divContact = document.createElement('DIV');
 	divContact.innerHTML = "Contact: <a href=\"mailto:info&#64syncstats.com\" class=\"lien\">info" + "@" + "syncstats.com</a>";
 //console.log("V "+$('#divTitreDoc').length);
@@ -108,36 +101,7 @@ $('#divTitreDoc').append($("<div></div>").attr('id', 'divBoiteID').addClass("opt
 $('#divBoiteID').append($('<ul></ul>').attr('id', 'menuBoiteID'));
 //console.log("W");
 	if (usager1 === undefined || usager1 === null) {
-//console.log("R");
-		/*toLog = document.createElement('H2');
-		// toLog.style.width='20%';
-		toLog.id = 'toLog';
-		//	toLog.setAttribute('width','90%')
 
-		toLog.style.textAlign = 'right';
-		//	toLog.setAttribute('style','text-align:right');
-		//	titre.setAttribute('align','middle');
-
-		lien = document.createElement('A');
-		lien.innerHTML = window.tl_general_signin;
-		lien.className = "cliquable";
-		lien.href = '/zuser/inscription.html';
-		//		lien.onclick=function(){inscription();}
-		toLog.appendChild(lien);
-
-		var newText = document.createTextNode(' | ');
-
-		toLog.appendChild(newText);
-
-		lien2 = document.createElement('A');
-		lien2.innerHTML = window.tl_general_login;
-		lien2.style.cursor = "pointer";
-
-		//lien2.href = menus[8].lien;
-		lien2.onclick = function() {
-			connexion();
-		};*/
-		//toLog.appendChild(lien2);
         $('#menuBoiteID').append($('<li></li>')/*.attr("id","affUser").addClass("optionHautDroit").css("text-align","right")*/.append(
 			$('<div></div>').attr("id","toLog").css("text-align","right").css("padding","0 2px").append(
 				$('<a></a>').text(window.tl_general_signin).addClass("cliquable").attr("href",'/zuser/inscription.html'),
@@ -149,17 +113,7 @@ $('#divBoiteID').append($('<ul></ul>').attr('id', 'menuBoiteID'));
 			)
         ));
        
-		//console.log("T");
-		/*affUserJS = document.createElement('div');
-		affUserJS.id = "affUser";
-		affUserJS.textAlign = "right";
-		affUserJS.className = "optionHautDroit";
-		affUserJS.appendChild(toLog);
-		toLog.style.padding = "0 2px";
-		*/
-       // $('#affUser').append($('#divLangue'));
-//$("#affUser"));
-//		divTitre.appendChild(affUserJS);
+
         console.log("U");
         $('#menuBoiteID').prepend($('<li></li>').append(
        // $('#affUser').prepend(
@@ -181,10 +135,6 @@ $('#divBoiteID').append($('<ul></ul>').attr('id', 'menuBoiteID'));
 
 	} else {
 		console.log("S");
-
-		
-		
-
 		$('<i class="fa fa-bars iconeFa"><i>').attr("id", "iconeBars").appendTo($('#divTitreDoc')).on("click", function() {
 			$('#menuDivHaut').toggle();
 		});
@@ -509,29 +459,9 @@ function genereMenu_dev() {
 		divMenuHautJS = document.createElement("DIV");
 		divMenuHautJS.id = "menuDivHaut";
 		divHautJS.appendChild(divMenuHautJS);
-		//	m2body = document.getElementById("mbody");
-		//	divMenuHautJS.appendChild(divMenu);
-		//	divMenuHautJS.insertBefore(divMenu, divMenuHautJS.firstChild.nextSibling);
-
 		menu_n1 = document.createElement('UL');
 		divMenuHautJS.appendChild(menu_n1);
 		menu_n1.id = 'menu';
-/*
-		for (var k = 0; k < hierarchie.length; k++) {
-			i_n1 = document.createElement('LI');
-			menu_n1.appendChild(i_n1);
-			i_n1.id = menus[hierarchie[k][0]].id;
-			a_n1 = document.createElement('A');
-			a_n1.href = menus[hierarchie[k][0]].lien;
-			if (window.langue == "fr")
-				a_n1.innerHTML = menus[hierarchie[k][0]].iH_fr;
-			else
-				a_n1.innerHTML = menus[hierarchie[k][0]].iH_en;
-
-			i_n1.appendChild(a_n1);
-			
-
-		}// Fin du for hierarchie  */
 	}
 }
 
