@@ -37,7 +37,7 @@ $qString = "SELECT Ligue.*
 				ON AbonnementLigue.ligueId = Ligue.ID_Ligue 
 			JOIN TableUser 
 				ON AbonnementLigue.userId = TableUser.noCompte 
-			WHERE TableUser.username = '{$usernamexcv}' 			
+			WHERE TableUser.username = '{$username}' 			
 			GROUP BY ID_Ligue";
 
 
