@@ -55,6 +55,9 @@ while($r = mysqli_fetch_array($retour,MYSQLI_ASSOC)) {
 	$uneEquipe['ligueId']=$r['ligue_equipe_ref'];
 	$uneEquipe['nom']=$r['nom_equipe'];
 	$uneEquipe['couleur1']=$r['couleur1'];
+	if ($uneEquipe['couleur1'] === null) { // Si la valeur est nulle
+		$uneEquipe['couleur1'] = 'FFFFFF'; // On affecte la valeur par défaut
+	}
 	$uneEquipe['dernierMAJ']=strtotime($r['dernierMAJ'])*1000;
 	$uneEquipe['cleValeur']=$r['cleValeur'];
 	array_push($vecEquipes,$uneEquipe);
