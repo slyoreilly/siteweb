@@ -39,7 +39,7 @@ $qString = "SELECT TableMatch.*
 				ON abonEquipeLigue.ligueId = AbonnementLigue.ligueid 
 			JOIN TableUser 
 				ON AbonnementLigue.userId = TableUser.noCompte 
-			WHERE TableUser.username = 'Sly' 
+			WHERE TableUser.username = '{$username}'  
 				AND abonEquipeLigue.finAbon > NOW() 
 				AND TableMatch.date > (NOW() - INTERVAL 1 DAY) 
 				AND TableMatch.date < (NOW() + INTERVAL 7 DAY) 
