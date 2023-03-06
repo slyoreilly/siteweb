@@ -53,8 +53,10 @@ $retour = mysqli_query($conn,$qString) or die(mysqli_error($conn));
 //$strRetour.="rege";
 
 $vecMatch = array();
+$vecMatchCompose = array();
 $Im=0;
 while($r = mysqli_fetch_array($retour,MYSQLI_ASSOC)) {
+	$unMatchCompose= array();
 	$unMatch= array();
 	$unMatch['GameComId']=$r['match_id'];
 	$unMatch['matchLongId']=$r['matchIdRef'];
@@ -66,11 +68,14 @@ while($r = mysqli_fetch_array($retour,MYSQLI_ASSOC)) {
 	$unMatch['scoreDom']=$r['score_dom'];
 	$unMatch['scoreVis']=$r['score_vis'];
 	$unMatch['cleValeur']=$r['cleValeur'];
-	array_push($vecMatch,$unMatch);
+	$unMatchCompose['match']=$unMatch;
+	$unMatchCompose['alignementDom']=$r['alignementDom'];
+	$unMatchCompose['alignementVis']=$r['alignementVis'];
+	array_push($vecMatchCompose,$unMatchCompose);
 }
 mysqli_close($conn);
 
-echo json_encode($vecMatch);
+echo json_encode($vecMatchCompose);
 	
 
 
