@@ -115,30 +115,42 @@ function getAlignement2($connGA,$eqId,$defTimeZone)
 	return $alignement;
 
 }
-
 function setPresences($connGA,$matchId,$alignement,$domVis)
 {
 	try{
-	foreach ($alignement as $joueur) {
-		$sql = "INSERT INTO Presences (joueurId, matchId, domVis, positionId, numero, statut, updatedAt, updatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-		ON DUPLICATE KEY UPDATE domVis = VALUES(domVis), positionId = VALUES(positionId), numero = VALUES(numero), statut = VALUES(statut), updatedAt = VALUES(updatedAt), updatedBy = VALUES(updatedBy)";
-	
-		// Préparation de la requête
-		$stmt = $connGA->prepare($sql);
-		$createur = "syncstats.com";
-		$maDate = date('Y-m-d H:i:s');
-		$stmt->bind_param("iiiiiiii", $joueur['joueurId'], $matchId, $domVis,$joueur['position'],$joueur['numero'],$joueur['statut'],$maDate, $createur);
-	
-		// Exécution de la requête
-		$stmt->execute();
-	  }
+		foreach ($alignement as $joueur) {
+			$sql = "INSERT INTO Presences (joueurId, matchId, domVis, positionId, numero, statut, updatedAt, updatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+			ON DUPLICATE KEY UPDATE domVis = VALUES(domVis), positionId = VALUES(positionId), numero = VALUES(numero), statut = VALUES(statut), updatedAt = VALUES(updatedAt), updatedBy = VALUES(updatedBy)";
+		
+			// Préparation de la requête
+			$stmt = $connGA->prepare($sql);
+			$createur = "syncstats.com";
+			$maDate = date('Y-m-d H:i:s');
+			$stmt->bind_param("iiiiiiii", $joueur['joueurId'], $matchId, $domVis,$joueur['position'],$joueur['numero'],$joueur['statut'],$maDate, $createur);
+		
+			// Exécution de la requête
+			$stmt->execute();
+			
+			// Vérification des erreurs
+			if ($stmt->errno) {
+				error_log("Erreur d'exécution de la requête : (" . $stmt->errno . ") " . $stmt->error);
+			}
+			
+			// Vérification du nombre de lignes affectées
+			if ($stmt->affected_rows == 0) {
+				error_log("Aucune ligne n'a été modifiée par la requête.");
+			}
+			
+			// Vérification des données
+			if ($stmt->affected_rows > 0 && $stmt->affected_rows != count($alignement)) {
+				error_log("Le nombre de lignes affectées ne correspond pas au nombre de joueurs dans l'alignement.");
+			}
+		}
 	}
 	catch(Exception $e) {
-	  echo 'Message: ' .$e->getMessage();	
+		error_log('Message: ' .$e->getMessage());	
 	}
-
 }
-
 
 
 $strEqDom = "";
