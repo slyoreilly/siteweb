@@ -31,48 +31,73 @@ mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 	
 $username = $_POST['username'];
 
-$qString = "SELECT TableMatch.* 
-			FROM TableMatch 
-			JOIN abonEquipeLigue 
-				ON abonEquipeLigue.ligueId = TableMatch.ligueRef 
-			JOIN AbonnementLigue 
-				ON abonEquipeLigue.ligueId = AbonnementLigue.ligueid 
-			JOIN TableUser 
-				ON AbonnementLigue.userId = TableUser.noCompte 
-			WHERE TableUser.username = '{$username}'  
-				AND abonEquipeLigue.finAbon > NOW() 
-				AND TableMatch.date > (NOW() - INTERVAL 1 DAY) 
-				AND TableMatch.date < (NOW() + INTERVAL 7 DAY) 
-				AND (TableMatch.eq_dom = abonEquipeLigue.equipeId 
-					OR TableMatch.eq_vis = abonEquipeLigue.equipeId) 
-			GROUP BY match_id";
+$qString = "SELECT TableMatch.*, Presences.*
+            FROM TableMatch 
+            JOIN abonEquipeLigue 
+                ON abonEquipeLigue.ligueId = TableMatch.ligueRef 
+            JOIN AbonnementLigue 
+                ON abonEquipeLigue.ligueId = AbonnementLigue.ligueid 
+            JOIN TableUser 
+                ON AbonnementLigue.userId = TableUser.noCompte 
+            LEFT JOIN Presences
+                ON TableMatch.match_id = Presences.matchId
+            WHERE TableUser.username = '{$username}'  
+                AND abonEquipeLigue.finAbon > NOW() 
+                AND TableMatch.date > (NOW() - INTERVAL 1 DAY) 
+                AND TableMatch.date < (NOW() + INTERVAL 7 DAY) 
+                AND (TableMatch.eq_dom = abonEquipeLigue.equipeId 
+                    OR TableMatch.eq_vis = abonEquipeLigue.equipeId) 
+            GROUP BY TableMatch.match_id, Presences.presence_id";
 
-
-$retour = mysqli_query($conn,$qString) or die(mysqli_error($conn));	
-//$strRetour.= mysql_num_rows($retour);
-//$strRetour.="rege";
+$retour = mysqli_query($conn,$qString) or die(mysqli_error($conn));    
 
 $vecMatch = array();
 $vecMatchCompose = array();
-$Im=0;
+$matchIds = array();
 while($r = mysqli_fetch_array($retour,MYSQLI_ASSOC)) {
-	$unMatchCompose= array();
-	$unMatch= array();
-	$unMatch['GameComId']=$r['match_id'];
-	$unMatch['matchLongId']=$r['matchIdRef'];
-	$unMatch['eqDom']=$r['eq_dom'];
-	$unMatch['eqVis']=$r['eq_vis'];
-	$unMatch['date']=strtotime($r['date'])*1000;
-	$unMatch['ligueId']=$r['ligueRef'];
-	$unMatch['arenaId']=$r['arenaId'];
-	$unMatch['scoreDom']=$r['score_dom'];
-	$unMatch['scoreVis']=$r['score_vis'];
-	$unMatch['cleValeur']=$r['cleValeur'];
-	$unMatchCompose['match']=$unMatch;
-	$unMatchCompose['alignementDom']=$r['alignementDom'];
-	$unMatchCompose['alignementVis']=$r['alignementVis'];
-	array_push($vecMatchCompose,$unMatchCompose);
+    $matchId = $r['match_id'];
+    if (!in_array($matchId, $matchIds)) {
+        $unMatchCompose= array();
+        $unMatch= array();
+        $unMatch['GameComId']=$r['match_id'];
+        $unMatch['matchLongId']=$r['matchIdRef'];
+        $unMatch['eqDom']=$r['eq_dom'];
+        $unMatch['eqVis']=$r['eq_vis'];
+        $unMatch['date']=strtotime($r['date'])*1000;
+        $unMatch['ligueId']=$r['ligueRef'];
+        $unMatch['arenaId']=$r['arenaId'];
+        $unMatch['scoreDom']=$r['score_dom'];
+        $unMatch['scoreVis']=$r['score_vis'];
+        $unMatch['cleValeur']=$r['cleValeur'];
+ 
+    }
+    // requête pour récupérer les présences de l'équipe domicile
+    $query = "SELECT * FROM Presences WHERE matchId = '{$r['match_id']}' AND domVis = 1";
+    $result = mysqli_query($conn, $query);
+    $alignementDom = array();
+    while ($presence = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+        $alignementDom[] = $presence;
+    }
+    
+    // requête pour récupérer les présences de l'équipe visiteur
+    $query = "SELECT * FROM Presences WHERE matchId = '{$r['match_id']}' AND domVis = 2";
+    $result = mysqli_query($conn, $query);
+    $alignementVis = array();
+    while ($presence = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
+        $alignementVis[] = $presence;
+    }
+    
+    // créer l'objet $unMatchCompose contenant les informations du match et les présences
+    $unMatchCompose = array(
+        'match' => $unMatch,
+        'alignementDom' => $alignementDom,
+        'alignementVis' => $alignementVis
+    );
+    
+    // ajouter l'objet $unMatchCompose au tableau $vecMatchCompose
+    array_push($vecMatchCompose, $unMatchCompose);
 }
+
 mysqli_close($conn);
 
 echo json_encode($vecMatchCompose);
