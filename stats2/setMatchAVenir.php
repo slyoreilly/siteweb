@@ -118,7 +118,8 @@ function getAlignement2($connGA,$eqId,$defTimeZone)
 
 function setPresences($connGA,$matchId,$alignement,$domVis)
 {
-	foreach ($alignement as $joueur) {
+	try{
+	foreach (json_decode($alignement) as $joueur) {
 		$sql = "INSERT INTO Presences (joueurId, matchId, domVis, position, numero, statut, updatedAt, updatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 		ON DUPLICATE KEY UPDATE domVis = VALUES(domVis), positionId = VALUES(positionId), numero = VALUES(numero), statut = VALUES(statut),updatedAt = VALUES(updatedAt),updatedBy = VALUES(updatedBy)";
 	
@@ -129,8 +130,10 @@ function setPresences($connGA,$matchId,$alignement,$domVis)
 		// Exécution de la requête
 		$stmt->execute();
 	  }
-
-
+	}
+	catch(Exception $e) {
+	  echo 'Message: ' .$e->getMessage();	
+	}
 
 }
 
@@ -233,7 +236,7 @@ if(is_numeric($match_id)){
 	$rTM = mysqli_query($conn, "INSERT INTO TableMatch (matchId, matchIdRef, mavId, alignementDom, alignementVis, gardienDom, gardienVis, eq_dom, eq_vis, date, dateFin, ligueRef,dernierMAJ, TSDMAJ, arenaId,arbitreId) 
 VALUES ('{$matchId}','{$matchId}',null,'{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$milliseconds}','{$arenaId}','{$arbitreId}')") or die(mysqli_error($conn) . " INSERT INTO TableMatch");
 	$match_id = mysqli_insert_id($conn);
-	
+
 	setPresences($conn, $match_id,getAlignement2($conn,$eqDom,$defTimeZone),1 );
 	setPresences($conn, $match_id,getAlignement2($conn,$eqDom,$defTimeZone),2 );
 }
