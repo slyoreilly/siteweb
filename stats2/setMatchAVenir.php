@@ -68,6 +68,74 @@ array_push($alignement,$rangeeJoueur['joueur_id']);
 
 }
 
+function getAlignement2($connGA,$eqId,$defTimeZone)
+{
+
+
+
+	mysqli_query($connGA,"SET time_zone='{$defTimeZone}'");
+	$resultJoueur = mysqli_query($connGA, "SELECT joueur_id, NumeroJoueur, position
+													FROM TableJoueur
+													JOIN abonJoueurEquipe
+														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
+														WHERE equipeId='{$eqId}'
+														AND debutAbon<=DATE(NOW())
+														AND finAbon>DATE(NOW())") or die(mysqli_error($connGA));
+	mysqli_query($connGA,"SET time_zone='+0:00'");
+	$alignement=array();
+	//$alignement = "[";
+	while ($rangeeJoueur = mysqli_fetch_array($resultJoueur)) {
+		$unJoueur = array();
+		$unJoueur['joueurId'] = $rangeeJoueur['joueur_id'];
+		$unJoueur['statut'] = 60;
+		$unJoueur['numero'] = $rangeeJoueur['NumeroJoueur'];
+		if($rangeeJoueur['position']=='g'||$rangeeJoueur['position']=='G'){$unJoueur['position'] =5;} else {
+			if($rangeeJoueur['position']=='a'||$rangeeJoueur['position']=='A'){$unJoueur['position'] =1;} else {
+				if($rangeeJoueur['position']=='d'||$rangeeJoueur['position']=='D'){$unJoueur['position'] =2;} else {
+					if($rangeeJoueur['position']=='ac'||$rangeeJoueur['position']=='AC'){$unJoueur['position'] =7;} else {
+						if($rangeeJoueur['position']=='ag'||$rangeeJoueur['position']=='AG'){$unJoueur['position'] =3;} else {
+							if($rangeeJoueur['position']=='ad'||$rangeeJoueur['position']=='AD'){$unJoueur['position'] =4;} else {
+
+								$unJoueur['position'] =1;
+							}
+			
+						}
+			
+					}
+			
+				}
+			
+			}
+
+		}
+
+		array_push($alignement,$unJoueur);
+ 
+	}
+	return json_encode($alignement);
+
+}
+
+function setPresences($connGA,$matchId,$alignement,$domVis)
+{
+	foreach ($alignement as $joueur) {
+		$sql = "INSERT INTO Presences (joueurId, matchId, domVis, position, numero, statut, updatedAt, updatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+		ON DUPLICATE KEY UPDATE domVis = VALUES(domVis), positionId = VALUES(positionId), numero = VALUES(numero), statut = VALUES(statut),updatedAt = VALUES(updatedAt),updatedBy = VALUES(updatedBy)";
+	
+		// Préparation de la requête
+		$stmt = $connGA->prepare($sql);
+		$stmt->bind_param("iiiiiiii", $joueur['joueurId'], $matchId, $domVis,$joueur['position'],$joueur['numero'],$joueur['statut'],getdate(), "syncstats.com");
+	
+		// Exécution de la requête
+		$stmt->execute();
+	  }
+
+
+
+}
+
+
+
 $strEqDom = "";
 $strEqVis = "";
 $strGDom = "";
@@ -147,15 +215,27 @@ $matchId = substr($dateDeb, 0, 4) . "/" . substr($dateDeb, 5, 2) . "/" . substr(
 
 if(is_numeric($match_id)){
 
+
+
 	$qTMEUp = "UPDATE TableMatch SET matchId='{$matchId}', matchIdRef='{$matchIdRef}',arenaId={$arenaId},
 	 " . $strTMEqDom . $strTMEqVis . $strGDom . $strGVis . $strJDom . $strJVis . $strArb . "
 	date='{$dateDeb}',dateFin='{$dateFin}',ligueRef='{$ligueId}', dernierMAJ=NOW(), TSDMAJ='{$milliseconds}' WHERE match_id='{$match_id}'";
 	$rTM = mysqli_query($conn, $qTMEUp) or die(mysqli_error($conn) . $qTMEUp);
+
+	setPresences($conn, $match_id,getAlignement2($conn,$eqDom,$defTimeZone),1 );
+	setPresences($conn, $match_id,getAlignement2($conn,$eqDom,$defTimeZone),2 );
+	
+	
 	$retour = $match_id;
+
+
 } else {
 	$rTM = mysqli_query($conn, "INSERT INTO TableMatch (matchId, matchIdRef, mavId, alignementDom, alignementVis, gardienDom, gardienVis, eq_dom, eq_vis, date, dateFin, ligueRef,dernierMAJ, TSDMAJ, arenaId,arbitreId) 
 VALUES ('{$matchId}','{$matchId}',null,'{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$milliseconds}','{$arenaId}','{$arbitreId}')") or die(mysqli_error($conn) . " INSERT INTO TableMatch");
 	$match_id = mysqli_insert_id($conn);
+	
+	setPresences($conn, $match_id,getAlignement2($conn,$eqDom,$defTimeZone),1 );
+	setPresences($conn, $match_id,getAlignement2($conn,$eqDom,$defTimeZone),2 );
 }
 
 
