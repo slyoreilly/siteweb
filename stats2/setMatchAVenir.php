@@ -68,12 +68,11 @@ array_push($alignement,$rangeeJoueur['joueur_id']);
 
 }
 
-function getAlignement2($connGA,$eqId,$defTimeZone)
+function getAlignement2($connGA,$eqId)
 {
 
 
 
-	mysqli_query($connGA,"SET time_zone='{$defTimeZone}'");
 	$resultJoueur = mysqli_query($connGA, "SELECT joueur_id, NumeroJoueur, position
 													FROM TableJoueur
 													JOIN abonJoueurEquipe
@@ -81,7 +80,6 @@ function getAlignement2($connGA,$eqId,$defTimeZone)
 														WHERE equipeId='{$eqId}'
 														AND debutAbon<=DATE(NOW())
 														AND finAbon>DATE(NOW())") or die(mysqli_error($connGA));
-	mysqli_query($connGA,"SET time_zone='+0:00'");
 	$alignement=array();
 	//$alignement = "[";
 	while ($rangeeJoueur = mysqli_fetch_array($resultJoueur)) {
@@ -240,8 +238,8 @@ if(is_numeric($match_id)){
 	date='{$dateDeb}',dateFin='{$dateFin}',ligueRef='{$ligueId}', dernierMAJ=NOW(), TSDMAJ='{$milliseconds}' WHERE match_id='{$match_id}'";
 	$rTM = mysqli_query($conn, $qTMEUp) or die(mysqli_error($conn) . $qTMEUp);
 
-	setPresences($conn, $match_id,getAlignement2($conn,$eqDom,$defTimeZone),1 );
-	setPresences($conn, $match_id,getAlignement2($conn,$eqDom,$defTimeZone),2 );
+	setPresences($conn, $match_id,getAlignement2($conn,$eqDom),1 );
+	setPresences($conn, $match_id,getAlignement2($conn,$eqVis),2 );
 	
 	
 	$retour = $match_id;
@@ -252,8 +250,8 @@ if(is_numeric($match_id)){
 VALUES ('{$matchId}','{$matchId}',null,'{$jDom}', '{$jVis}','{$gDom}','{$gVis}','{$eqDom}','{$eqVis}','{$dateDeb}','{$dateFin}','{$ligueId}',NOW(),'{$milliseconds}','{$arenaId}','{$arbitreId}')") or die(mysqli_error($conn) . " INSERT INTO TableMatch");
 	$match_id = mysqli_insert_id($conn);
 
-	setPresences($conn, $match_id,getAlignement2($conn,$eqDom,$defTimeZone),1 );
-	setPresences($conn, $match_id,getAlignement2($conn,$eqDom,$defTimeZone),2 );
+	setPresences($conn, $match_id,getAlignement2($conn,$eqDom),1 );
+	setPresences($conn, $match_id,getAlignement2($conn,$eqVis),2 );
 }
 
 
