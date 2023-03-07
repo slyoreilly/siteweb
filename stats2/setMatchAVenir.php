@@ -112,15 +112,15 @@ function getAlignement2($connGA,$eqId,$defTimeZone)
 		array_push($alignement,$unJoueur);
  
 	}
-	return json_encode($alignement);
+	return $alignement;
 
 }
 
 function setPresences($connGA,$matchId,$alignement,$domVis)
 {
 	try{
-	foreach (json_decode($alignement) as $joueur) {
-		$sql = "INSERT INTO Presences (joueurId, matchId, domVis, position, numero, statut, updatedAt, updatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+	foreach ($alignement as $joueur) {
+		$sql = "INSERT INTO Presences (joueurId, matchId, domVis, positionId, numero, statut, updatedAt, updatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 		ON DUPLICATE KEY UPDATE domVis = VALUES(domVis), positionId = VALUES(positionId), numero = VALUES(numero), statut = VALUES(statut), updatedAt = VALUES(updatedAt), updatedBy = VALUES(updatedBy)";
 	
 		// Préparation de la requête
