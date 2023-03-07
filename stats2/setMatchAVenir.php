@@ -121,11 +121,11 @@ function setPresences($connGA,$matchId,$alignement,$domVis)
 	try{
 	foreach (json_decode($alignement) as $joueur) {
 		$sql = "INSERT INTO Presences (joueurId, matchId, domVis, position, numero, statut, updatedAt, updatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-		ON DUPLICATE KEY UPDATE domVis = VALUES(domVis), positionId = VALUES(positionId), numero = VALUES(numero), statut = VALUES(statut),updatedAt = VALUES(updatedAt),updatedBy = VALUES(updatedBy)";
+		ON DUPLICATE KEY UPDATE domVis = VALUES(domVis), positionId = VALUES(positionId), numero = VALUES(numero), statut = VALUES(statut), updatedAt = VALUES(updatedAt), updatedBy = VALUES(updatedBy)";
 	
 		// Préparation de la requête
 		$stmt = $connGA->prepare($sql);
-		$stmt->bind_param("iiiiiiii", $joueur['joueurId'], $matchId, $domVis,$joueur['position'],$joueur['numero'],$joueur['statut'],getdate(), "syncstats.com");
+		$stmt->bind_param("iiiiiiii", $joueur['joueurId'], $matchId, $domVis,$joueur['position'],$joueur['numero'],$joueur['statut'],date('Y-m-d H:i:s'), "syncstats.com");
 	
 		// Exécution de la requête
 		$stmt->execute();
