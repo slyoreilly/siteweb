@@ -125,7 +125,7 @@ function setPresences($connGA,$matchId,$alignement,$domVis)
 			// Préparation de la requête
 			$stmt = $connGA->prepare($sql);
 			$createur = "syncstats.com";
-			$maDate = date('Y-m-d H:i:s');
+			$maDate = date('Y-m-d H:i:s', time());
 			$stmt->bind_param("iiiiiiii", $joueur['joueurId'], $matchId, $domVis,$joueur['position'],$joueur['numero'],$joueur['statut'],$maDate, $createur);
 		
 			// Exécution de la requête
