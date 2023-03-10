@@ -70,14 +70,14 @@ if(mysqli_num_rows($resultEquipe)>0){
 		$equipeDom['logo']=$rangeeEq['logoDom'];
 		$equipeDom['couleur1']=$rangeeEq['couleur1Dom'];
 		$equipeDom['cleValeur']=$rangeeEq['cvDom'];
-		$equipeDom['dernierMAJ']=$rangeeEq['dMAJDom'];
+		$equipeDom['dernierMAJ']=strtotime($rangeeEq['dMAJDom']) * 1000;
 		$equipeDom['joueursReg'] = array();
 		$equipeVis['id']=$rangeeEq['eqVisId'];
 		$equipeVis['nom']=$rangeeEq['NEvis'];
 		$equipeVis['logo']=$rangeeEq['logoVis'];
 		$equipeVis['couleur1']=$rangeeEq['couleur1Vis'];
 		$equipeVis['cleValeur']=$rangeeEq['cvVis'];
-		$equipeVis['dernierMAJ']=$rangeeEq['dMAJVis'];
+		$equipeVis['dernierMAJ']=strtotime($rangeeEq['dMAJVis']) * 1000;
 		$equipeVis['joueursReg'] = array();
 
 		$mLigueId = $rangeeEq['ligueRef'];
@@ -101,7 +101,7 @@ if(mysqli_num_rows($resultEquipe)>0){
 		$unJoueur['nom']=$rangeeJD['NomJoueur'];
 		$unJoueur['numero']=$rangeeJD['NumeroJoueur'];
 		$unJoueur['position']=$rangeeJD['position'];
-		$unJoueur['dernierMAJ']=$rangeeJD['dernierMAJ'];
+		$unJoueur['dernierMAJ']=strtotime($rangeeJD['dernierMAJ']) * 1000;
 		$unJoueur['SyncKey']=$rangeeJD['joueur_id'];
 		$unJoueur['EquipeComId']=$rangeeJD['equipeId'];
 		array_push($equipeDom['joueursReg'],$unJoueur);
@@ -122,7 +122,7 @@ if(mysqli_num_rows($resultEquipe)>0){
 		$unJoueur['nom']=$rangeeJV['NomJoueur'];
 		$unJoueur['numero']=$rangeeJV['NumeroJoueur'];
 		$unJoueur['position']=$rangeeJV['position'];
-		$unJoueur['dernierMAJ']=$rangeeJV['dernierMAJ'];
+		$unJoueur['dernierMAJ']=strtotime($rangeeJV['dernierMAJ']) * 1000;
 		$unJoueur['SyncKey']=$rangeeJV['joueur_id'];
 		$unJoueur['EquipeComId']=$rangeeJV['equipeId'];
 		array_push($equipeVis['joueursReg'],$unJoueur);
@@ -156,7 +156,7 @@ if(mysqli_num_rows($resultEquipe)>0){
 		$equipeDom['logo']=$rangeeDom['logo'];
 		$equipeDom['couleur1']=$rangeeDom['couleur1'];
 		$equipeDom['cleValeur']=$rangeeDom['cleValeur'];
-		$equipeDom['dernierMAJ']=$rangeeDom['denierMAJ'];
+		$equipeDom['dernierMAJ']=strtotime($rangeeDom['dernierMAJ']) * 1000;
 		$equipeDom['joueursReg'] = array();
 		$mLigueId = $ligueId;
 	}
@@ -173,7 +173,7 @@ if(mysqli_num_rows($resultEquipe)>0){
 		$equipeVis['logo']=$rangeeVis['logo'];
 		$equipeVis['couleur1']=$rangeeVis['couleur1'];
 		$equipeVis['cleValeur']=$rangeeVis['cleValeur'];
-		$equipeVis['dernierMAJ']=$rangeeVis['denierMAJ'];
+		$equipeVis['dernierMAJ']=strtotime($rangeeVis['dernierMAJ']) * 1000;
 		$equipeVis['joueursReg'] = array();
 
 		$mLigueId = $ligueId;
@@ -196,7 +196,7 @@ if(mysqli_num_rows($resultEquipe)>0){
 		$unJoueur['nom']=$rangeeJD['NomJoueur'];
 		$unJoueur['numero']=$rangeeJD['NumeroJoueur'];
 		$unJoueur['position']=$rangeeJD['position'];
-		$unJoueur['dernierMAJ']=$rangeeJD['dernierMAJ'];
+		$unJoueur['dernierMAJ']=strtotime($rangeeJD['dernierMAJ']) * 1000;
 		$unJoueur['SyncKey']=$rangeeJD['joueur_id'];
 		$unJoueur['EquipeComId']=$rangeeJD['equipeId'];
 		array_push($equipeDom['joueursReg'],$unJoueur);
@@ -217,7 +217,7 @@ if(mysqli_num_rows($resultEquipe)>0){
 		$unJoueur['nom']=$rangeeJV['NomJoueur'];
 		$unJoueur['numero']=$rangeeJV['NumeroJoueur'];
 		$unJoueur['position']=$rangeeJV['position'];
-		$unJoueur['dernierMAJ']=$rangeeJV['dernierMAJ'];
+		$unJoueur['dernierMAJ']=strtotime($rangeeJV['dernierMAJ']) * 1000;
 		$unJoueur['SyncKey']=$rangeeJV['joueur_id'];
 		$unJoueur['EquipeComId']=$rangeeJV['equipeId'];
 		array_push($equipeVis['joueursReg'],$unJoueur);
