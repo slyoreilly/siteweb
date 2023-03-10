@@ -30,19 +30,20 @@ mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 $username = $_POST['username'];
 
-$qString = "SELECT TableEquipe.*, abonJoueurEquipe.joueurId 
-            FROM TableEquipe 
-            JOIN abonEquipeLigue 
-                ON abonEquipeLigue.equipeId = TableEquipe.equipe_id
-            JOIN AbonnementLigue 
-                ON AbonnementLigue.ligueId = abonEquipeLigue.ligueId 
-            JOIN TableUser 
-                ON AbonnementLigue.userId = TableUser.noCompte 
-            JOIN abonJoueurEquipe 
-                ON abonJoueurEquipe.equipeId = TableEquipe.equipe_id
-            WHERE TableUser.username = '{$username}'
-			
-            GROUP BY equipe_id";
+$qString = "SELECT TableEquipe.* 
+	FROM TableEquipe 
+	JOIN abonEquipeLigue 
+		ON abonEquipeLigue.equipeId = TableEquipe.equipe_id 
+	JOIN AbonnementLigue 
+		ON AbonnementLigue.ligueId = abonEquipeLigue.ligueId 
+	JOIN TableUser 
+		ON AbonnementLigue.userId = TableUser.noCompte 
+	JOIN abonJoueurEquipe 
+		ON abonJoueurEquipe.equipeId = TableEquipe.equipe_id 
+	WHERE TableUser.username = '{$username}' 
+	AND abonEquipeLigue.debutAbon < Now()
+			AND abonEquipeLigue.finAbon > Now()
+	GROUP BY TableEquipe.equipe_id ";
 
 
 $retour = mysqli_query($conn, $qString) or die(mysqli_error($conn));
