@@ -81,7 +81,7 @@ while ($r = mysqli_fetch_array($retour, MYSQLI_ASSOC)) {
 		}else{
 			$joueur['positionId'] = 1;
 		}
-        $joueur['dernierMAJ'] = NOW();
+        $joueur['dernierMAJ'] = time()*1000;
         $joueur['cleValeur'] = $j['cleValeur'];
         array_push($joueurs,$joueur);
 	}
