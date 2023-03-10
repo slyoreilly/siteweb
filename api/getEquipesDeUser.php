@@ -76,7 +76,7 @@ while ($r = mysqli_fetch_array($retour, MYSQLI_ASSOC)) {
         $joueur = array();
         $joueur['SyncKey'] = $j['joueur_id'];
         $joueur['nom'] = $j['NomJoueur'];
-		if($j['position']=='g' OR $j['position']=='g'){
+		if($j['position']=='g' OR $j['position']=='G'){
 			$joueur['positionId'] = 5;
 		}else{
 			$joueur['positionId'] = 1;
