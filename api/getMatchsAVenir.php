@@ -47,7 +47,7 @@ $qString = "SELECT TableMatch.*, Presences.*
                 AND TableMatch.date < (NOW() + INTERVAL 7 DAY) 
                 AND (TableMatch.eq_dom = abonEquipeLigue.equipeId 
                     OR TableMatch.eq_vis = abonEquipeLigue.equipeId) 
-            GROUP BY TableMatch.match_id, Presences.presence_id";
+            GROUP BY TableMatch.match_id, Presences.presenceId";
 
 $retour = mysqli_query($conn,$qString) or die(mysqli_error($conn));    
 
