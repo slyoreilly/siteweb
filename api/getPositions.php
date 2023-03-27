@@ -57,18 +57,13 @@ if(!empty($sportIds)){
 }
 $vecPositions = Array();
 
-while($rangeePosition=mysqli_fetch_array($rfPosition))
+while($rangeePosition=mysqli_fetch_assoc($rfPosition))
 {
 	$rangeePosition['CreatedAt'] = strtotime($rangeePosition['CreatedAt'])*1000; // convert to unix timestamp (in seconds)
 	$rangeePosition['UpdatedAt'] = strtotime($rangeePosition['UpdatedAt'])*1000; // convert to unix timestamp (in seconds)
-    $Position[] = array_values($rangeePosition);
-
-
-	
+    $Position[] = $rangeePosition;
 }
 
-
-	
 echo json_encode($Position);
 	
 mysqli_close($conn);
