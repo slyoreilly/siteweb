@@ -60,7 +60,7 @@ $vecPositions = Array();
 while($rangeePosition=mysqli_fetch_array($rfPosition))
 {
 	$rangeePosition['CreatedAt'] = strtotime($rangeePosition['CreatedAt'])*1000; // convert to unix timestamp (in seconds)
-	$rangeePosition['UpdatedAt'] = strtotime($rangeePosition['UpdateAt'])*1000; // convert to unix timestamp (in seconds)
+	$rangeePosition['UpdatedAt'] = strtotime($rangeePosition['UpdatedAt'])*1000; // convert to unix timestamp (in seconds)
     $Position[] = array_values($rangeePosition);
 
 
