@@ -55,17 +55,21 @@ if(!empty($sportIds)){
 	$rfPosition = mysqli_query($conn,"SELECT * FROM Positions WHERE {$sportString} ")
 	or die(mysqli_error($conn)." Select Positions Sport set to {$sportIds} "); 
 }
+$vecPositions = Array();
+
 while($rangeePosition=mysqli_fetch_array($rfPosition))
 {
-	$rangeePosition['CreatedAt'] = strtotime($rangeePosition['CreatedAt']); // convert to unix timestamp (in seconds)
-    $rangeePosition['CreatedAt'] = 1000 * $rangeePosition['CreatedAt']; // convert seconds to milliseconds
-	$rangeePosition['UpdateAt'] = strtotime($rangeePosition['UpdateAt']); // convert to unix timestamp (in seconds)
-    $rangeePosition['UpdateAt'] = 1000 * $rangeePosition['UpdateAt']; // convert seconds to milliseconds
-	$Position[] = $rangeePosition;
+	$rangeePosition['CreatedAt'] = strtotime($rangeePosition['CreatedAt'])*1000; // convert to unix timestamp (in seconds)
+	$rangeePosition['UpdatedAt'] = strtotime($rangeePosition['UpdateAt'])*1000; // convert to unix timestamp (in seconds)
+    $Position[] = array_values($rangeePosition);
+
+
 	
 }
+
+
 	
-echo json_encode($Position);;
+echo json_encode($Position);
 	
 mysqli_close($conn);
 
