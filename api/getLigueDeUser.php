@@ -54,7 +54,7 @@ while ($rL = mysqli_fetch_array($retourLigue, MYSQLI_ASSOC)) {
     $uneLigue['sportId'] = $rL['sportId'];
     $uneLigue['nom'] = $rL['Nom_Ligue'];
     $uneLigue['lieu'] = $rL['Lieu'];
-    $uneLigue['date'] = time()*1000;
+    $uneLigue['date'] = time() * 1000;
     $uneLigue['dernierMAJ'] = $rL['dernierMAJ'];
     $uneLigue['horaire'] = $rL['Horaire'];
     $uneLigue['cleValeur'] = $rL['cleValeur'];
@@ -72,6 +72,7 @@ while ($rL = mysqli_fetch_array($retourLigue, MYSQLI_ASSOC)) {
 	GROUP BY TableEquipe.equipe_id ";
 
     $retour = mysqli_query($conn, $qString) or die(mysqli_error($conn));
+    $vecEquipes= array();
     $vecEquipesCompose = array();
     while ($r = mysqli_fetch_array($retour, MYSQLI_ASSOC)) {
         $uneEquipe = array();
@@ -87,8 +88,8 @@ while ($rL = mysqli_fetch_array($retourLigue, MYSQLI_ASSOC)) {
 
         // Recherche des joueurs de l'équipe
         $qJoueurs = "SELECT TableJoueur.* 
-	FROM TableJoueur 
-	JOIN abonJoueurEquipe 
+	        FROM TableJoueur 
+	        JOIN abonJoueurEquipe 
 	ON abonJoueurEquipe.joueurId = TableJoueur.joueur_id 
 		WHERE abonJoueurEquipe.equipeId = '{$uneEquipe['equipeId']}'
 		AND abonJoueurEquipe.debutAbon < Now()
@@ -156,11 +157,10 @@ while ($rL = mysqli_fetch_array($retourLigue, MYSQLI_ASSOC)) {
     $uneLigueComposeAvecEquipes = array(
         'ligueCompose'  => $uneLigueCompose,
         'equipes' => $vecEquipesCompose
-        );
+    );
 
     array_push($vecLiguesCompose, $uneLigueCompose);
     array_push($vecLiguesComposeAvecEquipes, $uneLigueComposeAvecEquipes);
-
 }
 
 echo json_encode($vecLiguesComposeAvecEquipes);

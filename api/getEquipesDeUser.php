@@ -60,7 +60,7 @@ while ($r = mysqli_fetch_array($retour, MYSQLI_ASSOC)) {
         $uneEquipe['couleur1'] = 'FFFFFF'; // On affecte la valeur par défaut
     }
     $uneEquipe['dernierMAJ'] = strtotime($r['dernierMAJ']) * 1000;
-    $uneEquipe['cleValeur'] = $r['cleValeur'];
+    $uneEquipe['cleValeur'] ="";
     
     // Recherche des joueurs de l'équipe
     $qJoueurs = "SELECT TableJoueur.* 
