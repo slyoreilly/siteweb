@@ -30,7 +30,7 @@ mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 $username = $_POST['username'];
 
-$qLigue = "SELECT TableEquipe.* 
+$qLigue = "SELECT Ligue.* 
 	FROM Ligue 
 	JOIN AbonnementLigue 
 		ON AbonnementLigue.ligueId = Ligue.ID_Ligue 
