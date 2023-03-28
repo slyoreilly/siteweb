@@ -64,8 +64,6 @@ while ($rL = mysqli_fetch_array($retourLigue, MYSQLI_ASSOC)) {
 	FROM TableEquipe 
 	JOIN abonEquipeLigue 
 		ON abonEquipeLigue.equipeId = TableEquipe.equipe_id 
-	JOIN abonJoueurEquipe 
-		ON abonJoueurEquipe.equipeId = TableEquipe.equipe_id 
 	WHERE abonEquipeLigue.ligueId = '{$mLigueId}' 
 	AND abonEquipeLigue.debutAbon < Now()
 			AND abonEquipeLigue.finAbon > Now()
