@@ -58,7 +58,7 @@ while ($rL = mysqli_fetch_array($retourLigue, MYSQLI_ASSOC)) {
     $uneLigue['dernierMAJ'] = $rL['dernierMAJ'];
     $uneLigue['horaire'] = $rL['Horaire'];
     $uneLigue['cleValeur'] = $rL['cleValeur'];
-
+    $mLigueId = $uneLigue['ligueId'] 
 
     $qString = "SELECT TableEquipe.* 
 	FROM TableEquipe 
@@ -66,7 +66,7 @@ while ($rL = mysqli_fetch_array($retourLigue, MYSQLI_ASSOC)) {
 		ON abonEquipeLigue.equipeId = TableEquipe.equipe_id 
 	JOIN abonJoueurEquipe 
 		ON abonJoueurEquipe.equipeId = TableEquipe.equipe_id 
-	WHERE abonEquipeLigue.ligueId = '{$rL['ID__Ligue']}' 
+	WHERE abonEquipeLigue.ligueId = '{$mLigueId}' 
 	AND abonEquipeLigue.debutAbon < Now()
 			AND abonEquipeLigue.finAbon > Now()
 	GROUP BY TableEquipe.equipe_id ";
