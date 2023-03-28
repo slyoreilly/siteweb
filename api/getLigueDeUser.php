@@ -66,7 +66,7 @@ while ($rL = mysqli_fetch_array($retourLigue, MYSQLI_ASSOC)) {
 		ON abonEquipeLigue.equipeId = TableEquipe.equipe_id 
 	JOIN abonJoueurEquipe 
 		ON abonJoueurEquipe.equipeId = TableEquipe.equipe_id 
-	WHERE abonEquipeLigue.ligueId = '{$rL["ID__Ligue"]}' 
+	WHERE abonEquipeLigue.ligueId = '{$rL['ID__Ligue']}' 
 	AND abonEquipeLigue.debutAbon < Now()
 			AND abonEquipeLigue.finAbon > Now()
 	GROUP BY TableEquipe.equipe_id ";
@@ -162,10 +162,6 @@ while ($rL = mysqli_fetch_array($retourLigue, MYSQLI_ASSOC)) {
     array_push($vecLiguesComposeAvecEquipes, $uneLigueComposeAvecEquipes);
 
 }
-
-
-
-
 
 echo json_encode($vecLiguesComposeAvecEquipes);
 
