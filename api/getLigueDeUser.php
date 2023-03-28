@@ -58,7 +58,7 @@ while ($rL = mysqli_fetch_array($retourLigue, MYSQLI_ASSOC)) {
     $uneLigue['dernierMAJ'] = $rL['dernierMAJ'];
     $uneLigue['horaire'] = $rL['Horaire'];
     $uneLigue['cleValeur'] = $rL['cleValeur'];
-    $mLigueId = $uneLigue['ligueId'] 
+    $mLigueId = $uneLigue['ligueId'];
 
     $qString = "SELECT TableEquipe.* 
 	FROM TableEquipe 
