@@ -124,7 +124,7 @@ while ($rL = mysqli_fetch_array($retourLigue, MYSQLI_ASSOC)) {
                                 JOIN TableJoueur
                                     ON (TableJoueur.joueur_id=abonJoueurLigue.joueurId)
                                 JOIN AbonnementLigue 
-                            		ON AbonnementLigue.ligueId = abonEquipeLigue.ligueId 
+                            		ON AbonnementLigue.ligueId = abonJoueurLigue.ligueId 
                             	JOIN TableUser 
                             		ON AbonnementLigue.userId = TableUser.noCompte 
                                 WHERE TableUser.username = '{$username}' 
