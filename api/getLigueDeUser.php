@@ -50,7 +50,7 @@ $vecLiguesComposeAvecEquipes = array();
 while ($rL = mysqli_fetch_array($retourLigue, MYSQLI_ASSOC)) {
     $uneLigue = array();
     $joueursDansLigue = array();
-    $uneLigue['ligueId'] = $rL['ID__Ligue'];
+    $uneLigue['ligueId'] = $rL['ID_Ligue'];
     $uneLigue['sportId'] = $rL['sportId'];
     $uneLigue['nom'] = $rL['Nom_Ligue'];
     $uneLigue['lieu'] = $rL['Lieu'];
@@ -75,7 +75,7 @@ while ($rL = mysqli_fetch_array($retourLigue, MYSQLI_ASSOC)) {
     while ($r = mysqli_fetch_array($retour, MYSQLI_ASSOC)) {
         $uneEquipe = array();
         $uneEquipe['equipeId'] = $r['equipe_id'];
-        $uneEquipe['ligueId'] = $rL['ID__Ligue'];
+        $uneEquipe['ligueId'] = $mLigueId;
         $uneEquipe['nom'] = $r['nom_equipe'];
         $uneEquipe['couleur1'] = $r['couleur1'];
         if ($uneEquipe['couleur1'] === null) { // Si la valeur est nulle
