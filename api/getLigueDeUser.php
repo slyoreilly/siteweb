@@ -119,7 +119,7 @@ while ($rL = mysqli_fetch_array($retourLigue, MYSQLI_ASSOC)) {
     }
 
 
-    $resultJoueur3 = mysqli_query($conn, "SELECT * 
+    $retourJoueurs3 = mysqli_query($conn, "SELECT * 
                             FROM abonJoueurLigue
                                 JOIN TableJoueur
                                     ON (TableJoueur.joueur_id=abonJoueurLigue.joueurId)
