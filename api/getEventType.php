@@ -54,7 +54,10 @@ if(!empty($sportIds)){
 
 	$rfEventType = mysqli_query($conn,"SELECT * FROM EventType WHERE {$sportString} ")
 	or die(mysqli_error($conn)." Select EventType Sport set to {$sportIds} "); 
+	
 }
+
+$vecEvent = array();
 while($rangeeEvent=mysqli_fetch_assoc($rfEventType))
 {
 	$rangeeEvent['CreatedAt'] = strtotime($rangeeEvent['CreatedAt']); // convert to unix timestamp (in seconds)
@@ -62,10 +65,10 @@ while($rangeeEvent=mysqli_fetch_assoc($rfEventType))
 	$rangeeEvent['UpdatedAt'] = strtotime($rangeeEvent['UpdateAt']); // convert to unix timestamp (in seconds)
     $rangeeEvent['UpdatedAt'] = 1000 * $rangeeEvent['UpdateAt']; // convert seconds to milliseconds
 	$event[] = $rangeeEvent;
-	
+	array_push($vecEvent, $event);
 }
 	
-echo json_encode($event);;
+echo json_encode($vecEvent);;
 	
 mysqli_close($conn);
 
