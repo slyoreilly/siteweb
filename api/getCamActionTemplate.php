@@ -81,7 +81,7 @@ $camActionTemplate= Array();
 while($rangeeCAT=mysqli_fetch_assoc($rfCAT))
 {
 	$rangeeCAT['CreatedAt'] = 1000*strtotime($rangeeCAT['CreatedAt']); // convert to unix timestamp (in seconds)
-	$rangeeCAT['UpdateAt'] = 1000*strtotime($rangeeCAT['UpdateAt']); // convert to unix timestamp (in seconds)
+	$rangeeCAT['UpdatedAt'] = 1000*strtotime($rangeeCAT['UpdatedAt']); // convert to unix timestamp (in seconds)
 	$camActionTemplate[] = $rangeeCAT;
 	
 }

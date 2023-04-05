@@ -59,8 +59,8 @@ while($rangeeEvent=mysqli_fetch_assoc($rfEventType))
 {
 	$rangeeEvent['CreatedAt'] = strtotime($rangeeEvent['CreatedAt']); // convert to unix timestamp (in seconds)
     $rangeeEvent['CreatedAt'] = 1000 * $rangeeEvent['CreatedAt']; // convert seconds to milliseconds
-	$rangeeEvent['UpdateAt'] = strtotime($rangeeEvent['UpdateAt']); // convert to unix timestamp (in seconds)
-    $rangeeEvent['UpdateAt'] = 1000 * $rangeeEvent['UpdateAt']; // convert seconds to milliseconds
+	$rangeeEvent['UpdatedAt'] = strtotime($rangeeEvent['UpdateAt']); // convert to unix timestamp (in seconds)
+    $rangeeEvent['UpdatedAt'] = 1000 * $rangeeEvent['UpdateAt']; // convert seconds to milliseconds
 	$event[] = $rangeeEvent;
 	
 }

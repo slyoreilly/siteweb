@@ -58,7 +58,7 @@ if(!empty($sportIds)){
 while($rangeeEvent=mysqli_fetch_assoc($rfEventType))
 {
 	$rangeeEvent['CreatedAt'] = 1000*strtotime($rangeeEvent['CreatedAt']); // convert to unix timestamp (in seconds)
-	$rangeeEvent['UpdateAt'] = 1000*strtotime($rangeeEvent['UpdateAt']); // convert to unix timestamp (in seconds)
+	$rangeeEvent['UpdatedAt'] = 1000*strtotime($rangeeEvent['UpdatedAt']); // convert to unix timestamp (in seconds)
 	$event[] = $rangeeEvent;
 	
 }
