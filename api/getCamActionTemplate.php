@@ -78,7 +78,7 @@ if(count($leagueArray)==0){
 
 $camActionTemplate= Array();
 
-while($rangeeCAT=mysqli_fetch_array($rfCAT))
+while($rangeeCAT=mysqli_fetch_assoc($rfCAT))
 {
 	$camActionTemplate[] = $rangeeCAT;
 	
