@@ -38,23 +38,10 @@ $saisonId =null;
 // 
 //
 
-if(!empty($sportIds)){
-	$rfEventType = mysqli_query($conn,"SELECT * FROM EventTypeDetail WHERE 1")
-	or die(mysqli_error($conn)." Select EventTypeDetail Sport null"); 
-}else{
-	$sportString = "";
-	foreach($s as $sportIdArray){
-		$sportString  = $sportString . "SportID = '{$s}' OR ";
-	}
-	if(strlen($sportString)>4){
-		$sportString= substr($sportString, 0, -3);
-	}
-	
 
+$rfEventType = mysqli_query($conn,"SELECT * FROM EventTypeDetail WHERE 1")
+or die(mysqli_error($conn)." Select EventTypeDetail Sport null"); 
 
-	$rfEventType = mysqli_query($conn,"SELECT * FROM EventTypeDetail WHERE {$sportString} ")
-	or die(mysqli_error($conn)." Select EventTypeDetail Sport set to {$sportIds} "); 
-}
 while($rangeeEvent=mysqli_fetch_assoc($rfEventType))
 {
 	$rangeeEvent['CreatedAt'] = 1000*strtotime($rangeeEvent['CreatedAt']); // convert to unix timestamp (in seconds)
