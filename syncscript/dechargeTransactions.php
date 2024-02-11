@@ -22,7 +22,6 @@ $retTransJ[$a]=array();
 	$intLigue = $traiteJ['ligueId'];
 	$intJoueur = $traiteJ['nomJoueur'];
 	$intNo = $traiteJ['noJoueur'];
-	$intNomEq = $traiteJ['equipe'];
 	$vieuId = $traiteJ['vieuId'];
 
 	

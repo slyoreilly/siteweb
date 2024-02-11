@@ -141,7 +141,10 @@ while ($rL = mysqli_fetch_array($retourLigue, MYSQLI_ASSOC)) {
             $joueur['positionId'] = 1;
         }
         $joueur['dernierMAJ'] = time() * 1000;
-        $joueur['cleValeur'] = $j['cleValeur'];
+        if(isset($j['cleValeur'])){
+            $joueur['cleValeur'] = $j['cleValeur'];
+        }
+        
         array_push($joueursDansLigue, $joueur);
     }
 

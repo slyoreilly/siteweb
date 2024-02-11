@@ -11,8 +11,8 @@ $versionCode = $_POST['versionCode'];
 $syncJ = $_POST['syncJ'];
 $syncMav = $_POST['syncMav'];
 $transE = $_POST['transE'];
-$transL = $_POST['transL'];
-$transPJ = $_POST['transPJ'];
+//$transL = $_POST['transL'];
+//$transPJ = $_POST['transPJ'];
 $matchsTS = $_POST['matchs'];
 $heure = $_POST['heure'];
 $heureServeur = time()*1000;
@@ -337,7 +337,7 @@ array_push($controlTemps,time());
 //include('../scriptsphp/actualiseMatchs.php');			// ActualiseMAtch a emmener de gros problème de répétition des entrées...
 
 array_push($controlTemps,time());
-include 'majJoueur2.php';
+//include 'majJoueur2.php';
 array_push($controlTemps,time());
 //$extra['info']=json_encode($leMatch);
 //$extra['info2']=stripslashes($matchsTS);

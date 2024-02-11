@@ -69,7 +69,15 @@ while($r = mysqli_fetch_array($retour,MYSQLI_ASSOC)) {
         $unMatch['scoreDom']=$r['score_dom'];
         $unMatch['scoreVis']=$r['score_vis'];
         $unMatch['cleValeur']=$r['cleValeur'];
- 
+        if(is_numeric($r['statut'])){
+            $unMatch['etat'] = 10;
+        } elseif(is_null($r['statut'])){
+            $unMatch['etat'] = 20;
+        } elseif('F'==$r['statut']){
+            $unMatch['etat'] = 30;
+        } else{
+            $unMatch['etat'] = 40;
+        }
     }
     // requête pour récupérer les présences de l'équipe domicile
     $query = "SELECT * FROM Presences WHERE matchId = '{$r['match_id']}' AND domVis = 1";
