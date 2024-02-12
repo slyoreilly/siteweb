@@ -28,14 +28,15 @@ function utf8ize($mixed) {
     }
     return $mixed;
 }
-$strRetour = $arenaId;
+
 if (($username !== 0) && ($username != null)) {
 
 
 	$retour = mysqli_query($conn, "SELECT 
 		 TableArena.arenaId,
 		 TableArena.nomArena,
-		 TableArena.nomGlace
+		 TableArena.nomGlace,
+		 TableArena.tailleGlace,
 						FROM TableUser
 						LEFT JOIN AbonnementLigue
 							ON (TableUser.noCompte=AbonnementLigue.userid)
@@ -57,7 +58,7 @@ if (($username !== 0) && ($username != null)) {
 
 	while ($r = mysqli_fetch_assoc($retour)) {
 		$unArena=array();
-		$unArena['typeSurface'] = $r['type'];
+		$unArena['typeSurface'] = $r['tailleGlace'];
 		$unArena['plateauId'] = $r['arenaId'];
 		$unArena['nomEmplacement'] = $r['nomArena'];
 		$unArena['nomSurface'] = $r['nomGlace'];

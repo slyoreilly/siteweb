@@ -82,7 +82,7 @@ while ($r = mysqli_fetch_array($retour, MYSQLI_ASSOC)) {
 			$joueur['positionId'] = 1;
 		}
         $joueur['dernierMAJ'] = time()*1000;
-        $joueur['cleValeur'] = $j['cleValeur'];
+        $joueur['cleValeur'] = isset($j['cleValeur']) ? $j['cleValeur'] : null;
         array_push($joueurs,$joueur);
 	}
     $uneEquipeCompose = array(
