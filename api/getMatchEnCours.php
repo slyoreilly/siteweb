@@ -2,8 +2,8 @@
 
 ////////////////////////////////////////////////////////////
 //
-//	sommaire2JSON.php
-//	Est appellé dans http://www.syncstats.com/zstats/match.html
+//	getMatchEnCours.php
+//	Est appellé dans MatchRepository.kt
 //
 //
 ////////////////////////////////////////////////////////////
@@ -59,6 +59,7 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 	$mEqVis=$rangeeEv['NEvis'];
 	$mEqDomId=$rangeeEv['eqDomId'];
 	$mEqVisId=$rangeeEv['eqVisId'];
+	$mStatut=$rangeeEv['statut'];
 	$mLigueId = $rangeeEv['ligueRef'];
 	$mArenaId = $rangeeEv['arenaId'];
 }
@@ -142,6 +143,7 @@ $Sommaire['eqDom']=$mEqDom;
 $Sommaire['eqVis']=$mEqVis;
 $Sommaire['eqDomId']=$mEqDomId;
 $Sommaire['eqVisId']=$mEqVisId;
+$Sommaire['etat']=$mStatut;
 $Sommaire['ligueId']=$mLigueId;
 if(!is_null($mArenaId)){$Sommaire['arenaId']=$mArenaId;}
 

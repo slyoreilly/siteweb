@@ -78,7 +78,7 @@ while($r = mysqli_fetch_array($retour,MYSQLI_ASSOC)) {
         } else{
             $unMatch['etat'] = 40;
         }
-    }
+
     // requête pour récupérer les présences de l'équipe domicile
     $query = "SELECT * FROM Presences WHERE matchId = '{$r['match_id']}' AND domVis = 1";
     $result = mysqli_query($conn, $query);
@@ -104,6 +104,8 @@ while($r = mysqli_fetch_array($retour,MYSQLI_ASSOC)) {
     
     // ajouter l'objet $unMatchCompose au tableau $vecMatchCompose
     array_push($vecMatchCompose, $unMatchCompose);
+    array_push($matchIds, $matchId);
+        }
 }
 
 mysqli_close($conn);
