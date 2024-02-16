@@ -69,10 +69,10 @@ while($r = mysqli_fetch_array($retour,MYSQLI_ASSOC)) {
         $unMatch['scoreDom']=$r['score_dom'];
         $unMatch['scoreVis']=$r['score_vis'];
         $unMatch['cleValeur']=$r['cleValeur'];
-        if(is_numeric($r['statut'])){
-            $unMatch['etat'] = 10;
-        } elseif(is_null($r['statut'])){
+        if($r['statut'] ==null){
             $unMatch['etat'] = 20;
+        } elseif(is_numeric($r['statut'])){
+            $unMatch['etat'] = 10;
         } elseif('F'==$r['statut']){
             $unMatch['etat'] = 30;
         } else{
