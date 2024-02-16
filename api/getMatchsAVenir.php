@@ -31,7 +31,7 @@ mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 	
 $username = $_POST['username'];
 
-$qString = "SELECT TableMatch.*, Presences.*
+$qString = "SELECT TableMatch.*, TableMatch.statut as statutMatch, Presences.*
             FROM TableMatch 
             JOIN abonEquipeLigue 
                 ON abonEquipeLigue.ligueId = TableMatch.ligueRef 
@@ -69,7 +69,7 @@ while($r = mysqli_fetch_array($retour,MYSQLI_ASSOC)) {
         $unMatch['scoreDom']=$r['score_dom'];
         $unMatch['scoreVis']=$r['score_vis'];
         $unMatch['cleValeur']=$r['cleValeur'];
-        if($r['statut'] ==null){
+        if($r['statutMatch'] == null){
             $unMatch['etat'] = 20;
         } elseif(is_numeric($r['statut'])){
             $unMatch['etat'] = 10;
