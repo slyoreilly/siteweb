@@ -75,13 +75,14 @@ if($match != null) {
 
 		
 
-				
+		
 
 				
-				$retObj = array("GameLocId"=$match['GameLocId'>, "GameComId"=>$webMatchId);
+				$retObj = array("GameLocId"=>$match['GameLocId'], "GameComId"=>$webMatchId);
 				array_push($syncOK, $retObj);
 		
-	}
+			}		
+}
 
 echo json_encode($syncOK);
 
