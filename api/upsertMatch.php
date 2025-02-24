@@ -14,7 +14,7 @@ require '../scriptsphp/defenvvar.php';
 $preMatch =null;
 if(isset($_POST['match'])){
 	$preMatch = $_POST["match"];
-	$match = json_decode($preMatch, true);
+	$matchArray = json_decode($preMatch, true);
 	}
 	
 
@@ -24,8 +24,10 @@ $heureServeur = time()*1000;
 
 $syncOK = array();
 
-if($match != null) {
+if($matchArray != null) {
 
+
+	foreach ($matchArray as $match) {
 
 		if (isset($heure)) {
 			// retourner le but, sans correction de chrono.
@@ -72,6 +74,7 @@ if($match != null) {
 				array_push($syncOK, $retObj);
 		
 			}		
+		}
 
 echo json_encode($syncOK);
 
