@@ -57,7 +57,7 @@ if($match != null) {
 			TSDMAJ=NOW() 
 			WHERE match_id='{$match['GameComId']}'");	
 
-			$webMatchId = $match['GameComId']
+			$webMatchId = $match['GameComId'];
 
 		}
 
