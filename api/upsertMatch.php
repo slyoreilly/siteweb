@@ -72,7 +72,6 @@ if($match != null) {
 				array_push($syncOK, $retObj);
 		
 			}		
-}
 
 echo json_encode($syncOK);
 
