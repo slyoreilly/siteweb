@@ -13,18 +13,6 @@
  if(isset($_GET['ficId']) && is_numeric($_GET['ficId'])) {
 
 
-// Create connection
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error($conn));
-}
-
-mysqli_query($conn,"SET NAMES 'utf8'");
-mysqli_query($conn,"SET CHARACTER SET 'utf8'");
-
-
-
      // get the image from the db
      $sql = "SELECT * FROM TableFichier WHERE ficId=" .$_GET['ficId'] . ";";
 

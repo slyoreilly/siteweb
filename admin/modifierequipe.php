@@ -17,17 +17,6 @@ $ficId = $_POST['ficId'];
 $couleur1 = $_POST['couleur'];
 $ville = $_POST['ville'];
 
-
-
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($conn, "SET NAMES 'utf8'");
-mysqli_query($conn, "SET CHARACTER SET 'utf8'");
-
 	//////////////////////////////////////////////////////////////////////
 //
 //	Partie upload file

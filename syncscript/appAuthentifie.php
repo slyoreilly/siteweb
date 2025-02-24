@@ -4,16 +4,6 @@ require '../scriptsphp/defenvvar.php';
 $username = $_POST['username'];
 $mdp =$_POST['password'];
 
-
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
- 
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($conn, "SET NAMES 'utf8'");
-mysqli_query($conn, "SET CHARACTER SET 'utf8'");
- 
 	$userSelect=array();
 	
 	// Retrieve all the data from the "example" table

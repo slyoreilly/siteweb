@@ -16,17 +16,6 @@ $camId= $_POST['remoteId'];
 $version= $_POST['version'];
 $settings= $_POST['settings'];
 
-	
-// Create connection
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($conn, "SET NAMES 'utf8'");
-mysqli_query($conn, "SET CHARACTER SET 'utf8'");
-
 $dt = new DateTime("now", new DateTimeZone('GMT'));
 
 $mTemps= $dt->format('Y-m-d H:i:s');

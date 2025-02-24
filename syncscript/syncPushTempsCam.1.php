@@ -11,14 +11,6 @@ $avanceServeur = time() * 1000 - $heure;
 $rSServ = $recentSync + $avanceServeur;
 //rrs2: Plus recent sync du telephone corrigé àa l'heure serveur et boosté de 1 s.
 
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error($conn));
-}
-
-mysqli_query($conn,"SET NAMES 'utf8'");
-mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 
 
 unset($chronoRetour);

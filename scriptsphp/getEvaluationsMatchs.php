@@ -1,23 +1,8 @@
 <?php
 require '../scriptsphp/defenvvar.php';
 
-//$jDomJSON = stripslashes($_POST['jDom']);
-//$jVisJSON = stripslashes($_POST['jVis']);
 $matchId = $_POST['matchId'];
 $ligueId = $_POST['ligueId'];
-
-
-//$ligueId = $_POST['ligueId'];
-
-// Create connection
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($conn,"SET NAMES 'utf8'");
-mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 	
 	
 	$qMatchId="SELECT *

@@ -14,16 +14,6 @@ $emplacementTmp =  parse_url($_POST['emplacement']);
 $emplacement = $emplacementTmp['host'].$emplacementTmp['path'];
 $avanceServeur=time()*1000-$heure;
 
-
-// Create connection
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($conn,"SET NAMES 'utf8'");
-mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 	
 $syncOK=array();	
 for($a=0;$a<count($params);$a++)

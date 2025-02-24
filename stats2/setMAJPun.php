@@ -7,16 +7,6 @@ $tableAbon = 'AbonnementLigue';
 $tableUser = 'TableUser';
 // Create connection
 
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection/
-if (!$conn) {
-	error_log("Connection failed: " . mysqli_connect_error());
-   die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($conn,"SET NAMES 'utf8'");
-mysqli_query($conn,"SET CHARACTER SET 'utf8'");
-
 $strMAJ = $_POST['strMAJ'];
 
 $punMAJ = json_decode(stripslashes($strMAJ));

@@ -26,17 +26,6 @@ header("Access-Control-Allow-Origin: http://syncstats.ca");
 	
 require '../scriptsphp/defenvvar.php';
 
-// Create connection
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($conn, "SET NAMES 'utf8'");
-mysqli_query($conn, "SET CHARACTER SET 'utf8'");
-
-	
 	//////////////////////////////////////////////////////////////////////
 //
 //	Partie upload file

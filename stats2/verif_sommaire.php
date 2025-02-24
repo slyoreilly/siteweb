@@ -20,7 +20,7 @@ $chrono = $_POST['chrono'];
 $equipe = $_POST['equipe'];
 if(empty($marqueur))
 {
-print("<center>Le '<b>Il n'y a pas de marqueur identifié!</b>' est vide !</center>");
+print("<center>Le '<b>Il n'y a pas de marqueur identifiï¿½!</b>' est vide !</center>");
 exit();
 }
 

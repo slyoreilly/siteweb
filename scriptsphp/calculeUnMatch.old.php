@@ -12,21 +12,6 @@ $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
 $tableEquipe = 'TableEquipe';
 
-////////////////////////////////////////////////////////////
-//
-// 	Connections é la base de données
-//
-////////////////////////////////////////////////////////////
-
-$connC1M = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$connC1M) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($connC1M, "SET NAMES 'utf8'");
-mysqli_query($connC1M, "SET CHARACTER SET 'utf8'");
-
 
 if( isset($_POST['noMatchId']) )
 {

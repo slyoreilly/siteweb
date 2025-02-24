@@ -7,24 +7,6 @@ $tableJoueur = 'TableJoueur';
 $tableAbon = 'AbonnementLigue';
 $tableUser = 'TableUser';
 
-//$username = $_POST['username'];
-//$vielledate =$_POST['vielledate'];
-
-
-//$ligueId = $_POST['ligueId'];
-
-
-		
-//$json=json_decode("'".$matchjson."'");
-$connCL = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$connCL) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($connCL, "SET NAMES 'utf8'");
-mysqli_query($connCL, "SET CHARACTER SET 'utf8'");
-	
 
 ////    Besoin de vieilledate et ligueId
 $compte=0;

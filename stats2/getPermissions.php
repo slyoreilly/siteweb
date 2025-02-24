@@ -16,21 +16,7 @@ $tableEvent = 'TableEvenement0';
 $tableEquipe = 'TableEquipe';
 $tableUser = 'TableUser';
 
-////////////////////////////////////////////////////////////
-//
-// 	Connections � la base de donn�es
-//
-////////////////////////////////////////////////////////////
 
-// Create connection
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error($conn));
-}
-
-mysqli_query($conn,"SET NAMES 'utf8'");
-mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 
 $ligueId = $_GET['ligueId'];
 $inter=$_GET['userId'];

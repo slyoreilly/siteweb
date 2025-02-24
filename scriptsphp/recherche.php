@@ -15,20 +15,6 @@ $type =null;
 if(isset($_POST['typeRecherche'])){
 $type = $_POST['typeRecherche'];}
 
-////////////////////////////////////////////////////////////
-//
-// 	Connections � la base de donn�es
-//
-////////////////////////////////////////////////////////////
-
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($conn, "SET NAMES 'utf8'");
-mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 
 $ligue = array();

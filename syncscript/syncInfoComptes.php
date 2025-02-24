@@ -12,14 +12,6 @@ $telId = $_POST['telId'];
 $telHeure = $_POST['telHeure'];
 //$vielledate = $_POST['vielledate'];
 
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
- 
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($conn, "SET NAMES 'utf8'");
-mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 // Retrieve all the data from the "example" table
 $resultUser = mysqli_query($conn, "SELECT * FROM TableUser") or die(mysqli_error($conn));

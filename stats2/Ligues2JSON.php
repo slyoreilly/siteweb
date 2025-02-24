@@ -14,23 +14,7 @@ $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
 $tableEquipe = 'TableEquipe';
 
-////////////////////////////////////////////////////////////
-//
-// 	Connections � la base de donn�es
-//
-////////////////////////////////////////////////////////////
-$con=mysqli_connect($db_host, $db_user, $db_pwd);
-if (!$con)
-    die("Can't connect to database");
 
-if (!mysqli_select_db($con,$database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
-}
-	mysqli_query($con,"SET NAMES 'utf8'");
-mysqli_query($con,"SET CHARACTER SET 'utf8'");
 
 //////////////////////////////////////////////////////
 //

@@ -1,14 +1,5 @@
 <?php
-		
-//$json=json_decode("'".$matchjson."'");
-$connDT = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$connDT) {
-	die("Connection failed: " . mysqli_connect_error());
-}
 
-mysqli_query($connDT, "SET NAMES 'utf8'");
-mysqli_query($connDT, "SET CHARACTER SET 'utf8'");
 
 $retTransJ=array();
 $a=0;

@@ -1,18 +1,6 @@
 <?php
 
 
-
-// Create connection
-$connDV = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$connDV) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($connDV,"SET NAMES 'utf8'");
-mysqli_query($connDV,"SET CHARACTER SET 'utf8'");
-
-
 $vdhr = date("Y/m/d H:i:s",$vielledateMAV);
 $vdhr= str_replace('/','-',$vdhr);
 	

@@ -8,17 +8,6 @@ $telId = $_POST['telId'];
 $retour=array();
 
 
-
-// Create connection
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error($conn));
-}
-
-mysqli_query($conn,"SET NAMES 'utf8'");
-mysqli_query($conn,"SET CHARACTER SET 'utf8'");
-	
 	
 	$qSel="SELECT * FROM Controle WHERE telId='{$telId}'";	
 	$retSel=mysqli_query($conn,$qSel) or die("Erreur: "+$qSel+"\n"+mysqli_error($conn));
