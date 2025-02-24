@@ -1,0 +1,3 @@
+SetEnv WORK_ENV production
+php_flag display_errors Off
+

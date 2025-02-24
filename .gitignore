@@ -17,5 +17,5 @@ scriptserveur/syncsta1_900.sql
 scriptserveur/man
 scriptsphp/defenvvar.php
 php.ini
-.htaccess
+/.htaccess
 /*/*php_error_log
