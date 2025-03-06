@@ -34,7 +34,7 @@ if($matchArray != null) {
 			//$unClip['chrono'] = $unClip['chrono'] + $heureServeur - $heure;
 		}
 
-
+		
 		if($match['GameComId']<1){
 			$qInsM = "INSERT INTO TableMatch (eq_dom, score_dom, eq_vis, score_vis, statut, matchIdRef, ligueRef, date, cleValeur, arenaId, TSDMAJ) 
 			VALUES ('{$match['eqDom']}','{$match['scoreDom']}','{$match['eqVis']}','{$match['scoreVis']}',0,'{$match['matchLongId']}','{$match['ligueId']}','{$match['date']}','{$match['cleValeur']}','{$match['arenaId']}','{$match['dernierMAJ']}')";
@@ -47,9 +47,9 @@ if($matchArray != null) {
 		else{
 			$retour = mysqli_query($conn,"UPDATE TableMatch 
 			SET eq_dom='{$match['eqDom']}',
-			score_dom='{$match['scoreDom']}',
+			score_dom={$match['scoreDom']},
 			eq_vis='{$match['eqVis']}',
-			score_vis='{$match['scoreVis']}',
+			score_vis={$match['scoreVis']},
 			statut='{$match['etat']}',
 			matchIdRef='{$match['matchLongId']}',
 			ligueRef='{$match['ligueId']}',
