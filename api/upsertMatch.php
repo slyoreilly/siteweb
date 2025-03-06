@@ -1,8 +1,9 @@
+
 <?php
 ////////////////////////////////////////////////////////////
 //
-//	upsertMatch.php
-//	Est appelé dans MatchRepository.kt
+//      upsertMatch.php
+//      Est appelé dans MatchRepository.kt
 //
 //
 ////////////////////////////////////////////////////////////
@@ -13,10 +14,10 @@ require '../scriptsphp/defenvvar.php';
 
 $preMatch =null;
 if(isset($_POST['match'])){
-	$preMatch = $_POST["match"];
-	$matchArray = json_decode($preMatch, true);
-	}
-	
+        $preMatch = $_POST["match"];
+        $matchArray = json_decode($preMatch, true);
+        }
+
 
 
 $heure = $_POST['heure'];
@@ -27,54 +28,59 @@ $syncOK = array();
 if($matchArray != null) {
 
 
-	foreach ($matchArray as $match) {
+        foreach ($matchArray as $match) {
 
-		if (isset($heure)) {
-			// retourner le but, sans correction de chrono.
-			//$unClip['chrono'] = $unClip['chrono'] + $heureServeur - $heure;
-		}
+                if (isset($heure)) {
+                        // retourner le but, sans correction de chrono.
+                        //$unClip['chrono'] = $unClip['chrono'] + $heureServeur - $heure;
+                }
 
-		
-		if($match['GameComId']<1){
-			$qInsM = "INSERT INTO TableMatch (eq_dom, score_dom, eq_vis, score_vis, statut, matchIdRef, ligueRef, date, cleValeur, arenaId, TSDMAJ) 
-			VALUES ('{$match['eqDom']}','{$match['scoreDom']}','{$match['eqVis']}','{$match['scoreVis']}',0,'{$match['matchLongId']}','{$match['ligueId']}','{$match['date']}','{$match['cleValeur']}','{$match['arenaId']}','{$match['dernierMAJ']}')";
+                $scoreDom = $match['scoreDom']!=null ? $match['scoreDom'] : 0;
+                $scoreVis = $match['scoreVis']!=null ? $match['scoreVis'] : 0;
+                $maDate =   date("Y-m-d H:i:s", round($match['date']/1000));
+                $arenaId = $match['arenaId'] != null ? $match['arenaId'] : "NULL";
 
-			mysqli_query($conn,$qInsM) or die(mysqli_error($conn) . $qInsM);
-			$webMatchId=mysqli_insert_id($conn);
 
-		}
+                if($match['GameComId']<1){
+                        $qInsM = "INSERT INTO TableMatch (eq_dom, score_dom, eq_vis, score_vis, statut, matchIdRef, ligueRef, date, cleValeur, arenaId, TSDMAJ)
+                        VALUES ('{$match['eqDom']}',{$scoreDom},'{$match['eqVis']}',{$scoreVis},0,'{$match['matchLongId']}','{$match['ligueId']}','{$maDate}','{$match['cleValeur']}',{$arenaId},'{$match['dernierMAJ']}')";
 
-		else{
-			$retour = mysqli_query($conn,"UPDATE TableMatch 
-			SET eq_dom='{$match['eqDom']}',
-			score_dom={$match['scoreDom']},
-			eq_vis='{$match['eqVis']}',
-			score_vis={$match['scoreVis']},
-			statut='{$match['etat']}',
-			matchIdRef='{$match['matchLongId']}',
-			ligueRef='{$match['ligueId']}',
-			date='{$match['date']}',
-			cleValeur='{$match['cleValeur']}',
-			arenaId='{$match['eqDom']}',
-			TSDMAJ=NOW() 
-			WHERE match_id='{$match['GameComId']}'");	
+                        mysqli_query($conn,$qInsM) or die(mysqli_error($conn) . $qInsM);
+                        $webMatchId=mysqli_insert_id($conn);
 
-			$webMatchId = $match['GameComId'];
+                }
 
-		}
+                else{
+                        $retour = mysqli_query($conn,"UPDATE TableMatch
+                        SET eq_dom='{$match['eqDom']}',
+                        score_dom=$scoreDom,
+                        eq_vis='{$match['eqVis']}',
+                        score_vis=$scoreVis,
+                        statut='{$match['etat']}',
+                        matchIdRef='{$match['matchLongId']}',
+                        ligueRef='{$match['ligueId']}',
+                        date='$maDate',
+                        cleValeur='{$match['cleValeur']}',
+                        arenaId=$arenaId,
+                        TSDMAJ=NOW()
+                        WHERE match_id='{$match['GameComId']}'");
 
-			
+                        $webMatchId = $match['GameComId'];
 
-		
+                }
 
-		
 
-				
-				$retObj = array("GameLocId"=>$match['GameLocId'], "GameComId"=>$webMatchId);
-				array_push($syncOK, $retObj);
-		
-			}		
-		}
+
+
+
+
+
+
+                                $retObj = array("GameLocId"=>$match['GameLocId'], "GameComId"=>$webMatchId);
+                                array_push($syncOK, $retObj);
+
+                        }
+                }
 
 echo json_encode($syncOK);
 
