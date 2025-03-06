@@ -51,13 +51,28 @@ if ($evenements != null) {
 
 		} else {
 				// Sécurisation des variables en forçant les types attendus
-				$gameStringID = (int) $evenement['GameStringID'];
+				$gameStringID = (string) $evenement['GameStringID'];
 				$teamID = (int) $evenement['TeamID'];
 				$playerID = (int) $evenement['PlayerID'];
 				$chrono = (int) $evenement['chrono'];
 				$eventTypeDetailID = (int) $evenement['EventTypeDetailID'];
 				$eventTypeID = (int) $evenement['EventTypeID'];
 				$id = (int) $evenement['id'];
+
+				// Récupération du code et sous-code de l'EventType
+				$stmt = mysqli_prepare($conn, "SELECT Code, Subcode FROM EventType WHERE EventTypeId = ? LIMIT 1");
+				mysqli_stmt_bind_param($stmt, "i", $eventTypeID);
+				mysqli_stmt_execute($stmt);
+				mysqli_stmt_bind_result($stmt, $code, $subcode);
+				mysqli_stmt_fetch($stmt);
+				mysqli_stmt_close($stmt);
+
+				// Vérification des résultats
+				if ($code === null || $subcode === null) {
+					die("Erreur: Aucun Code/Subcode trouvé pour EventTypeId={$eventTypeID}");
+				}
+
+
 
 				if (is_null($evenement['EventComId'])) {
 					
@@ -70,7 +85,7 @@ if ($evenements != null) {
 				);
 
 				// Liaison des paramètres (tous les paramètres sont des entiers)
-				mysqli_stmt_bind_param($stmt, "iiiiii", $gameStringID, $teamID, $playerID, $chrono, $eventTypeDetailID, $eventTypeID);
+				mysqli_stmt_bind_param($stmt, "iiiiii", $gameStringID, $teamID, $playerID, $chrono, $code, $subcode);
 
 				// Exécution de la requête
 				$success = mysqli_stmt_execute($stmt);
@@ -98,19 +113,6 @@ if ($evenements != null) {
 			} else {
 				// Sécurisation des variables
 				$eventComId = mysqli_real_escape_string($conn, $evenement['EventComId']);
-
-				// Récupération du code et sous-code de l'EventType
-				$stmt = mysqli_prepare($conn, "SELECT Code, Subcode FROM Eventtype WHERE EventTypeId = ? LIMIT 1");
-				mysqli_stmt_bind_param($stmt, "i", $eventTypeID);
-				mysqli_stmt_execute($stmt);
-				mysqli_stmt_bind_result($stmt, $code, $subcode);
-				mysqli_stmt_fetch($stmt);
-				mysqli_stmt_close($stmt);
-
-				// Vérification des résultats
-				if ($code === null || $subcode === null) {
-					die("Erreur: Aucun Code/Subcode trouvé pour EventTypeId={$eventTypeID}");
-				}
 
 				// Mise à jour de la table TableEvenement0 avec une requête préparée
 				$stmt = mysqli_prepare(
