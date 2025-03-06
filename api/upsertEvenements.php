@@ -47,7 +47,7 @@ if ($evenements != null) {
 			$qDel = "DELETE FROM TableEvenement0 WHERE event_id='{$evenement['EventComId']}'";
 			mysqli_query($conn, $qDel) or die(mysqli_error($conn) . $qDel);
 			$retObj = array("EventComId" => mysqli_insert_id($conn), "etatSync" => 10);
-			array_push($syncOKdetail, $retObj);
+			array_push($syncOK, $retObj);
 
 		} else {
 				// Sécurisation des variables en forçant les types attendus
@@ -89,7 +89,7 @@ if ($evenements != null) {
 
 				// Ajout du résultat dans le tableau de synchronisation
 				$retObj = array("EventComId" => $eventComId, "etatSync" => 12);
-				array_push($syncOKdetail, $retObj);
+				array_push($syncOK, $retObj);
 
 				// Fermeture du statement
 				mysqli_stmt_close($stmt);
@@ -176,7 +176,7 @@ if ($noMatchId != 0) {
 }
 
 $deSyncMatch = 1;
-
+echo json_encode($syncOK);
 mysqli_close($conn);
 
 ?>
