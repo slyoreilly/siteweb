@@ -80,7 +80,7 @@ if ($evenements != null) {
 				$stmt = mysqli_prepare(
 					$conn,
 					"INSERT INTO TableEvenement0 
-    (match_event_id, equipe_event_id, joueur_event_ref, chrono, souscode, code, noSequence) 
+    (match_event_id, equipe_event_id, joueur_event_ref, chrono, code, souscode, noSequence) 
     VALUES (?, ?, ?, ?, ?, ?, 0)"
 				);
 
