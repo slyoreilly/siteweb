@@ -46,7 +46,7 @@ if ($evenements != null) {
 
 			$qDel = "DELETE FROM TableEvenement0 WHERE event_id='{$evenement['EventComId']}'";
 			mysqli_query($conn, $qDel) or die(mysqli_error($conn) . $qDel);
-			$retObj = array("EventComId" => mysqli_insert_id($conn), "etatSync" => 10);
+			$retObj = array("id" => $evenement['id'], "EventComId" => mysqli_insert_id($conn), "etatSync" => 10);
 			array_push($syncOK, $retObj);
 
 		} else {
@@ -57,6 +57,7 @@ if ($evenements != null) {
 				$chrono = (int) $evenement['chrono'];
 				$eventTypeDetailID = (int) $evenement['EventTypeDetailID'];
 				$eventTypeID = (int) $evenement['EventTypeID'];
+				$id = (int) $evenement['id'];
 
 				if (is_null($evenement['EventComId'])) {
 					
@@ -88,7 +89,7 @@ if ($evenements != null) {
 				}
 
 				// Ajout du résultat dans le tableau de synchronisation
-				$retObj = array("EventComId" => $eventComId, "etatSync" => 12);
+				$retObj = array("id" => $id, "EventComId" => $eventComId, "etatSync" => 12);
 				array_push($syncOK, $retObj);
 
 				// Fermeture du statement
@@ -135,7 +136,7 @@ if ($evenements != null) {
 				}
 
 				// Retour des résultats
-				$retObj = array("EventComId" => $eventComId, "etatSync" => 12);
+				$retObj = array("id" => $id, "EventComId" => $eventComId, "etatSync" => 12);
 				array_push($syncOK, $retObj);
 			}
 
