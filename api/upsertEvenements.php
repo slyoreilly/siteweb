@@ -85,7 +85,7 @@ if ($evenements != null) {
 				);
 
 				// Liaison des paramètres (tous les paramètres sont des entiers)
-				mysqli_stmt_bind_param($stmt, "iiiiii", $gameStringID, $teamID, $playerID, $chrono, $code, $subcode);
+				mysqli_stmt_bind_param($stmt, "siiiii", $gameStringID, $teamID, $playerID, $chrono, $code, $subcode);
 
 				// Exécution de la requête
 				$success = mysqli_stmt_execute($stmt);
@@ -128,7 +128,7 @@ if ($evenements != null) {
      WHERE event_id = ?"
 				);
 
-				mysqli_stmt_bind_param($stmt, "iiiiiss", $gameStringID, $teamID, $playerID, $chrono, $code, $subcode, $eventComId);
+				mysqli_stmt_bind_param($stmt, "siiiiii", $gameStringID, $teamID, $playerID, $chrono, $code, $subcode, $eventComId);
 				$success = mysqli_stmt_execute($stmt);
 				mysqli_stmt_close($stmt);
 
