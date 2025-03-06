@@ -14,6 +14,13 @@
 ////////////////////////////////////////////////////////////
 
 require '../scriptsphp/defenvvar.php';
+$connCM = mysqli_connect($db_host, $db_user, $db_pwd, $database, $db_port);
+if (!$connCM) {
+	die("Connection failed: " . mysqli_connect_error());
+}
+mysqli_query($connCM, "SET NAMES 'utf8'");
+mysqli_query($connCM, "SET CHARACTER SET 'utf8'");
+mysqli_set_charset($connCM, "utf8");
 $tableLigue = 'Ligue';
 $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
