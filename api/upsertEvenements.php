@@ -53,7 +53,7 @@ if ($evenements != null) {
 				// Sécurisation des variables en forçant les types attendus
 				$gameStringID = (string) $evenement['GameStringID'];
 				$teamID = (int) $evenement['TeamID'];
-				$playerID = (int) $evenement['PlayerID'];
+				$playerID = (int) $evenement['PlayerComID'];
 				$chrono = (int) $evenement['chrono'];
 				$eventTypeDetailID = (int) $evenement['EventTypeDetailID'];
 				$eventTypeID = (int) $evenement['EventTypeID'];
