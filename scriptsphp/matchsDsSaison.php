@@ -35,8 +35,12 @@ $tableEquipe = 'TableEquipe';
 ////////////////////////////////////////////////////////////
 
 if (!isset($deSyncMatch)) {
-
+	if($workEnv=="production"){
 $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+} else{
+	$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database, $db_port);
+}
+
 // Check connection
 if (!$conn) {
 	die("Connection failed: " . mysqli_connect_error());
