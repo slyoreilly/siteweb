@@ -37,6 +37,10 @@ if ($evenements != null) {
 
 	foreach ($evenements as $evenement) {
 
+		$evenement['TeamID'] = $evenement['TeamID'] ?? null;
+		$evenement['PlayerComID'] = $evenement['PlayerComID'] ?? null;
+		$evenement['etatSync'] = $evenement['etatSync'] ?? null;
+
 		// retourner le but, sans correction de chrono.
 
 		if (isset($heure)) {
