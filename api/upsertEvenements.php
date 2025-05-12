@@ -138,7 +138,7 @@ if ($evenements != null) {
 
 				// Vérification de la mise à jour
 				if (!$success || mysqli_affected_rows($conn) <= 0) {
-					die("Erreur: Mise à jour échouée pour event_id={$eventComId}");
+					die("Erreur: Mise à jour échouée pour event_id={$eventComId} "."Tentative UPDATE avec paramètres : gameStringID=$gameStringID, teamID=$teamID, playerID=$playerID, chrono=$chrono, code=$code, subcode=$subcode, eventComId=$eventComId");
 				}
 
 				// Retour des résultats
