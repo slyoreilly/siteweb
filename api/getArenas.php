@@ -30,7 +30,7 @@ if (($username !== 0) && ($username != null)) {
 		 TableArena.arenaId,
 		 TableArena.nomArena,
 		 TableArena.nomGlace,
-		 TableArena.tailleGlace,
+		 TableArena.tailleGlace
 						FROM TableUser
 						LEFT JOIN AbonnementLigue
 							ON (TableUser.noCompte=AbonnementLigue.userid)
@@ -43,7 +43,7 @@ if (($username !== 0) && ($username != null)) {
 						WHERE username='{$username}' 
 							AND abonLigueArena.finAbon>Now() 
 							AND abonLigueArena.debutAbon<Now()  
-						group by TableArena.arenaId
+						GROUP BY TableArena.arenaId, TableArena.nomArena, TableArena.nomGlace, TableArena.tailleGlace
 						 	") or die(mysqli_error($conn));
 							
 
