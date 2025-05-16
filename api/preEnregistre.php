@@ -17,8 +17,8 @@ foreach ($params as $item) {
     $nomMatch = $video['nomMatch'];
     $rSServ = $video['chrono'] + $avanceServeur;
 
-    // Nouveaux champs explicites
-    $type = isset($video['type']) ? intval($video['type']) : 0;
+    $cv = isset($video['cv']) ? json_decode(stripslashes($video['cv']), true) : [];
+    $type = isset($cv['type']) ? $cv['type'] : "0";
     $reference = isset($video['reference']) ? intval($video['reference']) : 0;
 
     $qSel = "SELECT * FROM Video 
@@ -37,7 +37,9 @@ foreach ($params as $item) {
         $url = "http://$emplacement/lookatthis/$nomFic";
         $monObj['etat'] = ($esSimple != 12 && !file_exists($url)) ? 'insert' : 'deja';
     } else {
-        if ($type != 5) $type = 0;
+        if ($type != "5") $type = "0";
+        $cleValeur = json_encode(['type' => $type]);
+
         $query = "INSERT INTO Video (nomFichier, nomMatch, chrono, camId, type, reference, emplacement)
                   VALUES ('$nomFic', '$nomMatch', '$rSServ', '$camID', '$type', '$reference', '$emplacement')";
         mysqli_query($conn, $query) or die("Erreur: $query\n" . mysqli_error($conn));
