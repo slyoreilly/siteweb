@@ -25,7 +25,7 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
 
     $videos = [];
     while (mysqli_stmt_fetch($stmt)) {
-        $videos[] = "https://{$emplacement}/lookatthis/{$nomFichier}";
+        $videos[] = "https://{$emplacement}lookatthis{$nomFichier}";
     }
 
     mysqli_stmt_close($stmt);
