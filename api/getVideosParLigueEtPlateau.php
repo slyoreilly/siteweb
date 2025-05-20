@@ -12,8 +12,10 @@ if (!$ligueId || !$plateauId) {
 // Étape 1 : chercher tous les events liés à la ligue et au plateau
 $sql = "SELECT e.event_id, e.chrono
         FROM TableEvenement0 e
-        JOIN TableMatch m ON e.match_id = m.matchId
-        WHERE m.ligueRef = ? AND m.arenaId = ?";
+        JOIN TableMatch m ON e.match_event_id = m.matchIdRef
+        WHERE m.ligueRef = ? AND m.arenaId = ? ORDER BY  e.chrono DESC 
+        LIMIT 100
+        ";
 
 if ($stmt = mysqli_prepare($conn, $sql)) {
     mysqli_stmt_bind_param($stmt, "ii", $ligueId, $plateauId);
