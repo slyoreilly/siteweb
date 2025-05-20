@@ -1,5 +1,5 @@
 <?php
-require_once('../scriptsphp/defenvvar.php'); // Connexion MySQL
+require '../scriptsphp/defenvvar.php'; // Connexion MySQL
 
 $ligueId = isset($_GET['ligueId']) ? intval($_GET['ligueId']) : null;
 $plateauId = isset($_GET['plateauId']) ? intval($_GET['plateauId']) : null;
