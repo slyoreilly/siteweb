@@ -12,17 +12,13 @@ $httpHost = $_SERVER['HTTP_HOST'] ?? 'N/A';
 $scriptName = $_SERVER['SCRIPT_NAME'] ?? 'N/A';
 $remoteAddr = $_SERVER['REMOTE_ADDR'] ?? 'N/A';
 
-error_log("🔧 Environnement : WORK_ENV = " . var_export($workEnv, true));
-error_log("🌐 HTTP_HOST = " . $httpHost);
-error_log("📄 SCRIPT_NAME = " . $scriptName);
-error_log("📡 REMOTE_ADDR = " . $remoteAddr);
+error_log("🔧 WORK_ENV = " . var_export($workEnv, true));
+error_log("🌐 HTTP_HOST = $httpHost | 📄 SCRIPT_NAME = $scriptName | 📡 REMOTE_ADDR = $remoteAddr");
 
-// Inclusion de la config
 require '../scriptsphp/defenvvar.php';
 global $conn, $db_host, $db_user, $db_pwd, $database, $db_port;
 
-// Log détails de connexion
-error_log("🛠️ DB_HOST = $db_host | DB_USER = $db_user | DATABASE = $database | DB_PORT = " . ($db_port ?? 'default'));
+error_log("🛠️ DB_HOST = $db_host | DB_USER = $db_user | DB = $database | PORT = " . ($db_port ?? 'default'));
 
 if (!$conn || !($conn instanceof mysqli)) {
     error_log("❌ Connexion MySQL invalide ou absente.");
@@ -34,11 +30,10 @@ $ligueId = isset($_GET['ligueId']) ? intval($_GET['ligueId']) : null;
 $plateauId = isset($_GET['plateauId']) ? intval($_GET['plateauId']) : null;
 
 if (!$ligueId || !$plateauId) {
-    error_log("❌ Paramètres GET manquants : ligueId={$ligueId}, plateauId={$plateauId}");
+    error_log("❌ Paramètres manquants : ligueId=$ligueId, plateauId=$plateauId");
     echo json_encode(["error" => "Paramètres ligueId et plateauId requis."]);
     exit;
 }
-error_log("✅ Paramètres GET reçus : ligueId=$ligueId, plateauId=$plateauId");
 
 $sql = "SELECT e.event_id, e.chrono
         FROM TableEvenement0 e
@@ -52,21 +47,33 @@ $evenements = [];
 if ($stmt = mysqli_prepare($conn, $sql)) {
     mysqli_stmt_bind_param($stmt, "ii", $ligueId, $plateauId);
     if (!mysqli_stmt_execute($stmt)) {
-        error_log("❌ Échec exécution requête principale : " . mysqli_error($conn));
-        die(json_encode(["error" => "Erreur exécution requête principale."]));
+        error_log("❌ Échec requête principale : " . mysqli_error($conn));
+        die(json_encode(["error" => "Erreur requête principale."]));
     }
 
     mysqli_stmt_bind_result($stmt, $eventId, $chrono);
-
     while (mysqli_stmt_fetch($stmt)) {
         $evenements[] = ["eventId" => $eventId, "chrono" => $chrono];
     }
-
     mysqli_stmt_close($stmt);
-    error_log("✅ Nombre d'événements récupérés : " . count($evenements));
+    error_log("✅ Événements récupérés : " . count($evenements));
 } else {
-    error_log("❌ Préparation requête principale échouée : " . mysqli_error($conn));
+    error_log("❌ Préparation échouée : " . mysqli_error($conn));
     die(json_encode(["error" => "Erreur préparation requête principale."]));
+}
+
+// 🔄 Reconnexion MySQL si nécessaire
+if (!mysqli_ping($conn)) {
+    error_log("🔄 Reconnexion MySQL...");
+    $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database, $db_port ?? 3306);
+    if (!$conn) {
+        error_log("❌ Reconnexion échouée : " . mysqli_connect_error());
+        die(json_encode(["error" => "Reconnexion MySQL échouée"]));
+    }
+    mysqli_query($conn, "SET NAMES 'utf8'");
+    mysqli_query($conn, "SET CHARACTER SET 'utf8'");
+    mysqli_set_charset($conn, "utf8");
+    error_log("✅ Reconnexion réussie");
 }
 
 $resultats = [];
@@ -83,11 +90,11 @@ foreach ($evenements as $event) {
                 $videos[] = "https://{$emplacement}/lookatthis/{$nomFichier}";
             }
         } else {
-            error_log("❌ Échec requête vidéo pour eventId={$event["eventId"]} : " . mysqli_error($conn));
+            error_log("❌ Échec requête vidéo eventId={$event["eventId"]} : " . mysqli_error($conn));
         }
         mysqli_stmt_close($stmt2);
     } else {
-        error_log("❌ Échec préparation requête vidéo pour eventId={$event["eventId"]} : " . mysqli_error($conn));
+        error_log("❌ Préparation requête vidéo eventId={$event["eventId"]} : " . mysqli_error($conn));
     }
 
     $resultats[] = [
@@ -97,6 +104,6 @@ foreach ($evenements as $event) {
 }
 
 mysqli_close($conn);
-error_log("✅ Script terminé avec succès");
+error_log("✅ Script terminé");
 echo json_encode($resultats);
 ?>
