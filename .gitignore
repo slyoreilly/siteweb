@@ -1,21 +1,26 @@
+# Répertoires spécifiques à ne pas suivre
 lookatthis/
 phpMyAdmin-old/
 .metadata/
-lookatthis
+backUp/
+backUp
+
+# Fichiers de logs d'erreurs PHP
+error_log
+*/error_log
+**/error_log
+php_error_log
+**/php_error_log
+
+# Fichiers spécifiques à certains IDEs ou systèmes
 /**/*.suo
 /**/slnx.sqlite
-/.vs/VSWorkspaceState.json
-backUp
+/.vs/
+.vscode/
 
-/*/error_log
-scriptserveur/syncsta1_900.sql
-scriptserveur/man
-backUp
-
-/*/error_log
-scriptserveur/syncsta1_900.sql
-scriptserveur/man
+# Fichiers de configuration à ne pas versionner
 scriptsphp/defenvvar.php
+scriptserveur/syncsta1_900.sql
+scriptserveur/man
 php.ini
-/.htaccess
-/*/*php_error_log
+.htaccess
