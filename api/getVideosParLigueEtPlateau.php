@@ -1,5 +1,10 @@
 <?php
-require '../scriptsphp/defenvvar.php'; // Connexion MySQL
+
+// Activation du rapport d'erreurs pour le débogage
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+require '../scriptsphp/defenvvar.php';
 
 $ligueId = isset($_GET['ligueId']) ? intval($_GET['ligueId']) : null;
 $plateauId = isset($_GET['plateauId']) ? intval($_GET['plateauId']) : null;
@@ -9,13 +14,12 @@ if (!$ligueId || !$plateauId) {
     exit;
 }
 
-// Étape 1 : chercher tous les events liés à la ligue et au plateau
 $sql = "SELECT e.event_id, e.chrono
         FROM TableEvenement0 e
         JOIN TableMatch m ON e.match_event_id = m.matchIdRef
-        WHERE m.ligueRef = ? AND m.arenaId = ? ORDER BY  e.chrono DESC 
-        LIMIT 100
-        ";
+        WHERE m.ligueRef = ? AND m.arenaId = ? 
+        ORDER BY e.chrono DESC 
+        LIMIT 100";
 
 if ($stmt = mysqli_prepare($conn, $sql)) {
     mysqli_stmt_bind_param($stmt, "ii", $ligueId, $plateauId);
@@ -50,4 +54,6 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
 } else {
     echo json_encode(["error" => "Erreur SQL principale."]);
 }
+
+mysqli_close($conn);
 ?>
