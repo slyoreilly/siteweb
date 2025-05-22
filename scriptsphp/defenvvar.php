@@ -1,5 +1,7 @@
 <?php
 
+global $conn;
+
 $workEnv = getenv('WORK_ENV');
 if($workEnv=="production"){
     $db_host="localhost";
