@@ -3,6 +3,8 @@
 include_once ($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR . "syncstatsconfig.php");
 
 require '../scriptsphp/defenvvar.php';
+require_once 'creeMatchDeClip.php';
+
 
 $preClips =null;
 if(isset($_POST['clips'])){
@@ -37,7 +39,11 @@ foreach ($clips as $unClip) {
 				
 				$retObj = array("id"=>$unClip["id"],"SyncKey"=>$webIdClip);
 				array_push($syncOK, $retObj);
-		
+
+				if(isset($unClip['plateauId'])&&isset($unClip['ligueId']))
+				{
+					creerMatchSiInexistant($conn, $unClip['GameStringID'], $plateauId, $ligueId);
+				}
 	}
 
 echo json_encode($syncOK);

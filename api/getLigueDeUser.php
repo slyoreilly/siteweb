@@ -80,6 +80,7 @@ while ($rL = mysqli_fetch_array($retourLigue, MYSQLI_ASSOC)) {
             $joueur = array();
             $joueur['SyncKey'] = $j['joueur_id'];
             $joueur['nom'] = $j['NomJoueur'];
+            $joueur['numero'] = $j['NumeroJoueur'];
             if ($j['position'] == 'g' or $j['position'] == 'G') {
                 $joueur['positionId'] = 5;
             } else {
