@@ -107,6 +107,19 @@ if ($evenements != null) {
 					die("Erreur : Aucun ID inséré.");
 				}
 
+				// Récupérer le match_id (noMatchId) correspondant à match_event_id
+				$stmtMatch = mysqli_prepare($conn, "SELECT match_id FROM TableMatch WHERE matchIdRef = ? LIMIT 1");
+				mysqli_stmt_bind_param($stmtMatch, "s", $gameStringID);
+				mysqli_stmt_execute($stmtMatch);
+				mysqli_stmt_bind_result($stmtMatch, $matchId);
+				mysqli_stmt_fetch($stmtMatch);
+				mysqli_stmt_close($stmtMatch);
+
+				// Mettez à jour la variable globale si un match est trouvé
+				if (!empty($matchId)) {
+					$noMatchId = $matchId;
+				}
+
 				// Ajout du résultat dans le tableau de synchronisation
 				$retObj = array("id" => $id, "EventComId" => $eventComId, "etatSync" => 12);
 				array_push($syncOK, $retObj);
@@ -140,6 +153,19 @@ if ($evenements != null) {
 				if (!$success || mysqli_affected_rows($conn) <= 0) {
 					die("Erreur: Mise à jour échouée pour event_id={$eventComId} "."Tentative UPDATE avec paramètres : gameStringID=$gameStringID, teamID=$teamID, playerID=$playerID, chrono=$chrono, code=$code, subcode=$subcode, eventComId=$eventComId");
 				}
+
+				// Récupérer le match_id (noMatchId) correspondant à match_event_id
+				$stmtMatch = mysqli_prepare($conn, "SELECT match_id FROM TableMatch WHERE matchIdRef = ? LIMIT 1");
+				mysqli_stmt_bind_param($stmtMatch, "s", $gameStringID);
+				mysqli_stmt_execute($stmtMatch);
+				mysqli_stmt_bind_result($stmtMatch, $matchId);
+				mysqli_stmt_fetch($stmtMatch);
+				mysqli_stmt_close($stmtMatch);
+
+				if (!empty($matchId)) {
+					$noMatchId = $matchId;
+				}
+
 
 				// Retour des résultats
 				$retObj = array("id" => $id, "EventComId" => $eventComId, "etatSync" => 12);
