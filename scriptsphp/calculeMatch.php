@@ -45,26 +45,26 @@ else{$monMatch['vis']= substr($ID,$i2+1);}
 function trouveIDParNomEqEtLigue($nomEq,$ligueId)
 {
 
-	global $connCM;
-$resultEquipe = mysqli_query($connCM,"SELECT * FROM TableEquipe
+	global $conn;
+$resultEquipe = mysqli_query($conn,"SELECT * FROM TableEquipe
 										JOIN abonEquipeLigue
 											ON (TableEquipe.equipe_id =abonEquipeLigue.equipeId) 
 										WHERE 
 											abonEquipeLigue.ligueId='{$ligueId}'
 										AND
 											TableEquipe.nom_equipe='{$nomEq}'")
-or die(mysqli_error($connCM));  
+or die(mysqli_error($conn));  
 	while($rangeeEquipe=mysqli_fetch_array($resultEquipe))
 	{
 		{return $rangeeEquipe['equipe_id'];// Ce sont de INT
 		}
 	}
-$resultEquipe = mysqli_query($connCM,"SELECT * FROM TableEquipe
+$resultEquipe = mysqli_query($conn,"SELECT * FROM TableEquipe
 										WHERE 
 											ligue_equipe_ref='{$ligueId}'
 										AND
 											nom_equipe='{$nomEq}'")
-or die(mysqli_error($connCM));  
+or die(mysqli_error($conn));  
 	while($rangeeEquipe=mysqli_fetch_array($resultEquipe))
 	{
 		{return $rangeeEquipe['equipe_id'];// Ce sont de INT
@@ -78,10 +78,11 @@ or die(mysqli_error($connCM));
 
 function devineLigueId($dom,$vis)
 {
-$rDom = mysqli_query($connCM,"SELECT ligue_equipe_ref FROM TableEquipe WHERE nom_equipe='$dom' ORDER BY ligue_equipe_ref ASC")
-or die(mysqli_error($connCM));  
-$rVis= mysqli_query($connCM,"SELECT ligue_equipe_ref FROM TableEquipe WHERE nom_equipe='$vis' ORDER BY ligue_equipe_ref ASC")
-or die(mysqli_error($connCM));  
+	global $conn;
+$rDom = mysqli_query($conn,"SELECT ligue_equipe_ref FROM TableEquipe WHERE nom_equipe='$dom' ORDER BY ligue_equipe_ref ASC")
+or die(mysqli_error($conn));  
+$rVis= mysqli_query($conn,"SELECT ligue_equipe_ref FROM TableEquipe WHERE nom_equipe='$vis' ORDER BY ligue_equipe_ref ASC")
+or die(mysqli_error($conn));  
 $nbDom=mysqli_num_rows($rDom);
 $nbVis=mysqli_num_rows($rVis);
 if($nbDom==1&&$nbVis<=1)
@@ -146,8 +147,8 @@ $dernierMatch=mysql_result($drSaison, 0);
 	$nomEq = array();
 	$qSelEq="SELECT * FROM TableEquipe WHERE ligue_equipe_ref = '{$ligueId}'";
 //	echo $qSelEq;
-$resultEquipe = mysqli_query($connCM,$qSelEq)
-or die(mysqli_error($connCM));  
+$resultEquipe = mysqli_query($conn,$qSelEq)
+or die(mysqli_error($conn));  
 		$Ine=0;
 
 		
@@ -169,11 +170,11 @@ $eqVisID = 2;
 	// des matchs dans TableMatch
 	//////////////////////////////////
 	
-$sqlVerifMatch = mysqli_query($connCM,"SELECT * 
+$sqlVerifMatch = mysqli_query($conn,"SELECT * 
 									FROM TableMatch 
 								WHERE ligueRef = '{$ligueId}' 
 									AND statut='F'")
-or die(mysqli_error($connCM));  
+or die(mysqli_error($conn));  
 $listeMatchEnr = array();	
 $IV=0;	
 while($rangeeVM=mysqli_fetch_array($sqlVerifMatch))
@@ -189,11 +190,11 @@ $Ine=0;
 while($Ine<count($nomEq))// Nombre d'équipe dans la ligue.
 {
 
-$sqlVerifEvent = mysqli_query($connCM,"SELECT * 
+$sqlVerifEvent = mysqli_query($conn,"SELECT * 
 								FROM TableEvenement0 
 								WHERE equipe_event_id = '{$nomEq[$Ine]}' 
 								GROUP BY match_event_id")
-or die(mysqli_error($connCM));  
+or die(mysqli_error($conn));  
 $Ieq =0;
 
 while($rangeeVE=mysqli_fetch_array($sqlVerifEvent))				// Vérification: Est-ce que tout les évènements font partis d'un match enregistré.
@@ -242,7 +243,7 @@ while($Iae<count($aEnr)) // Tous les matchs a être recalculés pour enregistrem
 	
 
 			$eqFake=array();
-		$rEqFake = mysqli_query($connCM,"SELECT equipe_event_id, chrono, event_id ,joueur_event_ref
+		$rEqFake = mysqli_query($conn,"SELECT equipe_event_id, chrono, event_id ,joueur_event_ref
 									FROM TableEvenement0 
 								WHERE match_event_id = '{$aEnr[$Iae]}' AND code=10 AND souscode=0");
 						
@@ -278,18 +279,18 @@ while($Iae<count($aEnr)) // Tous les matchs a être recalculés pour enregistrem
 	unset($compteVis);
 
 	// Vérification s'il y a une inscription dans tablematch
-	$rEnr = mysqli_query($connCM,"SELECT * 
+	$rEnr = mysqli_query($conn,"SELECT * 
 									FROM TableMatch 
 								WHERE matchIdRef = '{$aEnr[$Iae]}'")
-		or die(mysqli_error($connCM));  
+		or die(mysqli_error($conn));  
 	$isEnr = mysqli_num_rows($rEnr);		
 
 	// Obtention du code de période pour tableevenement0
-	$rPeriode = mysqli_query($connCM,"SELECT MAX(souscode) 
+	$rPeriode = mysqli_query($conn,"SELECT MAX(souscode) 
 								FROM TableEvenement0 
 								WHERE match_event_id = '{$aEnr[$Iae]}' 
 								AND code=11")
-		or die(mysqli_error($connCM));  
+		or die(mysqli_error($conn));  
 		$statutAr=mysqli_fetch_row($rPeriode);
 		if($statutAr['souscode']<10)
 		{$statut=$statutAr['souscode'];}
@@ -301,29 +302,29 @@ while($Iae<count($aEnr)) // Tous les matchs a être recalculés pour enregistrem
 		
 
 	//Vérifivation si le match est complet pour enregistrement définitif.
-	$matchFini = mysqli_query($connCM,"SELECT * 
+	$matchFini = mysqli_query($conn,"SELECT * 
 								FROM TableEvenement0 
 								WHERE match_event_id = '{$aEnr[$Iae]}' 
 								AND code=10 
 								AND souscode=10")
-		or die(mysqli_error($connCM));  
+		or die(mysqli_error($conn));  
 	$fini = mysqli_num_rows($matchFini);		
 	
 	
 	///Compte le score
-	$compteDom = mysqli_query($connCM,"SELECT * 
+	$compteDom = mysqli_query($conn,"SELECT * 
 								FROM TableEvenement0 
 								WHERE match_event_id = '{$aEnr[$Iae]}' 
 									AND code=0 
 									AND equipe_event_id =  '{$eDom}'")
-		or die(mysqli_error($connCM));  
+		or die(mysqli_error($conn));  
 
-	$compteVis = mysqli_query($connCM,"SELECT * 
+	$compteVis = mysqli_query($conn,"SELECT * 
 								FROM TableEvenement0 
 								WHERE match_event_id = '{$aEnr[$Iae]}' 
 									AND code=0 
 									AND equipe_event_id = '{$eVis}'")
-		or die(mysqli_error($connCM));  
+		or die(mysqli_error($conn));  
 	$cDom = mysqli_num_rows($compteDom);
 	$cVis = mysqli_num_rows($compteVis);		
 								
@@ -338,8 +339,8 @@ while($Iae<count($aEnr)) // Tous les matchs a être recalculés pour enregistrem
 					$cFD=0;
 					$cFV=0;
 					
-					$resFus= mysqli_query($connCM,"SELECT  * FROM TableEvenement0 
-										WHERE match_event_id = '{$aEnr[$Iae]}' AND code=2 AND souscode=1") or die(mysqli_error($connCM)); 
+					$resFus= mysqli_query($conn,"SELECT  * FROM TableEvenement0 
+										WHERE match_event_id = '{$aEnr[$Iae]}' AND code=2 AND souscode=1") or die(mysqli_error($conn)); 
 									 
 					while($rangFus=mysqli_fetch_array($resFus))
 					{
@@ -356,11 +357,11 @@ while($Iae<count($aEnr)) // Tous les matchs a être recalculés pour enregistrem
 			
 			
 			if($isEnr==0)
-				{$retour = mysqli_query($connCM,"INSERT 
+				{$retour = mysqli_query($conn,"INSERT 
 								INTO TableMatch 
 									(eq_dom, score_dom, eq_vis, score_vis, matchIdRef, ligueRef, date,statut) 
 								VALUES 
-									('{$eDom}', '{$cDom}', '{$eVis}', '{$cVis}','{$aEnr[$Iae]}','{$ligueId}','{$aDate}','F')")or die(mysqli_error($connCM)."INSERT 	INTO TableMatch");	
+									('{$eDom}', '{$cDom}', '{$eVis}', '{$cVis}','{$aEnr[$Iae]}','{$ligueId}','{$aDate}','F')")or die(mysqli_error($conn)."INSERT 	INTO TableMatch");	
 				
 							$message = "Création match dans scriptsphp/calculeMatch, 1er appel.";
 							$log  = $message.' - '.date("F j, Y, g:i:s a").PHP_EOL.
@@ -368,7 +369,7 @@ while($Iae<count($aEnr)) // Tous les matchs a être recalculés pour enregistrem
 							file_put_contents('../test/logTest.txt', $log, FILE_APPEND);	
 				}
 			else
-				{$retour = mysqli_query($connCM,"UPDATE TableMatch
+				{$retour = mysqli_query($conn,"UPDATE TableMatch
 											SET score_dom='{$cDom}', score_vis='{$cVis}' ,statut='F'
 											WHERE matchIdRef='{$aEnr[$Iae]}'");
 				}
@@ -376,11 +377,11 @@ while($Iae<count($aEnr)) // Tous les matchs a être recalculés pour enregistrem
 		}
 	else{
 			if($isEnr==0)
-				{$retour = mysqli_query($connCM,"INSERT 
+				{$retour = mysqli_query($conn,"INSERT 
 								INTO TableMatch 
 									(eq_dom, score_dom, eq_vis, score_vis, matchIdRef, ligueRef, date,statut) 
 								VALUES 
-									('{$eDom}', '{$cDom}', '{$eVis}', '{$cVis}','{$aEnr[$Iae]}','{$ligueId}','{$aDate}','{$statut}')")or die(mysqli_error($connCM)."INSERT 	INTO TableMatch");	
+									('{$eDom}', '{$cDom}', '{$eVis}', '{$cVis}','{$aEnr[$Iae]}','{$ligueId}','{$aDate}','{$statut}')")or die(mysqli_error($conn)."INSERT 	INTO TableMatch");	
 							$message = "Création match dans scriptsphp/calculeMatch, 2e appel.";
 							$log  = $message.' - '.date("F j, Y, g:i:s a").PHP_EOL.
 	        				"-------------------------".PHP_EOL;
@@ -388,7 +389,7 @@ while($Iae<count($aEnr)) // Tous les matchs a être recalculés pour enregistrem
 			
 			}
 			else
-				{$retour = mysqli_query($connCM,"UPDATE TableMatch
+				{$retour = mysqli_query($conn,"UPDATE TableMatch
 											SET score_dom='{$cDom}', score_vis='{$cVis}' ,statut='{$statut}'
 											WHERE matchIdRef='{$aEnr[$Iae]}'	");
 				}
