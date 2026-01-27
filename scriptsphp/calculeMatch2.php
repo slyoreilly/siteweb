@@ -29,6 +29,7 @@ $tableEquipe = 'TableEquipe';
 
 function trouveIDParNomEqEtLigue($nomEq,$ligueId)
 {
+	global $connCM;
 $resultEquipe = mysqli_query($connCM, "SELECT * FROM TableEquipe
 										JOIN abonEquipeLigue
 											ON (TableEquipe.equipe_id =abonEquipeLigue.equipeId) 
@@ -61,6 +62,7 @@ or die(mysqli_error($connCM));
 
 function devineLigueId($dom,$vis)
 {
+	global $connCM;
 $rDom = mysqli_query($connCM,"SELECT ligue_equipe_ref FROM TableEquipe WHERE nom_equipe='$dom' ORDER BY ligue_equipe_ref ASC")
 or die(mysqli_error($connCM));  
 $rVis= mysqli_query($connCM,"SELECT ligue_equipe_ref FROM TableEquipe WHERE nom_equipe='$vis' ORDER BY ligue_equipe_ref ASC")
@@ -90,7 +92,7 @@ return 0;
 	///////////////////////////////////
 	function CalculeMatch($ligueId){
 	
-	
+	global $connCM;
 	$saisonId="null";
 		$DMX=4;
 	//if(!isset($deSyncMatch))
