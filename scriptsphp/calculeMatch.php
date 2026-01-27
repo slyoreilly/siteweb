@@ -44,6 +44,8 @@ else{$monMatch['vis']= substr($ID,$i2+1);}
 
 function trouveIDParNomEqEtLigue($nomEq,$ligueId)
 {
+
+	global $connCM;
 $resultEquipe = mysqli_query($connCM,"SELECT * FROM TableEquipe
 										JOIN abonEquipeLigue
 											ON (TableEquipe.equipe_id =abonEquipeLigue.equipeId) 
