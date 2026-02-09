@@ -180,32 +180,56 @@ if ($evenements != null) {
 	}
 }
 
-
-
 /// Voir explications début du foreach
 if ($noMatchId != 0) {
-	if ($workEnv == "production") {
-		$url = 'http://syncstats.com/scriptsphp/calculeUnMatch.php';
-	} else {
-		$url = 'http://vieuxsite.sm.syncstats.ca/scriptsphp/calculeUnMatch.php';
-	}
-	$data = array('noMatchId' => $noMatchId);
 
-	// use key 'http' even if you send the request to https://...
-	$options = array(
-		'http' => array(
-			'header' => "Content-type: application/x-www-form-urlencoded\r\n",
-			'method' => 'POST',
-			'content' => http_build_query($data)
-		)
-	);
-	$context = stream_context_create($options);
-	$result = file_get_contents($url, false, $context);
-	if ($result === FALSE) {
-		error_log("erreur dans calcule match, 926", 0);
+    if ($workEnv == "production") {
+        $url = 'https://syncstats.com/scriptsphp/calculeUnMatch.php';
+    } else {
+        $url = 'http://vieuxsite.sm.syncstats.ca/scriptsphp/calculeUnMatch.php';
+    }
 
-	}
-	$memNoMatchId = $noMatchId;
+    // Données POST
+    $postData = http_build_query([
+        'noMatchId' => (int)$noMatchId
+    ]);
+
+    $ch = curl_init($url);
+
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,      // récupérer la réponse
+        CURLOPT_POST => true,                // POST
+        CURLOPT_POSTFIELDS => $postData,     // données
+        CURLOPT_TIMEOUT => 10,               // timeout total
+        CURLOPT_CONNECTTIMEOUT => 5,          // timeout connexion
+        CURLOPT_FOLLOWLOCATION => true,       // suivre redirections
+        CURLOPT_HTTPHEADER => [
+            'Content-Type: application/x-www-form-urlencoded',
+            'Content-Length: ' . strlen($postData)
+        ],
+    ]);
+
+    $result = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlErr  = curl_error($ch);
+
+    curl_close($ch);
+
+    // 🔍 Vérifications ROBUSTES
+    if ($result === false || $httpCode !== 200) {
+        error_log(
+            "calculeUnMatch CURL ERROR | match={$noMatchId} | http={$httpCode} | err={$curlErr}",
+            0
+        );
+    } elseif (trim($result) === '') {
+        error_log(
+            "calculeUnMatch réponse vide | match={$noMatchId}",
+            0
+        );
+    }
+
+    // Pour éviter les doubles calculs
+    $memNoMatchId = $noMatchId;
 }
 
 $deSyncMatch = 1;
