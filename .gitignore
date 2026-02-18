@@ -24,3 +24,4 @@ scriptserveur/syncsta1_900.sql
 scriptserveur/man
 php.ini
 .htaccess
+syncscript/error_log_vieux

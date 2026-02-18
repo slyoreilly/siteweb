@@ -355,35 +355,64 @@ $qLigues = "SELECT * FROM Ligue
 
 					
 					$IL2=0;
-while($r = mysqli_fetch_array($resultLigues)) {
+$IL2 = 0;
 
-    $vecLigues[]=$r;
-    $vecLigues[$IL2]['ligueId']=$r['ID_Ligue'];
-    $vecLigues[$IL2]['nomLigue']=$r['Nom_Ligue'];
-	$vecLigues[$IL2]['sportId']=1;
-    $cleValeur=json_decode($r['cleValeur']);
-	if(!is_null($cleValeur)){
-		if(!is_null($cleValeur->parametres)){
-			if(strcmp($cleValeur->parametres->sport,"baseball")==0){
-				$vecLigues[$IL2]['sportId']=2;
-			}
-			if(strcmp($cleValeur->parametres->sport,"dek")==0){
-				$vecLigues[$IL2]['sportId']=3;
-			}
-			if(strcmp($cleValeur->parametres->sport,"basketball")==0){
-				$vecLigues[$IL2]['sportId']=4;
-			}
-			if(strcmp($cleValeur->parametres->sport,"soccer")==0){
-				$vecLigues[$IL2]['sportId']=5;
-			}
-		}
-	}
+while ($r = mysqli_fetch_array($resultLigues)) {
 
+    $vecLigues[] = $r;
 
-	$IL2++;
+    $vecLigues[$IL2]['ligueId']   = $r['ID_Ligue'];
+    $vecLigues[$IL2]['nomLigue']  = $r['Nom_Ligue'];
+
+    // Sport par défaut = Hockey
+    $vecLigues[$IL2]['sportId'] = 1;
+
+    $cleValeur = json_decode($r['cleValeur']);
+
+    // Vérification JSON valide
+    if (json_last_error() === JSON_ERROR_NONE && is_object($cleValeur)) {
+
+        if (isset($cleValeur->parametres) && 
+            is_object($cleValeur->parametres) && 
+            isset($cleValeur->parametres->sport)) {
+
+            $sport = strtolower(trim($cleValeur->parametres->sport));
+
+            switch ($sport) {
+                case "baseball":
+                    $vecLigues[$IL2]['sportId'] = 2;
+                    break;
+
+                case "dek":
+                    $vecLigues[$IL2]['sportId'] = 3;
+                    break;
+
+                case "basketball":
+                    $vecLigues[$IL2]['sportId'] = 4;
+                    break;
+
+                case "soccer":
+                    $vecLigues[$IL2]['sportId'] = 5;
+                    break;
+
+                default:
+                    // Sport inconnu → garder valeur par défaut
+                    break;
+            }
+
+        } else {
+            // Optionnel : journaliser les ligues sans sport
+            // error_log("Ligue sans sport défini - ID: " . $r['ID_Ligue']);
+        }
+
+    } else {
+        // Optionnel : JSON invalide
+        // error_log("JSON invalide pour ligue ID: " . $r['ID_Ligue']);
     }
 
+    $IL2++;
 }
+
 
 $repSite = array();
 
