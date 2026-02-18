@@ -906,7 +906,7 @@ foreach ($leMatch as $evenement) {
 	$IJ++;
 	//echo json_encode($syncOK);
 }
-
+/*   Quarantaire 02-2026
 /// Voir explications début du foreach
 	if($noMatchId!=0){
 		 if($workEnv=="production"){
@@ -931,7 +931,37 @@ foreach ($leMatch as $evenement) {
 
 					}
 					$memNoMatchId=$noMatchId;
-	}
+	}*/
+if ($noMatchId != 0) {
+
+    // Protection anti-boucle : éviter recalcul immédiat du même match
+    if (!isset($memNoMatchId) || $memNoMatchId != $noMatchId) {
+
+        // Appel direct PHP au lieu d'un appel HTTP
+        $_POST['noMatchId'] = $noMatchId;
+
+        try {
+
+            require_once($_SERVER['DOCUMENT_ROOT'] . "/scriptsphp/calculeUnMatch.php");
+
+        } catch (Throwable $e) {
+
+            error_log("Erreur calcule match (interne) : " . $e->getMessage());
+
+            // Protection anti-flood
+            sleep(2);
+
+        }
+
+        $memNoMatchId = $noMatchId;
+    }
+}
+
+
+
+
+
+
 
 //echo json_encode($syncOK);
 /*
