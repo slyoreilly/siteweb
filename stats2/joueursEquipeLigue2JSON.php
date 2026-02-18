@@ -253,7 +253,7 @@ unset($vec);
 
 ////////////////////  Reste � faire le mapping des ID de ligue vers des noms0 de ligues.	
 
-mysqli_close($conn);
+//mysqli_close($conn);
 
 
 ?>

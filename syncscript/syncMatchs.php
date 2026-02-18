@@ -78,7 +78,7 @@ $rMatch=mysqli_data_seek($testmatch,0);
 	//		echo $matchjson;
 	//	}
 		
-		mysqli_close($conn);
+		//mysqli_close($conn);
 			header("HTTP/1.1 200 OK");
 
 ?>

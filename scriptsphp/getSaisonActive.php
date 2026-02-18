@@ -37,6 +37,6 @@ while($rangeeSaison=mysqli_fetch_array($rfSaison))
 	
 echo $saisonId;
 	
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

@@ -60,7 +60,7 @@ $reqAltAngles = "SELECT *
 
 echo json_encode($leVid);
 
-mysqli_close($conn);	
+//mysqli_close($conn);	
 
 
 ?>

@@ -38,6 +38,6 @@ echo $tmp;
 
 	//		header("HTTP/1.1 200 OK");
 
-	mysqli_close($conn)
+	//mysqli_close($conn)
 ?>
 

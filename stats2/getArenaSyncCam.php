@@ -131,7 +131,7 @@ if (($username !== 0) && ($username != 'undefined') && ($username != null)) {
 	//$adomper = str_replace(']"', ']', $adomper);
 	echo utf8_encode($adomper);
 }
-mysqli_close($conn);
+//mysqli_close($conn);
 		//header("HTTP/1.1 200 OK");
 ?>
 

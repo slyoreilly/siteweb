@@ -81,6 +81,6 @@ while ($r = mysqli_fetch_array($retour, MYSQLI_ASSOC)) {
 echo json_encode($vecEquipes);
 
 // Close connection
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

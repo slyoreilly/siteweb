@@ -69,5 +69,5 @@ fclose($myfile);
 
 
 echo utf8_encode(json_encode($mesParams));
-mysqli_close($conn);
+//mysqli_close($conn);
 ?>

@@ -55,5 +55,5 @@ if(!get_magic_quotes_gpc())
 
 echo var_dump($_FILES);
 */
-	mysqli_close($conn);
+	//mysqli_close($conn);
 ?>

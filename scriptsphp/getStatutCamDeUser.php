@@ -33,6 +33,6 @@ $json = mysqli_fetch_all ($rMes, MYSQLI_ASSOC);
 echo json_encode($json );
 
 
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

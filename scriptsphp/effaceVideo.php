@@ -36,6 +36,6 @@ $qDel="DELETE FROM Video
 $resCam=mysqli_query($conn,$qDel) or die(mysqli_error($conn).' damn');
 
 echo "Number of files deleted: ".$numDelFiles;
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

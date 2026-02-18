@@ -56,6 +56,6 @@ mysqli_query($conn,$query_saison) or die(mysqli_error($conn).'Error, query faile
 		
 	
 	}
-	mysqli_close($conn);
+	//mysqli_close($conn);
 echo "Fin du script modifiersaison".$query_saison;
 ?>

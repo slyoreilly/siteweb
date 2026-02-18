@@ -56,6 +56,6 @@ while($rangeeEquipe=mysql_fetch_assoc($resultEquipe))
 //	echo $qEq;
 echo json_encode($equipe);
 	
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

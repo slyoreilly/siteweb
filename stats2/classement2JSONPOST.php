@@ -366,6 +366,6 @@ $retPost['customClassement']=$retCC;}
 
 echo json_encode($retPost);
 	
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

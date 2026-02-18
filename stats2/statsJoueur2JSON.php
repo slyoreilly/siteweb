@@ -261,6 +261,6 @@ mysqli_query($conn,"SET SQL_BIG_SELECTS=1");
 echo "{\"Ligues\":".json_encode($Ligues)."}";
 
 		
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

@@ -44,5 +44,5 @@ VALUES ('{$command}',NOW(),10)")or die(mysqli_error($conn)." INSERT INTO TacheSh
 
 
 
-mysqli_close($conn);	
+//mysqli_close($conn);	
 ?>

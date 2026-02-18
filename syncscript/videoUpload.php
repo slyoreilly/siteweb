@@ -86,13 +86,13 @@ file_get_contents($url);
 
 
 
-else {echo "fichier grosseur nulle?";
-	error_log("HTTP/1.1 204 No Content");		 
-	http_response_code(204);}
+//else {echo "fichier grosseur nulle?";
+//	error_log("HTTP/1.1 204 No Content");		 
+//	http_response_code(204);}
 
 
 
-mysqli_close($conn);
+//mysqli_close($conn);
 error_log(http_response_code());
 //include 'library/closedb.php';
 	

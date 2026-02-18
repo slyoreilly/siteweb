@@ -51,6 +51,6 @@ while($rangeeEvent=mysqli_fetch_array($rfEventType))
 	
 echo json_encode($event);;
 	
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

@@ -115,7 +115,7 @@ else{
 echo json_encode($reponse) ;
 
 
-mysqli_close($conn);
+//mysqli_close($conn);
 
 
  ?>

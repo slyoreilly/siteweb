@@ -318,6 +318,6 @@ if ($appareils != null) {
 	}
 
 }
-mysqli_close($conn);
+//mysqli_close($conn);
 echo $retour;
 ?>

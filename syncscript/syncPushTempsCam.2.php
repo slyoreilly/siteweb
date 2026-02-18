@@ -412,7 +412,7 @@ while ($r = mysqli_fetch_array($resultLigues)) {
 
     $IL2++;
 }
-
+}
 
 $repSite = array();
 
@@ -448,7 +448,7 @@ $comp =$maxSec-30000;
 
 //echo json_encode($Sommaire);
 echo json_encode($repSite);
-mysqli_close($conn);
+//mysqli_close($conn);
 //	header("HTTP/1.1 200 OK");
 
 ?>	

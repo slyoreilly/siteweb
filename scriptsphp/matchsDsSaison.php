@@ -536,7 +536,7 @@ $Ine++;
 $jsRetour= array();
 $jsRetour['matchs'] = $mesMatchs;
 echo json_encode($jsRetour);
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>
 

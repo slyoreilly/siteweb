@@ -33,7 +33,7 @@ $retour1 = mysqli_query($conn,"SELECT * FROM TacheShell
 		
 		}
 
-mysqli_close($conn);
+//mysqli_close($conn);
 //include 'library/closedb.php';
 	
 ?>

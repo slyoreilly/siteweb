@@ -44,5 +44,5 @@ $fakeId=$tmpMax[0]+1;
 		mysqli_query($conn, $query) or die("Erreur: ".$query."\n".mysqli_error($conn));
 		
 		echo $fakeId;
-	mysqli_close($conn);
+	//mysqli_close($conn);
 ?>

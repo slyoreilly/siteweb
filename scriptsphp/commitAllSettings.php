@@ -14,7 +14,7 @@ VALUES ('{$telId}','settings','all','{$settings}','3')
 
 echo $adomper;
 
-mysqli_close($conn);
+//mysqli_close($conn);
 	//		header("HTTP/1.1 200 OK");
 ?>
 

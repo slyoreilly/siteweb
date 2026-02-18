@@ -63,6 +63,6 @@ echo "$rEID[0]";
 	mysqli_query($conn,$query_update)or die(mysqli_error($conn)." update");	
 
 	}
-mysqli_close($conn);
+//mysqli_close($conn);
 	
 ?>

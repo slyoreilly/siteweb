@@ -99,6 +99,6 @@ $JSONstring = "{\"Ligues\":".json_encode($Ligues)."}" ;
 
 echo $JSONstring;
 	
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

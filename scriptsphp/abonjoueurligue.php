@@ -72,5 +72,5 @@ $retour = mysqli_query($conn,$query_equipe)or die('Error, query failed: '.mysqli
 }	
 
 	echo $retour ;
-	mysqli_close($conn);
+	//mysqli_close($conn);
 ?>

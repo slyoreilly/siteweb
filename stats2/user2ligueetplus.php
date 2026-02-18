@@ -208,6 +208,6 @@ $JSONstring ="{\"abonnements\": ".json_encode($liste). ",\"joueur\": ".json_enco
 //echo json_encode($Sommaire);
 echo $JSONstring;
 	
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

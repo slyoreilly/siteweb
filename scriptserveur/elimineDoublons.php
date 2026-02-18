@@ -81,7 +81,7 @@ $ligueId = $_GET['ligueId'];
 		}
 		echo json_encode($aFlusher);
 
-mysqli_close($conn);
+//mysqli_close($conn);
 //include 'library/closedb.php';
 	
 ?>

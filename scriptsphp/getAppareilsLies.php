@@ -156,6 +156,6 @@ if( isset($_POST['arrayTel']) )
 	$adomper = str_replace('"[', '[', $adomper);
 	$adomper = str_replace(']"', ']', $adomper);
 	echo utf8_encode($adomper);
-	mysqli_close($conn);
+	//mysqli_close($conn);
 	
 ?>

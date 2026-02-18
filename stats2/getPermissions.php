@@ -34,6 +34,6 @@ $type= mysqli_data_seek($result,0);
 echo $type;
 }
 else{echo "1000000";}
-mysqli_close($conn);
+//mysqli_close($conn);
 ?> 
 

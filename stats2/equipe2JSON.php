@@ -160,5 +160,5 @@ while ($rangeeLiEq = mysqli_fetch_array($rLiEq))//  Pour chacun des abonnements 
 
 //
 echo "{\"Saisons\":" . json_encode($vecStats) . "}";
-mysqli_close($conn);
+//mysqli_close($conn);
 ?>

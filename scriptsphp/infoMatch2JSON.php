@@ -165,6 +165,6 @@ if(!is_null($equipeDom)&&!is_null($equipeVis)){
 	
 
 	
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

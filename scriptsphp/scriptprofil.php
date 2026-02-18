@@ -94,7 +94,7 @@ $ficId = $_POST['ficId'];
 	//echo "test";
 	}
 
-	mysqli_close($conn);
+	//mysqli_close($conn);
 /*
 
 if($code<40)

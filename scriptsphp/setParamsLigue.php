@@ -20,5 +20,5 @@ $cleValeur= $_POST['cleValeur'];
 		mysqli_query($conn,$qSUp) or die(mysqli_error($conn).' Error, query failed'.$qSUp);
 
 
-mysqli_close($conn);	
+//mysqli_close($conn);	
 ?>

@@ -288,6 +288,6 @@ $stats[$Ievent]['nomEquipe'] = $rangeeStats[$Ievent][8];
 	$JSONstring .= "]}";
 	
 echo $JSONstring;
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

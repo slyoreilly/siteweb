@@ -172,7 +172,7 @@ echo $JSONstring;
 ////////////////////  Reste � faire le mapping des ID de ligue vers des noms de ligues.	
 
 
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>
 

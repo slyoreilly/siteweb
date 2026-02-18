@@ -143,6 +143,6 @@ echo json_encode($equipes);
 //echo json_encode($evenements);
 //echo $JSONstring;
 		
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

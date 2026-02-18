@@ -70,7 +70,7 @@ $qGet ="SELECT systemconfigId
     echo '200';
 
 
-mysqli_close($conn);
+//mysqli_close($conn);
 }
 
 else{

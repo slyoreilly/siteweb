@@ -111,7 +111,7 @@ else {
 	echo "{\"profil\":".$adomper.",\"abonnements\":".$adompAbon."}";
 }
 
-mysqli_close($conn);
+//mysqli_close($conn);
 //		header("HTTP/1.1 200 OK");
 ?>
 

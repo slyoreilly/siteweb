@@ -94,7 +94,7 @@ while($rangeeAbonArb=mysqli_fetch_array($resultAbonArb))
 	array_push($controlTemps,time());
 	// On obtient un array de ligueID auquel userSelect est abonn�.
 
-	mysqli_close($conn);
+	//mysqli_close($conn);
 
 
 $lesSync=json_decode(stripslashes($syncJ));

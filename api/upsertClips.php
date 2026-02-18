@@ -89,6 +89,6 @@ foreach ($clips as $unClip) {
 echo json_encode($syncOK);
 
 
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

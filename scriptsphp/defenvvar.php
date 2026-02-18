@@ -2,7 +2,6 @@
 
 global $conn;
 
-// Toujours définir les variables d’environnement
 $workEnv = getenv('WORK_ENV') ?: 'development';
 
 $db_user = "syncsta1_u01";
@@ -31,7 +30,7 @@ if ($workEnv == "production") {
 }
 
 
-// 🔥 Connexion UNIQUEMENT si non existante
+// Création ou recréation de la connexion si nécessaire
 if (!isset($conn) || !($conn instanceof mysqli)) {
 
     if ($db_port !== null) {
@@ -48,12 +47,25 @@ if (!isset($conn) || !($conn instanceof mysqli)) {
 
     mysqli_set_charset($conn, "utf8");
 
-    // Fermeture automatique à la fin du script
-    register_shutdown_function(function() use (&$conn) {
-        if ($conn instanceof mysqli) {
-            mysqli_close($conn);
+} else {
+
+    // Vérification douce sans ping()
+    if (!@mysqli_query($conn, "SELECT 1")) {
+
+        // Reconnexion si la connexion est morte
+        if ($db_port !== null) {
+            $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database, $db_port);
+        } else {
+            $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
         }
-    });
+
+        if (!$conn) {
+            error_log("DB Reconnection failed: " . mysqli_connect_error());
+            http_response_code(500);
+            exit;
+        }
+
+        mysqli_set_charset($conn, "utf8");
+    }
 }
 ?>
-

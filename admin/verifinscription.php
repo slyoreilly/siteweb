@@ -119,5 +119,5 @@ else {
 
 $jsonErreur = "{\"succes\":$succes, \"erreurPass\":$erreurPass,\"erreurExist\":$erreurExist,\"usager\":\"$usager\",\"pass\":\"$pass\"}";
 echo $jsonErreur;
-mysqli_close($conn);
+//mysqli_close($conn);
 ?>

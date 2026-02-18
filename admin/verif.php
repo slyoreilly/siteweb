@@ -57,7 +57,7 @@ if ($boule==0)
 echo $JSONstring;
 	}
 
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?> 
 

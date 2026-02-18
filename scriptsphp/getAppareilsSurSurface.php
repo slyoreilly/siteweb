@@ -133,5 +133,5 @@ $vecRet['cams'] = $cams;
 $vecRet['remotes'] = $remotes;
 
 echo utf8_encode(json_encode($vecRet));
-mysqli_close($conn);
+//mysqli_close($conn);
 ?>

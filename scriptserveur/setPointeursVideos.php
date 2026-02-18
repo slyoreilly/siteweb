@@ -56,7 +56,7 @@ for($a=0;$a<count($fichiers);$a++){
 
 }
 
- mysqli_close($conn);
+ //mysqli_close($conn);
  
 
 	

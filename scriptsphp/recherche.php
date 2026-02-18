@@ -99,6 +99,6 @@ $resultat['match']=$match;
 //$resultat['match']=$match;
 	
 echo json_encode($resultat);
-	mysqli_close($conn);
+	//mysqli_close($conn);
 
 ?>

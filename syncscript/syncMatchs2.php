@@ -324,7 +324,7 @@ while($vFin = mysqli_fetch_array($rFin))
 
 echo json_encode($syncOK);
 
-mysqli_close($conn);
+//mysqli_close($conn);
 
 //.$matchjson.json_encode($leMatch);
 $deSyncMatch = 1;

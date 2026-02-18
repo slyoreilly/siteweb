@@ -28,6 +28,6 @@ while($rangeeUser=mysqli_fetch_array($resultUser))
 	
 		echo json_encode($userSelect);
 
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

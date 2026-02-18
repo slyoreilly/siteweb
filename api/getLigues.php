@@ -39,7 +39,7 @@ while($r = mysqli_fetch_array($retour,MYSQLI_ASSOC)) {
 	$uneLigue['cleValeur']=$r['cleValeur'];
 	array_push($vecLigues,$uneLigue);
 }
-mysqli_close($conn);
+//mysqli_close($conn);
 
 echo json_encode($vecLigues);
 	

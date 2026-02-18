@@ -50,5 +50,5 @@ while($rangCam=mysqli_fetch_array($resCam)){
 
 }
 
-mysqli_close($conn);
+//mysqli_close($conn);
 ?>

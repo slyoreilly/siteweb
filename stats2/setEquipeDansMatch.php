@@ -15,7 +15,7 @@ $tableUser = 'TableUser';
 	mysqli_query($conn,"UPDATE TableMatch SET eq_dom='{$eqId}' WHERE matchIdRef='{$matchId}' AND 
 														eq_dom='{$ancienEqId}'");
 
-mysqli_close($conn);
+//mysqli_close($conn);
 //echo $tabButs[$butMAJ->noSeq]->chrono;
 ?>
 

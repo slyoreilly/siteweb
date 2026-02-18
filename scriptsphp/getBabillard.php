@@ -55,6 +55,6 @@ while ($rangMes = mysqli_fetch_array($rMes))
 
 echo json_encode($message);
 	
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

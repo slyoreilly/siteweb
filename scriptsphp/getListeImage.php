@@ -41,6 +41,6 @@ while ($rangIm = mysqli_fetch_array($rGal))
 
 echo json_encode($image);
 	
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

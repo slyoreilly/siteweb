@@ -62,7 +62,7 @@ if (($clipMAJ -> nouveauClip)==true) {
 	//echo " / rep insert Passeurs ".mysql_num_rows($retour);
 }
 echo 1;
-mysqli_close($conn);
+//mysqli_close($conn);
 //echo $tabButs[$butMAJ->noSeq]->chrono;
 ?>
 

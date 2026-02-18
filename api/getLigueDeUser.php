@@ -148,4 +148,4 @@ while ($rL = mysqli_fetch_array($retourLigue, MYSQLI_ASSOC)) {
 echo json_encode($vecLiguesComposeAvecEquipes);
 
 // Close connection
-mysqli_close($conn);
+//mysqli_close($conn);

@@ -61,6 +61,6 @@ else echo 0;
 
 //include 'library/closedb.php';
 	
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

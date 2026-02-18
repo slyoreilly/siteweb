@@ -56,5 +56,5 @@ or die(mysqli_error($conn).$query_equipe);
 	}
 	echo $retour;
 
-	mysqli_close($conn);
+	//mysqli_close($conn);
 ?>

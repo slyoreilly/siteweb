@@ -38,6 +38,6 @@ while ($rangChrono = mysqli_fetch_array($rChrono))
 
 echo json_encode($fullVideos);
 	
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

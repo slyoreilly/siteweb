@@ -44,6 +44,6 @@ $ret = mysqli_query($conn,"SELECT *
 $tmp= mysqli_fetch_row($ret);
 $retour=$tmp[0];	
 }
-mysqli_close($conn);
+//mysqli_close($conn);
 echo $retour;
 ?>

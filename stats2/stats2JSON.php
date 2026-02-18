@@ -230,6 +230,6 @@ switch($rangeeStats[$Ievent][5]){
 echo json_encode($joueurs);
 //echo $JSONstring;
 		
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

@@ -43,7 +43,7 @@ VALUES ('{$nId[0]}', '{$intLigue}',30, NOW(),'2050-01-01')");
 	
 		echo $JSONstring;
 
-		mysqli_close($conn);
+		//mysqli_close($conn);
 //		echo "".json_last_error();
 			header("HTTP/1.1 200 OK");
 

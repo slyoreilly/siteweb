@@ -25,3 +25,4 @@ scriptserveur/man
 php.ini
 .htaccess
 syncscript/error_log_vieux
+scriptsphp/error_log

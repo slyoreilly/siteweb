@@ -27,7 +27,7 @@ while($rangee=mysqli_fetch_array($result))
      echo $rangee['content'];
 }
      // close the db link
-     mysqli_close($conn);
+    // mysqli_close($conn);
  }
  else {
      echo 'Please use a real id number';

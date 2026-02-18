@@ -142,5 +142,5 @@ $ret = json_encode($syncOK);
 	
 	if($ret==False)
 	{echo "erreur, count(syncOK:): ".count($syncOK)."- count($params): ".count($params);}
-	mysqli_close($conn);
+	//mysqli_close($conn);
 ?>

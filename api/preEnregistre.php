@@ -57,5 +57,5 @@ if (!$syncOK) {
     echo "erreur, count(syncOK): " . count($syncOK) . " - count(params): " . count($params);
 }
 
-mysqli_close($conn);
+//mysqli_close($conn);
 ?>

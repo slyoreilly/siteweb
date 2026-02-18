@@ -234,6 +234,6 @@ if ($noMatchId != 0) {
 
 $deSyncMatch = 1;
 echo json_encode($syncOK);
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

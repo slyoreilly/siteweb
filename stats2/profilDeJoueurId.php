@@ -73,5 +73,5 @@ $monJoueur=mysqli_fetch_row($rJoueur);
 	
 echo $JSONstring;
 	
-mysqli_close($conn);
+//mysqli_close($conn);
 ?>

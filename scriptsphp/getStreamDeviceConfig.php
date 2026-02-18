@@ -46,6 +46,6 @@ AND userId=$userId AND updatedAt>'{$lastUpdate}'";
     
      echo json_encode($retourStream);
 
-mysqli_close($conn);
+//mysqli_close($conn);
 	
 ?>

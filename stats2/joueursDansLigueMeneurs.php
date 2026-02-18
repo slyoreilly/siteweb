@@ -346,5 +346,5 @@ $vecTemps['7'] = time();
 
 echo $JSONstring;
 //echo json_encode($vecTemps);
-mysqli_close($conn);
+//mysqli_close($conn);
 ?>

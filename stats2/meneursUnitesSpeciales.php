@@ -240,6 +240,6 @@ $stats[$Ievent]['numero'] = $rangeeStats[$Ievent][7];
 	
 echo $JSONstring;
 		
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

@@ -224,6 +224,6 @@ else
 	
 	}
 
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

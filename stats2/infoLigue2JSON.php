@@ -163,7 +163,7 @@ while ($aArena = mysqli_fetch_assoc($rArena))
 echo ", \"Arenas\":".json_encode($arenas);
 
 echo "}";
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>
 	

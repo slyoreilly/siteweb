@@ -58,6 +58,6 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
     die(json_encode(["error" => "Erreur SQL."]));
 }
 
-mysqli_close($conn);
+//mysqli_close($conn);
 echo json_encode(array_values($resultats));
 ?>

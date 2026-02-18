@@ -89,7 +89,7 @@ while($r = mysqli_fetch_array($retour,MYSQLI_ASSOC)) {
         }
 }
 
-mysqli_close($conn);
+//mysqli_close($conn);
 
 echo json_encode($vecMatchCompose);
 	

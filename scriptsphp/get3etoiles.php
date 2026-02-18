@@ -178,6 +178,6 @@ $cptM++;
 
 
 echo json_encode($mesMatchs);
-mysqli_close($conn);
+//mysqli_close($conn);
 ?>
 

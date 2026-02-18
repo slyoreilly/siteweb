@@ -32,6 +32,6 @@ while($rangeeEv=mysqli_fetch_array($resultEquipe))
 //echo json_encode($Sommaire);
 echo json_encode($liste);
 	
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

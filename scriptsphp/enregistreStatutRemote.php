@@ -75,6 +75,6 @@ $mTemps= $dt->format('Y-m-d H:i:s');
 	
 		echo " - FIN";
 		
-		mysqli_close($conn);
+		//mysqli_close($conn);
 	
 ?>

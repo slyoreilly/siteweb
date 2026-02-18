@@ -50,6 +50,6 @@ while($rangeePosition=mysqli_fetch_assoc($rfPosition))
 
 echo json_encode($Position);
 	
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

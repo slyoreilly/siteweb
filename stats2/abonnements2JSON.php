@@ -51,6 +51,6 @@ if (is_numeric($ligueId)) {
 }
 
 echo $JSONstring;
-mysqli_close($conn);
+//mysqli_close($conn);
 ?>
 

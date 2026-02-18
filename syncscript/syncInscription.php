@@ -33,7 +33,7 @@ $retIns= 	 mysqli_query($conn,$qIns)or die(mysqli_error($conn).$qIns);
 				echo "0";
 			}
 		
-mysqli_close($conn);
+//mysqli_close($conn);
 
 			header("HTTP/1.1 200 OK");
 

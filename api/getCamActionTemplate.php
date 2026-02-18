@@ -81,6 +81,6 @@ while($rangeeCAT=mysqli_fetch_assoc($rfCAT))
 
 echo json_encode($camActionTemplate);
 	
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

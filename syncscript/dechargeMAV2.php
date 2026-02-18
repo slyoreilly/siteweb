@@ -45,7 +45,7 @@ while($r = mysqli_fetch_array($retour,MYSQLI_ASSOC)) {
 $vecMAV2=$vecMatch;
 $infoMav2 = $qString;
 
-mysqli_close($conn);
+//mysqli_close($conn);
 
 	//		header("HTTP/1.1 200 OK");
 ?>

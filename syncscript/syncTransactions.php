@@ -73,7 +73,7 @@ VALUES ('{$nId[0]}', '{$intEquipe}',30, NOW(),'2030-01-01')") or die(mysqli_erro
 	
 		echo $JSONstring;
 
-		mysqli_close($conn);
+		//mysqli_close($conn);
 //		echo "".json_last_error();
 			header("HTTP/1.1 200 OK");
 ?>

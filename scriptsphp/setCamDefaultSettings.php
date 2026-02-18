@@ -16,7 +16,7 @@ WHERE telId='{$telId}'")or die(mysqli_error($conn)." UPDATE ");
 
 echo $adomper;
 
-mysqli_close($conn);
+//mysqli_close($conn);
 	//		header("HTTP/1.1 200 OK");
 ?>
 

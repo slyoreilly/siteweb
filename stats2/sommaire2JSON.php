@@ -503,7 +503,7 @@ foreach($Sommaire['buts'] as $buts )
 		}
 	}
 }
-	mysqli_close($conn);
+	//mysqli_close($conn);
 //include('../scriptsphp/vidsInfos.php');
 
 ?>

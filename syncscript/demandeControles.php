@@ -26,6 +26,6 @@ $retour=array();
 	
 	if(json_encode($retour)==False)
 	{echo "erreur, count(syncOK:): ".count($retour)."- count($retour): ".count($retour);}
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>
