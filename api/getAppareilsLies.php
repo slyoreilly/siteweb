@@ -96,10 +96,10 @@ FROM StatutCam sc
 INNER JOIN (
     SELECT telId, MAX(dernierMaJ) AS maxMaj
     FROM StatutCam
-    WHERE telId = ?
+    WHERE userId = ?
     GROUP BY telId
 ) latest ON latest.telId = sc.telId AND latest.maxMaj = sc.dernierMaJ
-WHERE sc.telId = ?
+WHERE sc.userId = ?
 LIMIT 1
 ";
 
@@ -110,7 +110,7 @@ if (!$stmt) {
 
 $out = [];
 foreach ($telIds as $telId) {
-    $stmt->bind_param('ss', $telId, $telId);
+    $stmt->bind_param('ss', $userId, $userId);
     if (!$stmt->execute()) {
         continue;
     }
