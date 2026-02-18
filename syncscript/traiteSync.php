@@ -47,7 +47,9 @@ $leMatch = json_decode($matchjson, true);
 //echo "\n var_dump m1 ".var_dump($m1)."\n";
 //echo "\n".json_encode($leMatch)."\n";
 
-mysqli_query($conn,"SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+mysqli_query($conn, "
+SET SESSION sql_mode = REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', '')
+");
 ///////////////////////////////////////////////////////////////////////////////////////
 
 

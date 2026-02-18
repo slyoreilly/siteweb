@@ -20,7 +20,7 @@ $qString="SELECT MatchAVenir.*	FROM MatchAVenir
 						GROUP BY mavId";
 						
 unset($retour);
-$retour = mysqli_query($connDV, $qString) or die(mysqli_error($connDV));	
+$retour = mysqli_query($conn, $qString) or die(mysqli_error($conn));	
 //$strRetour.= mysql_num_rows($retour);
 //$strRetour.="rege";
 
@@ -37,7 +37,7 @@ while($r = mysqli_fetch_array($retour,MYSQLI_ASSOC)) {
 $vecMAV=$vecMatch;
 $infoMav = $qString;
 
-mysqli_close($connDV);
+//mysqli_close($conn);
 
 	//		header("HTTP/1.1 200 OK");
 ?>

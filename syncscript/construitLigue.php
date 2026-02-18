@@ -12,8 +12,8 @@ $tableUser = 'TableUser';
 $compte=0;
 	
 	// Retrieve all the data from the "example" table
-$resultUser = mysqli_query($connCL,"SELECT * FROM TableUser")
-or die(mysqli_error($connCL));  
+$resultUser = mysqli_query($conn,"SELECT * FROM TableUser")
+or die(mysqli_error($conn));  
 while($rangeeUser=mysqli_fetch_array($resultUser))
 {
 		if(!strcmp($rangeeUser['username'],$username))
@@ -23,9 +23,9 @@ while($rangeeUser=mysqli_fetch_array($resultUser))
 }
 
 
-	$resultLigue = mysqli_query($connCL,"SELECT * FROM {$tableLigue} 
+	$resultLigue = mysqli_query($conn,"SELECT * FROM {$tableLigue} 
 									WHERE ID_Ligue={$ligueId}")
-	or die(mysqli_error($connCL));  
+	or die(mysqli_error($conn));  
 	//$resultJoueur = mysql_query("SELECT * FROM {$tableJoueur}")
 	//or die(mysql_error());  
 		
@@ -63,7 +63,7 @@ while($rangeeUser=mysqli_fetch_array($resultUser))
 				$resultEquipe = NULL;
 				unset($joueurs);
 				$joueurs=array();
-				$resultEquipe = mysqli_query($connCL,"SELECT TableEquipe.*,abonEquipeLigue.* 
+				$resultEquipe = mysqli_query($conn,"SELECT TableEquipe.*,abonEquipeLigue.* 
 												FROM abonEquipeLigue
 												JOIN {$tableEq} 
 													ON(TableEquipe.equipe_id=abonEquipeLigue.equipeId)
@@ -71,7 +71,7 @@ while($rangeeUser=mysqli_fetch_array($resultUser))
 														AND permission<31
 														AND debutAbon <= NOW() 
 														AND finAbon >= NOW()")
-				or die(mysqli_error($connCL));  
+				or die(mysqli_error($conn));  
 				$IEq=0;
 				while($rangeeEquipe=mysqli_fetch_array($resultEquipe))
 					{
@@ -88,7 +88,7 @@ while($rangeeUser=mysqli_fetch_array($resultUser))
 						$ligue['equipe'][$IEq]['cleValeur']=$rangeeEquipe['cleValeur'];
 						$ligue['equipe'][$IEq]['joueur']=array();	
 						
-						$resultJoueur = mysqli_query($connCL,"SELECT TableJoueur.*, abonJoueurEquipe.* 
+						$resultJoueur = mysqli_query($conn,"SELECT TableJoueur.*, abonJoueurEquipe.* 
 													FROM abonJoueurEquipe
 													JOIN {$tableJoueur}
 														ON (TableJoueur.joueur_id=abonJoueurEquipe.joueurId)
@@ -96,7 +96,7 @@ while($rangeeUser=mysqli_fetch_array($resultUser))
 														AND debutAbon <= NOW() 
 														AND finAbon >= NOW()
 															AND UNIX_TIMESTAMP(dernierMAJ)>'{$vielledate}'")
-						or die(mysqli_error($connCL));  
+						or die(mysqli_error($conn));  
 						$rangeeJoueur=0;
 						$IJ=0;
 						
@@ -135,7 +135,7 @@ while($rangeeUser=mysqli_fetch_array($resultUser))
 				
 						$IJ=0;
 				
-					$resultJoueur2 = mysqli_query($connCL,"SELECT * 
+					$resultJoueur2 = mysqli_query($conn,"SELECT * 
 													FROM abonJoueurLigue
 														JOIN TableJoueur
 															ON (TableJoueur.joueur_id=abonJoueurLigue.joueurId)
@@ -144,7 +144,7 @@ while($rangeeUser=mysqli_fetch_array($resultUser))
 																AND debutAbon <= NOW() 
 																AND finAbon >= NOW()")
 						
-						or die(mysqli_error($connCL));  
+						or die(mysqli_error($conn));  
 						$rangeeJoueur=0;
 												if(mysqli_num_rows($resultJoueur2)==0)
 							{unset($ligue['equipe'][$IEq]);
@@ -183,6 +183,6 @@ while($rangeeUser=mysqli_fetch_array($resultUser))
 	
  *///header("HTTP/1.1 200 OK");
 //echo " ".count($AbonSelect);
-mysqli_close($connCL);
+//mysqli_close($conn);
 
 ?>

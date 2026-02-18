@@ -49,7 +49,9 @@ if (!$conn) {
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 mysqli_set_charset($conn, "utf8");
-mysqli_query($conn, "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY','')");
+mysqli_query($conn, "
+SET SESSION sql_mode = REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', '')
+");
 }
 
 /////////////////////////////////////////////////////

@@ -44,7 +44,9 @@ if (!$conn) {
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 mysqli_set_charset($conn, "utf8");
-mysqli_query($conn, "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY','')");
+mysqli_query($conn, "
+SET SESSION sql_mode = REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', '')
+");
 }
 
 /////////////////////////////////////////////////////
@@ -53,7 +55,7 @@ mysqli_query($conn, "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_G
 //
 ////////////////////////////////////////////////////
 
-function trouveIDParNomLigue($nomLi) {
+function trouveIDParNomLigue($nomLi,$conn) {
 	$resultLigue = mysqli_query($conn, "SELECT * FROM Ligue WHERE 1") or die(mysqli_error($conn) . " dans trouveIDParNomLigue");
 	while ($rangeeLigue = mysqli_fetch_array($resultLigue)) {
 		if (!strcmp($rangeeLigue['Nom_Ligue'], $nomLi)) {$LigueID = $rangeeLigue['ID_Ligue'];
@@ -68,7 +70,7 @@ function trouveIDParNomLigue($nomLi) {
 //
 //
 
-function trouveSaisonActiveDeLigueId($ID) {
+function trouveSaisonActiveDeLigueId($ID,$conn) {
 	$rfSaison = mysqli_query($conn,"SELECT saisonId FROM TableSaison WHERE ligueRef = '{$ID}' and saisonActive=1") or die(mysqli_error($conn) . " trouveSaisonActiveDeLigueId");
 	return (mysqli_result($rfSaison, 0));
 }
