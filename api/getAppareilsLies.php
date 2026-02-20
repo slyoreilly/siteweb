@@ -66,10 +66,10 @@ if (!$username) {
     respond(400, ['ok' => false, 'error' => 'username requis']);
 }
 if (!is_array($devices) || count($devices) === 0) {
-    respond(400, ['ok' => false, 'error' => 'devices requis']);
+    //respond(400, ['ok' => false, 'error' => 'devices requis']);
 }
 if ($mode !== 2) {
-    respond(400, ['ok' => false, 'error' => 'mode non supporté (utilisez mode=2)']);
+    //respond(400, ['ok' => false, 'error' => 'mode non supporté (utilisez mode=2)']);
 }
 
 // Dédoublonnage par telId
@@ -85,22 +85,23 @@ foreach ($devices as $d) {
 }
 
 if (count($telIds) === 0) {
-    respond(400, ['ok' => false, 'error' => 'aucun telId valide']);
+//    respond(400, ['ok' => false, 'error' => 'aucun telId valide']);
 }
 
 // Requête préparée: dernier statut caméra par telId
 // Remplacez `userId` par le vrai champ de votre table si nécessaire.
 $sql = "
-SELECT sc.telId, sc.camId, sc.codeEtat, sc.batterie, sc.memoire, sc.dernierMaJ, sc.userId
+SELECT sc.telId, sc.camId, sc.codeEtat, sc.batterie, sc.memoire, sc.dernierMaJ, sc.userId, sc.arenaId
 FROM StatutCam sc
 INNER JOIN (
     SELECT telId, MAX(dernierMaJ) AS maxMaj
     FROM StatutCam
     WHERE userId = ?
     GROUP BY telId
-) latest ON latest.telId = sc.telId AND latest.maxMaj = sc.dernierMaJ
+) latest 
+ON latest.telId = sc.telId 
+AND latest.maxMaj = sc.dernierMaJ
 WHERE sc.userId = ?
-LIMIT 1
 ";
 
 $stmt = $conn->prepare($sql);
@@ -108,28 +109,24 @@ if (!$stmt) {
     respond(500, ['ok' => false, 'error' => 'prepare failed', 'details' => $conn->error]);
 }
 
+$stmt->bind_param('ss', $username, $username);
+
+if (!$stmt->execute()) {
+    respond(500, ['ok' => false, 'error' => 'execute failed']);
+}
+
+$res = $stmt->get_result();
+
 $out = [];
-foreach ($telIds as $telId) {
-    $stmt->bind_param('ss', $userId, $userId);
-    if (!$stmt->execute()) {
-        continue;
-    }
-    $res = $stmt->get_result();
-    $row = $res ? $res->fetch_assoc() : null;
-    if (!$row) {
-        continue;
-    }
 
-    // Filtre propriétaire (nouvelle logique voulue)
-    // Si vous avez une table de liaison utilisateur/appareil, filtrez plutôt dessus.
-    if ((string)$row['userId'] !== (string)$username) {
-        continue;
-    }
+while ($row = $res->fetch_assoc()) {
 
-    [$etatNorm, $isStale] = normalizeEtat((string)$row['codeEtat'], (string)$row['dernierMaJ']);
+    [$etatNorm, $isStale] = normalizeEtat(
+        (string)$row['codeEtat'],
+        (string)$row['dernierMaJ']
+    );
 
     $out[] = [
-        // appareilId peut venir d'une table Appareil si vous l'avez; sinon null/fallback
         'appareilId' => null,
         'telId' => (string)$row['telId'],
         'camId' => (string)$row['camId'],
@@ -138,6 +135,7 @@ foreach ($telIds as $telId) {
         'batterie' => (int)$row['batterie'],
         'memoireMb' => (int)round(((float)$row['memoire']) / 1000000),
         'dernierMaJ' => (string)$row['dernierMaJ'],
+        'surfaceId' => (string)$row['arenaId'],
         'isStale' => $isStale
     ];
 }
@@ -150,3 +148,4 @@ respond(200, [
     'serverTime' => gmdate('c'),
     'devices' => $out
 ]);
+?>
