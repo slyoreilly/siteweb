@@ -14,7 +14,9 @@ $equipeId = $_POST['equipeId'];
 $ligueId = $_POST['ligueId'];
 $code = $_POST['code'];
 
-mysqli_query($conn,"SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))");
+mysqli_query($conn, "
+SET SESSION sql_mode = REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', '')
+");
 ///////////////////////////////////////////////////////////////////////////////////////
 
 
