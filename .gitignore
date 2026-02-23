@@ -17,3 +17,6 @@ scriptserveur/syncsta1_900.sql
 scriptserveur/man
 >>>>>>>>> Temporary merge branch 2
 /*/*php_error_log
+/*/error_log*
+/*/*.bak
+/*/error_log
