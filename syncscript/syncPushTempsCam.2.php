@@ -12,6 +12,7 @@ if (isset( $_POST['arenaId'])) {$arena = $_POST['arenaId'];
 }
 
 $heure = $_POST['heure'];
+error_log("syncPushTempsCam.2 - recu POST: " . json_encode($_POST));
 $maxSec = 0;
 if (isset( $_POST['timeout'])) {$maxSec = $_POST['timeout'];
 }
@@ -523,7 +524,9 @@ $comp =$maxSec-30000;
 
 
 //echo json_encode($Sommaire);
-echo json_encode($repSite);
+$retourSyncPushTempsCam2 = json_encode($repSite);
+error_log("syncPushTempsCam.2 - retour: " . $retourSyncPushTempsCam2);
+echo $retourSyncPushTempsCam2;
 //mysqli_close($conn);
 //	header("HTTP/1.1 200 OK");
 
