@@ -27,11 +27,81 @@ unset($rangeeChrono);
 $rrs2 = $rSServ+1000;
 $cpt=0;
 
+
+function traiteDemandesAjoutVideo($conn, $rrs2) {
+    $qDemandes = "SELECT demandeId, eventId, typeEvenement, chronoDemande, cameraId, systemLeagueId
+"
+        . "FROM DemandeAjoutVideo WHERE progression=1 ORDER BY demandeId ASC LIMIT 0,50";
+
+    $resDemandes = mysqli_query($conn, $qDemandes);
+    if (!$resDemandes) {
+        error_log("syncPushTempsCam.2 - DemandeAjoutVideo: " . mysqli_error($conn));
+        return;
+    }
+
+    while ($rangeeDemande = mysqli_fetch_array($resDemandes)) {
+        $eventId = intval($rangeeDemande['eventId']);
+        $typeEvenement = intval($rangeeDemande['typeEvenement']);
+        $systemLeagueId = intval($rangeeDemande['systemLeagueId']);
+        $demandeId = intval($rangeeDemande['demandeId']);
+
+        if ($typeEvenement <= 0) {
+            $typeEvenement = 5;
+        }
+
+        $qSelEvent = "SELECT TableEvenement0.match_event_id, TableEvenement0.equipe_event_id, TableMatch.arenaId, TableMatch.match_id, TableMatch.eq_dom, TableMatch.eq_vis
+"
+            . "FROM TableEvenement0
+"
+            . "INNER JOIN TableMatch ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)
+"
+            . "WHERE TableEvenement0.event_id='{$eventId}' LIMIT 0,1";
+        $resEvent = mysqli_query($conn, $qSelEvent);
+        if (!$resEvent || mysqli_num_rows($resEvent) <= 0) {
+            continue;
+        }
+
+        $rangeeEvent = mysqli_fetch_array($resEvent);
+        $matchEventIdSysteme = $rangeeEvent['match_event_id'];
+        $equipeEventId = intval($rangeeEvent['equipe_event_id']);
+
+        if ($systemLeagueId > 0) {
+            $qSelMatchSysteme = "SELECT matchIdRef FROM TableMatch
+"
+                . "WHERE ligueRef='{$systemLeagueId}'
+"
+                . "AND arenaId='" . intval($rangeeEvent['arenaId']) . "'
+"
+                . "ORDER BY date DESC LIMIT 0,1";
+            $resMatchSysteme = mysqli_query($conn, $qSelMatchSysteme);
+            if ($resMatchSysteme && mysqli_num_rows($resMatchSysteme) > 0) {
+                $rMS = mysqli_fetch_array($resMatchSysteme);
+                $matchEventIdSysteme = $rMS['matchIdRef'];
+            }
+        }
+
+        $chronoVideo = intval($rrs2);
+
+        $qInsEvt = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id, joueur_event_ref, chrono, souscode, code) VALUES ("
+            . "'{$matchEventIdSysteme}', '{$equipeEventId}', '{$eventId}', '{$chronoVideo}', 0, '{$typeEvenement}')";
+        $okInsEvt = mysqli_query($conn, $qInsEvt);
+
+        if ($okInsEvt) {
+            $qMajDemande = "UPDATE DemandeAjoutVideo SET progression=2, chronoVideo='{$chronoVideo}', updatedAt=NOW() WHERE demandeId='{$demandeId}'";
+            mysqli_query($conn, $qMajDemande);
+        }
+    }
+}
+
+
+
 ////////////////////  Sortir tous les matchs récents de l'utilisateur.
 //
 ///					Pour les évènements, voir plus bas.
 
 $vecLigues = array();
+
+traiteDemandesAjoutVideo($conn, $rrs2);
 
 do {
 

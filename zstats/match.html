@@ -239,13 +239,20 @@
 					return;
 				}
 
+				var systemLeagueId = null;
+				if (window.systemLigueVideoId != undefined && window.systemLigueVideoId != null && window.systemLigueVideoId !== "") {
+					systemLeagueId = parseInt(window.systemLigueVideoId, 10);
+				}
+
 				$.ajax({
 					url : "/scriptsphp/ajouteVideos.php",
 					type : "POST",
 					data : {
 						butId : butId,
 						chrono : mBut.chrono,
-						cameraId : cameraId
+						cameraId : cameraId,
+						eventTypeCode : 5,
+						systemLeagueId : systemLeagueId
 					}
 				}).always(function() {
 					$('#modalAjouteVideoBut').modal("hide");
