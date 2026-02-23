@@ -200,7 +200,38 @@
 
 			}
 
+			function normaliseChronoAjoutVideo(chronoBrut) {
+				if (typeof chronoBrut === 'number' && !isNaN(chronoBrut)) {
+					return parseInt(chronoBrut, 10);
+				}
+
+				if (typeof chronoBrut === 'string') {
+					var chronoTxt = chronoBrut.trim();
+					if (/^\d+$/.test(chronoTxt)) {
+						return parseInt(chronoTxt, 10);
+					}
+
+					var parts = chronoTxt.split(':');
+					if (parts.length === 2 || parts.length === 3) {
+						var secPart = parts.pop();
+						var minPart = parts.pop();
+						var hourPart = parts.length ? parts.pop() : '0';
+
+						var secondes = parseFloat(secPart.replace(',', '.'));
+						var minutes = parseInt(minPart, 10);
+						var heures = parseInt(hourPart, 10);
+
+						if (!isNaN(secondes) && !isNaN(minutes) && !isNaN(heures)) {
+							return Math.round(((heures * 3600) + (minutes * 60) + secondes) * 1000);
+						}
+					}
+				}
+
+				return 0;
+			}
+
 			function ouvreDialogueAjoutVideo(mBut) {
+				console.info('[AjoutVideo] Ouverture du dialogue', mBut);
 				$('#modalAjouteVideoBut').modal("show");
 				$('#modalAjouteVideoBut .modal-title').text("Confirmer que vous souhaitez tenter de récupérer un vidéo?");
 				$('#modalAjouteVideoBut .modal-body').empty();
@@ -238,31 +269,44 @@
 				if (isNaN(noSequence)) {
 					noSequence = -1;
 				}
+				var chronoDemande = normaliseChronoAjoutVideo(mBut.chrono);
 
+				var payload = {
+					butId : isNaN(butId) ? 0 : butId,
+					matchIdRef : window.matchID,
+					equipeId : mBut.equipeId,
+					noSequence : noSequence,
+					chrono : chronoDemande,
+					cameraId : cameraId,
+					eventTypeCode : 5
+				};
+
+				console.info('[AjoutVideo] Soumission AJAX', payload, mBut);
 				$.ajax({
 					url : "/scriptsphp/ajouteVideos.php",
 					type : "POST",
 					dataType : "json",
-					data : {
-						butId : isNaN(butId) ? 0 : butId,
-						matchIdRef : window.matchID,
-						equipeId : mBut.equipeId,
-						noSequence : noSequence,
-						chrono : mBut.chrono,
-						cameraId : cameraId,
-						eventTypeCode : 5
-					},
+					data : payload,
 					success : function(response) {
+						console.info('[AjoutVideo] Réponse serveur', response);
 						if (!response || response.ok !== true) {
 							alert("Impossible de créer la demande d'ajout vidéo.");
 						}
 					},
-						error : function(xhr) {
-							var msg = "Impossible de créer la demande d'ajout vidéo.";
-							if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
-								msg = xhr.responseJSON.message;
-							}
-							alert(msg);
+					error : function(xhr, statusText, errorText) {
+						var msg = "Impossible de créer la demande d'ajout vidéo.";
+						if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
+							msg = xhr.responseJSON.message;
+						}
+						console.error('[AjoutVideo] Erreur AJAX', {
+							status : statusText,
+							error : errorText,
+							httpStatus : xhr ? xhr.status : null,
+							responseText : xhr ? xhr.responseText : null,
+							responseJSON : xhr ? xhr.responseJSON : null,
+							payload : payload
+						});
+						alert(msg);
 					}
 				}).always(function() {
 					$('#modalAjouteVideoBut').modal("hide");
