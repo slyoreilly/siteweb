@@ -200,6 +200,59 @@
 
 			}
 
+			function ouvreDialogueAjoutVideo(mBut) {
+				$('#modalAjouteVideoBut').modal("show");
+				$('#modalAjouteVideoBut .modal-title').text("Confirmer que vous souhaitez tenter de récupérer un vidéo?");
+				$('#modalAjouteVideoBut .modal-body').empty();
+				$('#modalAjouteVideoBut .modal-footer').empty();
+
+				$('#modalAjouteVideoBut .modal-body').append(
+					$('<label></label>').attr("for", "cameraIdAjoutVideo").text("CameraId"),
+					$('<input />').attr({
+						type : "number",
+						id : "cameraIdAjoutVideo",
+						required : true,
+						min : 1
+					}).addClass("form-control").css("max-width", "200px")
+				);
+
+				$('#modalAjouteVideoBut .modal-footer').append(
+					$('<button></button>').addClass("btn btn-secondary").attr("type", "button").text("Non").on("click", function() {
+						$('#modalAjouteVideoBut').modal("hide");
+					}),
+					$('<button></button>').addClass("btn btn-primary").attr("type", "button").text("Oui").on("click", function() {
+						tenteRecupVideoBut(mBut);
+					})
+				);
+			}
+
+			function tenteRecupVideoBut(mBut) {
+				var cameraId = parseInt($('#cameraIdAjoutVideo').val(), 10);
+				if (isNaN(cameraId)) {
+					alert("CameraId est obligatoire.");
+					return;
+				}
+
+				var butId = mBut.butId || mBut.id || mBut.noBut;
+				if (butId == null) {
+					alert("Impossible de trouver l'identifiant du but.");
+					return;
+				}
+
+				$.ajax({
+					url : "/scriptsphp/ajouteVideos.php",
+					type : "POST",
+					data : {
+						butId : butId,
+						chrono : mBut.chrono,
+						cameraId : cameraId,
+						eventTypeCode : 5
+					}
+				}).always(function() {
+					$('#modalAjouteVideoBut').modal("hide");
+				});
+			}
+
 			/////////////////////////////////////////////////////////
 			//
 			//  Fin de afficheSommairePunitions
@@ -1165,6 +1218,14 @@ console.log(rSMB.buts[d].video.length);
 						lesCols[4] = rSMB.buts[J].passeur2;
 						lesCols[5] = strChrono;
 						lesCols[6] = "";
+						var boutonAjouteVideo = null;
+						if (window.vPerm < 10) {
+							boutonAjouteVideo = $('<button></button>').attr("type", "button").addClass("btn btn-xs btn-outline-secondary").text("+ Vidéo").on("click", {
+								mBut : rSMB.buts[J]
+							}, function(event) {
+								ouvreDialogueAjoutVideo(event.data.mBut);
+							});
+						}
 						//			console.log(rSMB.buts[J].video.length);
 						//			lesCols[6] = (rSMB.buts[J].video.length <= 0) ? "" : "Voir";
 
@@ -1215,8 +1276,16 @@ console.log(rSMB.buts[d].video.length);
 									cellule.appendChild(lien);
 								} else {
 
-									if (K == 6 && rSMB.buts[J].video.length > 0) {
-										cellule.appendChild(pVids);
+									if (K == 6) {
+										if (rSMB.buts[J].video.length > 0) {
+											cellule.appendChild(pVids);
+										}
+										if (boutonAjouteVideo != null) {
+											if (rSMB.buts[J].video.length > 0) {
+												cellule.appendChild(document.createTextNode(' '));
+											}
+											cellule.appendChild(boutonAjouteVideo[0]);
+										}
 									} else {
 										ptexte = document.createElement('P');
 
@@ -3528,6 +3597,7 @@ $('#modalNouveauBut .modal-footer').append($('<button></button>').addClass("btn 
                 construitDialogue("modalVideoBut");
                 construitDialogue("modalFullVideoUpload");
                 construitDialogue("modalAjusterDelai");
+                construitDialogue("modalAjouteVideoBut");
 				construitDialogue("modalDeleteClip");
 
                 if (getValue('videofile') != "" && getValue('videofile') != undefined) {
