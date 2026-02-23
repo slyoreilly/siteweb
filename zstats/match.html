@@ -233,29 +233,15 @@
 					return;
 				}
 
-<<<<<<< HEAD
-				var butId = mBut.butId || mBut.id || mBut.noBut;
-				if (butId == null) {
-					alert("Impossible de trouver l'identifiant du but.");
-					return;
-=======
 				var butId = parseInt(mBut.butId || mBut.eventId || mBut.event_id || mBut.id || mBut.noBut || 0, 10);
 				var noSequence = parseInt(mBut.noSequence || mBut.noseq || -1, 10);
 				if (isNaN(noSequence)) {
 					noSequence = -1;
->>>>>>> origin/codex/add-video-button-in-match.html-qdtt9u
 				}
 
 				$.ajax({
 					url : "/scriptsphp/ajouteVideos.php",
 					type : "POST",
-<<<<<<< HEAD
-					data : {
-						butId : butId,
-						chrono : mBut.chrono,
-						cameraId : cameraId,
-						eventTypeCode : 5
-=======
 					dataType : "json",
 					data : {
 						butId : isNaN(butId) ? 0 : butId,
@@ -271,13 +257,12 @@
 							alert("Impossible de créer la demande d'ajout vidéo.");
 						}
 					},
-					error : function(xhr) {
-						var msg = "Impossible de créer la demande d'ajout vidéo.";
-						if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
-							msg = xhr.responseJSON.message;
-						}
-						alert(msg);
->>>>>>> origin/codex/add-video-button-in-match.html-qdtt9u
+						error : function(xhr) {
+							var msg = "Impossible de créer la demande d'ajout vidéo.";
+							if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
+								msg = xhr.responseJSON.message;
+							}
+							alert(msg);
 					}
 				}).always(function() {
 					$('#modalAjouteVideoBut').modal("hide");
