@@ -29,6 +29,9 @@ header("Access-Control-Allow-Origin: http://syncstats.ca");
 
 
 
+$premierVideo =  isset($_POST['premierVideo'])? $_POST['premierVideo']:null;
+$dernierVideo =  isset($_POST['dernierVideo'])? $_POST['dernierVideo']:null;
+$fichiers =  isset($_POST['fichiers'])? $_POST['fichiers']:null;
 //
 $liste = scandir( '../lookatthis/' , SCANDIR_SORT_DESCENDING);
 if (($key = array_search('..', $liste)) !== false) {

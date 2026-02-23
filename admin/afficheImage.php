@@ -13,18 +13,6 @@
  if(isset($_GET['ficId']) && is_numeric($_GET['ficId'])) {
 
 
-// Create connection
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error($conn));
-}
-
-mysqli_query($conn,"SET NAMES 'utf8'");
-mysqli_query($conn,"SET CHARACTER SET 'utf8'");
-
-
-
      // get the image from the db
      $sql = "SELECT * FROM TableFichier WHERE ficId=" .$_GET['ficId'] . ";";
 
@@ -39,7 +27,7 @@ while($rangee=mysqli_fetch_array($result))
      echo $rangee['content'];
 }
      // close the db link
-     mysqli_close($conn);
+    // mysqli_close($conn);
  }
  else {
      echo 'Please use a real id number';

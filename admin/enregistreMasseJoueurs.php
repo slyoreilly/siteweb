@@ -13,25 +13,7 @@ $taJoueurs = $_POST['taJoueurs'];
 $lesJoueurs = preg_split('/\r\n|\r|\n/', $taJoueurs);
 
 
-// Create connection
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
 
-//if (!mysql_connect($db_host, $db_user, $db_pwd))
- //   die("Can't connect to database");
-
-//if (!mysql_select_db($database))
- //   {
-//    	echo "<h1>Database: {$database}</h1>";
- //   	echo "<h1>Table: {$table}</h1>";
-  //  	die("Can't select database");
-//	}
-	
-		mysqli_query($conn,"SET NAMES 'utf8'");
-mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 	//////////////////////////////////////////////////////////////////////
 //
 //	Partie upload file

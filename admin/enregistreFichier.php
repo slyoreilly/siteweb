@@ -20,14 +20,6 @@ if (isset($_POST['refId'])){
     $refId =$_POST['refId'];
 }
 
-// Create connection
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-	
 	
 	//////////////////////////////////////////////////////////////////////
 //
@@ -69,6 +61,6 @@ else echo 0;
 
 //include 'library/closedb.php';
 	
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

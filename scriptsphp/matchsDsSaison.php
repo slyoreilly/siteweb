@@ -35,8 +35,12 @@ $tableEquipe = 'TableEquipe';
 ////////////////////////////////////////////////////////////
 
 if (!isset($deSyncMatch)) {
-
+	if($workEnv=="production"){
 $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+} else{
+	$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database, $db_port);
+}
+
 // Check connection
 if (!$conn) {
 	die("Connection failed: " . mysqli_connect_error());
@@ -45,7 +49,9 @@ if (!$conn) {
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 mysqli_set_charset($conn, "utf8");
-mysqli_query($conn, "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY','')");
+mysqli_query($conn, "
+SET SESSION sql_mode = REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', '')
+");
 }
 
 /////////////////////////////////////////////////////
@@ -54,15 +60,6 @@ mysqli_query($conn, "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_G
 //
 ////////////////////////////////////////////////////
 
-function trouveIDParNomLigue($nomLi) {
-	$resultLigue = mysqli_query($conn, "SELECT * FROM Ligue WHERE 1") or die(mysqli_error($conn) . " dans trouveIDParNomLigue");
-	while ($rangeeLigue = mysqli_fetch_array($resultLigue)) {
-		if (!strcmp($rangeeLigue['Nom_Ligue'], $nomLi)) {$LigueID = $rangeeLigue['ID_Ligue'];
-			// Ce sont de INT
-		}
-	}
-	return $LigueID;
-}
 
 
 function trouveJoueur($joueurId, $array_joueur) {
@@ -495,9 +492,9 @@ while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 
 	$mMatch = trouveMatch($matchID, $lesMatchs);
 
+	$JS2['matchId'] = $rangeeEv['match_id'];
 	$JS2['matchID'] = $matchID;
 	$JS2['date'] = $rangeeEv['date'];
-	$JS2['mavId'] = $rangeeEv['mavId'];
 	$mE = trouveFic($rangeeEv['eq_dom'], $fic_array);
 	$JS2['eqDom'] = $mE['nom_equipe'];
 	$JS2['coulDom'] = $mE['couleur1'];
@@ -541,7 +538,7 @@ $Ine++;
 $jsRetour= array();
 $jsRetour['matchs'] = $mesMatchs;
 echo json_encode($jsRetour);
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>
 

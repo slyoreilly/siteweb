@@ -1,8 +1,8 @@
 <?php
 header("Access-Control-Allow-Origin: https://syncstats.com");
 header("Access-Control-Allow-Origin: http://syncstats.com");
-header("Access-Control-Allow-Origin: https://syncstats.ddns.net");
-header("Access-Control-Allow-Origin: http://syncstats.ddns.net");
+header("Access-Control-Allow-Origin: https://vieuxsite.sm.syncstats.ca");
+header("Access-Control-Allow-Origin: http://vieuxsite.sm.syncstats.ca");
 header("Access-Control-Allow-Origin: https://syncstats.ca");
 header("Access-Control-Allow-Origin: http://syncstats.ca");
     // Allow from any origin

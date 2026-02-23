@@ -21,16 +21,6 @@ $ligueId = $_POST['ligueId'];
 $username = $_POST['username'];
 }
 
-// Create connection
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($conn, "SET NAMES 'utf8'");
-mysqli_query($conn, "SET CHARACTER SET 'utf8'");
-
 
 $retAbon=null;
 
@@ -121,7 +111,7 @@ else {
 	echo "{\"profil\":".$adomper.",\"abonnements\":".$adompAbon."}";
 }
 
-mysqli_close($conn);
+//mysqli_close($conn);
 //		header("HTTP/1.1 200 OK");
 ?>
 

@@ -7,6 +7,7 @@ require '../scriptsphp/defenvvar.php';
 $usager = $_POST['username'];
 $arenaId = $_POST['arenaId'];
 $telId = $_POST['telId'];
+$remoteId = $_POST['telId'];
 $batterie = $_POST['batterie'];
 $memoire = $_POST['memoire'];
 $temperature = round($_POST['temperature']);
@@ -14,17 +15,6 @@ $codeEtat= $_POST['codeEtat'];
 $camId= $_POST['remoteId'];
 $version= $_POST['version'];
 $settings= $_POST['settings'];
-
-	
-// Create connection
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($conn, "SET NAMES 'utf8'");
-mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 $dt = new DateTime("now", new DateTimeZone('GMT'));
 
@@ -45,7 +35,7 @@ $mTemps= $dt->format('Y-m-d H:i:s');
 		
 	
 		$querySel = "SELECT codeEtat FROM StatutRemote WHERE telId = '{$telId}'";
-		$resultSel=mysqli_query($conn,$querySel) or die("Erreur: "+$querySel+"\n"+mysqli_error($conn));
+		$resultSel=mysqli_query($conn,$querySel) or die("Erreur: ".$querySel."\n".mysqli_error($conn));
 		
 		$rangSel=mysqli_num_rows($resultSel);
 		
@@ -58,14 +48,14 @@ $mTemps= $dt->format('Y-m-d H:i:s');
 			if($codeEtat=$tmpSel[0]){
 				$queryMod = "UPDATE StatutRemote SET memoire = '{$memoire}', batterie = '{$batterie}',temperature='{$temperature}', dernierMaJ='{$mTemps}', version='{$version}', userId = '{$usager}', arenaId = '{$arenaId}',settings='{$settings}', codeEtat = '{$codeEtat}'
 					WHERE telId='{$telId}'";
-				mysqli_query($conn,$queryMod) or die("Erreur: "+$queryMod+"\n"+mysqli_error($conn));
+				mysqli_query($conn,$queryMod) or die("Erreur: ".$queryMod."\n".mysqli_error($conn));
 				echo "- MOD1";
 				}
 				else{
 					$queryMod = "UPDATE StatutRemote SET dernierModif ='{$mTemps}', memoire = '{$memoire}', version = '{$version}', batterie = '{$batterie}'
 					,temperature='{$temperature}', dernierMaJ='{$mTemps}', userId = '{$usager}',settings='{$settings}', arenaId = '{$arenaId}', codeEtat = '{$codeEtat}'
 						WHERE telId='{$telId}'";
-								mysqli_query($conn,$queryMod) or die("Erreur: "+$queryMod+"\n"+mysqli_error($conn));
+								mysqli_query($conn,$queryMod) or die("Erreur: ".$queryMod."\n".mysqli_error($conn));
 				echo "- MOD2";
 				}
 		echo "- MOD";
@@ -77,7 +67,7 @@ $mTemps= $dt->format('Y-m-d H:i:s');
 		"VALUES ('{$usager}','{$mTemps}','{$mTemps}','{$arenaId}','{$batterie}','{$memoire}','{$temperature}','{$telId}','{$codeEtat}','{$remoteId}','{$version}','{$settings}')";
 		echo " - PREINS2";
 		
-			mysqli_query($conn,$queryIns) or die("Erreur: "+$queryIns+"\n"+mysqli_error($conn));
+			mysqli_query($conn,$queryIns) or die("Erreur: ".$queryIns."\n".mysqli_error($conn));
 		echo " - INS";
 		
 		}
@@ -85,6 +75,6 @@ $mTemps= $dt->format('Y-m-d H:i:s');
 	
 		echo " - FIN";
 		
-		mysqli_close($conn);
+		//mysqli_close($conn);
 	
 ?>

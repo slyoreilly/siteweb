@@ -92,9 +92,9 @@
 
 				var url = "/stats2/getMatchAVenir.php";
 
-				var strMAVId = "mavId=" + window.mavId;
+				var strMatchId = "matchId=" + window.matchId;
 				var strLigueId = "ligueId=" + window.ligueId;
-				params = strMAVId + '&' + strLigueId;
+				params = strMatchId + '&' + strLigueId;
 				//		alert(url+'?'+param);
 				//requete_ajax.send(null);
 				//	return requete_ajax.responseText;
@@ -115,7 +115,7 @@
 						var k = 0;
 						listeMatch = new Array();
 						while (k < vecMAV.length) {
-							listeMatch[k] = vecMAV[k].mavId;
+							listeMatch[k] = vecMAV[k].matchId;
 							k++;
 						}
 						loadConditions++;

@@ -1,41 +1,71 @@
-<?php 
+<?php
 
-$workEnv = getenv('WORK_ENV');
-if($workEnv=="production"){
-    $db_host="localhost";
-    $db_user="syncsta1_u01";
-    $db_pwd="test";
-    $image_loc="clientfiles/";
-    $fileserver_loc_rep="/home/";
-    $fileserver_baseurl="https://syncstats.ca/";
-    
-    $db_pwd="test";
-    
+global $conn;
+
+$workEnv = getenv('WORK_ENV') ?: 'development';
+
+$db_user = "syncsta1_u01";
+$db_pwd  = "test";
+
+if ($workEnv == "production") {
+
+    $db_host = "localhost";
     $database = 'syncsta1_900';
 
+    $image_loc = "clientfiles/";
+    $fileserver_loc_rep = "/home/";
+    $fileserver_baseurl = "https://syncstats.ca/";
 
-} else if($workEnv=="development"){
-    $db_host="localhost";
-    $db_user="syncsta1_u01";
-    $db_pwd="test";
-    $image_loc="devclientfiles/";
-    $fileserver_loc_rep="/var/www/html/";
-    $fileserver_baseurl="https://syncstats.ddns.net/";
-    
+    $db_port = null;
+
+} else {
+
+    $db_host = ($workEnv == "development") ? "mysql-server" : "localhost";
     $database = 'syncsta1_901';
+    $db_port = 3306;
 
-
-} else{
-    $db_host="localhost";
-    $db_user="syncsta1_u01";
-    $db_pwd="test";
-    $image_loc="devclientfiles/";
-    $fileserver_loc_rep="/var/www/html/";
-    $fileserver_baseurl="https://syncstats.ddns.net/";
-    
-    
-    $database = 'syncsta1_901';
-
+    $image_loc = "devclientfiles/";
+    $fileserver_loc_rep = "/var/www/html/";
+    $fileserver_baseurl = "https://syncstats.ddns.net/";
 }
 
+
+// Création ou recréation de la connexion si nécessaire
+if (!isset($conn) || !($conn instanceof mysqli)) {
+
+    if ($db_port !== null) {
+        $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database, $db_port);
+    } else {
+        $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+    }
+
+    if (!$conn) {
+        error_log("DB Connection failed: " . mysqli_connect_error());
+        http_response_code(500);
+        exit;
+    }
+
+    mysqli_set_charset($conn, "utf8");
+
+} else {
+
+    // Vérification douce sans ping()
+    if (!@mysqli_query($conn, "SELECT 1")) {
+
+        // Reconnexion si la connexion est morte
+        if ($db_port !== null) {
+            $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database, $db_port);
+        } else {
+            $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+        }
+
+        if (!$conn) {
+            error_log("DB Reconnection failed: " . mysqli_connect_error());
+            http_response_code(500);
+            exit;
+        }
+
+        mysqli_set_charset($conn, "utf8");
+    }
+}
 ?>

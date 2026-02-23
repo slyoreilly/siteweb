@@ -114,8 +114,8 @@
 			adresseCourte: 'syncstats.com'},
 			{adresseLongue: 'https://syncstats.ca',
 			adresseCourte: 'syncstats.ca'},
-			{adresseLongue: 'http://syncstats.ddns.net',
-			adresseCourte: 'syncstats.ddns.net'}
+			{adresseLongue: 'https://fileserver.sm.syncstats.ca/',
+			adresseCourte: 'fileserver.sm.syncstats.ca'}
 			];
 
 			$('#divGauche').append($('<div></div>').append(
@@ -240,7 +240,7 @@
 					  });
 					}),
 					$('<div></div>').append(
-						$('<input></input>').attr('type','button').val('Voir Doublons').on("click",voirDoublons())
+						$('<input></input>').attr('type','button').val('Voir Doublons').on("click",voirDoublons)
 					)
 				)
 
@@ -275,7 +275,7 @@ console.log($('#selSec').val());
 console.log($('#selTiers').val());
 
 
-					$.ajax({url: "http://syncstats.ddns.net/scriptserveur/pointeursParHierarchie.php",
+					$.ajax({url: "https://fileserver.sm.syncstats.ca//scriptserveur/pointeursParHierarchie.php",
 									data: {plusVieux: plusVieux,
 										maxTraite: maxTraite,
 									plusNeuf:$('#plusNeuf').val(),
@@ -346,7 +346,7 @@ console.log($('#selTiers').val());
 									if(
 										$(this).find('input[type=checkbox]').prop("checked")
 									) {
-										return $(this).find('.nomFichier').text();
+										return $(this).find('.nomMatch').text();
 									}}).get();
 
 								$.ajax({url: listeServeur[$('#selDeleteSource option:selected').val()].adresseLongue+"/scriptserveur/deleteVideos.php",

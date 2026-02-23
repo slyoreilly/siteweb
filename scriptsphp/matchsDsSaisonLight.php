@@ -30,10 +30,12 @@ $tableEquipe = 'TableEquipe';
 // 	Connections é la base de données
 //
 ////////////////////////////////////////////////////////////
-
 if (!isset($deSyncMatch)) {
-
+	if($workEnv=="production"){
 $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
+} else{
+	$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database, $db_port);
+}
 // Check connection
 if (!$conn) {
 	die("Connection failed: " . mysqli_connect_error());
@@ -42,7 +44,9 @@ if (!$conn) {
 mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 mysqli_set_charset($conn, "utf8");
-mysqli_query($conn, "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY','')");
+mysqli_query($conn, "
+SET SESSION sql_mode = REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', '')
+");
 }
 
 /////////////////////////////////////////////////////
@@ -51,7 +55,7 @@ mysqli_query($conn, "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_G
 //
 ////////////////////////////////////////////////////
 
-function trouveIDParNomLigue($nomLi) {
+function trouveIDParNomLigue($nomLi,$conn) {
 	$resultLigue = mysqli_query($conn, "SELECT * FROM Ligue WHERE 1") or die(mysqli_error($conn) . " dans trouveIDParNomLigue");
 	while ($rangeeLigue = mysqli_fetch_array($resultLigue)) {
 		if (!strcmp($rangeeLigue['Nom_Ligue'], $nomLi)) {$LigueID = $rangeeLigue['ID_Ligue'];
@@ -66,7 +70,7 @@ function trouveIDParNomLigue($nomLi) {
 //
 //
 
-function trouveSaisonActiveDeLigueId($ID) {
+function trouveSaisonActiveDeLigueId($ID,$conn) {
 	$rfSaison = mysqli_query($conn,"SELECT saisonId FROM TableSaison WHERE ligueRef = '{$ID}' and saisonActive=1") or die(mysqli_error($conn) . " trouveSaisonActiveDeLigueId");
 	return (mysqli_result($rfSaison, 0));
 }
@@ -279,7 +283,6 @@ while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 
 	$JS2['matchID'] = $matchID;
 	$JS2['date'] = $rangeeEv['date'];
-	$JS2['mavId'] = $rangeeEv['mavId'];
 	//$mE = trouveFic($rangeeEv['eq_dom'], $fic_array);
 	$JS2['eqDom'] = $rangeeEv['nomEqDom'];
 	//$JS2['coulDom'] = $mE['couleur1'];

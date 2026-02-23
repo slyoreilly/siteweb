@@ -14,23 +14,7 @@ $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
 $tableEquipe = 'TableEquipe';
 
-////////////////////////////////////////////////////////////
-//
-// 	Connections � la base de donn�es
-//
-////////////////////////////////////////////////////////////
-$con=mysqli_connect($db_host, $db_user, $db_pwd);
-if (!$con)
-    die("Can't connect to database");
 
-if (!mysqli_select_db($con,$database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	die("Can't select database");
-
-}
-	mysqli_query($con,"SET NAMES 'utf8'");
-mysqli_query($con,"SET CHARACTER SET 'utf8'");
 
 //////////////////////////////////////////////////////
 //
@@ -48,32 +32,32 @@ $equipeId = $_GET["equipeId"];
 
 if(is_numeric($ligueId))
 {
-$resultEvent = mysqli_query($con,"SELECT Ligue.*,TableSaison.* FROM Ligue 
+$resultEvent = mysqli_query($conn,"SELECT Ligue.*,TableSaison.* FROM Ligue 
 										JOIN TableSaison
 										ON (Ligue.ID_Ligue=TableSaison.ligueRef)
 										WHERE ID_Ligue = '{$ligueId}'")
-	or die(mysqli_error($con));
+	or die(mysqli_error($conn));
 }
 else 
 {
 	if (is_numeric($equipeId))
 	{
-	$resultEvent = mysqli_query($con,"SELECT Ligue.*,abonEquipeLigue.*, TableSaison.* FROM Ligue
+	$resultEvent = mysqli_query($conn,"SELECT Ligue.*,abonEquipeLigue.*, TableSaison.* FROM Ligue
 											JOIN abonEquipeLigue 
 										 		ON (abonEquipeLigue.ligueId=Ligue.ID_Ligue)
 											JOIN TableSaison
 												ON (Ligue.ID_Ligue=TableSaison.ligueRef)
 											WHERE equipeId = '{$equipeId}'")
-	or die(mysqli_error($con));  
+	or die(mysqli_error($conn));  
 	}
 	else
 	{
-	$resultEvent = mysqli_query($con,"SELECT Ligue.cleValeur,Ligue.ID_Ligue, Ligue.Nom_Ligue,Ligue.Lieu,Ligue.Horaire FROM Ligue 
+	$resultEvent = mysqli_query($conn,"SELECT Ligue.cleValeur,Ligue.ID_Ligue, Ligue.Nom_Ligue,Ligue.Lieu,Ligue.Horaire FROM Ligue 
 										JOIN TableSaison
 										ON (Ligue.ID_Ligue=TableSaison.ligueRef)
 										WHERE 1
 										GROUP BY Ligue.ID_Ligue, Ligue.Nom_Ligue,Ligue.Lieu,Ligue.Horaire,Ligue.cleValeur")
-		or die(mysqli_error($con));
+		or die(mysqli_error($conn));
 	}
 	}
 $Ieq =0;
@@ -115,6 +99,6 @@ $JSONstring = "{\"Ligues\":".json_encode($Ligues)."}" ;
 
 echo $JSONstring;
 	
-mysqli_close($con);
+//mysqli_close($conn);
 
 ?>

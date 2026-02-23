@@ -6,17 +6,6 @@ $table = $_POST['table'];
 $mode = $_POST['mode'];
 $critere = str_replace("'", "", $_POST['critere']);
 
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-	die("Can't connect to database");
-
-if (!mysql_select_db($database)) {
-	echo "<h1>Database: {$database}</h1>";
-	echo "<h1>Table: {$table}</h1>";
-	die("Can't select database");
-}
-
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
 //////////////////////////////////////////////////////////////////////
 //
 //	Partie upload file
@@ -40,7 +29,7 @@ $qSelect = "SELECT *
 				ON RapportMatch.matchId=TableMatch.matchIdRef
 			WHERE 1 GROUP BY matchId ORDER BY rapportId";
 
-$retour = mysql_query($qSelect) or die("Erreur: " . mysql_error() . $qSelect);
+$retour = mysqli_query($conn, $qSelect) or die("Erreur: " . mysqli_error($conn) . $qSelect);
 while ($rInsc = mysql_fetch_array($retour)) {
 	array_push($matchInscrits, stripslashes($rInsc['matchIdRef']));
 }
@@ -53,10 +42,10 @@ $qTout = "SELECT *
 			FROM TableMatch
 			WHERE 1";
 
-$retTout = mysql_query($qTout) or die("Erreur: " . mysql_error() . $qTout);
+$retTout = mysqli_query($conn,$qTout) or die("Erreur: " . mysqli_error($conn) . $qTout);
 
 $IT=0;
-while ($rTout = mysql_fetch_array($retTout)) {
+while ($rTout = mysqli_fetch_array($retTout)) {
 //	echo "=";
 	//array_push($matchTotaux, $rTout);
 	
@@ -105,7 +94,7 @@ while ($rTout = mysql_fetch_array($retTout)) {
 	//$vecCV = json_decode($rSel['cleValeur']);
 	$qUp = "UPDATE RapportMatch SET " . $strArb . $strTB . " WHERE matchId='{$rTout['matchIdRef']}'";
 	echo $qUp . "  -   " . $qqchose . "\n";
-	if ($qqchose) {$retour = mysql_query($qUp) or die("Erreur: " . $qUp . mysql_error());
+	if ($qqchose) {$retour = mysqli_query($conn,$qUp) or die("Erreur: " . $qUp . mysqli_error($conn));
 	}
 		
 	}
@@ -139,7 +128,7 @@ while ($rTout = mysql_fetch_array($retTout)) {
 	//echo json_encode($matchNouveaux[$IMN])."\n";
 	$qInsMatch = "INSERT INTO RapportMatch (" . $strArb1 . "" . $strTB1 . "matchId,date) Values (" . $strArb2 . "" . $strTB2 . "'{$rTout['matchIdRef']}','{$rTout['date']}');";
 	echo $qInsMatch;
-	$retInsMatch = mysql_query($qInsMatch) or die("Erreur: " . $qInsMatch . mysql_error());
+	$retInsMatch = mysqli_query($conn,$qInsMatch) or die("Erreur: " . $qInsMatch . mysqli_error($conn));
 
 	
 	

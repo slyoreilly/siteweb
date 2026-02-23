@@ -1,45 +1,27 @@
 <?php
 require '../scriptsphp/defenvvar.php';
 
-//$jDomJSON = stripslashes($_POST['jDom']);
-//$jVisJSON = stripslashes($_POST['jVis']);
-$mavId = $_POST['mavId'];
+$matchId = $_POST['matchId'];
 $ligueId = $_POST['ligueId'];
-
-
-//$ligueId = $_POST['ligueId'];
-
-if (!mysql_connect($db_host, $db_user, $db_pwd))
-    die("Can't connect to database");
-
-if (!mysql_select_db($database))
-    {
-    	echo "<h1>Database: {$database}</h1>";
-    	echo "<h1>Table: {$table}</h1>";
-    	die("Can't select database");
-	}
 	
-mysql_query("SET NAMES 'utf8'");
-mysql_query("SET CHARACTER SET 'utf8'");
-//	mysql_set_charset('utf8');
 	
-	$qMavId="SELECT *
+	$qMatchId="SELECT *
 						FROM MatchAVenir
-						 WHERE mavId=$mavId";
-$retour = mysql_query($qMavId)or die(mysql_error().$qMavId);	
+						 WHERE match_id=$matchId";
+$retour = mysqli_query($conn, $qMatchId)or die(mysqli_error($conn).$qMatchId);	
 
-$vecRes =mysql_fetch_row($retour) ;   //mavId; matchId; date; dateFin; ligueId; eqDom; alignementDom; gardienDom; eqVis; alignementVis; gardienVis; dernierMAJ; arenaId; arbitreId.
-$alDom=json_decode($vecRes[6]);
-$alVis=json_decode($vecRes[9]);
+$vecRes =mysqli_fetch_row($retour) ;  
+$alDom=json_decode($vecRes['alignementDom']);
+$alVis=json_decode($vecRes['alignementVis']);
 
 $qIndJDom =	"SELECT evalue,AVG(valeur)
 						FROM EvaluationJoueurs
 						 WHERE ligueId=$ligueId
 						 GROUP BY evalue";
-$mEval = mysql_query($qIndJDom)or die(mysql_error().$qIndJDom);	
+$mEval = mysqli_query($conn, $qIndJDom)or die(mysqli_error($conn).$qIndJDom);	
 
 $b=0;
-while($r = mysql_fetch_array($mEval)) {
+while($r = mysqli_fetch_array($mEval)) {
     $vecEval[$b][0] = $r[0];
 	    $vecEval[$b][1] = $r[1];
 	

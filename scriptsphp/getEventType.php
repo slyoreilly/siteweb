@@ -9,28 +9,12 @@
 
 require '../scriptsphp/defenvvar.php';
 
-
-$sportId=null;
-if(isset($_POST['sportId'])){
+$event=Array();
+$sportIds=null;
+if(isset($_POST['sportIds'])){
 $sportIds = $_POST["sportIds"];
 $sportIdArray = json_decode($sportIds);
 }
-
-////////////////////////////////////////////////////////////
-//
-// 	Connections � la base de donn�es
-//
-////////////////////////////////////////////////////////////
-
-// Create connection
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($conn, "SET NAMES 'utf8'");
-mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 
 $saisonId =null;
 
@@ -38,7 +22,7 @@ $saisonId =null;
 // 
 //
 
-if(IS_NULL($sportId)){
+if(!empty($sportIds)){
 	$rfEventType = mysqli_query($conn,"SELECT * FROM EventType WHERE 1")
 	or die(mysqli_error($conn)." Select EventType Sport null"); 
 }else{
@@ -53,17 +37,20 @@ if(IS_NULL($sportId)){
 
 
 	$rfEventType = mysqli_query($conn,"SELECT * FROM EventType WHERE {$sportString} ")
-	or die(mysqli_error($conn)." Select EventType Sport set to {$sportId} "); 
+	or die(mysqli_error($conn)." Select EventType Sport set to {$sportIds} "); 
 }
-
 while($rangeeEvent=mysqli_fetch_array($rfEventType))
 {
+	$rangeeEvent['CreatedAt'] = strtotime($rangeeEvent['CreatedAt']); // convert to unix timestamp (in seconds)
+    $rangeeEvent['CreatedAt'] = 1000 * $rangeeEvent['CreatedAt']; // convert seconds to milliseconds
+	$rangeeEvent['UpdatedAt'] = strtotime($rangeeEvent['UpdateAt']); // convert to unix timestamp (in seconds)
+    $rangeeEvent['UpdatedAt'] = 1000 * $rangeeEvent['UpdateAt']; // convert seconds to milliseconds
 	$event[] = $rangeeEvent;
 	
 }
 	
 echo json_encode($event);;
 	
-mysqli_close($conn);
+//mysqli_close($conn);
 
 ?>

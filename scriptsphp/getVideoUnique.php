@@ -8,18 +8,6 @@
 ////////////////////////////////////////////////////////////
 
 require '../scriptsphp/defenvvar.php';
-//
-////////////////////////////////////////////////////////////
-// Create connection
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($conn, "SET NAMES 'utf8'");
-mysqli_query($conn, "SET CHARACTER SET 'utf8'");
-
 
 
 //////////////////////////////////////////////////////
@@ -72,7 +60,7 @@ $reqAltAngles = "SELECT *
 
 echo json_encode($leVid);
 
-mysqli_close($conn);	
+//mysqli_close($conn);	
 
 
 ?>

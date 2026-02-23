@@ -14,22 +14,6 @@ $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
 $tableEquipe = 'TableEquipe';
 
-////////////////////////////////////////////////////////////
-//
-// 	Connections � la base de donn�es
-//
-////////////////////////////////////////////////////////////
-
-
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection/
-if (!$conn) {
-	error_log("Connection failed: " . mysqli_connect_error());
-   die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($conn,"SET NAMES 'utf8'");
-mysqli_query($conn,"SET CHARACTER SET 'utf8'");
 
 
 $fic=$_POST["fic"];
@@ -66,5 +50,5 @@ while($rangCam=mysqli_fetch_array($resCam)){
 
 }
 
-mysqli_close($conn);
+//mysqli_close($conn);
 ?>

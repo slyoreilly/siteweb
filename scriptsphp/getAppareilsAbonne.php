@@ -6,34 +6,9 @@ require '../scriptsphp/defenvvar.php';
 
 $arenaId = $_POST['arenaId'];
 $usager = $_POST['userId'];
-$mavId=null;
-if(isset($_POST['mavId'])){
-$mavId = $_POST['mavId'];}
 $matchId=null;
 if(isset($_POST['matchId'])){
 $matchId = $_POST['matchId'];}
-
-// Create connection
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-mysqli_query($conn, "SET NAMES 'utf8'");
-mysqli_query($conn, "SET CHARACTER SET 'utf8'");
-
-if ($mavId != "null" && $mavId != null && $mavId != "undefined") {
-
-	$rTM = mysqli_query($conn, "SELECT match_id 
-						FROM TableMatch 
-						WHERE mavId='{$mavId}'") or die(mysqli_error());
-
-	if (mysqli_num_rows($rTM) > 0) {
-		$match_id_vec = mysqli_fetch_row($rTM);
-		$matchId = $match_id_vec[0];
-	}
-}
 
 ////////////////////////////
 //
@@ -158,5 +133,5 @@ $vecRet['cams'] = $cams;
 $vecRet['remotes'] = $remotes;
 
 echo utf8_encode(json_encode($vecRet));
-mysqli_close($conn);
+//mysqli_close($conn);
 ?>
