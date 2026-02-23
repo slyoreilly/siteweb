@@ -41,18 +41,11 @@ function traiteDemandesAjoutVideo($conn, $rrs2) {
 
     while ($rangeeDemande = mysqli_fetch_array($resDemandes)) {
         $eventId = intval($rangeeDemande['eventId']);
-        $typeEvenement = intval($rangeeDemande['typeEvenement']);
         $demandeId = intval($rangeeDemande['demandeId']);
 
-        if ($typeEvenement <= 0) {
-            $typeEvenement = 5;
-        }
-
-        $qSelEvent = "SELECT TableEvenement0.match_event_id, TableEvenement0.equipe_event_id, TableMatch.arenaId, TableMatch.match_id, TableMatch.eq_dom, TableMatch.eq_vis
+        $qSelEvent = "SELECT TableEvenement0.event_id
 "
             . "FROM TableEvenement0
-"
-            . "INNER JOIN TableMatch ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)
 "
             . "WHERE TableEvenement0.event_id='{$eventId}' LIMIT 0,1";
         $resEvent = mysqli_query($conn, $qSelEvent);
@@ -60,33 +53,9 @@ function traiteDemandesAjoutVideo($conn, $rrs2) {
             continue;
         }
 
-        $rangeeEvent = mysqli_fetch_array($resEvent);
-        $matchEventIdSysteme = $rangeeEvent['match_event_id'];
-        $equipeEventId = intval($rangeeEvent['equipe_event_id']);
-
-        $qSelMatchSysteme = "SELECT matchIdRef FROM TableMatch
-"
-            . "WHERE ligueRef='5'
-"
-            . "AND arenaId='" . intval($rangeeEvent['arenaId']) . "'
-"
-            . "ORDER BY date DESC LIMIT 0,1";
-        $resMatchSysteme = mysqli_query($conn, $qSelMatchSysteme);
-        if ($resMatchSysteme && mysqli_num_rows($resMatchSysteme) > 0) {
-            $rMS = mysqli_fetch_array($resMatchSysteme);
-            $matchEventIdSysteme = $rMS['matchIdRef'];
-        }
-
         $chronoVideo = intval($rrs2);
-
-        $qInsEvt = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id, joueur_event_ref, chrono, souscode, code) VALUES ("
-            . "'{$matchEventIdSysteme}', '{$equipeEventId}', '{$eventId}', '{$chronoVideo}', 0, '{$typeEvenement}')";
-        $okInsEvt = mysqli_query($conn, $qInsEvt);
-
-        if ($okInsEvt) {
-            $qMajDemande = "UPDATE DemandeAjoutVideo SET progression=2, chronoVideo='{$chronoVideo}', updatedAt=NOW() WHERE demandeId='{$demandeId}'";
-            mysqli_query($conn, $qMajDemande);
-        }
+        $qMajDemande = "UPDATE DemandeAjoutVideo SET progression=2, chronoVideo='{$chronoVideo}', updatedAt=NOW() WHERE demandeId='{$demandeId}'";
+        mysqli_query($conn, $qMajDemande);
     }
 }
 
@@ -178,6 +147,46 @@ FROM Clips
     
 	WHERE Clips.chrono>$rrs2 
 	" . $addArenaDependance ." AND TableUser.username='{$username}') 
+
+
+UNION
+
+
+(
+SELECT (-DemandeAjoutVideo.demandeId) as event_id, DemandeAjoutVideo.chronoVideo as chrono,TableMatch.matchIdRef,TableMatch.eq_dom,TableMatch.eq_vis,TableMatch.ligueRef,TableMatch.match_id,
+TableMatch.arenaId,TableMatch.date, '0' as 'type', TableEvenement0.equipe_event_id as scoringEnd,
+IF(DemandeAjoutVideo.typeEvenement > 0, DemandeAjoutVideo.typeEvenement, '5') as code,
+'0' as 'souscode' , 
+L3.LeagueId,  L3.CamActionTemplateId, L3.defaultDuration, L3.ActivationFlags,L3.ActivationArgs,
+IF(DemandeAjoutVideo.typeEvenement > 0, DemandeAjoutVideo.typeEvenement, '5') as CATcode
+FROM DemandeAjoutVideo
+	INNER JOIN TableEvenement0
+		ON (DemandeAjoutVideo.eventId=TableEvenement0.event_id)
+	INNER JOIN TableMatch
+		ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)
+	INNER JOIN AbonnementLigue
+		ON (TableMatch.ligueRef=AbonnementLigue.ligueid) 
+	INNER JOIN TableUser
+		ON (AbonnementLigue.userid=TableUser.noCompte)
+    INNER JOIN EventType
+        on (EventType.Code=IF(DemandeAjoutVideo.typeEvenement > 0, DemandeAjoutVideo.typeEvenement, '5'))
+    INNER JOIN  CamActionTemplate L3 on ( L3.EventTypeId = (
+            SELECT CamActionTemplate.EventTypeId FROM CamActionTemplate
+            WHERE CamActionTemplate.LeagueId = TableMatch.ligueRef OR CamActionTemplate.LeagueId=0
+            ORDER BY CamActionTemplate.LeagueId DESC LIMIT 1
+
+    )  AND (
+        L3.LeagueId = (
+            SELECT CamActionTemplate.LeagueId FROM CamActionTemplate
+            WHERE (CamActionTemplate.LeagueId = TableMatch.ligueRef OR LeagueId=0)   and EventTypeId=EventType.EventTypeId
+            ORDER BY LeagueId DESC LIMIT 1
+        )
+    )
+    )
+
+	WHERE DemandeAjoutVideo.progression=2
+	AND DemandeAjoutVideo.chronoVideo>$rrs2
+	" . $addArenaDependance ." AND TableUser.username='{$username}')
 
 
 ORDER BY  matchIdRef, chrono";
