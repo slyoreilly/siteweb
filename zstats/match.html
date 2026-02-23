@@ -239,11 +239,6 @@
 					return;
 				}
 
-				var systemLeagueId = null;
-				if (window.systemLigueVideoId != undefined && window.systemLigueVideoId != null && window.systemLigueVideoId !== "") {
-					systemLeagueId = parseInt(window.systemLigueVideoId, 10);
-				}
-
 				$.ajax({
 					url : "/scriptsphp/ajouteVideos.php",
 					type : "POST",
@@ -251,8 +246,7 @@
 						butId : butId,
 						chrono : mBut.chrono,
 						cameraId : cameraId,
-						eventTypeCode : 5,
-						systemLeagueId : systemLeagueId
+						eventTypeCode : 5
 					}
 				}).always(function() {
 					$('#modalAjouteVideoBut').modal("hide");

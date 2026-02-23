@@ -5,7 +5,6 @@ CREATE TABLE `DemandeAjoutVideo` (
   `chronoDemande` bigint(20) NOT NULL,
   `cameraId` int(11) NOT NULL,
   `progression` tinyint(4) NOT NULL DEFAULT 1,
-  `systemLeagueId` int(11) DEFAULT NULL,
   `chronoVideo` bigint(20) DEFAULT NULL,
   `videoNomFichier` varchar(255) DEFAULT NULL,
   `dateCreation` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,

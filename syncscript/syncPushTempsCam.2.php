@@ -29,7 +29,7 @@ $cpt=0;
 
 
 function traiteDemandesAjoutVideo($conn, $rrs2) {
-    $qDemandes = "SELECT demandeId, eventId, typeEvenement, chronoDemande, cameraId, systemLeagueId
+    $qDemandes = "SELECT demandeId, eventId, typeEvenement, chronoDemande, cameraId
 "
         . "FROM DemandeAjoutVideo WHERE progression=1 ORDER BY demandeId ASC LIMIT 0,50";
 
@@ -42,7 +42,6 @@ function traiteDemandesAjoutVideo($conn, $rrs2) {
     while ($rangeeDemande = mysqli_fetch_array($resDemandes)) {
         $eventId = intval($rangeeDemande['eventId']);
         $typeEvenement = intval($rangeeDemande['typeEvenement']);
-        $systemLeagueId = intval($rangeeDemande['systemLeagueId']);
         $demandeId = intval($rangeeDemande['demandeId']);
 
         if ($typeEvenement <= 0) {
@@ -65,19 +64,17 @@ function traiteDemandesAjoutVideo($conn, $rrs2) {
         $matchEventIdSysteme = $rangeeEvent['match_event_id'];
         $equipeEventId = intval($rangeeEvent['equipe_event_id']);
 
-        if ($systemLeagueId > 0) {
-            $qSelMatchSysteme = "SELECT matchIdRef FROM TableMatch
+        $qSelMatchSysteme = "SELECT matchIdRef FROM TableMatch
 "
-                . "WHERE ligueRef='{$systemLeagueId}'
+            . "WHERE ligueRef='5'
 "
-                . "AND arenaId='" . intval($rangeeEvent['arenaId']) . "'
+            . "AND arenaId='" . intval($rangeeEvent['arenaId']) . "'
 "
-                . "ORDER BY date DESC LIMIT 0,1";
-            $resMatchSysteme = mysqli_query($conn, $qSelMatchSysteme);
-            if ($resMatchSysteme && mysqli_num_rows($resMatchSysteme) > 0) {
-                $rMS = mysqli_fetch_array($resMatchSysteme);
-                $matchEventIdSysteme = $rMS['matchIdRef'];
-            }
+            . "ORDER BY date DESC LIMIT 0,1";
+        $resMatchSysteme = mysqli_query($conn, $qSelMatchSysteme);
+        if ($resMatchSysteme && mysqli_num_rows($resMatchSysteme) > 0) {
+            $rMS = mysqli_fetch_array($resMatchSysteme);
+            $matchEventIdSysteme = $rMS['matchIdRef'];
         }
 
         $chronoVideo = intval($rrs2);
