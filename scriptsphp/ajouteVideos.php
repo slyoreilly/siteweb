@@ -14,7 +14,8 @@ $butId = isset($_POST['butId']) ? intval($_POST['butId']) : 0;
 $chronoDemande = isset($_POST['chrono']) ? intval($_POST['chrono']) : 0;
 $cameraId = isset($_POST['cameraId']) ? intval($_POST['cameraId']) : 0;
 $eventTypeCode = isset($_POST['eventTypeCode']) ? intval($_POST['eventTypeCode']) : 0;
-$matchIdRef = isset($_POST['matchIdRef']) ? intval($_POST['matchIdRef']) : 0;
+$matchIdRef = isset($_POST['matchIdRef']) ? trim($_POST['matchIdRef']) : '';
+$matchIdRefSql = mysqli_real_escape_string($conn, $matchIdRef);
 $equipeId = isset($_POST['equipeId']) ? intval($_POST['equipeId']) : 0;
 $noSequence = isset($_POST['noSequence']) ? intval($_POST['noSequence']) : -1;
 
@@ -40,9 +41,9 @@ if ($chronoDemande <= 0 || $cameraId <= 0) {
     exit;
 }
 
-if ($butId <= 0 && $matchIdRef > 0) {
+if ($butId <= 0 && $matchIdRef !== '') {
     $conditions = array();
-    $conditions[] = "match_event_id='{$matchIdRef}'";
+    $conditions[] = "match_event_id='{$matchIdRefSql}'";
     $conditions[] = "code=0";
     $conditions[] = "ABS(chrono-'{$chronoDemande}')<=120000";
 

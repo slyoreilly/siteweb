@@ -125,6 +125,7 @@ $Sommaire['eqVisId']=$mEqVisId;
 	TableEvenement0.souscode,
 	TableEvenement0.chrono as mChrono,
 	TableEvenement0.joueur_event_ref,
+	TableEvenement0.noSequence,
 	TableEquipe.nom_equipe,
 	TableEquipe.equipe_id,
 	Passeur1.joueur_event_ref AS passeur1Id,
@@ -151,6 +152,7 @@ $Sommaire['eqVisId']=$mEqVisId;
 	LEFT JOIN(
         SELECT 
 	   		TableEvenement0.joueur_event_ref,
+	TableEvenement0.noSequence,
 			TableEvenement0.chrono,
 			TableEvenement0.event_id as premier_passeur,
 			TableJoueur.NomJoueur,
@@ -207,6 +209,9 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 		if($rangeeEv['event_id']!=$bufEvent){
 			$unBut=array();
 			$unBut['chrono']=$rangeeEv['mChrono'];
+			$unBut['butId']=$rangeeEv['event_id'];
+			$unBut['eventId']=$rangeeEv['event_id'];
+			$unBut['noSequence']=$rangeeEv['noSequence'];
 			$unBut['equipe']=$rangeeEv['nom_equipe'];
 			$unBut['equipeId']=$rangeeEv['equipe_id'];
 			
