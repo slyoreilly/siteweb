@@ -340,29 +340,39 @@ $qdMatchPeriodeDAV = "SELECT demandeId, eventId, chronoVideo, cameraId
     . "FROM DemandeAjoutVideo WHERE progression=2 AND chronoVideo>$rrs2 ORDER BY demandeId ASC LIMIT 0,50";
 $resMatchPeriodeDAV = mysqli_query($conn, $qdMatchPeriodeDAV);
 if ($resMatchPeriodeDAV) {
-    while ($rdDAV = mysqli_fetch_array($resMatchPeriodeDAV)) {
-        $mGameIndex = array_push($matchPeriode, array(
-            'match_id' => -intval($rdDAV['demandeId']),
-            'arenaId' => null,
-            'ligueId' => 5,
-            'eqDom' => '',
-            'eqVis' => '',
-            'nom' => 0,
-            'date' => date('Y-m-d H:i:s'),
-            'periodes' => array(),
-            'videos' => array(),
-            'abons' => array(),
-            'arena' => ''
-        )) - 1;
+    $maxMatchId = 0;
+    foreach ($matchPeriode as $matchPeriodeCourant) {
+        $matchIdCourant = intval($matchPeriodeCourant['match_id']);
+        if ($matchIdCourant > $maxMatchId) {
+            $maxMatchId = $matchIdCourant;
+        }
+    }
 
-        $mVideo = array();
-        $mVideo['match_id'] = -intval($rdDAV['demandeId']);
-        $mVideo['reference'] = intval($rdDAV['eventId']);
-        $mVideo['type'] = 5;
-        $mVideo['chrono'] = intval($rdDAV['chronoVideo']);
-        $mVideo['ligueId'] = 5;
-        $mVideo['equipe'] = 0;
-        array_push($matchPeriode[$mGameIndex]['videos'], $mVideo);
+    if ($maxMatchId > 0) {
+        while ($rdDAV = mysqli_fetch_array($resMatchPeriodeDAV)) {
+            $mGameIndex = array_push($matchPeriode, array(
+                'match_id' => $maxMatchId,
+                'arenaId' => null,
+                'ligueId' => 5,
+                'eqDom' => '',
+                'eqVis' => '',
+                'nom' => 0,
+                'date' => date('Y-m-d H:i:s'),
+                'periodes' => array(),
+                'videos' => array(),
+                'abons' => array(),
+                'arena' => ''
+            )) - 1;
+
+            $mVideo = array();
+            $mVideo['match_id'] = $maxMatchId;
+            $mVideo['reference'] = intval($rdDAV['eventId']);
+            $mVideo['type'] = 5;
+            $mVideo['chrono'] = intval($rdDAV['chronoVideo']);
+            $mVideo['ligueId'] = 5;
+            $mVideo['equipe'] = 0;
+            array_push($matchPeriode[$mGameIndex]['videos'], $mVideo);
+        }
     }
 }
 
