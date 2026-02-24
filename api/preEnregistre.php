@@ -102,15 +102,18 @@ if(!empty($nomFic))
 				if(isset($cv['reference'])){
 					$reference=$cv['reference'];
 				}
-				if($type!=5){$type=0;}
+				$type=0;
+		$chronoInsertion = $rSServ;
+		if($demandeAjoutVideo!=null){
+			$chronoInsertion = intval($demandeAjoutVideo['chronoDemande']);
+		}
 		$query = "INSERT INTO Video (nomFichier,nomMatch,chrono,camId,type,reference,emplacement) ".
-		// Remplacement de '{$type}' par 0
-		"VALUES ('{$nomFic}','{$params[$a]['video']['nomMatch']}','{$rSServ}','{$camID}','{$type}' ,'{$reference}','{$emplacement}')";
+		"VALUES ('{$nomFic}','{$params[$a]['video']['nomMatch']}','{$chronoInsertion}','{$camID}','{$type}' ,'{$reference}','{$emplacement}')";
 		mysqli_query($conn,$query) or die("Erreur: ".$query."\n".mysqli_error($conn));
 
 		$monObj['nomFic']=$nomFic;
 		$monObj['etat']='insert';
-		$monObj['chrono']=$rSServ;
+		$monObj['chrono']=$chronoInsertion;
 
 		array_push($syncOK, $monObj);
 
