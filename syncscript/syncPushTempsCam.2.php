@@ -42,7 +42,7 @@ function traiteDemandesAjoutVideo($conn, $rrs2) {
 
     while ($rangeeDemande = mysqli_fetch_array($resDemandes)) {
         $demandeId = intval($rangeeDemande['demandeId']);
-        $chronoVideo = intval($rrs2) + 1;
+        $chronoVideo = intval($rangeeDemande['chronoDemande']);
 
         $qMajDemande = "UPDATE DemandeAjoutVideo SET progression=2, chronoVideo='{$chronoVideo}', updatedAt=NOW() WHERE demandeId='{$demandeId}'";
         mysqli_query($conn, $qMajDemande);
@@ -150,8 +150,7 @@ SELECT (-DemandeAjoutVideo.demandeId) as event_id, DemandeAjoutVideo.chronoVideo
 0 as LeagueId, 0 as CamActionTemplateId, 0 as defaultDuration, '' as ActivationFlags, '' as ActivationArgs,
 '5' as CATcode
 FROM DemandeAjoutVideo
-	WHERE DemandeAjoutVideo.progression=2
-	AND DemandeAjoutVideo.chronoVideo>$rrs2)
+	WHERE DemandeAjoutVideo.progression=2)
 
 
 ORDER BY  matchIdRef, chrono";
