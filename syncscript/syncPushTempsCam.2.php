@@ -30,6 +30,8 @@ $cpt=0;
 
 
 function traiteDemandesAjoutVideo($conn, $rrs2) {
+    $demandesModifiees = array();
+
     $qDemandes = "SELECT demandeId, eventId, typeEvenement, chronoDemande, cameraId
 "
         . "FROM DemandeAjoutVideo WHERE progression=1 ORDER BY demandeId ASC LIMIT 0,50";
@@ -37,7 +39,7 @@ function traiteDemandesAjoutVideo($conn, $rrs2) {
     $resDemandes = mysqli_query($conn, $qDemandes);
     if (!$resDemandes) {
         error_log("syncPushTempsCam.2 - DemandeAjoutVideo: " . mysqli_error($conn));
-        return;
+        return $demandesModifiees;
     }
 
     while ($rangeeDemande = mysqli_fetch_array($resDemandes)) {
@@ -45,8 +47,13 @@ function traiteDemandesAjoutVideo($conn, $rrs2) {
         $chronoVideo = intval($rrs2) + 5000;
 
         $qMajDemande = "UPDATE DemandeAjoutVideo SET progression=2, chronoVideo='{$chronoVideo}', updatedAt=NOW() WHERE demandeId='{$demandeId}'";
-        mysqli_query($conn, $qMajDemande);
+        if (mysqli_query($conn, $qMajDemande)) {
+            $rangeeDemande['chronoVideo'] = $chronoVideo;
+            array_push($demandesModifiees, $rangeeDemande);
+        }
     }
+
+    return $demandesModifiees;
 }
 
 
@@ -57,7 +64,7 @@ function traiteDemandesAjoutVideo($conn, $rrs2) {
 
 $vecLigues = array();
 
-traiteDemandesAjoutVideo($conn, $rrs2);
+$demandesAjoutVideoModifiees = traiteDemandesAjoutVideo($conn, $rrs2);
 
 do {
 
@@ -335,11 +342,17 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 
 
 
-$qdMatchPeriodeDAV = "SELECT demandeId, eventId, chronoVideo, cameraId
+if (!empty($demandesAjoutVideoModifiees)) {
+    $qDemandesIds = array();
+    foreach ($demandesAjoutVideoModifiees as $demandeModifiee) {
+        array_push($qDemandesIds, intval($demandeModifiee['demandeId']));
+    }
+
+    $qdMatchPeriodeDAV = "SELECT demandeId, eventId, chronoVideo, cameraId
 "
-    . "FROM DemandeAjoutVideo WHERE progression=2 ORDER BY demandeId ASC LIMIT 0,50";
-$resMatchPeriodeDAV = mysqli_query($conn, $qdMatchPeriodeDAV);
-if ($resMatchPeriodeDAV) {
+        . "FROM DemandeAjoutVideo WHERE progression=2 AND demandeId IN (" . implode(',', $qDemandesIds) . ") ORDER BY demandeId ASC LIMIT 0,50";
+    $resMatchPeriodeDAV = mysqli_query($conn, $qdMatchPeriodeDAV);
+    if ($resMatchPeriodeDAV) {
     $maxMatchId = 0;
     foreach ($matchPeriode as $matchPeriodeCourant) {
         $matchIdCourant = intval($matchPeriodeCourant['match_id']);
@@ -374,6 +387,7 @@ if ($resMatchPeriodeDAV) {
             array_push($matchPeriode[$mGameIndex]['videos'], $mVideo);
         }
     }
+}
 }
 
 foreach($matchPeriode as &$unMatch){
