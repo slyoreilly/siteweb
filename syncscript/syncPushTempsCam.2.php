@@ -29,8 +29,62 @@ $rrs2 = $rSServ+1000;
 $cpt=0;
 
 
-function traiteDemandesAjoutVideo($conn, $rrs2) {
+function getArenaCiblePourDemandes($conn, $arenaId, $nomMatch) {
+    $arenaId = intval($arenaId);
+    if ($arenaId > 0) {
+        return $arenaId;
+    }
+
+    if (empty($nomMatch)) {
+        return 0;
+    }
+
+    $nomMatchEsc = mysqli_real_escape_string($conn, $nomMatch);
+    $qArenaNomMatch = "SELECT arenaId FROM TableMatch WHERE match_id='" . $nomMatchEsc . "' LIMIT 0,1";
+    $resArenaNomMatch = mysqli_query($conn, $qArenaNomMatch);
+    if ($resArenaNomMatch && mysqli_num_rows($resArenaNomMatch) > 0) {
+        $rangArenaNomMatch = mysqli_fetch_array($resArenaNomMatch);
+        return intval($rangArenaNomMatch['arenaId']);
+    }
+
+    return 0;
+}
+
+
+function getArenaDeEvent($conn, $eventId, $typeEvenement) {
+    $eventId = intval($eventId);
+    $typeEvenement = strval($typeEvenement);
+
+    $qArenaEvent = '';
+    if ($typeEvenement === '5') {
+        $qArenaEvent = "SELECT TableMatch.arenaId
+                        FROM Clips
+                        INNER JOIN TableMatch ON (Clips.matchId = TableMatch.matchIdRef)
+                        WHERE Clips.clipId='" . $eventId . "' LIMIT 0,1";
+    } else {
+        $qArenaEvent = "SELECT TableMatch.arenaId
+                        FROM TableEvenement0
+                        INNER JOIN TableMatch ON (TableEvenement0.match_event_id = TableMatch.matchIdRef)
+                        WHERE TableEvenement0.event_id='" . $eventId . "' LIMIT 0,1";
+    }
+
+    $resArenaEvent = mysqli_query($conn, $qArenaEvent);
+    if ($resArenaEvent && mysqli_num_rows($resArenaEvent) > 0) {
+        $rangArenaEvent = mysqli_fetch_array($resArenaEvent);
+        return intval($rangArenaEvent['arenaId']);
+    }
+
+    return 0;
+}
+
+
+function traiteDemandesAjoutVideo($conn, $rrs2, $arenaId, $nomMatch) {
     $demandesModifiees = array();
+    $arenaCible = getArenaCiblePourDemandes($conn, $arenaId, $nomMatch);
+
+    if ($arenaCible <= 0) {
+        return $demandesModifiees;
+    }
 
     $qDemandes = "SELECT demandeId, eventId, typeEvenement, chronoDemande, cameraId
 "
@@ -46,6 +100,11 @@ function traiteDemandesAjoutVideo($conn, $rrs2) {
     $offsetChronoVideo = 0;
 
     while ($rangeeDemande = mysqli_fetch_array($resDemandes)) {
+        $arenaEvent = getArenaDeEvent($conn, $rangeeDemande['eventId'], $rangeeDemande['typeEvenement']);
+        if ($arenaEvent !== $arenaCible) {
+            continue;
+        }
+
         $demandeId = intval($rangeeDemande['demandeId']);
         $chronoVideo = $chronoVideoBase + ($offsetChronoVideo * 1000);
         $offsetChronoVideo++;
@@ -68,7 +127,11 @@ function traiteDemandesAjoutVideo($conn, $rrs2) {
 
 $vecLigues = array();
 
-$demandesAjoutVideoModifiees = traiteDemandesAjoutVideo($conn, $rrs2);
+$nomMatch = '';
+if (isset($dernierMatch)) {
+    $nomMatch = $dernierMatch;
+}
+$demandesAjoutVideoModifiees = traiteDemandesAjoutVideo($conn, $rrs2, $arena, $nomMatch);
 
 do {
 
