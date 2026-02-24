@@ -12,6 +12,7 @@ if (isset( $_POST['arenaId'])) {$arena = $_POST['arenaId'];
 }
 
 $heure = $_POST['heure'];
+error_log("syncPushTempsCam.2 - recu POST: " . json_encode($_POST));
 $maxSec = 0;
 if (isset( $_POST['timeout'])) {$maxSec = $_POST['timeout'];
 }
@@ -40,53 +41,11 @@ function traiteDemandesAjoutVideo($conn, $rrs2) {
     }
 
     while ($rangeeDemande = mysqli_fetch_array($resDemandes)) {
-        $eventId = intval($rangeeDemande['eventId']);
-        $typeEvenement = intval($rangeeDemande['typeEvenement']);
         $demandeId = intval($rangeeDemande['demandeId']);
+        $chronoVideo = intval($rrs2) + 5000;
 
-        if ($typeEvenement <= 0) {
-            $typeEvenement = 5;
-        }
-
-        $qSelEvent = "SELECT TableEvenement0.match_event_id, TableEvenement0.equipe_event_id, TableMatch.arenaId, TableMatch.match_id, TableMatch.eq_dom, TableMatch.eq_vis
-"
-            . "FROM TableEvenement0
-"
-            . "INNER JOIN TableMatch ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)
-"
-            . "WHERE TableEvenement0.event_id='{$eventId}' LIMIT 0,1";
-        $resEvent = mysqli_query($conn, $qSelEvent);
-        if (!$resEvent || mysqli_num_rows($resEvent) <= 0) {
-            continue;
-        }
-
-        $rangeeEvent = mysqli_fetch_array($resEvent);
-        $matchEventIdSysteme = $rangeeEvent['match_event_id'];
-        $equipeEventId = intval($rangeeEvent['equipe_event_id']);
-
-        $qSelMatchSysteme = "SELECT matchIdRef FROM TableMatch
-"
-            . "WHERE ligueRef='5'
-"
-            . "AND arenaId='" . intval($rangeeEvent['arenaId']) . "'
-"
-            . "ORDER BY date DESC LIMIT 0,1";
-        $resMatchSysteme = mysqli_query($conn, $qSelMatchSysteme);
-        if ($resMatchSysteme && mysqli_num_rows($resMatchSysteme) > 0) {
-            $rMS = mysqli_fetch_array($resMatchSysteme);
-            $matchEventIdSysteme = $rMS['matchIdRef'];
-        }
-
-        $chronoVideo = intval($rrs2);
-
-        $qInsEvt = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id, joueur_event_ref, chrono, souscode, code) VALUES ("
-            . "'{$matchEventIdSysteme}', '{$equipeEventId}', '{$eventId}', '{$chronoVideo}', 0, '{$typeEvenement}')";
-        $okInsEvt = mysqli_query($conn, $qInsEvt);
-
-        if ($okInsEvt) {
-            $qMajDemande = "UPDATE DemandeAjoutVideo SET progression=2, chronoVideo='{$chronoVideo}', updatedAt=NOW() WHERE demandeId='{$demandeId}'";
-            mysqli_query($conn, $qMajDemande);
-        }
+        $qMajDemande = "UPDATE DemandeAjoutVideo SET progression=2, chronoVideo='{$chronoVideo}', updatedAt=NOW() WHERE demandeId='{$demandeId}'";
+        mysqli_query($conn, $qMajDemande);
     }
 }
 
@@ -375,6 +334,38 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 }
 
 
+
+$qdMatchPeriodeDAV = "SELECT demandeId, eventId, chronoVideo, cameraId
+"
+    . "FROM DemandeAjoutVideo WHERE progression=2 AND chronoVideo>$rrs2 ORDER BY demandeId ASC LIMIT 0,50";
+$resMatchPeriodeDAV = mysqli_query($conn, $qdMatchPeriodeDAV);
+if ($resMatchPeriodeDAV) {
+    while ($rdDAV = mysqli_fetch_array($resMatchPeriodeDAV)) {
+        $mGameIndex = array_push($matchPeriode, array(
+            'match_id' => -intval($rdDAV['demandeId']),
+            'arenaId' => null,
+            'ligueId' => 5,
+            'eqDom' => '',
+            'eqVis' => '',
+            'nom' => 0,
+            'date' => date('Y-m-d H:i:s'),
+            'periodes' => array(),
+            'videos' => array(),
+            'abons' => array(),
+            'arena' => ''
+        )) - 1;
+
+        $mVideo = array();
+        $mVideo['match_id'] = -intval($rdDAV['demandeId']);
+        $mVideo['reference'] = intval($rdDAV['eventId']);
+        $mVideo['type'] = 5;
+        $mVideo['chrono'] = intval($rdDAV['chronoVideo']);
+        $mVideo['ligueId'] = 5;
+        $mVideo['equipe'] = 0;
+        array_push($matchPeriode[$mGameIndex]['videos'], $mVideo);
+    }
+}
+
 foreach($matchPeriode as &$unMatch){
 
 	if(!is_null($unMatch['arenaId'])){
@@ -514,7 +505,9 @@ $comp =$maxSec-30000;
 
 
 //echo json_encode($Sommaire);
-echo json_encode($repSite);
+$retourSyncPushTempsCam2 = json_encode($repSite);
+error_log("syncPushTempsCam.2 - retour: " . $retourSyncPushTempsCam2);
+echo $retourSyncPushTempsCam2;
 //mysqli_close($conn);
 //	header("HTTP/1.1 200 OK");
 
