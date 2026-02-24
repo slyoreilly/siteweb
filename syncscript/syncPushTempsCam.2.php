@@ -42,7 +42,7 @@ function traiteDemandesAjoutVideo($conn, $rrs2) {
 
     while ($rangeeDemande = mysqli_fetch_array($resDemandes)) {
         $demandeId = intval($rangeeDemande['demandeId']);
-        $chronoVideo = intval($rrs2);
+        $chronoVideo = intval($rrs2) + 1;
 
         $qMajDemande = "UPDATE DemandeAjoutVideo SET progression=2, chronoVideo='{$chronoVideo}', updatedAt=NOW() WHERE demandeId='{$demandeId}'";
         mysqli_query($conn, $qMajDemande);
