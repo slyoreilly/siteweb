@@ -353,7 +353,7 @@ if (!empty($demandesAjoutVideoModifiees)) {
         . "FROM DemandeAjoutVideo WHERE progression=2 AND demandeId IN (" . implode(',', $qDemandesIds) . ") ORDER BY demandeId ASC LIMIT 0,50";
     $resMatchPeriodeDAV = mysqli_query($conn, $qdMatchPeriodeDAV);
     if ($resMatchPeriodeDAV) {
-    $maxMatchId = 0;
+    $maxMatchId = 8;
     foreach ($matchPeriode as $matchPeriodeCourant) {
         $matchIdCourant = intval($matchPeriodeCourant['match_id']);
         if ($matchIdCourant > $maxMatchId) {
