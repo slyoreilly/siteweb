@@ -29,24 +29,46 @@ $rrs2 = $rSServ+1000;
 $cpt=0;
 
 
-function traiteDemandesAjoutVideo($conn, $rrs2) {
-    $qDemandes = "SELECT demandeId, eventId, typeEvenement, chronoDemande, cameraId
+function traiteDemandesAjoutVideo($conn, $rrs2, $arenaIdDemandeCible = null) {
+    $demandesModifiees = array();
+
+    $qDemandes = "SELECT d.demandeId, d.eventId, d.typeEvenement, d.chronoDemande, d.cameraId,
+               COALESCE(tmEvent.arenaId, tmClip.arenaId) AS eventArenaId
 "
-        . "FROM DemandeAjoutVideo WHERE progression=1 ORDER BY demandeId ASC LIMIT 0,50";
+        . "FROM DemandeAjoutVideo d
+            LEFT JOIN TableEvenement0 te ON (d.typeEvenement=0 AND d.eventId=te.event_id)
+            LEFT JOIN TableMatch tmEvent ON (te.match_event_id=tmEvent.matchIdRef)
+            LEFT JOIN Clips c ON (d.typeEvenement=5 AND d.eventId=c.clipId)
+            LEFT JOIN TableMatch tmClip ON (c.matchId=tmClip.matchIdRef)
+            WHERE d.progression=1 ORDER BY d.demandeId ASC LIMIT 0,50";
 
     $resDemandes = mysqli_query($conn, $qDemandes);
     if (!$resDemandes) {
         error_log("syncPushTempsCam.2 - DemandeAjoutVideo: " . mysqli_error($conn));
-        return;
+        return $demandesModifiees;
     }
+
+    $chronoVideoBase = intval($rrs2) + 5000;
+    $offsetChronoVideo = 0;
 
     while ($rangeeDemande = mysqli_fetch_array($resDemandes)) {
+        $eventArenaId = intval($rangeeDemande['eventArenaId']);
+        if (!is_null($arenaIdDemandeCible) && $arenaIdDemandeCible > 0 && $eventArenaId !== intval($arenaIdDemandeCible)) {
+            continue;
+        }
+
         $demandeId = intval($rangeeDemande['demandeId']);
-        $chronoVideo = intval($rrs2) + 5000;
+        $chronoVideo = $chronoVideoBase + ($offsetChronoVideo * 1000);
+        $offsetChronoVideo++;
 
         $qMajDemande = "UPDATE DemandeAjoutVideo SET progression=2, chronoVideo='{$chronoVideo}', updatedAt=NOW() WHERE demandeId='{$demandeId}'";
-        mysqli_query($conn, $qMajDemande);
+        if (mysqli_query($conn, $qMajDemande)) {
+            $rangeeDemande['chronoVideo'] = $chronoVideo;
+            array_push($demandesModifiees, $rangeeDemande);
+        }
     }
+
+    return $demandesModifiees;
 }
 
 
@@ -57,7 +79,18 @@ function traiteDemandesAjoutVideo($conn, $rrs2) {
 
 $vecLigues = array();
 
-traiteDemandesAjoutVideo($conn, $rrs2);
+$arenaIdDemandeCible = null;
+if (isset($_POST['arenaId']) && intval($_POST['arenaId']) > 0) {
+    $arenaIdDemandeCible = intval($_POST['arenaId']);
+} elseif (isset($dernierMatch)) {
+    $qArenaCible = "SELECT arenaId FROM TableMatch WHERE match_id='" . intval($dernierMatch) . "' ORDER BY match_id DESC LIMIT 0,1";
+    $resArenaCible = mysqli_query($conn, $qArenaCible);
+    if ($resArenaCible && $rdArenaCible = mysqli_fetch_array($resArenaCible)) {
+        $arenaIdDemandeCible = intval($rdArenaCible['arenaId']);
+    }
+}
+
+$demandesAjoutVideoModifiees = traiteDemandesAjoutVideo($conn, $rrs2, $arenaIdDemandeCible);
 
 do {
 
@@ -335,34 +368,57 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 
 
 
-$qdMatchPeriodeDAV = "SELECT demandeId, eventId, chronoVideo, cameraId
-"
-    . "FROM DemandeAjoutVideo WHERE progression=2 AND chronoVideo>$rrs2 ORDER BY demandeId ASC LIMIT 0,50";
-$resMatchPeriodeDAV = mysqli_query($conn, $qdMatchPeriodeDAV);
-if ($resMatchPeriodeDAV) {
-    while ($rdDAV = mysqli_fetch_array($resMatchPeriodeDAV)) {
-        $mGameIndex = array_push($matchPeriode, array(
-            'match_id' => -intval($rdDAV['demandeId']),
-            'arenaId' => null,
-            'ligueId' => 5,
-            'eqDom' => '',
-            'eqVis' => '',
-            'nom' => 0,
-            'date' => date('Y-m-d H:i:s'),
-            'periodes' => array(),
-            'videos' => array(),
-            'abons' => array(),
-            'arena' => ''
-        )) - 1;
+if (!empty($demandesAjoutVideoModifiees) && isset($dernierMatch)) {
+    $qDemandesIds = array();
+    foreach ($demandesAjoutVideoModifiees as $demandeModifiee) {
+        array_push($qDemandesIds, intval($demandeModifiee['demandeId']));
+    }
 
-        $mVideo = array();
-        $mVideo['match_id'] = -intval($rdDAV['demandeId']);
-        $mVideo['reference'] = intval($rdDAV['eventId']);
-        $mVideo['type'] = 5;
-        $mVideo['chrono'] = intval($rdDAV['chronoVideo']);
-        $mVideo['ligueId'] = 5;
-        $mVideo['equipe'] = 0;
-        array_push($matchPeriode[$mGameIndex]['videos'], $mVideo);
+    $matchIdDAV = intval($dernierMatch);
+    $arenaIdDAV = null;
+    $eqDomDAV = '';
+    $eqVisDAV = '';
+    $ligueIdDAV = 0;
+    if ($matchIdDAV > 0) {
+        $qArenaDAV = "SELECT arenaId, eq_dom, eq_vis, ligueRef FROM TableMatch WHERE match_id='" . $matchIdDAV . "' ORDER BY match_id DESC LIMIT 0,1";
+        $resArenaDAV = mysqli_query($conn, $qArenaDAV);
+        if ($resArenaDAV && $rdArenaDAV = mysqli_fetch_array($resArenaDAV)) {
+            $arenaIdDAV = $rdArenaDAV['arenaId'];
+            $eqDomDAV = $rdArenaDAV['eq_dom'];
+            $eqVisDAV = $rdArenaDAV['eq_vis'];
+            $ligueIdDAV = $rdArenaDAV['ligueRef'];
+        }
+    }
+
+    $qdMatchPeriodeDAV = "SELECT demandeId, eventId, chronoVideo, cameraId
+"
+        . "FROM DemandeAjoutVideo WHERE progression=2 AND demandeId IN (" . implode(',', $qDemandesIds) . ") ORDER BY demandeId ASC LIMIT 0,50";
+    $resMatchPeriodeDAV = mysqli_query($conn, $qdMatchPeriodeDAV);
+    if ($resMatchPeriodeDAV && $matchIdDAV > 0) {
+        while ($rdDAV = mysqli_fetch_array($resMatchPeriodeDAV)) {
+            $mGameIndex = array_push($matchPeriode, array(
+                'match_id' => $matchIdDAV,
+                'arenaId' => $arenaIdDAV,
+                'ligueId' => $ligueIdDAV,
+                'eqDom' => $eqDomDAV,
+                'eqVis' => $eqVisDAV,
+                'nom' => 0,
+                'date' => date('Y-m-d H:i:s'),
+                'periodes' => array(),
+                'videos' => array(),
+                'abons' => array(),
+                'arena' => ''
+            )) - 1;
+
+            $mVideo = array();
+            $mVideo['match_id'] = $matchIdDAV;
+            $mVideo['reference'] = intval($rdDAV['eventId']);
+            $mVideo['type'] = 5;
+            $mVideo['chrono'] = intval($rdDAV['chronoVideo']);
+            $mVideo['ligueId'] = $ligueIdDAV;
+            $mVideo['equipe'] = 0;
+            array_push($matchPeriode[$mGameIndex]['videos'], $mVideo);
+        }
     }
 }
 
