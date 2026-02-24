@@ -121,7 +121,7 @@ if(!empty($nomFic))
 
         if($demandeAjoutVideo!=null){
             $qMajDemande = "UPDATE DemandeAjoutVideo
-                            SET progression=3, updatedAt=NOW()
+                            SET progression=3, nomFic='{$nomFic}', updatedAt=NOW()
                             WHERE demandeId='".intval($demandeAjoutVideo['demandeId'])."'";
             mysqli_query($conn,$qMajDemande);
 
