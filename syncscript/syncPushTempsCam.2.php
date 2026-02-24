@@ -337,7 +337,7 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 
 $qdMatchPeriodeDAV = "SELECT demandeId, eventId, chronoVideo, cameraId
 "
-    . "FROM DemandeAjoutVideo WHERE progression=2 AND chronoVideo>$rrs2 ORDER BY demandeId ASC LIMIT 0,50";
+    . "FROM DemandeAjoutVideo WHERE progression=2 ORDER BY demandeId ASC LIMIT 0,50";
 $resMatchPeriodeDAV = mysqli_query($conn, $qdMatchPeriodeDAV);
 if ($resMatchPeriodeDAV) {
     $maxMatchId = 0;
