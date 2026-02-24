@@ -356,13 +356,15 @@ if (!empty($demandesAjoutVideoModifiees) && isset($dernierMatch)) {
     $arenaIdDAV = null;
     $eqDomDAV = '';
     $eqVisDAV = '';
+    $ligueIdDAV = 0;
     if ($matchIdDAV > 0) {
-        $qArenaDAV = "SELECT arenaId, eq_dom, eq_vis FROM TableMatch WHERE match_id='" . $matchIdDAV . "' ORDER BY match_id DESC LIMIT 0,1";
+        $qArenaDAV = "SELECT arenaId, eq_dom, eq_vis, ligueRef FROM TableMatch WHERE match_id='" . $matchIdDAV . "' ORDER BY match_id DESC LIMIT 0,1";
         $resArenaDAV = mysqli_query($conn, $qArenaDAV);
         if ($resArenaDAV && $rdArenaDAV = mysqli_fetch_array($resArenaDAV)) {
             $arenaIdDAV = $rdArenaDAV['arenaId'];
             $eqDomDAV = $rdArenaDAV['eq_dom'];
             $eqVisDAV = $rdArenaDAV['eq_vis'];
+            $ligueIdDAV = $rdArenaDAV['ligueRef'];
         }
     }
 
@@ -375,7 +377,7 @@ if (!empty($demandesAjoutVideoModifiees) && isset($dernierMatch)) {
             $mGameIndex = array_push($matchPeriode, array(
                 'match_id' => $matchIdDAV,
                 'arenaId' => $arenaIdDAV,
-                'ligueId' => 5,
+                'ligueId' => $ligueIdDAV,
                 'eqDom' => $eqDomDAV,
                 'eqVis' => $eqVisDAV,
                 'nom' => 0,
@@ -391,7 +393,7 @@ if (!empty($demandesAjoutVideoModifiees) && isset($dernierMatch)) {
             $mVideo['reference'] = intval($rdDAV['eventId']);
             $mVideo['type'] = 5;
             $mVideo['chrono'] = intval($rdDAV['chronoVideo']);
-            $mVideo['ligueId'] = 5;
+            $mVideo['ligueId'] = $ligueIdDAV;
             $mVideo['equipe'] = 0;
             array_push($matchPeriode[$mGameIndex]['videos'], $mVideo);
         }

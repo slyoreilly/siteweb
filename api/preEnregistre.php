@@ -91,6 +91,8 @@ if(!empty($nomFic))
 
 
 			else {
+				$type=0;
+				$reference=0;
 
 					$cv= json_decode(stripslashes($params[$a]['video']['cv']),true);
 
