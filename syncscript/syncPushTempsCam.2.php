@@ -342,30 +342,31 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 
 
 
-if (!empty($demandesAjoutVideoModifiees)) {
+if (!empty($demandesAjoutVideoModifiees) && isset($dernierMatch)) {
     $qDemandesIds = array();
     foreach ($demandesAjoutVideoModifiees as $demandeModifiee) {
         array_push($qDemandesIds, intval($demandeModifiee['demandeId']));
+    }
+
+    $matchIdDAV = intval($dernierMatch);
+    $arenaIdDAV = null;
+    if ($matchIdDAV > 0) {
+        $qArenaDAV = "SELECT arenaId FROM TableMatch WHERE match_id='" . $matchIdDAV . "' ORDER BY match_id DESC LIMIT 0,1";
+        $resArenaDAV = mysqli_query($conn, $qArenaDAV);
+        if ($resArenaDAV && $rdArenaDAV = mysqli_fetch_array($resArenaDAV)) {
+            $arenaIdDAV = $rdArenaDAV['arenaId'];
+        }
     }
 
     $qdMatchPeriodeDAV = "SELECT demandeId, eventId, chronoVideo, cameraId
 "
         . "FROM DemandeAjoutVideo WHERE progression=2 AND demandeId IN (" . implode(',', $qDemandesIds) . ") ORDER BY demandeId ASC LIMIT 0,50";
     $resMatchPeriodeDAV = mysqli_query($conn, $qdMatchPeriodeDAV);
-    if ($resMatchPeriodeDAV) {
-    $maxMatchId = 8;
-    foreach ($matchPeriode as $matchPeriodeCourant) {
-        $matchIdCourant = intval($matchPeriodeCourant['match_id']);
-        if ($matchIdCourant > $maxMatchId) {
-            $maxMatchId = $matchIdCourant;
-        }
-    }
-
-    if ($maxMatchId > 0) {
+    if ($resMatchPeriodeDAV && $matchIdDAV > 0) {
         while ($rdDAV = mysqli_fetch_array($resMatchPeriodeDAV)) {
             $mGameIndex = array_push($matchPeriode, array(
-                'match_id' => $maxMatchId,
-                'arenaId' => null,
+                'match_id' => $matchIdDAV,
+                'arenaId' => $arenaIdDAV,
                 'ligueId' => 5,
                 'eqDom' => '',
                 'eqVis' => '',
@@ -378,7 +379,7 @@ if (!empty($demandesAjoutVideoModifiees)) {
             )) - 1;
 
             $mVideo = array();
-            $mVideo['match_id'] = $maxMatchId;
+            $mVideo['match_id'] = $matchIdDAV;
             $mVideo['reference'] = intval($rdDAV['eventId']);
             $mVideo['type'] = 5;
             $mVideo['chrono'] = intval($rdDAV['chronoVideo']);
@@ -387,7 +388,6 @@ if (!empty($demandesAjoutVideoModifiees)) {
             array_push($matchPeriode[$mGameIndex]['videos'], $mVideo);
         }
     }
-}
 }
 
 foreach($matchPeriode as &$unMatch){
