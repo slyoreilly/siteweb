@@ -42,9 +42,13 @@ function traiteDemandesAjoutVideo($conn, $rrs2) {
         return $demandesModifiees;
     }
 
+    $chronoVideoBase = intval($rrs2) + 5000;
+    $offsetChronoVideo = 0;
+
     while ($rangeeDemande = mysqli_fetch_array($resDemandes)) {
         $demandeId = intval($rangeeDemande['demandeId']);
-        $chronoVideo = intval($rrs2) + 5000;
+        $chronoVideo = $chronoVideoBase + ($offsetChronoVideo * 1000);
+        $offsetChronoVideo++;
 
         $qMajDemande = "UPDATE DemandeAjoutVideo SET progression=2, chronoVideo='{$chronoVideo}', updatedAt=NOW() WHERE demandeId='{$demandeId}'";
         if (mysqli_query($conn, $qMajDemande)) {
@@ -350,11 +354,15 @@ if (!empty($demandesAjoutVideoModifiees) && isset($dernierMatch)) {
 
     $matchIdDAV = intval($dernierMatch);
     $arenaIdDAV = null;
+    $eqDomDAV = '';
+    $eqVisDAV = '';
     if ($matchIdDAV > 0) {
-        $qArenaDAV = "SELECT arenaId FROM TableMatch WHERE match_id='" . $matchIdDAV . "' ORDER BY match_id DESC LIMIT 0,1";
+        $qArenaDAV = "SELECT arenaId, eq_dom, eq_vis FROM TableMatch WHERE match_id='" . $matchIdDAV . "' ORDER BY match_id DESC LIMIT 0,1";
         $resArenaDAV = mysqli_query($conn, $qArenaDAV);
         if ($resArenaDAV && $rdArenaDAV = mysqli_fetch_array($resArenaDAV)) {
             $arenaIdDAV = $rdArenaDAV['arenaId'];
+            $eqDomDAV = $rdArenaDAV['eq_dom'];
+            $eqVisDAV = $rdArenaDAV['eq_vis'];
         }
     }
 
@@ -368,8 +376,8 @@ if (!empty($demandesAjoutVideoModifiees) && isset($dernierMatch)) {
                 'match_id' => $matchIdDAV,
                 'arenaId' => $arenaIdDAV,
                 'ligueId' => 5,
-                'eqDom' => '',
-                'eqVis' => '',
+                'eqDom' => $eqDomDAV,
+                'eqVis' => $eqVisDAV,
                 'nom' => 0,
                 'date' => date('Y-m-d H:i:s'),
                 'periodes' => array(),
