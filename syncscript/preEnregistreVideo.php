@@ -22,6 +22,18 @@ $camID = $params[$a]['video']['camID'];
 $exploded =explode('/',$params[$a]['video']['nomFic']); 
 $nomFic=array_pop($exploded);
 $rSServ=$params[$a]['video']['chrono']+$avanceServeur;
+
+$demandeAjoutVideo = null;
+$qDemande = "SELECT * FROM DemandeAjoutVideo
+            WHERE progression=2
+                AND cameraId='{$camID}'
+                AND ABS(chronoVideo-'{$rSServ}')<=120000
+            ORDER BY ABS(chronoVideo-'{$rSServ}') ASC, demandeId ASC
+            LIMIT 0,1";
+$retDemande = mysqli_query($conn,$qDemande);
+if($retDemande && mysqli_num_rows($retDemande)>0){
+    $demandeAjoutVideo = mysqli_fetch_array($retDemande);
+}
 	
 if(!empty($nomFic))
 	{
@@ -102,7 +114,19 @@ if(!empty($nomFic))
 				
 				
 			}
-	
+
+		if($demandeAjoutVideo!=null){
+			$qMajDemande = "UPDATE DemandeAjoutVideo
+							SET progression=3, nomFic='{$nomFic}', updatedAt=NOW()
+							WHERE demandeId='".intval($demandeAjoutVideo['demandeId'])."'";
+			mysqli_query($conn,$qMajDemande);
+
+			$valeurControle = round((intval($demandeAjoutVideo['chronoVideo']) - intval($demandeAjoutVideo['chronoDemande'])) / 1000);
+			$qInsControle = "INSERT INTO Controle (`telId`, `arg0`, `arg1`, `arg2`, `valeur`, `cleValeur`, `etatSync`)
+							VALUES ('{$camID}','videos','recut','{$nomFic}','{$valeurControle}',NULL, 3)";
+			mysqli_query($conn,$qInsControle);
+		}
+
 		}
 
 
