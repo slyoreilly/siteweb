@@ -23,12 +23,21 @@ $exploded =explode('/',$params[$a]['video']['nomFic']);
 $nomFic=array_pop($exploded);
 $rSServ=$params[$a]['video']['chrono']+$avanceServeur;
 
+$cvDemande = json_decode(stripslashes($params[$a]['video']['cv']),true);
+$referenceDemande = 0;
+if (is_array($cvDemande) && isset($cvDemande['reference'])) {
+	$referenceDemande = intval($cvDemande['reference']);
+}
+
 $demandeAjoutVideo = null;
 $qDemande = "SELECT * FROM DemandeAjoutVideo
             WHERE progression=2
                 AND cameraId='{$camID}'
-                AND ABS(chronoVideo-'{$rSServ}')<=120000
-            ORDER BY ABS(chronoVideo-'{$rSServ}') ASC, demandeId ASC
+                AND ABS(chronoVideo-'{$rSServ}')<=120000";
+if($referenceDemande>0){
+	$qDemande .= " AND eventId='" . $referenceDemande . "'";
+}
+$qDemande .= " ORDER BY ABS(chronoVideo-'{$rSServ}') ASC, demandeId ASC
             LIMIT 0,1";
 $retDemande = mysqli_query($conn,$qDemande);
 if($retDemande && mysqli_num_rows($retDemande)>0){
