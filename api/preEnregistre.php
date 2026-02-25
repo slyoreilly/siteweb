@@ -32,12 +32,11 @@ if (is_array($cvDemande) && isset($cvDemande['reference'])) {
 $demandeAjoutVideo = null;
 $qDemande = "SELECT * FROM DemandeAjoutVideo
             WHERE progression=2
-                AND cameraId='{$camID}'
-                AND ABS(chronoVideo-'{$rSServ}')<=120000";
+                AND cameraId='{$camID}'";
 if($referenceDemande>0){
 	$qDemande .= " AND eventId='" . $referenceDemande . "'";
 }
-$qDemande .= " ORDER BY ABS(chronoVideo-'{$rSServ}') ASC, demandeId ASC
+$qDemande .= " ORDER BY demandeId ASC
             LIMIT 0,1";
 $retDemande = mysqli_query($conn,$qDemande);
 if($retDemande && mysqli_num_rows($retDemande)>0){
