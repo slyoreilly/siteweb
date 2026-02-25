@@ -96,7 +96,7 @@ function traiteDemandesAjoutVideo($conn, $rrs2, $arenaId, $nomMatch) {
         return $demandesModifiees;
     }
 
-    $chronoVideoBase = intval($rrs2) + 5000;
+    $chronoVideoBase = intval($rrs2) + 10000;
     $offsetChronoVideo = 0;
 
     while ($rangeeDemande = mysqli_fetch_array($resDemandes)) {
