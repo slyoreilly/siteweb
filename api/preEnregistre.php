@@ -43,13 +43,44 @@ if($retDemande && mysqli_num_rows($retDemande)>0){
     $demandeAjoutVideo = mysqli_fetch_array($retDemande);
 }
 
+$nomMatchVideo = $params[$a]['video']['nomMatch'];
+if($demandeAjoutVideo!=null){
+	$eventIdDemande = intval($demandeAjoutVideo['eventId']);
+	$typeEvenementDemande = strval($demandeAjoutVideo['typeEvenement']);
+	if($eventIdDemande>0){
+		$qMatchDemande = '';
+		if($typeEvenementDemande==='5'){
+			$qMatchDemande = "SELECT TableMatch.match_id
+						FROM Clips
+						INNER JOIN TableMatch ON (Clips.matchId = TableMatch.matchIdRef)
+						WHERE Clips.clipId='".$eventIdDemande."'
+						LIMIT 0,1";
+		}else{
+			$qMatchDemande = "SELECT TableMatch.match_id
+						FROM TableEvenement0
+						INNER JOIN TableMatch ON (TableEvenement0.match_event_id = TableMatch.matchIdRef)
+						WHERE TableEvenement0.event_id='".$eventIdDemande."'
+						LIMIT 0,1";
+		}
+
+		$retMatchDemande = mysqli_query($conn, $qMatchDemande);
+		if($retMatchDemande && mysqli_num_rows($retMatchDemande)>0){
+			$rangeeMatchDemande = mysqli_fetch_array($retMatchDemande);
+			if(isset($rangeeMatchDemande['match_id']) && $rangeeMatchDemande['match_id']!==''){
+				$nomMatchVideo = $rangeeMatchDemande['match_id'];
+			}
+		}
+	}
+}
+$nomMatchVideoSql = mysqli_real_escape_string($conn, $nomMatchVideo);
+
 if(!empty($nomFic))
 	{
 		$monObj=array();   /// 11/12/2017 j'ai remplacé matchIdRef par match_id.
 	$qSel="SELECT * FROM Video
 			JOIN TableMatch
 				ON (match_id = nomMatch)
-		WHERE nomMatch='{$params[$a]['video']['nomMatch']}' AND camId='{$camID}' AND nomFichier Like '{$nomFic}%'";
+		WHERE nomMatch='{$nomMatchVideoSql}' AND camId='{$camID}' AND nomFichier Like '{$nomFic}%'";
 	$retSel=mysqli_query($conn,$qSel) or die("Erreur: "+$qSel+"\n"+mysqli_error($conn));
 		if(mysqli_num_rows($retSel)>0){
 			while ($rangSel = mysqli_fetch_array($retSel))
@@ -116,7 +147,7 @@ if(!empty($nomFic))
 			$chronoInsertion = intval($demandeAjoutVideo['chronoDemande']);
 		}
 		$query = "INSERT INTO Video (nomFichier,nomMatch,chrono,camId,type,reference,emplacement) ".
-		"VALUES ('{$nomFic}','{$params[$a]['video']['nomMatch']}','{$chronoInsertion}','{$camID}','{$type}' ,'{$reference}','{$emplacement}')";
+		"VALUES ('{$nomFic}','{$nomMatchVideoSql}','{$chronoInsertion}','{$camID}','{$type}' ,'{$reference}','{$emplacement}')";
 		mysqli_query($conn,$query) or die("Erreur: ".$query."\n".mysqli_error($conn));
 
 		$monObj['nomFic']=$nomFic;
