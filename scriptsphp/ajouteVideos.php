@@ -29,9 +29,7 @@ logAjoutVideo('POST recu', array(
     'noSequence' => $noSequence
 ));
 
-if ($eventTypeCode <= 0) {
-    $eventTypeCode = 5;
-}
+$eventTypeCode = 0;
 
 if ($chronoDemande <= 0 || $cameraId <= 0) {
     $message = 'Parametres invalides.';

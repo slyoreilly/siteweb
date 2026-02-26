@@ -23,17 +23,56 @@ $exploded =explode('/',$params[$a]['video']['nomFic']);
 $nomFic=array_pop($exploded);
 $rSServ=$params[$a]['video']['chrono']+$avanceServeur;
 
+$cvDemande = json_decode(stripslashes($params[$a]['video']['cv']),true);
+$referenceDemande = 0;
+if (is_array($cvDemande) && isset($cvDemande['reference'])) {
+	$referenceDemande = intval($cvDemande['reference']);
+}
+
 $demandeAjoutVideo = null;
 $qDemande = "SELECT * FROM DemandeAjoutVideo
             WHERE progression=2
-                AND cameraId='{$camID}'
-                AND ABS(chronoVideo-'{$rSServ}')<=120000
-            ORDER BY ABS(chronoVideo-'{$rSServ}') ASC, demandeId ASC
+                AND cameraId='{$camID}'";
+if($referenceDemande>0){
+	$qDemande .= " AND eventId='" . $referenceDemande . "'";
+}
+$qDemande .= " ORDER BY demandeId ASC
             LIMIT 0,1";
 $retDemande = mysqli_query($conn,$qDemande);
 if($retDemande && mysqli_num_rows($retDemande)>0){
     $demandeAjoutVideo = mysqli_fetch_array($retDemande);
 }
+
+$nomMatchVideo = $params[$a]['video']['nomMatch'];
+if($demandeAjoutVideo!=null){
+	$eventIdDemande = intval($demandeAjoutVideo['eventId']);
+	$typeEvenementDemande = strval($demandeAjoutVideo['typeEvenement']);
+	if($eventIdDemande>0){
+		$qMatchDemande = '';
+		if($typeEvenementDemande==='5'){
+			$qMatchDemande = "SELECT TableMatch.match_id
+						FROM Clips
+						INNER JOIN TableMatch ON (Clips.matchId = TableMatch.matchIdRef)
+						WHERE Clips.clipId='".$eventIdDemande."'
+						LIMIT 0,1";
+		}else{
+			$qMatchDemande = "SELECT TableMatch.match_id
+						FROM TableEvenement0
+						INNER JOIN TableMatch ON (TableEvenement0.match_event_id = TableMatch.matchIdRef)
+						WHERE TableEvenement0.event_id='".$eventIdDemande."'
+						LIMIT 0,1";
+		}
+
+		$retMatchDemande = mysqli_query($conn, $qMatchDemande);
+		if($retMatchDemande && mysqli_num_rows($retMatchDemande)>0){
+			$rangeeMatchDemande = mysqli_fetch_array($retMatchDemande);
+			if(isset($rangeeMatchDemande['match_id']) && $rangeeMatchDemande['match_id']!==''){
+				$nomMatchVideo = $rangeeMatchDemande['match_id'];
+			}
+		}
+	}
+}
+$nomMatchVideoSql = mysqli_real_escape_string($conn, $nomMatchVideo);
 	
 if(!empty($nomFic))
 	{
@@ -41,7 +80,7 @@ if(!empty($nomFic))
 	$qSel="SELECT * FROM Video 
 			JOIN TableMatch
 				ON (match_id = nomMatch)  
-		WHERE nomMatch='{$params[$a]['video']['nomMatch']}' AND camId='{$camID}' AND nomFichier Like '{$nomFic}%'";	
+		WHERE nomMatch='{$nomMatchVideoSql}' AND camId='{$camID}' AND nomFichier Like '{$nomFic}%'";	
 	$retSel=mysqli_query($conn,$qSel) or die("Erreur: "+$qSel+"\n"+mysqli_error($conn));
 		if(mysqli_num_rows($retSel)>0){
 			while ($rangSel = mysqli_fetch_array($retSel))
@@ -89,6 +128,8 @@ if(!empty($nomFic))
 	
 		
 			else {
+				$type=0;
+				$reference=0;
 				
 					$cv= json_decode(stripslashes($params[$a]['video']['cv']),true);
 			
@@ -98,15 +139,18 @@ if(!empty($nomFic))
 				if(isset($cv['reference'])){
 					$reference=$cv['reference'];
 				}		
-				if($type!=5){$type=0;}
+				$type=0;
+		$chronoInsertion = $rSServ;
+		if($demandeAjoutVideo!=null){
+			$chronoInsertion = intval($demandeAjoutVideo['chronoDemande']);
+		}
 		$query = "INSERT INTO Video (nomFichier,nomMatch,chrono,camId,type,reference,emplacement) ".
-		// Remplacement de '{$type}' par 0
-		"VALUES ('{$nomFic}','{$params[$a]['video']['nomMatch']}','{$rSServ}','{$camID}','{$type}' ,'{$reference}','{$emplacement}')";
+		"VALUES ('{$nomFic}','{$nomMatchVideoSql}','{$chronoInsertion}','{$camID}','{$type}' ,'{$reference}','{$emplacement}')";
 		mysqli_query($conn,$query) or die("Erreur: ".$query."\n".mysqli_error($conn));
 		
 		$monObj['nomFic']=$nomFic;
 		$monObj['etat']='insert';
-		$monObj['chrono']=$rSServ;
+		$monObj['chrono']=$chronoInsertion;
 		
 		array_push($syncOK, $monObj);
 			
@@ -117,7 +161,7 @@ if(!empty($nomFic))
 
 		if($demandeAjoutVideo!=null){
 			$qMajDemande = "UPDATE DemandeAjoutVideo
-							SET progression=3, nomFic='{$nomFic}', updatedAt=NOW()
+							SET progression=3, videoNomFichier='{$nomFic}', updatedAt=NOW()
 							WHERE demandeId='".intval($demandeAjoutVideo['demandeId'])."'";
 			mysqli_query($conn,$qMajDemande);
 

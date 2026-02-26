@@ -29,8 +29,62 @@ $rrs2 = $rSServ+1000;
 $cpt=0;
 
 
-function traiteDemandesAjoutVideo($conn, $rrs2) {
+function getArenaCiblePourDemandes($conn, $arenaId, $nomMatch) {
+    $arenaId = intval($arenaId);
+    if ($arenaId > 0) {
+        return $arenaId;
+    }
+
+    if (empty($nomMatch)) {
+        return 0;
+    }
+
+    $nomMatchEsc = mysqli_real_escape_string($conn, $nomMatch);
+    $qArenaNomMatch = "SELECT arenaId FROM TableMatch WHERE match_id='" . $nomMatchEsc . "' LIMIT 0,1";
+    $resArenaNomMatch = mysqli_query($conn, $qArenaNomMatch);
+    if ($resArenaNomMatch && mysqli_num_rows($resArenaNomMatch) > 0) {
+        $rangArenaNomMatch = mysqli_fetch_array($resArenaNomMatch);
+        return intval($rangArenaNomMatch['arenaId']);
+    }
+
+    return 0;
+}
+
+
+function getArenaDeEvent($conn, $eventId, $typeEvenement) {
+    $eventId = intval($eventId);
+    $typeEvenement = strval($typeEvenement);
+
+    $qArenaEvent = '';
+    if ($typeEvenement === '5') {
+        $qArenaEvent = "SELECT TableMatch.arenaId
+                        FROM Clips
+                        INNER JOIN TableMatch ON (Clips.matchId = TableMatch.matchIdRef)
+                        WHERE Clips.clipId='" . $eventId . "' LIMIT 0,1";
+    } else {
+        $qArenaEvent = "SELECT TableMatch.arenaId
+                        FROM TableEvenement0
+                        INNER JOIN TableMatch ON (TableEvenement0.match_event_id = TableMatch.matchIdRef)
+                        WHERE TableEvenement0.event_id='" . $eventId . "' LIMIT 0,1";
+    }
+
+    $resArenaEvent = mysqli_query($conn, $qArenaEvent);
+    if ($resArenaEvent && mysqli_num_rows($resArenaEvent) > 0) {
+        $rangArenaEvent = mysqli_fetch_array($resArenaEvent);
+        return intval($rangArenaEvent['arenaId']);
+    }
+
+    return 0;
+}
+
+
+function traiteDemandesAjoutVideo($conn, $rrs2, $arenaId, $nomMatch) {
     $demandesModifiees = array();
+    $arenaCible = getArenaCiblePourDemandes($conn, $arenaId, $nomMatch);
+
+    if ($arenaCible <= 0) {
+        return $demandesModifiees;
+    }
 
     $qDemandes = "SELECT demandeId, eventId, typeEvenement, chronoDemande, cameraId
 "
@@ -42,10 +96,15 @@ function traiteDemandesAjoutVideo($conn, $rrs2) {
         return $demandesModifiees;
     }
 
-    $chronoVideoBase = intval($rrs2) + 5000;
+    $chronoVideoBase = intval($rrs2) + 10000;
     $offsetChronoVideo = 0;
 
     while ($rangeeDemande = mysqli_fetch_array($resDemandes)) {
+        $arenaEvent = getArenaDeEvent($conn, $rangeeDemande['eventId'], $rangeeDemande['typeEvenement']);
+        if ($arenaEvent !== $arenaCible) {
+            continue;
+        }
+
         $demandeId = intval($rangeeDemande['demandeId']);
         $chronoVideo = $chronoVideoBase + ($offsetChronoVideo * 1000);
         $offsetChronoVideo++;
@@ -68,7 +127,11 @@ function traiteDemandesAjoutVideo($conn, $rrs2) {
 
 $vecLigues = array();
 
-$demandesAjoutVideoModifiees = traiteDemandesAjoutVideo($conn, $rrs2);
+$nomMatch = '';
+if (isset($dernierMatch)) {
+    $nomMatch = $dernierMatch;
+}
+$demandesAjoutVideoModifiees = traiteDemandesAjoutVideo($conn, $rrs2, $arena, $nomMatch);
 
 do {
 
@@ -152,97 +215,6 @@ FROM Clips
 
 ORDER BY  matchIdRef, chrono";
 
-/*
-
-$qMatch="SELECT e.event_id, e.chrono,e.matchIdRef,e.eq_dom,e.eq_vis,e.ligueRef,e.match_id,
-e.arenaId,e.date, '0' as 'type', e.scoringEnd, e.code as 'code', '0' as 'souscode' , L1.LeagueId,L1.defaultDuration, L1.ActivationFlags,L1.ActivationArgs,EventType.Code as 'CATcode' FROM(
-
-SELECT TableEvenement0.event_id, MAX(chrono) as chrono,MAX(TableMatch.matchIdRef) as matchIdRef,MAX(TableMatch.eq_dom) as eq_dom, MAX(TableMatch.eq_vis) as eq_vis,MAX(TableMatch.ligueRef) as ligueRef,MAX(TableMatch.match_id) as match_id,
-MAX(TableMatch.arenaId) as arenaId,MAX(TableMatch.date) as date, '0' as 'type', TableEvenement0.equipe_event_id as scoringEnd , TableEvenement0.code,TableEvenement0.souscode
-FROM TableEvenement0 
-	INNER JOIN TableMatch 
-		ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)
-	INNER JOIN AbonnementLigue
-		ON (TableMatch.ligueRef=AbonnementLigue.ligueid)
-	INNER JOIN TableUser
-		ON (AbonnementLigue.userid=TableUser.noCompte)
-	
-
-	WHERE TableEvenement0.chrono>$rrs2 
-			" . $addArenaDependance ."
-			AND TableUser.username='{$username}'
-GROUP BY event_id
-) e INNER JOIN EventType
- on (EventType.Code=e.code)    
-INNER JOIN  (
-		SELECT CamActionTemplate.EventTypeId, CamActionTemplate.defaultDuration, CamActionTemplate.LeagueId, CamActionTemplate.defaultDelay, CamActionTemplate.CamActionTemplateId,CamActionTemplate.ActivationArgs, CamActionTemplate.ActivationFlags FROM CamActionTemplate
-
-	) as L1 on (
-		if(
-			(EventType.EventTypeId=L1.EventTypeId AND (L1.LeagueId=e.ligueRef)
-		),'TRUE', (EventType.EventTypeId=L1.EventTypeId AND L1.LeagueId=0)
-	))  
-UNION
-(
-SELECT Clips.clipId, chrono,TableMatch.matchIdRef,TableMatch.eq_dom,TableMatch.eq_vis,TableMatch.ligueRef,TableMatch.match_id,
-TableMatch.arenaId,TableMatch.date, '5' as 'type', Clips.scoringEnd, '5' as 'code', '0' as 'souscode' , L2.LeagueId,L2.defaultDuration, L2.ActivationFlags,L2.ActivationArgs,L2.Code as 'CATcode'
-FROM Clips 
-	INNER JOIN TableMatch
-		ON (Clips.matchId=TableMatch.matchIdRef)
-	INNER JOIN AbonnementLigue
-		ON (TableMatch.ligueRef=AbonnementLigue.ligueid)
-	INNER JOIN TableUser
-		ON (AbonnementLigue.userid=TableUser.noCompte)
-			INNER JOIN (
-		SELECT EventType.EventTypeId,CamActionTemplate.defaultDuration,EventType.Code, CamActionTemplate.LeagueId, CamActionTemplate.defaultDelay, CamActionTemplate.CamActionTemplateId,CamActionTemplate.ActivationArgs, CamActionTemplate.ActivationFlags FROM EventType
-		LEFT JOIN CamActionTemplate
-			ON (EventType.EventTypeId=CamActionTemplate.EventTypeId)
-	) as L2 on ((L2.LeagueId=TableMatch.ligueRef OR L2.LeagueId=0) AND L2.Code='5' )
-	WHERE Clips.chrono>$rrs2 
-	" . $addArenaDependance ." AND TableUser.username='{$username}')  
-
-
-ORDER BY  matchIdRef, chrono";*/
-/*
-$qMatch_old = "SELECT * FROM (
-    SELECT TableEvenement0.event_id, chrono,TableMatch.matchIdRef,TableMatch.eq_dom,TableMatch.eq_vis,TableMatch.ligueRef,TableMatch.match_id,
-		TableMatch.arenaId,TableMatch.date, '0' as 'type', TableEvenement0.equipe_event_Id as scoringEnd , TableEvenement0.code,TableEvenement0.souscode, L1.LeagueId,L1.defaultDuration,L1.ActivationFlags,L1.ActivationArgs, L1.Code as 'CATcode'
-	FROM TableEvenement0 
-			INNER JOIN TableMatch
-				ON (TableEvenement0.match_event_id=TableMatch.matchIdRef)
-			INNER JOIN AbonnementLigue
-				ON (TableMatch.ligueRef=AbonnementLigue.ligueid)
-			INNER JOIN TableUser
-				ON (AbonnementLigue.userid=TableUser.noCompte)
-			INNER JOIN (
-				SELECT EventType.EventTypeId,CamActionTemplate.defaultDuration,EventType.Code, CamActionTemplate.LeagueId, CamActionTemplate.defaultDelay, CamActionTemplate.CamActionTemplateId,CamActionTemplate.ActivationArgs, CamActionTemplate.ActivationFlags FROM EventType
-				INNER JOIN CamActionTemplate
-					ON (EventType.EventTypeId=CamActionTemplate.EventTypeId)
-			) as L1 on ((L1.LeagueId=TableMatch.ligueRef OR L1.LeagueId=0) AND L1.Code=TableEvenement0.code)
-
-			WHERE TableEvenement0.chrono>$rrs2 
-					AND TableMatch.arenaId='{$arena}' 
-					AND TableUser.username='{$username}'
-					UNION
-	SELECT Clips.clipId, chrono,TableMatch.matchIdRef,TableMatch.eq_dom,TableMatch.eq_vis,TableMatch.ligueRef,TableMatch.match_id,
-		TableMatch.arenaId,TableMatch.date, '5' as 'type', Clips.scoringEnd, '5' as 'code', '0' as 'souscode' , L2.LeagueId,L2.defaultDuration, L2.ActivationFlags,L2.ActivationArgs, L2.Code as 'CATcode'
-	FROM Clips 
-			INNER JOIN TableMatch
-				ON (Clips.matchId=TableMatch.matchIdRef)
-			INNER JOIN AbonnementLigue
-				ON (TableMatch.ligueRef=AbonnementLigue.ligueid)
-			INNER JOIN TableUser
-				ON (AbonnementLigue.userid=TableUser.noCompte)
-    				INNER JOIN (
-				SELECT EventType.EventTypeId,CamActionTemplate.defaultDuration,EventType.Code, CamActionTemplate.LeagueId, CamActionTemplate.defaultDelay, CamActionTemplate.CamActionTemplateId,CamActionTemplate.ActivationArgs, CamActionTemplate.ActivationFlags FROM EventType
-				INNER JOIN CamActionTemplate
-					ON (EventType.EventTypeId=CamActionTemplate.EventTypeId)
-			) as L2 on ((L2.LeagueId=TableMatch.ligueRef OR L2.LeagueId=0) AND L2.Code='5' )
-			WHERE Clips.chrono>$rrs2 
-				AND TableMatch.arenaId='{$arena}' AND TableUser.username='{$username}') t 
-
-
-ORDER BY  matchIdRef, chrono,  t.LeagueId DESC ";*/
   
 
 					
