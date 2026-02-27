@@ -402,6 +402,48 @@
             });
         }
 
+        function corrigeTypeVideo(videoId, typeLog, sqlPreview) {
+            return $.ajax({
+                url: '/scriptsphp/corrigeTypeVideoBDLog.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    videoId: videoId,
+                    type: typeLog
+                }
+            });
+        }
+
+        function demandeCorrectionType(item) {
+            if (!item || !item.db || item.db.videoId == null || !item.expected) {
+                alert('Données insuffisantes pour corriger le type.');
+                return;
+            }
+
+            var videoId = parseInt(item.db.videoId, 10) || 0;
+            var typeLog = parseInt(item.expected.type, 10);
+            if (videoId <= 0 || isNaN(typeLog)) {
+                alert('videoId ou type invalide.');
+                return;
+            }
+
+            var sqlPreview = 'UPDATE Video SET type=' + typeLog + ' WHERE videoId=' + videoId + ' LIMIT 1;';
+            var msg = 'Commande SQL proposée\n' + sqlPreview + '\n\nConfirmez-vous la correction du type ?';
+            if (!confirm(msg)) {
+                return;
+            }
+
+            corrigeTypeVideo(videoId, typeLog, sqlPreview).done(function(rep) {
+                if (rep && rep.ok) {
+                    alert('Type corrigé avec succès.');
+                } else {
+                    alert((rep && rep.message) ? rep.message : 'Erreur lors de la correction du type.');
+                }
+            }).fail(function(xhr, statusText) {
+                alert('Erreur HTTP lors de la correction du type (' + statusText + ').');
+            });
+        }
+
         function construitResume(texteBrut, contentType, urlFinale, infoUrl) {
             var texte = texteBrut || '';
             var lignes = texte === '' ? [] : texte.split(/\r?\n/);
@@ -529,13 +571,25 @@
                                     continue;
                                 }
                                 if (!item.allOk) {
-                                    listeEcarts.append($('<li></li>').text(
+                                    var liEcart = $('<li></li>').text(
                                         item.nomFichier
                                         + ' | type: ' + (item.checks.typeOk ? 'OK' : 'KO')
                                         + ', chrono: ' + (item.checks.chronoOk ? 'OK' : ('KO (Δ ' + item.checks.deltaChrono + 'ms)'))
                                         + ', ref: ' + (item.checks.referenceOk ? 'OK' : 'KO')
                                         + ', nomMatch: ' + (item.checks.nomMatchOk ? 'OK' : 'KO')
-                                    ));
+                                    );
+
+                                    if (item.checks && item.checks.typeOk === false && item.db && item.expected) {
+                                        var btnCorrType = $('<input type="button" class="btnSecondaire" value="Corriger type" />');
+                                        (function(itemLocal) {
+                                            btnCorrType.on('click', function() {
+                                                demandeCorrectionType(itemLocal);
+                                            });
+                                        })(item);
+                                        liEcart.append($('<div></div>').css('margin-top', '6px').append(btnCorrType));
+                                    }
+
+                                    listeEcarts.append(liEcart);
                                 }
                             }
                             if (listeIntrouvables.children().length > 0) {
