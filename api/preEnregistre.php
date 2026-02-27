@@ -3,212 +3,195 @@ require '../scriptsphp/defenvvar.php';
 
 session_start();
 
-
-//$fichier = $_POST['fichier'];
-//echo $_POST['videos'];
-$params = array();
-error_log("preEnregistre: ".$_POST['videos']);
-$params =json_decode($_POST['videos'],true);
-$heure = $_POST['heure'];
-$emplacementTmp =  parse_url($_POST['emplacement']);
-$emplacement = $emplacementTmp['host'].$emplacementTmp['path'];
-$avanceServeur=time()*1000-$heure;
-
-
-$syncOK=array();
-for($a=0;$a<count($params);$a++)
+function toNullableInt($value)
 {
-$camID = $params[$a]['video']['camID'];
-$exploded =explode('/',$params[$a]['video']['nomFic']);
-$nomFic=array_pop($exploded);
-$rSServ=$params[$a]['video']['chrono']+$avanceServeur;
+    if ($value === null || $value === '') {
+        return null;
+    }
 
-$cvDemande = json_decode(stripslashes($params[$a]['video']['cv']),true);
-$referenceDemande = 0;
-if (is_array($cvDemande) && isset($cvDemande['reference'])) {
-	$referenceDemande = intval($cvDemande['reference']);
+    if (is_int($value)) {
+        return $value;
+    }
+
+    if (is_numeric($value)) {
+        return intval($value);
+    }
+
+    return null;
 }
 
-$demandeAjoutVideo = null;
-$qDemande = "SELECT * FROM DemandeAjoutVideo
-            WHERE progression=2
-                AND cameraId='{$camID}'";
-if($referenceDemande>0){
-	$qDemande .= " AND eventId='" . $referenceDemande . "'";
-}
-$qDemande .= " ORDER BY demandeId ASC
-            LIMIT 0,1";
-$retDemande = mysqli_query($conn,$qDemande);
-if($retDemande && mysqli_num_rows($retDemande)>0){
-    $demandeAjoutVideo = mysqli_fetch_array($retDemande);
+function toNullablePositiveInt($value)
+{
+    $intValue = toNullableInt($value);
+    if ($intValue === null || $intValue <= 0) {
+        return null;
+    }
+
+    return $intValue;
 }
 
-$nomMatchVideo = $params[$a]['video']['nomMatch'];
-if($demandeAjoutVideo!=null){
-	$eventIdDemande = intval($demandeAjoutVideo['eventId']);
-	$typeEvenementDemande = strval($demandeAjoutVideo['typeEvenement']);
-	if($eventIdDemande>0){
-		$qMatchDemande = '';
-		if($typeEvenementDemande==='5'){
-			$qMatchDemande = "SELECT TableMatch.match_id
-						FROM Clips
-						INNER JOIN TableMatch ON (Clips.matchId = TableMatch.matchIdRef)
-						WHERE Clips.clipId='".$eventIdDemande."'
-						LIMIT 0,1";
-		}else{
-			$qMatchDemande = "SELECT TableMatch.match_id
-						FROM TableEvenement0
-						INNER JOIN TableMatch ON (TableEvenement0.match_event_id = TableMatch.matchIdRef)
-						WHERE TableEvenement0.event_id='".$eventIdDemande."'
-						LIMIT 0,1";
-		}
+function toSqlValue($conn, $value)
+{
+    if ($value === null) {
+        return 'NULL';
+    }
 
-		$retMatchDemande = mysqli_query($conn, $qMatchDemande);
-		if($retMatchDemande && mysqli_num_rows($retMatchDemande)>0){
-			$rangeeMatchDemande = mysqli_fetch_array($retMatchDemande);
-			if(isset($rangeeMatchDemande['match_id']) && $rangeeMatchDemande['match_id']!==''){
-				$nomMatchVideo = $rangeeMatchDemande['match_id'];
-			}
-		}
-	}
+    if (is_int($value) || is_float($value)) {
+        return (string)$value;
+    }
+
+    return "'" . mysqli_real_escape_string($conn, (string)$value) . "'";
 }
-$nomMatchVideoSql = mysqli_real_escape_string($conn, $nomMatchVideo);
 
-if(!empty($nomFic))
-	{
-		$monObj=array();   /// 11/12/2017 j'ai remplacé matchIdRef par match_id.
-	$qSel="SELECT * FROM Video
-			JOIN TableMatch
-				ON (match_id = nomMatch)
-		WHERE nomMatch='{$nomMatchVideoSql}' AND camId='{$camID}' AND nomFichier Like '{$nomFic}%'";
-	$retSel=mysqli_query($conn,$qSel) or die("Erreur: "+$qSel+"\n"+mysqli_error($conn));
-		if(mysqli_num_rows($retSel)>0){
-			while ($rangSel = mysqli_fetch_array($retSel))
-			{
-			// N'entre pas dans cette boucle si non-enregistré dans table Video.
+function getVideoTableColumns($conn)
+{
+    $columns = array();
+    $ret = mysqli_query($conn, 'SHOW COLUMNS FROM Video');
+    if (!$ret) {
+        return $columns;
+    }
 
+    while ($row = mysqli_fetch_assoc($ret)) {
+        if (isset($row['Field'])) {
+            $columns[$row['Field']] = true;
+        }
+    }
 
+    return $columns;
+}
 
-				$type=1000;
-				$reference=1000;
+$videosRaw = isset($_POST['videos']) ? $_POST['videos'] : '[]';
+error_log('preEnregistre: ' . $videosRaw);
 
-				$emplacement=$rangSel['emplacement'];
-				if(is_null($emplacement)){
-					$emplacement="www.syncstats.com";
-				}
-				$cv= json_decode(stripslashes($params[$a]['video']['cv']),true);
+$params = json_decode($videosRaw, true);
+if (!is_array($params)) {
+    http_response_code(400);
+    echo json_encode(array('error' => 'Champ videos invalide'));    
+    exit;
+}
 
-				if(isset($cv['type'])){
-					$type=$cv['type'];
-				}
-				if(isset($cv['reference'])){
-					$reference=$cv['reference'];
-				}
-			}
-			$esSimple=null;
-			if(isset($params[$a]['video']['esSimple'])){
-				$esSimple=$params[$a]['video']['esSimple'];
-			}
-			if(file_exists('http://'.$emplacement.'/lookatthis/'.$nomFic))
-			{
-				if($esSimple!=12){
-				$monObj['etat']='insert';
-				}else{
-				$monObj['etat']='deja';
-				}
-			}
-			else
-			{
-				$monObj['etat']='insert';
-			}
-			$monObj['nomFic']=$nomFic;
-			$monObj['chrono']=$rSServ;
+$emplacementInput = isset($_POST['emplacement']) ? trim((string)$_POST['emplacement']) : '';
+$defaultEmplacement = 'www.syncstats.com';
+if ($emplacementInput !== '') {
+    $emplacementTmp = parse_url($emplacementInput);
+    if (is_array($emplacementTmp) && isset($emplacementTmp['host'])) {
+        $defaultEmplacement = $emplacementTmp['host'] . (isset($emplacementTmp['path']) ? $emplacementTmp['path'] : '');
+    } else {
+        $defaultEmplacement = preg_replace('/^https?:\/\//i', '', $emplacementInput);
+    }
+}
 
-			array_push($syncOK, $monObj);
+$videoColumns = getVideoTableColumns($conn);
+$syncOK = array();
 
-		}
+for ($a = 0; $a < count($params); $a++) {
+    $sourceVideo = $params[$a];
+    if (isset($sourceVideo['video']) && is_array($sourceVideo['video'])) {
+        $sourceVideo = $sourceVideo['video'];
+    }
 
+    if (!is_array($sourceVideo)) {
+        continue;
+    }
 
-			else {
-				$type=0;
-				$reference=0;
+    $cutDocId = isset($sourceVideo['cutDocId']) ? (string)$sourceVideo['cutDocId'] : '';
+    if ($cutDocId === '') {
+        $cutDocId = isset($sourceVideo['nomFic']) ? (string)$sourceVideo['nomFic'] : (isset($sourceVideo['nomFichier']) ? (string)$sourceVideo['nomFichier'] : '');
+    }
 
-					$cv= json_decode(stripslashes($params[$a]['video']['cv']),true);
+    $nomFichier = basename($cutDocId);
+    if ($nomFichier === '') {
+        continue;
+    }
 
-				if(isset($cv['type'])){
-					$type=$cv['type'];
-				}
-				if(isset($cv['reference'])){
-					$reference=$cv['reference'];
-				}
-				$type=0;
-		$chronoInsertion = $rSServ;
-		if($demandeAjoutVideo!=null){
-			$chronoInsertion = intval($demandeAjoutVideo['chronoDemande']);
-		}
-		$query = "INSERT INTO Video (nomFichier,nomMatch,chrono,camId,type,reference,emplacement) ".
-		"VALUES ('{$nomFic}','{$nomMatchVideoSql}','{$chronoInsertion}','{$camID}','{$type}' ,'{$reference}','{$emplacement}')";
-		mysqli_query($conn,$query) or die("Erreur: ".$query."\n".mysqli_error($conn));
+    $camIdInt = toNullableInt(isset($sourceVideo['camID']) ? $sourceVideo['camID'] : (isset($sourceVideo['camId']) ? $sourceVideo['camId'] : null));
+    $camIdString = (string)($camIdInt !== null ? $camIdInt : '0');
 
-		$monObj['nomFic']=$nomFic;
-		$monObj['etat']='insert';
-		$monObj['chrono']=$chronoInsertion;
+    $mappedVideo = array(
+        'videoId' => toNullablePositiveInt(isset($sourceVideo['videoId']) ? $sourceVideo['videoId'] : null),
+        'nomFichier' => $nomFichier,
+        'nomMatch' => toNullablePositiveInt(isset($sourceVideo['matchId']) ? $sourceVideo['matchId'] : (isset($sourceVideo['nomMatch']) ? $sourceVideo['nomMatch'] : null)),
+        'camId' => $camIdInt,
+        'proprioId' => null,
+        'chrono' => toNullableInt(isset($sourceVideo['chrono']) ? $sourceVideo['chrono'] : null),
+        'eval' => 0.0,
+        'nbEval' => 0,
+        'nbVues' => 0,
+        'etat' => isset($sourceVideo['etatSync']) ? (string)$sourceVideo['etatSync'] : (isset($sourceVideo['etat']) ? (string)$sourceVideo['etat'] : null),
+        'angleOk' => 0,
+        'tagPrincipal' => null,
+        'autresTags' => null,
+        'type' => toNullablePositiveInt(isset($sourceVideo['code']) ? $sourceVideo['code'] : (isset($sourceVideo['type']) ? $sourceVideo['type'] : null)),
+        'reference' => toNullablePositiveInt(isset($sourceVideo['reference']) ? $sourceVideo['reference'] : null),
+        'emplacement' => isset($sourceVideo['emplacement']) && $sourceVideo['emplacement'] !== '' ? (string)$sourceVideo['emplacement'] : $defaultEmplacement,
+        'emplacementArchive' => null,
+        'nomThumbnail' => null,
+        'nomFic' => $nomFichier,
+        'duree' => toNullableInt(isset($sourceVideo['duree']) ? $sourceVideo['duree'] : null),
+        'camID' => $camIdString,
+        'cv' => isset($sourceVideo['cleValeur']) ? (string)$sourceVideo['cleValeur'] : (isset($sourceVideo['cv']) ? (string)$sourceVideo['cv'] : '')
+    );
 
-		array_push($syncOK, $monObj);
+    $dbData = array();
+    foreach ($mappedVideo as $field => $value) {
+        if (isset($videoColumns[$field])) {
+            $dbData[$field] = $value;
+        }
+    }
 
+    if (empty($dbData)) {
+        continue;
+    }
 
+    $existingVideoId = null;
+    if (isset($mappedVideo['videoId']) && $mappedVideo['videoId'] !== null) {
+        $existingVideoId = $mappedVideo['videoId'];
+    } else {
+        $qExisting = "SELECT videoId FROM Video WHERE nomFichier='" . mysqli_real_escape_string($conn, $mappedVideo['nomFichier']) . "'";
+        if ($mappedVideo['camId'] !== null) {
+            $qExisting .= " AND camId='" . intval($mappedVideo['camId']) . "'";
+        }
+        if ($mappedVideo['nomMatch'] !== null) {
+            $qExisting .= " AND nomMatch='" . mysqli_real_escape_string($conn, (string)$mappedVideo['nomMatch']) . "'";
+        }
+        $qExisting .= ' LIMIT 0,1';
+        $retExisting = mysqli_query($conn, $qExisting);
+        if ($retExisting && mysqli_num_rows($retExisting) > 0) {
+            $rowExisting = mysqli_fetch_assoc($retExisting);
+            $existingVideoId = isset($rowExisting['videoId']) ? intval($rowExisting['videoId']) : null;
+        }
+    }
 
-
-			}
-
-        if($demandeAjoutVideo!=null){
-            $qMajDemande = "UPDATE DemandeAjoutVideo
-                            SET progression=3, videoNomFichier='{$nomFic}', updatedAt=NOW()
-                            WHERE demandeId='".intval($demandeAjoutVideo['demandeId'])."'";
-            mysqli_query($conn,$qMajDemande);
-
-            $valeurControle = round((intval($demandeAjoutVideo['chronoVideo']) - intval($demandeAjoutVideo['chronoDemande'])) / 1000);
-            $qInsControle = "INSERT INTO Controle (`telId`, `arg0`, `arg1`, `arg2`, `valeur`, `cleValeur`, `etatSync`)
-                            VALUES ('{$camID}','videos','recut','{$nomFic}','{$valeurControle}',NULL, 3)";
-            mysqli_query($conn,$qInsControle);
+    if ($existingVideoId !== null && isset($videoColumns['videoId'])) {
+        $setParts = array();
+        foreach ($dbData as $field => $value) {
+            if ($field === 'videoId') {
+                continue;
+            }
+            $setParts[] = $field . '=' . toSqlValue($conn, $value);
         }
 
+        if (!empty($setParts)) {
+            $qUpdate = 'UPDATE Video SET ' . implode(',', $setParts) . " WHERE videoId='" . intval($existingVideoId) . "'";
+            mysqli_query($conn, $qUpdate);
+        }
+    } else {
+        $insertFields = array();
+        $insertValues = array();
+        foreach ($dbData as $field => $value) {
+            $insertFields[] = $field;
+            $insertValues[] = toSqlValue($conn, $value);
+        }
+        $qInsert = 'INSERT INTO Video (' . implode(',', $insertFields) . ') VALUES (' . implode(',', $insertValues) . ')';
+        mysqli_query($conn, $qInsert);
+    }
 
-
-
-
-		///////  Section Forfait, pas achevé.
-/*
-		$qForfait="SELECT cleValeur FROM Ligue
-
-			WHERE ID_Ligue='{$rangSel['ligueRef']}'";
-	$retFor=mysql_query($qForfait) or die("Erreur: "+$qForfait+"\n"+mysql_error());
-		$resForfait = mysql_fetch_row($retFor);
-		$cleValeurForfait = json_decode($resForfait[0],true);
-
-		$forfaitId = $cleValeurForfait['contrat']['forfaitId'];
-
-
-
-		$_SESSION['forfaitId'] = $forfaitId;
-		$_SESSION['nomFichier'] = $nomFic;
-		$_SESSION['ligueId'] = $rangSel['ligueRef'];
-	*/
-		// include 'gestionnaireVideoSJHT.php';
-
-
-		}
-
-
-
-
-
+    $syncOK[] = array(
+        'nomFic' => $mappedVideo['nomFic'],
+        'etat' => 'insert',
+        'chrono' => $mappedVideo['chrono']
+    );
 }
-$ret = json_encode($syncOK);
-//error_log("retour preEnregistre: ".$ret)	;
-	echo $ret;
 
-	if($ret==False)
-	{echo "erreur, count(syncOK:): ".count($syncOK)."- count($params): ".count($params);}
-	//mysqli_close($conn);
+echo json_encode($syncOK);
 ?>
