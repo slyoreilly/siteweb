@@ -70,6 +70,47 @@
         #statutConnexion p {
             margin: 0;
         }
+
+        #progressWrap {
+            margin: 8px 0 12px 0;
+            display: none;
+        }
+
+        #progressBarOuter {
+            width: 100%;
+            height: 14px;
+            background: #e9ecef;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #d0d7de;
+        }
+
+        #progressBarInner {
+            height: 100%;
+            width: 0%;
+            background: #2d8cff;
+            transition: width 0.2s ease;
+        }
+
+        #progressLabel {
+            margin-top: 6px;
+            font-size: 13px;
+            color: #333;
+        }
+
+        #zoneLogsDebug {
+            margin: 0 0 12px 0;
+            padding: 10px;
+            background: #fff8e1;
+            border: 1px solid #e8d8a3;
+            border-radius: 4px;
+            max-height: 180px;
+            overflow: auto;
+            display: none;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
     </style>
 
     <script type="text/javascript" charset="utf-8">
@@ -416,24 +457,61 @@
             $('#apercuLogs').text(resume.apercu || '(aucune ligne)');
         }
 
+
+        function ajouteLogDebug(message) {
+            var txt = '[' + (new Date()).toLocaleTimeString() + '] ' + message;
+            $('#zoneLogsDebug').show();
+            var prev = $('#zoneLogsDebug').text();
+            $('#zoneLogsDebug').text((prev ? prev + '\n' : '') + txt);
+            var el = document.getElementById('zoneLogsDebug');
+            if (el) {
+                el.scrollTop = el.scrollHeight;
+            }
+        }
+
+        function resetLogsDebug() {
+            $('#zoneLogsDebug').text('');
+            $('#zoneLogsDebug').hide();
+        }
+
+        function setProgress(percent, label) {
+            var p = Math.max(0, Math.min(100, percent));
+            $('#progressWrap').show();
+            $('#progressBarInner').css('width', p + '%');
+            $('#progressLabel').text(label || (p + '%'));
+            if (p >= 100) {
+                setTimeout(function() {
+                    $('#progressWrap').hide();
+                }, 800);
+            }
+        }
+
         function executeAnalyseLogs() {
             $('#erreurLogs').empty();
             $('#resumeLogs').empty();
             $('#apercuLogs').empty();
+            resetLogsDebug();
+            setProgress(5, 'Validation URL...');
+            ajouteLogDebug('Début analyse');
 
             var urlNormalisee = normaliseUrl($('#inputUrlLog').val());
+            ajouteLogDebug('URL normalisée: ' + urlNormalisee);
             if (urlNormalisee === '') {
+                setProgress(100, 'Erreur');
                 $('#erreurLogs').text('Veuillez entrer une URL.');
                 return;
             }
 
             var infoUrl = parseUrlMonitoring(urlNormalisee);
             if (infoUrl == null || infoUrl.typeLog == null) {
+                setProgress(100, 'Erreur');
                 $('#erreurLogs').text('Format attendu: syncstats.com/monitoring/{telId}/{date}/{type de log} avec type parmi BDLogFile.txt, synccamlog.txt, logDBSS.txt.');
                 return;
             }
 
+            ajouteLogDebug('URL valide. telId=' + infoUrl.telId + ', date=' + infoUrl.date + ', fichier=' + infoUrl.fichierLog);
             $('#btnExecuterLog').prop('disabled', true).val('Analyse...');
+            setProgress(20, 'Téléchargement du log...');
 
             $.ajax({
                 url: urlNormalisee,
@@ -442,23 +520,36 @@
             }).done(function (responseText, textStatus, jqXHR) {
                 var contentType = jqXHR.getResponseHeader('Content-Type');
                 var resume = construitResume(responseText, contentType, urlNormalisee, infoUrl);
+                ajouteLogDebug('Log téléchargé. Lignes analysées: ' + (resume.analyseBDCamera ? resume.analyseBDCamera.lignesAnalysees : 0));
 
                 if (resume.analyseBDCamera != null) {
+                    setProgress(55, 'Parsing terminé, validation concordance...');
                     valideCorrespondancesVideo(resume.analyseBDCamera.parsedRows, infoUrl.telId).done(function(rep) {
                         resume.concordanceVideo = rep;
+                        ajouteLogDebug('Concordance terminée. Trouvées=' + ((rep.summary && rep.summary.found) || 0) + ', introuvables=' + ((rep.summary && rep.summary.notFound) || 0) + ', bases ignorées=' + ((rep.summary && rep.summary.baseSkipped) || 0));
+                        setProgress(90, 'Affichage du résumé...');
                         afficheResume(resume);
+                        setProgress(100, 'Terminé');
                     }).fail(function() {
                         resume.concordanceVideo = { ok: false, message: 'Validation table Video indisponible.' };
+                        ajouteLogDebug('Validation concordance indisponible.');
+                        setProgress(90, 'Affichage du résumé...');
                         afficheResume(resume);
+                        setProgress(100, 'Terminé');
                     });
                 } else {
+                    ajouteLogDebug('Pas de concordance requise pour ce type de log.');
+                    setProgress(90, 'Affichage du résumé...');
                     afficheResume(resume);
+                    setProgress(100, 'Terminé');
                 }
             }).fail(function (xhr, statusText) {
                 var msg = 'Impossible de récupérer le log (' + statusText + ').';
                 if (xhr && xhr.status) {
                     msg += ' HTTP ' + xhr.status + '.';
                 }
+                ajouteLogDebug('Erreur téléchargement: ' + msg);
+                setProgress(100, 'Erreur');
                 $('#erreurLogs').text(msg);
             }).always(function () {
                 $('#btnExecuterLog').prop('disabled', false).val('Exécuter');
@@ -523,6 +614,13 @@
             <input id="inputUrlLog" type="text" placeholder="https://syncstats.com/monitoring/{telId}/{date}/{type de log}" />
             <input id="btnExecuterLog" type="button" value="Exécuter" />
         </div>
+
+        <div id="progressWrap">
+            <div id="progressBarOuter"><div id="progressBarInner"></div></div>
+            <div id="progressLabel"></div>
+        </div>
+
+        <div id="zoneLogsDebug"></div>
 
         <div id="erreurLogs" class="messageErreur"></div>
         <div id="resumeLogs"></div>
