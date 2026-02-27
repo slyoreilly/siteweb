@@ -58,6 +58,18 @@
             font-weight: bold;
             margin-top: 10px;
         }
+
+        #statutConnexion {
+            margin: 0 0 12px 0;
+            padding: 10px;
+            background: #f1f5f9;
+            border: 1px solid #d7e2ef;
+            border-radius: 4px;
+        }
+
+        #statutConnexion p {
+            margin: 0;
+        }
     </style>
 
     <script type="text/javascript" charset="utf-8">
@@ -200,6 +212,25 @@
             });
         }
 
+        function afficheStatutConnexion(vPerm) {
+            var utilisateur = getCookie('userId');
+            if (utilisateur == null || utilisateur === '') {
+                utilisateur = 'non connecté';
+            }
+
+            var ligue = getCookie('ligueId');
+            if (ligue == null || ligue === '') {
+                ligue = getValue('ligueId');
+            }
+            if (ligue == null || ligue === '') {
+                ligue = 'non définie';
+            }
+
+            $('#statutConnexion').empty().append(
+                $('<p></p>').text('Statut de connexion — Utilisateur: ' + utilisateur + ' | Ligue: ' + ligue + ' | Niveau permission: ' + vPerm)
+            );
+        }
+
         function initialisePageAppliqueLogs() {
             try {
                 faitEntete();
@@ -207,6 +238,7 @@
             }
 
             var vPerm = verifiePermission();
+            afficheStatutConnexion(vPerm);
             if (vPerm >= 10) {
                 $('#zoneAppliqueLogs').hide();
                 $('#messageDroit').text("Cette page est réservée à l'administration de la ligue en cours.");
@@ -228,6 +260,8 @@
 <div id="divHaut"></div>
 <div id="divGauche"></div>
 <div id="divCentrale">
+    <div id="statutConnexion"></div>
+
     <div id="zoneAppliqueLogs" style="display:none;">
         <h2>Applique Logs</h2>
         <p>Entrez une URL de monitoring pour obtenir un résumé rapide des logs.</p>
