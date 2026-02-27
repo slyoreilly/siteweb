@@ -111,6 +111,60 @@
             font-size: 12px;
             white-space: pre-wrap;
         }
+
+
+        .btnSecondaire {
+            padding: 6px 10px;
+            border: 1px solid #9fb4c7;
+            background: #f5f9ff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #modalInsertionWrap {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            display: none;
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #modalInsertion {
+            width: min(760px, 92vw);
+            max-height: 90vh;
+            overflow: auto;
+            background: #fff;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            padding: 14px;
+        }
+
+        #grilleInsertion {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 8px;
+            align-items: center;
+        }
+
+        #grilleInsertion input {
+            padding: 6px;
+        }
+
+        #previewSqlInsert {
+            margin-top: 8px;
+            padding: 8px;
+            background: #f7f7f7;
+            border: 1px solid #ddd;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+
+        #messageInsertion {
+            margin-top: 8px;
+            font-weight: bold;
+        }
     </style>
 
     <script type="text/javascript" charset="utf-8">
@@ -356,6 +410,8 @@
                 .append($('<li></li>').text('Type de log: ' + resume.summary.typeLog + ' (' + resume.summary.fichierLog + ')'));
 
             var container = $('#resumeLogs').empty().append($('<h3></h3>').text('Résumé')).append(ul);
+            var lienOriginal = $('<a></a>').attr('href', resume.summary.url).attr('target', '_blank').attr('rel', 'noopener noreferrer').addClass('btnSecondaire').text('Ouvrir le log original');
+            container.append($('<p></p>').append(lienOriginal));
 
             if (resume.analyseBDCamera != null) {
                 container.append($('<p></p>').text('BD caméra: ' + resume.analyseBDCamera.lignesValides + ' lignes valides sur ' + resume.analyseBDCamera.lignesAnalysees + ' analysées.'));
@@ -427,6 +483,13 @@
                                 var item = resume.concordanceVideo.details[d];
                                 if (!item.found) {
                                     var liIntr = $('<li></li>').text('[Introuvable] ' + (item.nomFichier || '(sans nom)'));
+                                    var btnIns = $('<input type="button" class="btnSecondaire" value="Insérer dans Video" />');
+                                    (function(itemLocal) {
+                                        btnIns.on('click', function() {
+                                            ouvrePopupInsertion(itemLocal);
+                                        });
+                                    })(item);
+                                    liIntr.append($('<div></div>').css('margin-top','6px').append(btnIns));
                                     if (item.sqlAbsence) {
                                         liIntr.append($('<div></div>').css('font-family','monospace').text(item.sqlAbsence));
                                     }
@@ -484,6 +547,98 @@
                     $('#progressWrap').hide();
                 }, 800);
             }
+        }
+
+
+        function echappeSql(valeur) {
+            return String(valeur == null ? '' : valeur).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        }
+
+        function construitValeursInsertionDepuisItem(item) {
+            var exp = item && item.expected ? item.expected : {};
+            return {
+                nomFichier: (item && item.nomFichier) ? item.nomFichier : (exp.nomFichier || ''),
+                nomMatch: (exp.nomMatch && exp.nomMatch !== '-') ? exp.nomMatch : '',
+                camId: exp.camId || '',
+                chrono: exp.chrono != null ? String(exp.chrono) : '',
+                type: exp.type != null ? String(exp.type) : '0',
+                reference: exp.reference != null ? String(exp.reference) : '0',
+                emplacement: 'syncstats.com',
+                angleOk: '0'
+            };
+        }
+
+        function metAJourApercuInsertion() {
+            var v = {
+                nomFichier: $('#ins_nomFichier').val(),
+                nomMatch: $('#ins_nomMatch').val(),
+                camId: $('#ins_camId').val(),
+                chrono: $('#ins_chrono').val(),
+                type: $('#ins_type').val(),
+                reference: $('#ins_reference').val(),
+                emplacement: $('#ins_emplacement').val(),
+                angleOk: $('#ins_angleOk').val()
+            };
+
+            var sql = "INSERT INTO Video (nomFichier,nomMatch,chrono,camId,type,reference,emplacement,angleOk) VALUES ('"
+                + echappeSql(v.nomFichier) + "','"
+                + echappeSql(v.nomMatch) + "',"
+                + (parseInt(v.chrono, 10) || 0) + ",'"
+                + echappeSql(v.camId) + "',"
+                + (parseInt(v.type, 10) || 0) + ","
+                + (parseInt(v.reference, 10) || 0) + ",'"
+                + echappeSql(v.emplacement) + "',"
+                + (parseInt(v.angleOk, 10) || 0) + ');';
+
+            $('#previewSqlInsert').text(sql);
+            return v;
+        }
+
+        function fermePopupInsertion() {
+            $('#modalInsertionWrap').hide();
+            $('#messageInsertion').text('');
+        }
+
+        function ouvrePopupInsertion(item) {
+            var v = construitValeursInsertionDepuisItem(item || {});
+            $('#ins_nomFichier').val(v.nomFichier);
+            $('#ins_nomMatch').val(v.nomMatch);
+            $('#ins_camId').val(v.camId);
+            $('#ins_chrono').val(v.chrono);
+            $('#ins_type').val(v.type);
+            $('#ins_reference').val(v.reference);
+            $('#ins_emplacement').val(v.emplacement);
+            $('#ins_angleOk').val(v.angleOk);
+            $('#messageInsertion').text('');
+            metAJourApercuInsertion();
+            $('#modalInsertionWrap').show();
+        }
+
+        function envoieInsertionVideo() {
+            var v = metAJourApercuInsertion();
+            if (!confirm("Confirmez-vous l'insertion de cette vidéo ?")) {
+                return;
+            }
+
+            $('#btnEnvoyerInsertion').prop('disabled', true).val('Envoi...');
+            $('#messageInsertion').css('color', '#333').text('Envoi en cours...');
+
+            $.ajax({
+                url: '/scriptsphp/insereVideoBDLog.php',
+                type: 'POST',
+                dataType: 'json',
+                data: v
+            }).done(function(rep) {
+                if (rep && rep.ok) {
+                    $('#messageInsertion').css('color', '#0a7d25').text('Insertion réussie. videoId=' + rep.videoId);
+                } else {
+                    $('#messageInsertion').css('color', '#b00020').text((rep && rep.message) ? rep.message : "Erreur d'insertion.");
+                }
+            }).fail(function(xhr, statusText) {
+                $('#messageInsertion').css('color', '#b00020').text("Erreur HTTP lors de l'insertion (" + statusText + ").");
+            }).always(function() {
+                $('#btnEnvoyerInsertion').prop('disabled', false).val('Envoyer');
+            });
         }
 
         function executeAnalyseLogs() {
@@ -597,6 +752,14 @@
                     executeAnalyseLogs();
                 }
             });
+            $('#btnFermerInsertion').on('click', fermePopupInsertion);
+            $('#btnEnvoyerInsertion').on('click', envoieInsertionVideo);
+            $('#modalInsertionWrap').on('click', function(e) {
+                if (e.target === this) {
+                    fermePopupInsertion();
+                }
+            });
+            $('#modalInsertion input').on('input', metAJourApercuInsertion);
         }
     </script>
 </head>
@@ -625,6 +788,29 @@
         <div id="erreurLogs" class="messageErreur"></div>
         <div id="resumeLogs"></div>
         <pre id="apercuLogs"></pre>
+    </div>
+
+    <div id="modalInsertionWrap">
+        <div id="modalInsertion">
+            <h3>Insertion dans la table Video</h3>
+            <div id="grilleInsertion">
+                <label for="ins_nomFichier">nomFichier</label><input id="ins_nomFichier" type="text" />
+                <label for="ins_nomMatch">nomMatch</label><input id="ins_nomMatch" type="text" />
+                <label for="ins_camId">camId</label><input id="ins_camId" type="text" />
+                <label for="ins_chrono">chrono</label><input id="ins_chrono" type="number" />
+                <label for="ins_type">type</label><input id="ins_type" type="number" />
+                <label for="ins_reference">reference</label><input id="ins_reference" type="number" />
+                <label for="ins_emplacement">emplacement</label><input id="ins_emplacement" type="text" />
+                <label for="ins_angleOk">angleOk</label><input id="ins_angleOk" type="number" />
+            </div>
+            <h4>Aperçu de la commande SQL</h4>
+            <div id="previewSqlInsert"></div>
+            <div style="margin-top:10px; display:flex; gap:8px;">
+                <input id="btnEnvoyerInsertion" type="button" value="Envoyer" />
+                <input id="btnFermerInsertion" type="button" class="btnSecondaire" value="Fermer" />
+            </div>
+            <div id="messageInsertion"></div>
+        </div>
     </div>
 
     <div id="messageDroit" class="messageErreur"></div>

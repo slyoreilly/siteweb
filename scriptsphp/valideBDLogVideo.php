@@ -32,6 +32,7 @@ foreach ($rows as $row) {
     $reference = isset($row['reference']) ? strval($row['reference']) : '';
     $etatSync = isset($row['etatSync']) ? strval($row['etatSync']) : '';
     $chrono = isset($row['chrono']) ? intval($row['chrono']) : 0;
+    $camId = $telId;
 
     if ($etatSync === '2323') {
         $summary['baseSkipped']++;
@@ -47,7 +48,15 @@ foreach ($rows as $row) {
 
     if ($nomFichier === '') {
         $summary['notFound']++;
-        $details[] = array('nomFichier' => '', 'found' => false, 'reason' => 'nomFichier manquant');
+        $details[] = array('nomFichier' => '', 'found' => false, 'reason' => 'nomFichier manquant',
+            'expected' => array(
+                'nomFichier' => $nomFichier,
+                'camId' => $camId,
+                'type' => $typeVideo,
+                'reference' => $reference,
+                'nomMatch' => $nomMatch,
+                'chrono' => $chrono
+            ));
         continue;
     }
 
@@ -72,7 +81,15 @@ foreach ($rows as $row) {
             'nomFichier' => $nomFichier,
             'found' => false,
             'reason' => 'Aucune vidéo correspondante',
-            'sqlAbsence' => $q
+            'sqlAbsence' => $q,
+            'expected' => array(
+                'nomFichier' => $nomFichier,
+                'camId' => $camId,
+                'type' => $typeVideo,
+                'reference' => $reference,
+                'nomMatch' => $nomMatch,
+                'chrono' => $chrono
+            )
         );
         continue;
     }
@@ -113,6 +130,8 @@ foreach ($rows as $row) {
             'deltaChrono' => $deltaChrono
         ),
         'expected' => array(
+            'nomFichier' => $nomFichier,
+            'camId' => $camId,
             'type' => $typeVideo,
             'reference' => $reference,
             'nomMatch' => $nomMatch,
