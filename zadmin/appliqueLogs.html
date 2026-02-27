@@ -475,13 +475,24 @@
                         var c = resume.concordanceVideo.summary || {};
                         container.append($('<h4></h4>').text('Concordance table Video'));
                         container.append($('<p></p>').text('Analysées: ' + (c.total || 0) + ' | Trouvées: ' + (c.found || 0) + ' | Concordance complète: ' + (c.allOk || 0)));
-                        container.append($('<p></p>').text('Incohérences — type: ' + (c.typeMismatch || 0) + ', chrono: ' + (c.chronoMismatch || 0) + ', référence: ' + (c.referenceMismatch || 0) + ', nomMatch: ' + (c.nomMatchMismatch || 0) + ', introuvables: ' + (c.notFound || 0) + ', bases ignorées: ' + (c.baseSkipped || 0)));
+                        container.append($('<p></p>').text('Incohérences — type: ' + (c.typeMismatch || 0) + ', chrono: ' + (c.chronoMismatch || 0) + ', référence: ' + (c.referenceMismatch || 0) + ', nomMatch: ' + (c.nomMatchMismatch || 0) + ', introuvables: ' + (c.notFound || 0) + ', bases ignorées: ' + (c.baseSkipped || 0) + ', erronées 2626 absentes tolérées: ' + (c.syncErrSkipped || 0)));
 
                         if ($.isArray(resume.concordanceVideo.details)) {
                             var listeEcarts = $('<ul></ul>');
+                            var listeIntrouvables = $('<ul></ul>');
+                            var listeErr2626 = $('<ul></ul>');
                             for (var d = 0; d < resume.concordanceVideo.details.length; d++) {
                                 var item = resume.concordanceVideo.details[d];
                                 if (!item.found) {
+                                    if (item.ignoredNotFound === true && String(item.etatSync) === '2626') {
+                                        var li2626 = $('<li></li>').text('[2626 tolérée] ' + (item.nomFichier || '(sans nom)'));
+                                        if (item.sqlAbsence) {
+                                            li2626.append($('<div></div>').css('font-family','monospace').text(item.sqlAbsence));
+                                        }
+                                        listeErr2626.append(li2626);
+                                        continue;
+                                    }
+
                                     var liIntr = $('<li></li>').text('[Introuvable] ' + (item.nomFichier || '(sans nom)'));
                                     var btnIns = $('<input type="button" class="btnSecondaire" value="Insérer dans Video" />');
                                     (function(itemLocal) {
@@ -493,7 +504,7 @@
                                     if (item.sqlAbsence) {
                                         liIntr.append($('<div></div>').css('font-family','monospace').text(item.sqlAbsence));
                                     }
-                                    listeEcarts.append(liIntr);
+                                    listeIntrouvables.append(liIntr);
                                     continue;
                                 }
                                 if (!item.allOk) {
@@ -506,9 +517,17 @@
                                     ));
                                 }
                             }
+                            if (listeIntrouvables.children().length > 0) {
+                                container.append($('<h5></h5>').text('Vidéos introuvables'));
+                                container.append(listeIntrouvables);
+                            }
                             if (listeEcarts.children().length > 0) {
                                 container.append($('<h5></h5>').text('Écarts par ligne'));
                                 container.append(listeEcarts);
+                            }
+                            if (listeErr2626.children().length > 0) {
+                                container.append($('<h5></h5>').text('Vidéos erronées (2626) absentes de Video'));
+                                container.append(listeErr2626);
                             }
                         }
                     }
@@ -681,7 +700,7 @@
                     setProgress(55, 'Parsing terminé, validation concordance...');
                     valideCorrespondancesVideo(resume.analyseBDCamera.parsedRows, infoUrl.telId).done(function(rep) {
                         resume.concordanceVideo = rep;
-                        ajouteLogDebug('Concordance terminée. Trouvées=' + ((rep.summary && rep.summary.found) || 0) + ', introuvables=' + ((rep.summary && rep.summary.notFound) || 0) + ', bases ignorées=' + ((rep.summary && rep.summary.baseSkipped) || 0));
+                        ajouteLogDebug('Concordance terminée. Trouvées=' + ((rep.summary && rep.summary.found) || 0) + ', introuvables=' + ((rep.summary && rep.summary.notFound) || 0) + ', bases ignorées=' + ((rep.summary && rep.summary.baseSkipped) || 0) + ', erronées 2626 tolérées=' + ((rep.summary && rep.summary.syncErrSkipped) || 0));
                         setProgress(90, 'Affichage du résumé...');
                         afficheResume(resume);
                         setProgress(100, 'Terminé');

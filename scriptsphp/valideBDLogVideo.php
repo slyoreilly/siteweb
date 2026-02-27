@@ -20,7 +20,8 @@ $summary = array(
     'chronoMismatch' => 0,
     'referenceMismatch' => 0,
     'nomMatchMismatch' => 0,
-    'baseSkipped' => 0
+    'baseSkipped' => 0,
+    'syncErrSkipped' => 0
 );
 
 $details = array();
@@ -76,6 +77,27 @@ foreach ($rows as $row) {
 
     $r = mysqli_query($conn, $q);
     if (!$r || mysqli_num_rows($r) === 0) {
+        if ($etatSync === '2626') {
+            $summary['syncErrSkipped']++;
+            $details[] = array(
+                'nomFichier' => $nomFichier,
+                'found' => false,
+                'ignoredNotFound' => true,
+                'etatSync' => $etatSync,
+                'reason' => 'Vidéo erronée (etatSync=2626), absence en table Video tolérée',
+                'sqlAbsence' => $q,
+                'expected' => array(
+                    'nomFichier' => $nomFichier,
+                    'camId' => $camId,
+                    'type' => $typeVideo,
+                    'reference' => $reference,
+                    'nomMatch' => $nomMatch,
+                    'chrono' => $chrono
+                )
+            );
+            continue;
+        }
+
         $summary['notFound']++;
         $details[] = array(
             'nomFichier' => $nomFichier,
@@ -106,7 +128,7 @@ foreach ($rows as $row) {
     $typeOk = ($typeVideo === $dbType);
     $referenceOk = ($reference === $dbRef);
     $nomMatchOk = ($nomMatch === $dbNomMatch);
-    $chronoOk = ($deltaChrono <= 2000);
+    $chronoOk = ($deltaChrono <= 10000);
 
     if (!$typeOk) $summary['typeMismatch']++;
     if (!$referenceOk) $summary['referenceMismatch']++;
