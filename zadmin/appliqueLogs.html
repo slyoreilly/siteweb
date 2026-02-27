@@ -151,23 +151,47 @@
                 return null;
             }
 
-            var parts = ligne.split(' - ');
-            if (parts.length < 8) {
+            var body = ligne.replace(/^CP:\s*/, '');
+            var tmp = body.split(' - ');
+            if (tmp.length < 6) {
                 return null;
             }
 
-            var idxLocalTxt = parts[0].replace(/^CP:\s*/, '').trim();
-            var videoBase = parts[1].trim();
-            var nomFichier = parts[2].trim();
-            var nomMatch = parts[3].trim();
-            var chronoTxt = parts[4].trim();
-            var dureeTxt = parts[5].trim();
-            var etatSyncTxt = parts[6].trim();
-            var detailsJsonTxt = parts.slice(7).join(' - ').trim();
+            var idxLocalTxt = (tmp[0] || '').trim();
+            var videoBase = (tmp[1] || '').trim();
+            var nomFichier = (tmp[2] || '').trim();
+
+            var nomMatch = '';
+            var chronoTxt = '';
+            var dureeTxt = '';
+            var etatSyncTxt = '';
+            var detailsJsonTxt = '';
+
+            if (tmp.length >= 8) {
+                nomMatch = (tmp[3] || '').trim();
+                chronoTxt = (tmp[4] || '').trim();
+                dureeTxt = (tmp[5] || '').trim();
+                etatSyncTxt = (tmp[6] || '').trim();
+                detailsJsonTxt = tmp.slice(7).join(' - ').trim();
+            } else {
+                var champ3 = (tmp[3] || '').trim();
+                if (/^-\s*/.test(champ3)) {
+                    nomMatch = '-';
+                    chronoTxt = champ3.replace(/^-\s*/, '').trim();
+                } else {
+                    nomMatch = '';
+                    chronoTxt = champ3;
+                }
+                dureeTxt = (tmp[4] || '').trim();
+                etatSyncTxt = (tmp[5] || '').replace(/\s*-\s*$/, '').trim();
+                detailsJsonTxt = tmp.length > 6 ? tmp.slice(6).join(' - ').trim() : '';
+            }
 
             var details = {};
             try {
-                details = JSON.parse(detailsJsonTxt);
+                if (detailsJsonTxt !== '' && detailsJsonTxt !== '-') {
+                    details = JSON.parse(detailsJsonTxt);
+                }
             } catch (e) {
                 details = {};
             }
