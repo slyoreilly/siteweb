@@ -271,6 +271,11 @@
 				}
 				var chronoDemande = normaliseChronoAjoutVideo(mBut.chrono);
 
+				var eventTypeCode = parseInt(mBut.eventTypeCode, 10);
+				if (isNaN(eventTypeCode)) {
+					eventTypeCode = 0;
+				}
+
 				var payload = {
 					butId : isNaN(butId) ? 0 : butId,
 					matchIdRef : window.matchID,
@@ -278,7 +283,7 @@
 					noSequence : noSequence,
 					chrono : chronoDemande,
 					cameraId : cameraId,
-					eventTypeCode : 5
+					eventTypeCode : eventTypeCode
 				};
 
 				console.info('[AjoutVideo] Soumission AJAX', payload, mBut);
@@ -1281,7 +1286,7 @@ console.log(rSMB.buts[d].video.length);
 						var boutonAjouteVideo = null;
 						if (window.vPerm < 10) {
 							boutonAjouteVideo = $('<button></button>').attr("type", "button").addClass("btn btn-xs btn-outline-secondary").text("+ Vidéo").on("click", {
-								mBut : rSMB.buts[J]
+								mBut : $.extend({}, rSMB.buts[J], { eventTypeCode : 0 })
 							}, function(event) {
 								ouvreDialogueAjoutVideo(event.data.mBut);
 							});
@@ -1489,90 +1494,92 @@ console.log(rSMB.buts[d].video.length);
 						//                      }
 
 						//  if(!statsJSON.joueurs[J].nom.isNull&&statsJSON.joueurs[J].nom!='Anonyme')
+						var mClip = rSMB.clips[J];
+						var clipVideos = (mClip != null && $.isArray(mClip.video)) ? mClip.video : [];
+						var clipAvecVideo = clipVideos.length > 0;
+						var utilisateurConnecte = window.vPerm < 11;
+
+						if (!clipAvecVideo && !utilisateurConnecte) {
+							continue;
+						}
+
 						rangee = document.createElement('TR');
 						amettre = document.getElementById('rangeeTitreHighlights');
 						amettre.parentNode.appendChild(rangee);
-						minutes = Math.floor((parseInt(rSMB.clips[J].chrono) - parseInt(maPer.chrono)) / 60000);
-						//  console.log("minutes"+minutes+" ");
-						dizSecondes = Math.floor(((parseInt(rSMB.clips[J].chrono) - parseInt(maPer.chrono)) - minutes * 60000) / 10000);
-						secondes = Math.floor(((parseInt(rSMB.clips[J].chrono) - parseInt(maPer.chrono)) - minutes * 60000 - dizSecondes * 10000) / 1000);
-						//  console.log("secondes"+secondes+" ");
+						minutes = Math.floor((parseInt(mClip.chrono) - parseInt(maPer.chrono)) / 60000);
+						dizSecondes = Math.floor(((parseInt(mClip.chrono) - parseInt(maPer.chrono)) - minutes * 60000) / 10000);
+						secondes = Math.floor(((parseInt(mClip.chrono) - parseInt(maPer.chrono)) - minutes * 60000 - dizSecondes * 10000) / 1000);
 						strChrono = minutes + ":" + dizSecondes + secondes;
 						strImg= "<i onclick=deleteClip(" + J + ") class=\"fa fa-trash\" ></i>";
 						var lesCols = new Array();
-	
-						//
+
 						lesCols[0] = strChrono;
 						lesCols[1] = window.vPerm < 19 ?   strImg : null;
-						lesCols[2] = rSMB.clips[J].labelFrench;
+						lesCols[2] = mClip.labelFrench;
 						lesCols[3] = "" ;
 
-						//          console.log(rSMB.buts[J].video.length);
-						//          lesCols[6] = (rSMB.buts[J].video.length <= 0) ? "" : "Voir";
-						
-						if (rSMB.clips.length > 0) {
-							try {
+						try {
+							pVids = document.createElement('A');
+							imgVid = document.createElement('IMG');
+							imgVid.src = "/images/icones/movie.png";
+							imgVid.alt = "Video";
 
-								var mBut = rSMB.clips[J];
-								strV = mBut;
-								pVids = document.createElement('A');
-								//          pVids[a].innerHTML= UrlExists("../lookatthis/" + strV.fic)?" Cam  "+b+" ":"";
-								imgVid = document.createElement('IMG');
-								imgVid.src = "/images/icones/movie.png";
-								imgVid.alt = "Video";
+							if (clipAvecVideo) {
+								pVids.appendChild(imgVid);
+								pVids.id = "../lookatthis/" + mClip.fic;
+								pVids.className = "cliquable";
+								$(pVids).on("click", {mBut : mClip}, montreVideo);
+							}
 
+							var boutonAjouteVideoClip = null;
+							if (utilisateurConnecte) {
+								boutonAjouteVideoClip = $('<button></button>').attr("type", "button").addClass("btn btn-xs btn-outline-secondary").text("+ Vidéo").on("click", {
+									mBut : $.extend({}, mClip, { eventTypeCode : 5 })
+								}, function(event) {
+									ouvreDialogueAjoutVideo(event.data.mBut);
+								});
+							}
 
-								if (mBut != null) {
-									if (mBut.video.length > 0) {
-										pVids.appendChild(imgVid);
-										//              pVids.innerHTML= " Video Replay ";
-										pVids.id = "../lookatthis/" + mBut.fic;
-										pVids.className = "cliquable";
-										$(pVids).on("click",{mBut:mBut},montreVideo);
+							var lesLiens = new Array();
+							lesLiens[0] = null;
+							lesLiens[1] = null;
+							lesLiens[2] = null;
+							lesLiens[3] = null;
 
-									}
-								}
-								var lesLiens = new Array();
-								lesLiens[0] = null;
-								lesLiens[1] = null;
-								lesLiens[2] = null;
-								lesLiens[3] = null;
-
-								for ( K = 0; K < lesCols.length; K++) {
-									// console.log(K);
-									cellule = document.createElement('TD');
-									if (lesCols[K] != undefined) {
-										if (lesLiens[K] != null) {
-											//console.log("should not");
-											lien = document.createElement('A');
-											lien.innerHTML = lesCols[K];
-											lien.href = lesLiens[K];
-											cellule.appendChild(lien);
-										} else {
-											//          console.log(K );
-
-											if (K == 3) {
-												//  console.log('Ss');
+							for ( K = 0; K < lesCols.length; K++) {
+								cellule = document.createElement('TD');
+								if (lesCols[K] != undefined) {
+									if (lesLiens[K] != null) {
+										lien = document.createElement('A');
+										lien.innerHTML = lesCols[K];
+										lien.href = lesLiens[K];
+										cellule.appendChild(lien);
+									} else {
+										if (K == 3) {
+											if (clipAvecVideo) {
 												cellule.appendChild(pVids);
-												//console.log(pVids.id);
-											} else {
-												ptexte = document.createElement('P');
-
-												ptexte.innerHTML = lesCols[K];
-												//                  texte = document.createTextNode(lesCols[K]);
-												cellule.appendChild(ptexte);
 											}
+											if (boutonAjouteVideoClip != null) {
+												if (clipAvecVideo) {
+													cellule.appendChild(document.createTextNode(' '));
+												}
+												cellule.appendChild(boutonAjouteVideoClip[0]);
+											}
+										} else {
+											ptexte = document.createElement('P');
+											ptexte.innerHTML = lesCols[K];
+											cellule.appendChild(ptexte);
 										}
 									}
-									rangee.appendChild(cellule);
 								}
-								J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
-							} catch(err) {
-								if (vPerm < 10) {
-									console.log("console.loge admin: Pas réussi à afficher le vidéo");
-								}
+								rangee.appendChild(cellule);
 							}
-						}// Fin du If video
+							J % 2 == 0 ? rangee.className = 'lignePaire' : rangee.className = 'ligneImpaire';
+						} catch(err) {
+							if (vPerm < 10) {
+								console.log("console.loge admin: Pas réussi à afficher le vidéo");
+							}
+						}
 
 					}
 
