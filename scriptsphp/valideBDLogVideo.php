@@ -57,7 +57,8 @@ foreach ($rows as $row) {
         $details[] = array(
             'nomFichier' => $nomFichier,
             'found' => false,
-            'reason' => 'Aucune vidéo correspondante'
+            'reason' => 'Aucune vidéo correspondante',
+            'sqlAbsence' => $q
         );
         continue;
     }

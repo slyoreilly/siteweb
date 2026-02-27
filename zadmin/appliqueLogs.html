@@ -172,9 +172,9 @@
                 details = {};
             }
 
-            var typeVideo = parseInt(details.type, 10);
-            if (isNaN(typeVideo)) {
-                typeVideo = 'inconnu';
+            var typeVideoOriginal = parseInt(details.type, 10);
+            if (isNaN(typeVideoOriginal)) {
+                typeVideoOriginal = 'inconnu';
             }
 
             var reference = parseInt(details.reference, 10);
@@ -197,6 +197,11 @@
                 duree = null;
             }
 
+            var typeVideoAnalyse = typeVideoOriginal;
+            if (String(etatSync) === '2323') {
+                typeVideoAnalyse = 2323;
+            }
+
             return {
                 raw: ligne,
                 idxLocal: idxLocalTxt,
@@ -205,7 +210,8 @@
                 nomMatch: nomMatch,
                 chrono: chrono,
                 duree: duree,
-                typeVideo: typeVideo,
+                typeVideo: typeVideoAnalyse,
+                typeVideoOriginal: typeVideoOriginal,
                 reference: reference,
                 etatSync: etatSync
             };
@@ -298,6 +304,7 @@
 
             if (resume.analyseBDCamera != null) {
                 container.append($('<p></p>').text('BD caméra: ' + resume.analyseBDCamera.lignesValides + ' lignes valides sur ' + resume.analyseBDCamera.lignesAnalysees + ' analysées.'));
+                container.append($('<p></p>').text('Règle type: la vidéo de base est déduite par étatSync=2323.'));
 
                 var table = $('<table></table>').addClass('c_tableau');
                 var thead = $('<thead></thead>').append(
@@ -364,7 +371,11 @@
                             for (var d = 0; d < resume.concordanceVideo.details.length; d++) {
                                 var item = resume.concordanceVideo.details[d];
                                 if (!item.found) {
-                                    listeEcarts.append($('<li></li>').text('[Introuvable] ' + (item.nomFichier || '(sans nom)')));
+                                    var liIntr = $('<li></li>').text('[Introuvable] ' + (item.nomFichier || '(sans nom)'));
+                                    if (item.sqlAbsence) {
+                                        liIntr.append($('<div></div>').css('font-family','monospace').text(item.sqlAbsence));
+                                    }
+                                    listeEcarts.append(liIntr);
                                     continue;
                                 }
                                 if (!item.allOk) {
