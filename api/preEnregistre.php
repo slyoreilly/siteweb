@@ -30,6 +30,20 @@ function toNullablePositiveInt($value)
     return $intValue;
 }
 
+function toNullableString($value)
+{
+    if ($value === null) {
+        return null;
+    }
+
+    $stringValue = trim((string)$value);
+    if ($stringValue === '') {
+        return null;
+    }
+
+    return $stringValue;
+}
+
 function toSqlValue($conn, $value)
 {
     if ($value === null) {
@@ -70,6 +84,10 @@ if (!is_array($params)) {
     exit;
 }
 
+if (isset($params['videos']) && is_array($params['videos'])) {
+    $params = $params['videos'];
+}
+
 $emplacementInput = isset($_POST['emplacement']) ? trim((string)$_POST['emplacement']) : '';
 $defaultEmplacement = 'www.syncstats.com';
 if ($emplacementInput !== '') {
@@ -107,10 +125,30 @@ for ($a = 0; $a < count($params); $a++) {
     $camIdInt = toNullableInt(isset($sourceVideo['camID']) ? $sourceVideo['camID'] : (isset($sourceVideo['camId']) ? $sourceVideo['camId'] : null));
     $camIdString = (string)($camIdInt !== null ? $camIdInt : '0');
 
+    $cleValeur = null;
+    if (isset($sourceVideo['cleValeur']) && is_array($sourceVideo['cleValeur'])) {
+        $cleValeur = $sourceVideo['cleValeur'];
+    } else if (isset($sourceVideo['cleValeur']) && is_string($sourceVideo['cleValeur'])) {
+        $decodedCleValeur = json_decode($sourceVideo['cleValeur'], true);
+        if (is_array($decodedCleValeur)) {
+            $cleValeur = $decodedCleValeur;
+        }
+    }
+
+    $nomMatch = toNullableString(isset($sourceVideo['nomMatch']) ? $sourceVideo['nomMatch'] : (isset($sourceVideo['matchId']) ? $sourceVideo['matchId'] : null));
+
+    $typeValue = null;
+    if (is_array($cleValeur) && array_key_exists('eventCode', $cleValeur)) {
+        $typeValue = toNullableString($cleValeur['eventCode']);
+    }
+    if ($typeValue === null) {
+        $typeValue = toNullableString(isset($sourceVideo['type']) ? $sourceVideo['type'] : (isset($sourceVideo['code']) ? $sourceVideo['code'] : null));
+    }
+
     $mappedVideo = array(
         'videoId' => toNullablePositiveInt(isset($sourceVideo['videoId']) ? $sourceVideo['videoId'] : null),
         'nomFichier' => $nomFichier,
-        'nomMatch' => toNullablePositiveInt(isset($sourceVideo['matchId']) ? $sourceVideo['matchId'] : (isset($sourceVideo['nomMatch']) ? $sourceVideo['nomMatch'] : null)),
+        'nomMatch' => $nomMatch,
         'camId' => $camIdInt,
         'proprioId' => null,
         'chrono' => toNullableInt(isset($sourceVideo['chrono']) ? $sourceVideo['chrono'] : null),
@@ -119,9 +157,9 @@ for ($a = 0; $a < count($params); $a++) {
         'nbVues' => 0,
         'etat' => isset($sourceVideo['etatSync']) ? (string)$sourceVideo['etatSync'] : (isset($sourceVideo['etat']) ? (string)$sourceVideo['etat'] : null),
         'angleOk' => 0,
-        'tagPrincipal' => null,
-        'autresTags' => null,
-        'type' => toNullablePositiveInt(isset($sourceVideo['code']) ? $sourceVideo['code'] : (isset($sourceVideo['type']) ? $sourceVideo['type'] : null)),
+        'tagPrincipal' => is_array($cleValeur) && array_key_exists('tagPrincipal', $cleValeur) ? toNullableString($cleValeur['tagPrincipal']) : null,
+        'autresTags' => is_array($cleValeur) && array_key_exists('autresTags', $cleValeur) ? toNullableString($cleValeur['autresTags']) : null,
+        'type' => $typeValue,
         'reference' => toNullablePositiveInt(isset($sourceVideo['reference']) ? $sourceVideo['reference'] : null),
         'emplacement' => isset($sourceVideo['emplacement']) && $sourceVideo['emplacement'] !== '' ? (string)$sourceVideo['emplacement'] : $defaultEmplacement,
         'emplacementArchive' => null,
