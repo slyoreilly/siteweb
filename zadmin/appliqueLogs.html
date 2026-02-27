@@ -136,6 +136,16 @@
             return labels[String(etatSync)] || ('État ' + etatSync);
         }
 
+
+        function libelleTypeVideo(typeVideo) {
+            var labels = {
+                '2323': 'Base',
+                '0': 'But',
+                '5': 'Clip'
+            };
+            return labels[String(typeVideo)] || ('Type ' + typeVideo);
+        }
+
         function parseLigneBDCamera(ligne) {
             if (!/^CP:\s*/.test(ligne)) {
                 return null;
@@ -147,6 +157,11 @@
             }
 
             var idxLocalTxt = parts[0].replace(/^CP:\s*/, '').trim();
+            var videoBase = parts[1].trim();
+            var nomFichier = parts[2].trim();
+            var nomMatch = parts[3].trim();
+            var chronoTxt = parts[4].trim();
+            var dureeTxt = parts[5].trim();
             var etatSyncTxt = parts[6].trim();
             var detailsJsonTxt = parts.slice(7).join(' - ').trim();
 
@@ -162,14 +177,36 @@
                 typeVideo = 'inconnu';
             }
 
+            var reference = parseInt(details.reference, 10);
+            if (isNaN(reference)) {
+                reference = null;
+            }
+
             var etatSync = parseInt(etatSyncTxt, 10);
             if (isNaN(etatSync)) {
                 etatSync = etatSyncTxt;
             }
 
+            var chrono = parseInt(chronoTxt, 10);
+            if (isNaN(chrono)) {
+                chrono = null;
+            }
+
+            var duree = parseInt(dureeTxt, 10);
+            if (isNaN(duree)) {
+                duree = null;
+            }
+
             return {
+                raw: ligne,
                 idxLocal: idxLocalTxt,
+                videoBase: videoBase,
+                nomFichier: nomFichier,
+                nomMatch: nomMatch,
+                chrono: chrono,
+                duree: duree,
                 typeVideo: typeVideo,
+                reference: reference,
                 etatSync: etatSync
             };
         }
@@ -180,6 +217,8 @@
                 lignesAnalysees: 0,
                 lignesValides: 0,
                 lignesInvalides: 0,
+                lignesNonReconues: [],
+                parsedRows: [],
                 types: {}
             };
 
@@ -193,9 +232,11 @@
                 var parsed = parseLigneBDCamera(ligne);
                 if (parsed == null) {
                     stats.lignesInvalides++;
+                    stats.lignesNonReconues.push(ligne);
                     continue;
                 }
 
+                stats.parsedRows.push(parsed);
                 stats.lignesValides++;
                 var typeKey = String(parsed.typeVideo);
                 var etatKey = String(parsed.etatSync);
@@ -214,6 +255,18 @@
             return stats;
         }
 
+        function valideCorrespondancesVideo(rows, telId) {
+            return $.ajax({
+                url: '/scriptsphp/valideBDLogVideo.php',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    telId: telId,
+                    rows: JSON.stringify(rows)
+                }
+            });
+        }
+
         function construitResume(texteBrut, contentType, urlFinale, infoUrl) {
             var texte = texteBrut || '';
             var lignes = texte === '' ? [] : texte.split(/\r?\n/);
@@ -229,6 +282,7 @@
             return {
                 summary: summary,
                 analyseBDCamera: infoUrl.fichierLog.toLowerCase() === 'bdlogfile.txt' ? analyseBDCameraLog(texte) : null,
+                concordanceVideo: null,
                 apercu: lignes.slice(0, 25).join('\n')
             };
         }
@@ -268,7 +322,7 @@
 
                     if (etatKeys.length === 0) {
                         tbody.append($('<tr></tr>').append(
-                            $('<td></td>').text(typeKey),
+                            $('<td></td>').text(libelleTypeVideo(typeKey) + ' (' + typeKey + ')'),
                             $('<td></td>').text('-'),
                             $('<td></td>').text('0')
                         ));
@@ -276,7 +330,7 @@
                         for (var e = 0; e < etatKeys.length; e++) {
                             var etatKey = etatKeys[e];
                             tbody.append($('<tr></tr>').append(
-                                $('<td></td>').text(typeKey),
+                                $('<td></td>').text(libelleTypeVideo(typeKey) + ' (' + typeKey + ')'),
                                 $('<td></td>').text(libelleEtatSync(etatKey) + ' (' + etatKey + ')'),
                                 $('<td></td>').text(etats[etatKey])
                             ));
@@ -289,6 +343,46 @@
 
                 if (resume.analyseBDCamera.lignesInvalides > 0) {
                     container.append($('<p></p>').addClass('messageErreur').text('Lignes non reconnues: ' + resume.analyseBDCamera.lignesInvalides));
+                    var ulBad = $('<ul></ul>');
+                    for (var b = 0; b < resume.analyseBDCamera.lignesNonReconues.length; b++) {
+                        ulBad.append($('<li></li>').text(resume.analyseBDCamera.lignesNonReconues[b]));
+                    }
+                    container.append(ulBad);
+                }
+
+                if (resume.concordanceVideo != null) {
+                    if (resume.concordanceVideo.ok === false) {
+                        container.append($('<p></p>').addClass('messageErreur').text(resume.concordanceVideo.message || 'Validation de concordance impossible.'));
+                    } else {
+                        var c = resume.concordanceVideo.summary || {};
+                        container.append($('<h4></h4>').text('Concordance table Video'));
+                        container.append($('<p></p>').text('Analysées: ' + (c.total || 0) + ' | Trouvées: ' + (c.found || 0) + ' | Concordance complète: ' + (c.allOk || 0)));
+                        container.append($('<p></p>').text('Incohérences — type: ' + (c.typeMismatch || 0) + ', chrono: ' + (c.chronoMismatch || 0) + ', référence: ' + (c.referenceMismatch || 0) + ', nomMatch: ' + (c.nomMatchMismatch || 0) + ', introuvables: ' + (c.notFound || 0)));
+
+                        if ($.isArray(resume.concordanceVideo.details)) {
+                            var listeEcarts = $('<ul></ul>');
+                            for (var d = 0; d < resume.concordanceVideo.details.length; d++) {
+                                var item = resume.concordanceVideo.details[d];
+                                if (!item.found) {
+                                    listeEcarts.append($('<li></li>').text('[Introuvable] ' + (item.nomFichier || '(sans nom)')));
+                                    continue;
+                                }
+                                if (!item.allOk) {
+                                    listeEcarts.append($('<li></li>').text(
+                                        item.nomFichier
+                                        + ' | type: ' + (item.checks.typeOk ? 'OK' : 'KO')
+                                        + ', chrono: ' + (item.checks.chronoOk ? 'OK' : ('KO (Δ ' + item.checks.deltaChrono + 'ms)'))
+                                        + ', ref: ' + (item.checks.referenceOk ? 'OK' : 'KO')
+                                        + ', nomMatch: ' + (item.checks.nomMatchOk ? 'OK' : 'KO')
+                                    ));
+                                }
+                            }
+                            if (listeEcarts.children().length > 0) {
+                                container.append($('<h5></h5>').text('Écarts par ligne'));
+                                container.append(listeEcarts);
+                            }
+                        }
+                    }
                 }
             } else {
                 container.append($('<p></p>').text('Le résumé spécialisé est actuellement disponible pour BDLogFile.txt seulement.'));
@@ -323,7 +417,18 @@
             }).done(function (responseText, textStatus, jqXHR) {
                 var contentType = jqXHR.getResponseHeader('Content-Type');
                 var resume = construitResume(responseText, contentType, urlNormalisee, infoUrl);
-                afficheResume(resume);
+
+                if (resume.analyseBDCamera != null) {
+                    valideCorrespondancesVideo(resume.analyseBDCamera.parsedRows, infoUrl.telId).done(function(rep) {
+                        resume.concordanceVideo = rep;
+                        afficheResume(resume);
+                    }).fail(function() {
+                        resume.concordanceVideo = { ok: false, message: 'Validation table Video indisponible.' };
+                        afficheResume(resume);
+                    });
+                } else {
+                    afficheResume(resume);
+                }
             }).fail(function (xhr, statusText) {
                 var msg = 'Impossible de récupérer le log (' + statusText + ').';
                 if (xhr && xhr.status) {
