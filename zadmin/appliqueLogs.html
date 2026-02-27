@@ -152,39 +152,29 @@
             }
 
             var body = ligne.replace(/^CP:\s*/, '');
-            var tmp = body.split(' - ');
-            if (tmp.length < 6) {
+            var mTail = body.match(/^(.*) - ([0-9]+) - ([0-9]+) - ([0-9]+) - ?(.*)$/);
+            if (!mTail) {
                 return null;
             }
 
-            var idxLocalTxt = (tmp[0] || '').trim();
-            var videoBase = (tmp[1] || '').trim();
-            var nomFichier = (tmp[2] || '').trim();
+            var left = (mTail[1] || '').trim();
+            var chronoTxt = (mTail[2] || '').trim();
+            var dureeTxt = (mTail[3] || '').trim();
+            var etatSyncTxt = (mTail[4] || '').trim();
+            var detailsJsonTxt = (mTail[5] || '').trim();
 
-            var nomMatch = '';
-            var chronoTxt = '';
-            var dureeTxt = '';
-            var etatSyncTxt = '';
-            var detailsJsonTxt = '';
+            var leftParts = left.split(' - ');
+            if (leftParts.length < 3) {
+                return null;
+            }
 
-            if (tmp.length >= 8) {
-                nomMatch = (tmp[3] || '').trim();
-                chronoTxt = (tmp[4] || '').trim();
-                dureeTxt = (tmp[5] || '').trim();
-                etatSyncTxt = (tmp[6] || '').trim();
-                detailsJsonTxt = tmp.slice(7).join(' - ').trim();
-            } else {
-                var champ3 = (tmp[3] || '').trim();
-                if (/^-\s*/.test(champ3)) {
-                    nomMatch = '-';
-                    chronoTxt = champ3.replace(/^-\s*/, '').trim();
-                } else {
-                    nomMatch = '';
-                    chronoTxt = champ3;
-                }
-                dureeTxt = (tmp[4] || '').trim();
-                etatSyncTxt = (tmp[5] || '').replace(/\s*-\s*$/, '').trim();
-                detailsJsonTxt = tmp.length > 6 ? tmp.slice(6).join(' - ').trim() : '';
+            var idxLocalTxt = (leftParts[0] || '').trim();
+            var videoBase = (leftParts[1] || '').trim();
+            var nomFichier = (leftParts[2] || '').trim();
+            nomFichier = nomFichier.replace(/\s-\s*$/, '');
+            var nomMatch = leftParts.length > 3 ? leftParts.slice(3).join(' - ').trim() : '';
+            if (nomMatch === '') {
+                nomMatch = '-';
             }
 
             var details = {};
