@@ -364,7 +364,7 @@
                         var c = resume.concordanceVideo.summary || {};
                         container.append($('<h4></h4>').text('Concordance table Video'));
                         container.append($('<p></p>').text('Analysées: ' + (c.total || 0) + ' | Trouvées: ' + (c.found || 0) + ' | Concordance complète: ' + (c.allOk || 0)));
-                        container.append($('<p></p>').text('Incohérences — type: ' + (c.typeMismatch || 0) + ', chrono: ' + (c.chronoMismatch || 0) + ', référence: ' + (c.referenceMismatch || 0) + ', nomMatch: ' + (c.nomMatchMismatch || 0) + ', introuvables: ' + (c.notFound || 0)));
+                        container.append($('<p></p>').text('Incohérences — type: ' + (c.typeMismatch || 0) + ', chrono: ' + (c.chronoMismatch || 0) + ', référence: ' + (c.referenceMismatch || 0) + ', nomMatch: ' + (c.nomMatchMismatch || 0) + ', introuvables: ' + (c.notFound || 0) + ', bases ignorées: ' + (c.baseSkipped || 0)));
 
                         if ($.isArray(resume.concordanceVideo.details)) {
                             var listeEcarts = $('<ul></ul>');

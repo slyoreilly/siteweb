@@ -19,7 +19,8 @@ $summary = array(
     'typeMismatch' => 0,
     'chronoMismatch' => 0,
     'referenceMismatch' => 0,
-    'nomMatchMismatch' => 0
+    'nomMatchMismatch' => 0,
+    'baseSkipped' => 0
 );
 
 $details = array();
@@ -29,7 +30,20 @@ foreach ($rows as $row) {
     $nomMatch = isset($row['nomMatch']) ? trim($row['nomMatch']) : '';
     $typeVideo = isset($row['typeVideo']) ? strval($row['typeVideo']) : '';
     $reference = isset($row['reference']) ? strval($row['reference']) : '';
+    $etatSync = isset($row['etatSync']) ? strval($row['etatSync']) : '';
     $chrono = isset($row['chrono']) ? intval($row['chrono']) : 0;
+
+    if ($etatSync === '2323') {
+        $summary['baseSkipped']++;
+        $details[] = array(
+            'nomFichier' => $nomFichier,
+            'found' => true,
+            'allOk' => true,
+            'skippedBase' => true,
+            'reason' => 'Vidéo de base (etatSync=2323), absence en table Video autorisée'
+        );
+        continue;
+    }
 
     if ($nomFichier === '') {
         $summary['notFound']++;
