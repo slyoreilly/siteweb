@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Applique Logs</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/style/general_v4.css" type="text/css" />
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+    <script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+
+    <style>
+        #zoneAppliqueLogs {
+            max-width: 980px;
+            margin: 16px auto;
+            padding: 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        #blocCommande {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        #inputUrlLog {
+            flex: 1;
+            min-width: 320px;
+            padding: 8px;
+        }
+
+        #resumeLogs ul {
+            margin: 8px 0 0 18px;
+        }
+
+        #apercuLogs {
+            margin-top: 12px;
+            background: #f7f7f7;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 360px;
+            overflow: auto;
+        }
+
+        .messageErreur {
+            color: #b00020;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+
+    <script type="text/javascript" charset="utf-8">
+        gereLangue();
+
+        function normaliseUrl(urlBrut) {
+            var url = (urlBrut || '').trim();
+            if (url === '') {
+                return '';
+            }
+
+            if (!/^https?:\/\//i.test(url)) {
+                url = 'https://' + url;
+            }
+
+            return url;
+        }
+
+        function valideFormatMonitoring(url) {
+            return /^https?:\/\/(?:www\.)?syncstats\.com\/monitoring\/[^\/]+\/[^\/]+\/[^\/?#]+$/i.test(url);
+        }
+
+        function compteOccurences(texte, regex) {
+            var match = texte.match(regex);
+            return match ? match.length : 0;
+        }
+
+        function construitResume(texteBrut, contentType, urlFinale) {
+            var texte = texteBrut || '';
+            var lignes = texte === '' ? [] : texte.split(/\r?\n/);
+            var nonVides = 0;
+            for (var i = 0; i < lignes.length; i++) {
+                if (lignes[i].trim() !== '') {
+                    nonVides++;
+                }
+            }
+
+            var summary = {
+                url: urlFinale,
+                contentType: contentType || 'inconnu',
+                totalChars: texte.length,
+                totalLignes: lignes.length,
+                lignesNonVides: nonVides,
+                erreurs: compteOccurences(texte, /\berror\b|\berreur\b|\bexception\b/gi),
+                avertissements: compteOccurences(texte, /\bwarn\b|\bwarning\b|\bavertissement\b/gi),
+                infos: compteOccurences(texte, /\binfo\b/gi),
+                statusHttp: compteOccurences(texte, /\b[1-5][0-9]{2}\b/g)
+            };
+
+            var jsonInfo = null;
+            try {
+                if (/^\s*[\[{]/.test(texte)) {
+                    var parsed = JSON.parse(texte);
+                    if ($.isArray(parsed)) {
+                        jsonInfo = {
+                            type: 'JSON Array',
+                            taille: parsed.length
+                        };
+                    } else if (parsed && typeof parsed === 'object') {
+                        jsonInfo = {
+                            type: 'JSON Object',
+                            nbCles: Object.keys(parsed).length,
+                            cles: Object.keys(parsed).slice(0, 12)
+                        };
+                    }
+                }
+            } catch (e) {
+                jsonInfo = null;
+            }
+
+            return {
+                summary: summary,
+                apercu: lignes.slice(0, 25).join('\n'),
+                jsonInfo: jsonInfo
+            };
+        }
+
+        function afficheResume(resume) {
+            var ul = $('<ul></ul>')
+                .append($('<li></li>').text('URL analysée: ' + resume.summary.url))
+                .append($('<li></li>').text('Content-Type: ' + resume.summary.contentType))
+                .append($('<li></li>').text('Nombre de caractères: ' + resume.summary.totalChars))
+                .append($('<li></li>').text('Nombre de lignes: ' + resume.summary.totalLignes + ' (non vides: ' + resume.summary.lignesNonVides + ')'))
+                .append($('<li></li>').text('Occurrences ERROR/ERREUR/EXCEPTION: ' + resume.summary.erreurs))
+                .append($('<li></li>').text('Occurrences WARN/WARNING: ' + resume.summary.avertissements))
+                .append($('<li></li>').text('Occurrences INFO: ' + resume.summary.infos))
+                .append($('<li></li>').text('Occurrences de codes HTTP potentiels: ' + resume.summary.statusHttp));
+
+            if (resume.jsonInfo != null) {
+                ul.append($('<li></li>').text('Détection JSON: ' + resume.jsonInfo.type));
+                if (resume.jsonInfo.taille != null) {
+                    ul.append($('<li></li>').text('Taille du tableau JSON: ' + resume.jsonInfo.taille));
+                }
+                if (resume.jsonInfo.nbCles != null) {
+                    ul.append($('<li></li>').text('Nombre de clés JSON: ' + resume.jsonInfo.nbCles));
+                }
+                if (resume.jsonInfo.cles != null) {
+                    ul.append($('<li></li>').text('Clés détectées (max 12): ' + resume.jsonInfo.cles.join(', ')));
+                }
+            }
+
+            $('#resumeLogs').empty().append($('<h3></h3>').text('Résumé')).append(ul);
+            $('#apercuLogs').text(resume.apercu || '(aucune ligne)');
+        }
+
+        function executeAnalyseLogs() {
+            $('#erreurLogs').empty();
+            $('#resumeLogs').empty();
+            $('#apercuLogs').empty();
+
+            var urlNormalisee = normaliseUrl($('#inputUrlLog').val());
+            if (urlNormalisee === '') {
+                $('#erreurLogs').text('Veuillez entrer une URL.');
+                return;
+            }
+
+            if (!valideFormatMonitoring(urlNormalisee)) {
+                $('#erreurLogs').text('Le format doit être: syncstats.com/monitoring/{telId}/{date}/{type de log}.');
+                return;
+            }
+
+            $('#btnExecuterLog').prop('disabled', true).val('Analyse...');
+
+            $.ajax({
+                url: urlNormalisee,
+                type: 'GET',
+                dataType: 'text'
+            }).done(function (responseText, textStatus, jqXHR) {
+                var contentType = jqXHR.getResponseHeader('Content-Type');
+                var resume = construitResume(responseText, contentType, urlNormalisee);
+                afficheResume(resume);
+            }).fail(function (xhr, statusText) {
+                var msg = 'Impossible de récupérer le log (' + statusText + ').';
+                if (xhr && xhr.status) {
+                    msg += ' HTTP ' + xhr.status + '.';
+                }
+                $('#erreurLogs').text(msg);
+            }).always(function () {
+                $('#btnExecuterLog').prop('disabled', false).val('Exécuter');
+            });
+        }
+
+        function initialisePageAppliqueLogs() {
+            try {
+                faitEntete();
+            } catch (e) {
+            }
+
+            var vPerm = verifiePermission();
+            if (vPerm >= 10) {
+                $('#zoneAppliqueLogs').hide();
+                $('#messageDroit').text("Cette page est réservée à l'administration de la ligue en cours.");
+                return;
+            }
+
+            $('#messageDroit').empty();
+            $('#zoneAppliqueLogs').show();
+            $('#btnExecuterLog').on('click', executeAnalyseLogs);
+            $('#inputUrlLog').on('keypress', function (event) {
+                if (event.which === 13) {
+                    executeAnalyseLogs();
+                }
+            });
+        }
+    </script>
+</head>
+<body onload="initialisePageAppliqueLogs()">
+<div id="divHaut"></div>
+<div id="divGauche"></div>
+<div id="divCentrale">
+    <div id="zoneAppliqueLogs" style="display:none;">
+        <h2>Applique Logs</h2>
+        <p>Entrez une URL de monitoring pour obtenir un résumé rapide des logs.</p>
+
+        <div id="blocCommande">
+            <input id="inputUrlLog" type="text" placeholder="https://syncstats.com/monitoring/{telId}/{date}/{type de log}" />
+            <input id="btnExecuterLog" type="button" value="Exécuter" />
+        </div>
+
+        <div id="erreurLogs" class="messageErreur"></div>
+        <div id="resumeLogs"></div>
+        <pre id="apercuLogs"></pre>
+    </div>
+
+    <div id="messageDroit" class="messageErreur"></div>
+</div>
+<div id="divDroite"></div>
+</body>
+</html>
