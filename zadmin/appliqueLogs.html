@@ -571,12 +571,28 @@
                                     continue;
                                 }
                                 if (!item.allOk) {
+                                    var vDbType = item.db ? item.db.type : 'n/d';
+                                    var vLogType = item.expected ? item.expected.type : 'n/d';
+                                    var vDbChrono = item.db ? item.db.chrono : 'n/d';
+                                    var vLogChrono = item.expected ? item.expected.chrono : 'n/d';
+                                    var vDbRef = item.db ? item.db.reference : 'n/d';
+                                    var vLogRef = item.expected ? item.expected.reference : 'n/d';
+                                    var vDbNomMatch = item.db ? item.db.nomMatch : 'n/d';
+                                    var vLogNomMatch = item.expected ? item.expected.nomMatch : 'n/d';
+
+                                    var compareAffiche = function(ok, vWeb, vLog, suffixe) {
+                                        if (ok) {
+                                            return '[✅ ' + vWeb + (suffixe || '') + ']';
+                                        }
+                                        return '[🌐 ' + vWeb + (suffixe || '') + ' | 📄 ' + vLog + (suffixe || '') + ']';
+                                    };
+
                                     var liEcart = $('<li></li>').text(
                                         item.nomFichier
-                                        + ' | type: ' + (item.checks.typeOk ? 'OK' : 'KO')
-                                        + ', chrono: ' + (item.checks.chronoOk ? 'OK' : ('KO (Δ ' + item.checks.deltaChrono + 'ms)'))
-                                        + ', ref: ' + (item.checks.referenceOk ? 'OK' : 'KO')
-                                        + ', nomMatch: ' + (item.checks.nomMatchOk ? 'OK' : 'KO')
+                                        + ' | type: ' + compareAffiche(item.checks.typeOk, vDbType, vLogType, '')
+                                        + ', chrono: ' + compareAffiche(item.checks.chronoOk, vDbChrono, vLogChrono, 'ms') + ' (Δ ' + item.checks.deltaChrono + 'ms)'
+                                        + ', ref: ' + compareAffiche(item.checks.referenceOk, vDbRef, vLogRef, '')
+                                        + ', nomMatch: ' + compareAffiche(item.checks.nomMatchOk, vDbNomMatch, vLogNomMatch, '')
                                     );
 
                                     if (item.checks && item.checks.typeOk === false && item.db && item.expected) {
