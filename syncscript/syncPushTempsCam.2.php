@@ -340,7 +340,7 @@ if (!empty($demandesAjoutVideoModifiees) && isset($dernierMatch)) {
         }
     }
 
-    $qdMatchPeriodeDAV = "SELECT demandeId, eventId, chronoVideo, cameraId
+    $qdMatchPeriodeDAV = "SELECT demandeId, eventId, typeEvenement, chronoVideo, cameraId
 "
         . "FROM DemandeAjoutVideo WHERE progression=2 AND demandeId IN (" . implode(',', $qDemandesIds) . ") ORDER BY demandeId ASC LIMIT 0,50";
     $resMatchPeriodeDAV = mysqli_query($conn, $qdMatchPeriodeDAV);
@@ -363,7 +363,7 @@ if (!empty($demandesAjoutVideoModifiees) && isset($dernierMatch)) {
             $mVideo = array();
             $mVideo['match_id'] = $matchIdDAV;
             $mVideo['reference'] = intval($rdDAV['eventId']);
-            $mVideo['type'] = 5;
+            $mVideo['type'] = intval($rdDAV['typeEvenement']);
             $mVideo['chrono'] = intval($rdDAV['chronoVideo']);
             $mVideo['ligueId'] = $ligueIdDAV;
             $mVideo['equipe'] = 0;

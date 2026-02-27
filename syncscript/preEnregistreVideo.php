@@ -25,8 +25,12 @@ $rSServ=$params[$a]['video']['chrono']+$avanceServeur;
 
 $cvDemande = json_decode(stripslashes($params[$a]['video']['cv']),true);
 $referenceDemande = 0;
+$typeDemande = null;
 if (is_array($cvDemande) && isset($cvDemande['reference'])) {
 	$referenceDemande = intval($cvDemande['reference']);
+}
+if (is_array($cvDemande) && isset($cvDemande['type'])) {
+	$typeDemande = strval($cvDemande['type']);
 }
 
 $demandeAjoutVideo = null;
@@ -46,7 +50,10 @@ if($retDemande && mysqli_num_rows($retDemande)>0){
 $nomMatchVideo = $params[$a]['video']['nomMatch'];
 if($demandeAjoutVideo!=null){
 	$eventIdDemande = intval($demandeAjoutVideo['eventId']);
-	$typeEvenementDemande = strval($demandeAjoutVideo['typeEvenement']);
+	$typeEvenementDemande = $typeDemande;
+	if($typeEvenementDemande===null || $typeEvenementDemande===''){
+		$typeEvenementDemande = strval($demandeAjoutVideo['typeEvenement']);
+	}
 	if($eventIdDemande>0){
 		$qMatchDemande = '';
 		if($typeEvenementDemande==='5'){
