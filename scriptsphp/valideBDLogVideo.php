@@ -84,6 +84,9 @@ foreach ($rows as $row) {
                 'found' => false,
                 'ignoredNotFound' => true,
                 'etatSync' => $etatSync,
+                'chronoErrone' => $chrono,
+                'chronoBasePrecedent' => (isset($row['chronoBasePrecedent']) && $row['chronoBasePrecedent'] !== null) ? intval($row['chronoBasePrecedent']) : null,
+                'dureeBasePrecedente' => (isset($row['dureeBasePrecedente']) && $row['dureeBasePrecedente'] !== null) ? intval($row['dureeBasePrecedente']) : null,
                 'reason' => 'Vidéo erronée (etatSync=2626), absence en table Video tolérée',
                 'sqlAbsence' => $q,
                 'expected' => array(

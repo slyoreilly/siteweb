@@ -275,7 +275,13 @@
             var details = {};
             try {
                 if (detailsJsonTxt !== '' && detailsJsonTxt !== '-') {
-                    details = JSON.parse(detailsJsonTxt);
+                    var jsonTxt = detailsJsonTxt;
+                    var iDeb = detailsJsonTxt.indexOf('{');
+                    var iFin = detailsJsonTxt.lastIndexOf('}');
+                    if (iDeb >= 0 && iFin > iDeb) {
+                        jsonTxt = detailsJsonTxt.substring(iDeb, iFin + 1);
+                    }
+                    details = JSON.parse(jsonTxt);
                 }
             } catch (e) {
                 details = {};
@@ -337,6 +343,8 @@
                 types: {}
             };
 
+            var dernierBase = null;
+
             for (var i = 0; i < lignes.length; i++) {
                 var ligne = lignes[i].trim();
                 if (ligne === '') {
@@ -351,8 +359,20 @@
                     continue;
                 }
 
+                if (String(parsed.etatSync) === '2626' && dernierBase != null) {
+                    parsed.chronoBasePrecedent = dernierBase.chrono;
+                    parsed.dureeBasePrecedente = dernierBase.duree;
+                }
+
                 stats.parsedRows.push(parsed);
                 stats.lignesValides++;
+
+                if (String(parsed.etatSync) === '2323') {
+                    dernierBase = {
+                        chrono: parsed.chrono,
+                        duree: parsed.duree
+                    };
+                }
                 var typeKey = String(parsed.typeVideo);
                 var etatKey = String(parsed.etatSync);
 
@@ -485,10 +505,11 @@
                                 var item = resume.concordanceVideo.details[d];
                                 if (!item.found) {
                                     if (item.ignoredNotFound === true && String(item.etatSync) === '2626') {
+                                        var baseCh = item.chronoBasePrecedent != null ? item.chronoBasePrecedent : 'n/d';
+                                        var baseDur = item.dureeBasePrecedente != null ? item.dureeBasePrecedente : 'n/d';
+                                        var errCh = item.chronoErrone != null ? item.chronoErrone : 'n/d';
                                         var li2626 = $('<li></li>').text('[2626 tolérée] ' + (item.nomFichier || '(sans nom)'));
-                                        if (item.sqlAbsence) {
-                                            li2626.append($('<div></div>').css('font-family','monospace').text(item.sqlAbsence));
-                                        }
+                                        li2626.append($('<div></div>').text('Base précédente — chrono: ' + baseCh + ' | durée: ' + baseDur + ' | chrono erroné: ' + errCh));
                                         listeErr2626.append(li2626);
                                         continue;
                                     }
