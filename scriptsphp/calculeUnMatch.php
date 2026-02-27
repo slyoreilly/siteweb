@@ -83,7 +83,7 @@ $compteVis = mysqli_query($conn, "SELECT TableEvenement0.*,EventType.GameValue
 									AND GameValue>0 
 									AND equipe_event_id = '{$eVis}'") or die(mysqli_error($conn));
 
-error_log("calculeUnMatchAppelé avec requete DOM:".$qComptDom,0);
+//error_log("calculeUnMatchAppelé avec requete DOM:".$qComptDom,0);
 $cDom =0;
 $cVis=0;
 
