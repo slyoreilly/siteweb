@@ -39,11 +39,12 @@ if($matchArray != null) {
                 $scoreVis = $match['scoreVis']!=null ? $match['scoreVis'] : 0;
                 $maDate =   date("Y-m-d H:i:s", round($match['date']/1000));
                 $arenaId = $match['arenaId'] != null ? $match['arenaId'] : "NULL";
+                $cleValeur = isset($match['cleValeur']) ? $match['cleValeur'] : '';
 
 
                 if($match['GameComId']<1){
                         $qInsM = "INSERT INTO TableMatch (eq_dom, score_dom, eq_vis, score_vis, statut, matchIdRef, ligueRef, date, cleValeur, arenaId, TSDMAJ)
-                        VALUES ('{$match['eqDom']}',{$scoreDom},'{$match['eqVis']}',{$scoreVis},0,'{$match['matchLongId']}','{$match['ligueId']}','{$maDate}','{$match['cleValeur']}',{$arenaId},'{$match['dernierMAJ']}')";
+                        VALUES ('{$match['eqDom']}',{$scoreDom},'{$match['eqVis']}',{$scoreVis},0,'{$match['matchLongId']}','{$match['ligueId']}','{$maDate}','{$cleValeur}',{$arenaId},'{$match['dernierMAJ']}')";
 
                         mysqli_query($conn,$qInsM) or die(mysqli_error($conn) . $qInsM);
                         $webMatchId=mysqli_insert_id($conn);
@@ -60,7 +61,7 @@ if($matchArray != null) {
                         matchIdRef='{$match['matchLongId']}',
                         ligueRef='{$match['ligueId']}',
                         date='$maDate',
-                        cleValeur='{$match['cleValeur']}',
+                        cleValeur='{$cleValeur}',
                         arenaId=$arenaId,
                         TSDMAJ=NOW()
                         WHERE match_id='{$match['GameComId']}'");

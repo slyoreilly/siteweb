@@ -78,7 +78,9 @@ if ($evenements != null) {
 
 
 
-				if (is_null($evenement['EventComId'])) {
+				$eventComIdValue = $evenement['EventComId'] ?? null;
+
+				if ($eventComIdValue === null || $eventComIdValue === '') {
 					
 				// Préparation de la requête INSERT
 				$stmt = mysqli_prepare(
@@ -129,7 +131,7 @@ if ($evenements != null) {
 
 			} else {
 				// Sécurisation des variables
-				$eventComId = mysqli_real_escape_string($conn, $evenement['EventComId']);
+				$eventComId = mysqli_real_escape_string($conn, (string)$eventComIdValue);
 
 				// Mise à jour de la table TableEvenement0 avec une requête préparée
 				$stmt = mysqli_prepare(

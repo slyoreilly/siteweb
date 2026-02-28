@@ -73,6 +73,10 @@ if ($mode !== 2) {
 }
 
 // Dédoublonnage par telId
+if (!is_array($devices)) {
+    $devices = [];
+}
+
 $seen = [];
 $telIds = [];
 foreach ($devices as $d) {
