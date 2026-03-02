@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Changement d'équipe pour un match</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 24px; }
+        h1 { margin-bottom: 16px; }
+        .barre-date { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+        button { padding: 8px 14px; cursor: pointer; }
+        #dateActive { font-size: 1.2rem; font-weight: bold; min-width: 220px; text-align: center; }
+        #etat { margin-bottom: 12px; color: #555; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 10px; }
+        .liens { margin-top: 24px; }
+    </style>
+</head>
+<body>
+    <h1>Changement d'équipe pour un match</h1>
+
+    <div class="barre-date">
+        <button id="btnPrecedent" type="button">◀ Jour précédent</button>
+        <div id="dateActive"></div>
+        <button id="btnSuivant" type="button">Jour suivant ▶</button>
+    </div>
+
+    <div id="etat">Chargement des matchs…</div>
+    <ul id="listeMatchs"></ul>
+
+    <div class="liens">
+        <a href="index.html">Voir le résumé des outils</a>
+    </div>
+
+    <script>
+        const dateActive = new Date();
+        const elDate = document.getElementById('dateActive');
+        const elEtat = document.getElementById('etat');
+        const elListe = document.getElementById('listeMatchs');
+
+        function formatDateApi(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function formatDateAffichage(date) {
+            return date.toLocaleDateString('fr-CA', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function afficheDate() {
+            elDate.textContent = formatDateAffichage(dateActive);
+        }
+
+        function rendListe(matchs) {
+            elListe.innerHTML = '';
+            if (!Array.isArray(matchs) || matchs.length === 0) {
+                elEtat.textContent = 'Aucun match trouvé pour cette date.';
+                return;
+            }
+
+            elEtat.textContent = `${matchs.length} match(s) trouvé(s).`;
+
+            matchs.forEach((match) => {
+                const li = document.createElement('li');
+                const dateMatch = match.date ? new Date(match.date.replace(' ', 'T')) : null;
+                const heure = dateMatch && !Number.isNaN(dateMatch.getTime())
+                    ? dateMatch.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })
+                    : 'Heure inconnue';
+
+                li.textContent = `${heure} — ${match.equipeDomicile || 'Équipe domicile inconnue'} vs ${match.equipeVisiteur || 'Équipe visiteur inconnue'} (${match.ligue || 'Ligue inconnue'})`;
+                elListe.appendChild(li);
+            });
+        }
+
+        async function chargeMatchs() {
+            const dateParam = formatDateApi(dateActive);
+            elEtat.textContent = 'Chargement des matchs…';
+            elListe.innerHTML = '';
+
+            try {
+                const rep = await fetch(`../scriptsphp/getMatchsParDate.php?date=${dateParam}`);
+                if (!rep.ok) {
+                    throw new Error(`Erreur HTTP ${rep.status}`);
+                }
+                const data = await rep.json();
+                rendListe(data);
+            } catch (e) {
+                elEtat.textContent = `Impossible de récupérer les matchs (${e.message}).`;
+            }
+        }
+
+        document.getElementById('btnPrecedent').addEventListener('click', () => {
+            dateActive.setDate(dateActive.getDate() - 1);
+            afficheDate();
+            chargeMatchs();
+        });
+
+        document.getElementById('btnSuivant').addEventListener('click', () => {
+            dateActive.setDate(dateActive.getDate() + 1);
+            afficheDate();
+            chargeMatchs();
+        });
+
+        afficheDate();
+        chargeMatchs();
+    </script>
+</body>
+</html>
