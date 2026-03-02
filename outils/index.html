@@ -4,19 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Résumé des outils</title>
+    <script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
     <style>
         body { font-family: Arial, sans-serif; margin: 24px; }
         h1 { margin-bottom: 16px; }
         ul { line-height: 1.8; }
+        #zoneRefus { display:none; color:#8a1f1f; font-weight:bold; }
+        #zonePage { display:none; }
     </style>
 </head>
 <body>
-    <h1>Résumé des outils</h1>
-    <p>Accès rapide aux pages utiles :</p>
-    <ul>
-        <li><a href="index.html">Résumé des outils (cette page)</a></li>
-        <li><a href="changement-equipe-match.html">Changement d'équipe pour un match</a></li>
-        <li><a href="../zadmin/appliqueLogs.html">AppliqueLogs</a></li>
-    </ul>
+    <div id="zoneRefus">Accès refusé : cette page est réservée aux utilisateurs avec permission 1.</div>
+
+    <div id="zonePage">
+        <h1>Résumé des outils</h1>
+        <p>Accès rapide aux pages utiles :</p>
+        <ul>
+            <li><a href="index.html">Résumé des outils (cette page)</a></li>
+            <li><a href="changement-equipe-match.html">Changement d'équipe pour un match</a></li>
+            <li><a href="../zadmin/appliqueLogs.html">AppliqueLogs</a></li>
+        </ul>
+    </div>
+
+    <script>
+        if (Number(verifiePermission()) === 1) {
+            document.getElementById('zonePage').style.display = 'block';
+        } else {
+            document.getElementById('zoneRefus').style.display = 'block';
+        }
+    </script>
 </body>
 </html>

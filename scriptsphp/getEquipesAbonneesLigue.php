@@ -3,18 +3,18 @@ header('Content-Type: application/json; charset=utf-8');
 
 require '../scriptsphp/defenvvar.php';
 
-$date = isset($_GET['date']) ? $_GET['date'] : '';
 $ligueId = isset($_GET['ligueId']) ? $_GET['ligueId'] : '';
-
-if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
-    http_response_code(400);
-    echo json_encode(array('error' => 'Paramètre date invalide. Format attendu: YYYY-MM-DD.'));
-    exit;
-}
+$date = isset($_GET['date']) ? $_GET['date'] : '';
 
 if (!preg_match('/^\d+$/', $ligueId)) {
     http_response_code(400);
     echo json_encode(array('error' => 'Paramètre ligueId invalide.'));
+    exit;
+}
+
+if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+    http_response_code(400);
+    echo json_encode(array('error' => 'Paramètre date invalide.'));
     exit;
 }
 
@@ -34,21 +34,15 @@ mysqli_query($conn, "SET NAMES 'utf8'");
 mysqli_query($conn, "SET CHARACTER SET 'utf8'");
 mysqli_set_charset($conn, 'utf8');
 
-$sql = "SELECT
-            tm.matchIdRef AS matchId,
-            tm.date,
-            tm.eq_dom AS eqDomId,
-            tm.eq_vis AS eqVisId,
-            ld.nom_equipe AS equipeDomicile,
-            lv.nom_equipe AS equipeVisiteur,
-            l.Nom_Ligue AS ligue
-        FROM TableMatch tm
-        LEFT JOIN TableEquipe ld ON ld.equipe_id = tm.eq_dom
-        LEFT JOIN TableEquipe lv ON lv.equipe_id = tm.eq_vis
-        LEFT JOIN Ligue l ON l.ID_Ligue = tm.ligueRef
-        WHERE DATE(tm.date) = ?
-          AND tm.ligueRef = ?
-        ORDER BY tm.date ASC";
+$sql = "SELECT te.equipe_id AS id, te.nom_equipe AS nom
+        FROM TableEquipe te
+        INNER JOIN abonEquipeLigue ael
+            ON ael.equipeId = te.equipe_id
+        WHERE ael.ligueId = ?
+          AND ael.permission < 31
+          AND ael.debutAbon <= ?
+          AND ael.finAbon >= ?
+        ORDER BY te.nom_equipe ASC";
 
 $stmt = mysqli_prepare($conn, $sql);
 if (!$stmt) {
@@ -57,16 +51,16 @@ if (!$stmt) {
     exit;
 }
 
-mysqli_stmt_bind_param($stmt, 'ss', $date, $ligueId);
+mysqli_stmt_bind_param($stmt, 'sss', $ligueId, $date, $date);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
-$matchs = array();
+$equipes = array();
 while ($row = mysqli_fetch_assoc($result)) {
-    $matchs[] = $row;
+    $equipes[] = $row;
 }
 
-echo json_encode($matchs);
+echo json_encode($equipes);
 
 mysqli_stmt_close($stmt);
 mysqli_close($conn);

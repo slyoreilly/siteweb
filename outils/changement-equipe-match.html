@@ -4,32 +4,91 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Changement d'équipe pour un match</title>
+    <link rel="stylesheet" href="/style/general_v4.css" type="text/css" />
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+    <script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
     <style>
         body { font-family: Arial, sans-serif; margin: 24px; }
         h1 { margin-bottom: 16px; }
         .barre-date { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
         button { padding: 8px 14px; cursor: pointer; }
-        #dateActive { font-size: 1.2rem; font-weight: bold; min-width: 220px; text-align: center; }
+        #dateActive { font-size: 1.2rem; font-weight: bold; min-width: 260px; text-align: center; }
         #etat { margin-bottom: 12px; color: #555; }
         ul { padding-left: 20px; }
         li { margin-bottom: 10px; }
+        .ligneMatch { display: flex; align-items: center; gap: 10px; }
+        .btnModifier {
+            border: 1px solid #c7d2e2;
+            background: #f5f8fc;
+            border-radius: 4px;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+            line-height: 1;
+        }
+        #zoneRefus, #zonePage { max-width: 980px; }
+        #zoneRefus { display:none; color:#8a1f1f; font-weight:bold; }
+        .modalWrap {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .modal {
+            background: #fff;
+            width: min(560px, 92vw);
+            border-radius: 6px;
+            border: 1px solid #cfd8e3;
+            padding: 16px;
+        }
+        .row { margin-bottom: 12px; }
+        .row label { display: block; margin-bottom: 4px; }
+        .row select { width: 100%; padding: 6px; }
+        .actions { display: flex; gap: 8px; justify-content: flex-end; }
         .liens { margin-top: 24px; }
     </style>
 </head>
 <body>
-    <h1>Changement d'équipe pour un match</h1>
+    <div id="zoneRefus">Accès refusé : cette page est réservée aux utilisateurs avec permission 1.</div>
 
-    <div class="barre-date">
-        <button id="btnPrecedent" type="button">◀ Jour précédent</button>
-        <div id="dateActive"></div>
-        <button id="btnSuivant" type="button">Jour suivant ▶</button>
+    <div id="zonePage" style="display:none;">
+        <h1>Changement d'équipe pour un match</h1>
+
+        <div class="barre-date">
+            <button id="btnPrecedent" type="button">◀ Jour précédent</button>
+            <div id="dateActive"></div>
+            <button id="btnSuivant" type="button">Jour suivant ▶</button>
+        </div>
+
+        <div id="etat">Chargement des matchs…</div>
+        <ul id="listeMatchs"></ul>
+
+        <div class="liens">
+            <a href="index.html">Voir le résumé des outils</a>
+        </div>
     </div>
 
-    <div id="etat">Chargement des matchs…</div>
-    <ul id="listeMatchs"></ul>
-
-    <div class="liens">
-        <a href="index.html">Voir le résumé des outils</a>
+    <div id="modalEdition" class="modalWrap">
+        <div class="modal">
+            <h3>Modifier l'équipe d'un match</h3>
+            <div id="infosMatch" class="row"></div>
+            <div class="row">
+                <label for="selEquipeCible">Équipe à remplacer</label>
+                <select id="selEquipeCible"></select>
+            </div>
+            <div class="row">
+                <label for="selNouvelleEquipe">Nouvelle équipe (abonnée à la ligue)</label>
+                <select id="selNouvelleEquipe"></select>
+            </div>
+            <div id="etatModal" class="row"></div>
+            <div class="actions">
+                <button id="btnAnnuler" type="button">Annuler</button>
+                <button id="btnConfirmer" type="button">Confirmer</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -37,6 +96,14 @@
         const elDate = document.getElementById('dateActive');
         const elEtat = document.getElementById('etat');
         const elListe = document.getElementById('listeMatchs');
+
+        const etat = {
+            ligueId: null,
+            userId: null,
+            matchs: [],
+            equipesAbonnees: [],
+            matchSelectionne: null
+        };
 
         function formatDateApi(date) {
             const y = date.getFullYear();
@@ -58,6 +125,50 @@
             elDate.textContent = formatDateAffichage(dateActive);
         }
 
+        function getContexteConnexion() {
+            let userId = getCookie('userId');
+            if (!userId) userId = getValue('userId');
+            let ligueId = getCookie('ligueId');
+            if (!ligueId) ligueId = getValue('ligueId');
+            return { userId, ligueId };
+        }
+
+        function ouvreModal(match) {
+            etat.matchSelectionne = match;
+            const infos = `${match.equipeDomicile || 'Équipe domicile inconnue'} vs ${match.equipeVisiteur || 'Équipe visiteur inconnue'}`;
+            document.getElementById('infosMatch').textContent = infos;
+            document.getElementById('etatModal').textContent = '';
+
+            const selCible = document.getElementById('selEquipeCible');
+            selCible.innerHTML = '';
+
+            [
+                { id: String(match.eqDomId || ''), nom: match.equipeDomicile || 'Domicile', role: 'Domicile' },
+                { id: String(match.eqVisId || ''), nom: match.equipeVisiteur || 'Visiteur', role: 'Visiteur' }
+            ].forEach((eq) => {
+                const opt = document.createElement('option');
+                opt.value = eq.id;
+                opt.textContent = `${eq.role} — ${eq.nom}`;
+                selCible.appendChild(opt);
+            });
+
+            const selNouvelle = document.getElementById('selNouvelleEquipe');
+            selNouvelle.innerHTML = '';
+            etat.equipesAbonnees.forEach((eq) => {
+                const opt = document.createElement('option');
+                opt.value = String(eq.id);
+                opt.textContent = eq.nom;
+                selNouvelle.appendChild(opt);
+            });
+
+            document.getElementById('modalEdition').style.display = 'flex';
+        }
+
+        function fermeModal() {
+            document.getElementById('modalEdition').style.display = 'none';
+            etat.matchSelectionne = null;
+        }
+
         function rendListe(matchs) {
             elListe.innerHTML = '';
             if (!Array.isArray(matchs) || matchs.length === 0) {
@@ -69,12 +180,27 @@
 
             matchs.forEach((match) => {
                 const li = document.createElement('li');
+                const ligne = document.createElement('div');
+                ligne.className = 'ligneMatch';
+
                 const dateMatch = match.date ? new Date(match.date.replace(' ', 'T')) : null;
                 const heure = dateMatch && !Number.isNaN(dateMatch.getTime())
                     ? dateMatch.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' })
                     : 'Heure inconnue';
 
-                li.textContent = `${heure} — ${match.equipeDomicile || 'Équipe domicile inconnue'} vs ${match.equipeVisiteur || 'Équipe visiteur inconnue'} (${match.ligue || 'Ligue inconnue'})`;
+                const texte = document.createElement('span');
+                texte.textContent = `${heure} — ${match.equipeDomicile || 'Équipe domicile inconnue'} vs ${match.equipeVisiteur || 'Équipe visiteur inconnue'} (${match.ligue || 'Ligue inconnue'})`;
+
+                const btnMod = document.createElement('button');
+                btnMod.className = 'btnModifier';
+                btnMod.type = 'button';
+                btnMod.title = 'Modifier le match';
+                btnMod.textContent = '✏️';
+                btnMod.addEventListener('click', () => ouvreModal(match));
+
+                ligne.appendChild(texte);
+                ligne.appendChild(btnMod);
+                li.appendChild(ligne);
                 elListe.appendChild(li);
             });
         }
@@ -85,31 +211,109 @@
             elListe.innerHTML = '';
 
             try {
-                const rep = await fetch(`../scriptsphp/getMatchsParDate.php?date=${dateParam}`);
-                if (!rep.ok) {
-                    throw new Error(`Erreur HTTP ${rep.status}`);
-                }
+                const rep = await fetch(`../scriptsphp/getMatchsParDate.php?date=${dateParam}&ligueId=${encodeURIComponent(etat.ligueId)}`);
+                if (!rep.ok) throw new Error(`Erreur HTTP ${rep.status}`);
                 const data = await rep.json();
+                etat.matchs = data;
                 rendListe(data);
             } catch (e) {
                 elEtat.textContent = `Impossible de récupérer les matchs (${e.message}).`;
             }
         }
 
-        document.getElementById('btnPrecedent').addEventListener('click', () => {
-            dateActive.setDate(dateActive.getDate() - 1);
-            afficheDate();
-            chargeMatchs();
-        });
+        async function chargeEquipesAbonnees() {
+            const dateParam = formatDateApi(dateActive);
+            const rep = await fetch(`../scriptsphp/getEquipesAbonneesLigue.php?ligueId=${encodeURIComponent(etat.ligueId)}&date=${dateParam}`);
+            if (!rep.ok) throw new Error(`Erreur HTTP ${rep.status}`);
+            etat.equipesAbonnees = await rep.json();
+        }
 
-        document.getElementById('btnSuivant').addEventListener('click', () => {
-            dateActive.setDate(dateActive.getDate() + 1);
-            afficheDate();
-            chargeMatchs();
-        });
+        async function confirmeModification() {
+            const match = etat.matchSelectionne;
+            if (!match) return;
 
-        afficheDate();
-        chargeMatchs();
+            const ancienneEquipeId = document.getElementById('selEquipeCible').value;
+            const nouvelleEquipeId = document.getElementById('selNouvelleEquipe').value;
+            const elEtatModal = document.getElementById('etatModal');
+
+            if (!ancienneEquipeId || !nouvelleEquipeId) {
+                elEtatModal.textContent = 'Veuillez choisir les équipes.';
+                return;
+            }
+
+            elEtatModal.textContent = 'Mise à jour en cours…';
+
+            try {
+                const rep = await fetch('../scriptsphp/updateEquipeMatch.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ligueId: etat.ligueId,
+                        userId: etat.userId,
+                        matchId: match.matchId,
+                        ancienneEquipeId,
+                        nouvelleEquipeId
+                    })
+                });
+
+                const data = await rep.json();
+                if (!rep.ok || !data.ok) {
+                    throw new Error(data.error || `Erreur HTTP ${rep.status}`);
+                }
+
+                elEtatModal.textContent = 'Modification enregistrée.';
+                setTimeout(() => {
+                    fermeModal();
+                    chargeEquipesAbonnees().then(chargeMatchs);
+                }, 350);
+            } catch (e) {
+                elEtatModal.textContent = `Échec de la modification (${e.message}).`;
+            }
+        }
+
+        async function initialisePage() {
+            const perm = Number(verifiePermission());
+            if (perm !== 1) {
+                document.getElementById('zoneRefus').style.display = 'block';
+                return;
+            }
+
+            const c = getContexteConnexion();
+            etat.userId = c.userId;
+            etat.ligueId = c.ligueId;
+            if (!etat.userId || !etat.ligueId) {
+                document.getElementById('zoneRefus').style.display = 'block';
+                document.getElementById('zoneRefus').textContent = 'Accès refusé : session invalide (utilisateur ou ligue manquant).';
+                return;
+            }
+
+            document.getElementById('zonePage').style.display = 'block';
+            afficheDate();
+            await chargeEquipesAbonnees();
+            await chargeMatchs();
+
+            document.getElementById('btnPrecedent').addEventListener('click', async () => {
+                dateActive.setDate(dateActive.getDate() - 1);
+                afficheDate();
+                await chargeEquipesAbonnees();
+                await chargeMatchs();
+            });
+
+            document.getElementById('btnSuivant').addEventListener('click', async () => {
+                dateActive.setDate(dateActive.getDate() + 1);
+                afficheDate();
+                await chargeEquipesAbonnees();
+                await chargeMatchs();
+            });
+
+            document.getElementById('btnAnnuler').addEventListener('click', fermeModal);
+            document.getElementById('btnConfirmer').addEventListener('click', confirmeModification);
+            document.getElementById('modalEdition').addEventListener('click', function(e) {
+                if (e.target === this) fermeModal();
+            });
+        }
+
+        initialisePage();
     </script>
 </body>
 </html>
