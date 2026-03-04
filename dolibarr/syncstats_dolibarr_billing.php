@@ -14,6 +14,8 @@ function main(array $argv): void
         'periode_fin:',
         'mode::',
         'limite_tiers::',
+        'tiers_id::',
+        'dry_run::',
         'config::',
         // Compatibilité ancienne version
         'period_start::',
@@ -24,6 +26,10 @@ function main(array $argv): void
     $periodeFin = $options['periode_fin'] ?? $options['period_end'] ?? null;
     $mode = strtolower((string)($options['mode'] ?? 'brouillon'));
     $limiteTiers = isset($options['limite_tiers']) ? (int)$options['limite_tiers'] : null;
+    $tiersId = isset($options['tiers_id']) ? (int)$options['tiers_id'] : null;
+    $forceDryRun = isset($options['dry_run'])
+        ? filter_var((string)$options['dry_run'], FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE) !== false
+        : false;
 
     if (!isValidDate($periodeDebut) || !isValidDate($periodeFin)) {
         usage($argv[0]);
@@ -50,13 +56,17 @@ function main(array $argv): void
 
     $processed = 0;
     foreach ($tiers as $tier) {
+        $currentTierId = (int)($tier['id'] ?? $tier['rowid'] ?? 0);
+        if ($tiersId !== null && $tiersId > 0 && $currentTierId !== $tiersId) {
+            continue;
+        }
         if ($limiteTiers !== null && $limiteTiers > 0 && $processed >= $limiteTiers) {
             logInfo("Limite atteinte ({$limiteTiers}), arrêt de la boucle.");
             break;
         }
 
         try {
-            processTier($tier, $statsConn, $dolibarr, $periodeDebut, $periodeFin, $mode, $config);
+            processTier($tier, $statsConn, $dolibarr, $periodeDebut, $periodeFin, $mode, $config, $forceDryRun);
         } catch (Throwable $e) {
             logError('Erreur non gérée sur un tiers: ' . $e->getMessage());
         }
@@ -69,7 +79,7 @@ function main(array $argv): void
 
 function usage(string $scriptName): void
 {
-    fwrite(STDERR, "Usage: php {$scriptName} --periode_debut=YYYY-MM-DD --periode_fin=YYYY-MM-DD [--mode=brouillon|valider] [--limite_tiers=N] [--config=/path/file.php]\n");
+    fwrite(STDERR, "Usage: php {$scriptName} --periode_debut=YYYY-MM-DD --periode_fin=YYYY-MM-DD [--mode=brouillon|valider] [--limite_tiers=N] [--tiers_id=ID] [--dry_run=1] [--config=/path/file.php]\n");
 }
 
 function loadConfig(string $configFile): array
@@ -164,7 +174,7 @@ function fetchAllThirdParties(DolibarrClient $client, int $pageSize): array
     return $all;
 }
 
-function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, string $periodeDebut, string $periodeFin, string $mode, array $config): void
+function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, string $periodeDebut, string $periodeFin, string $mode, array $config, bool $forceDryRun = false): void
 {
     $tierId = (int)($tier['id'] ?? $tier['rowid'] ?? 0);
     $tierName = (string)($tier['name'] ?? $tier['nom'] ?? ('#' . $tierId));
@@ -215,22 +225,25 @@ function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, s
         return;
     }
 
+    $hasDuplicate = false;
     if (count($existing) === 1) {
         $inv = $existing[0];
+        $hasDuplicate = true;
         logInfo(sprintf(
-            'Anti-doublon: trouvé (id facture %s, ref %s) => SKIP',
+            'Anti-doublon: trouvé (id facture %s, ref %s)',
             (string)($inv['id'] ?? $inv['rowid'] ?? '?'),
             (string)($inv['ref'] ?? 'n/a')
         ));
-        return;
+    } elseif (count($existing) > 1) {
+        logError('ALERTE doublons détectés côté Dolibarr.');
+        if (!$forceDryRun) {
+            logError('SKIP pour ne pas aggraver.');
+            return;
+        }
+        $hasDuplicate = true;
+    } else {
+        logInfo('Anti-doublon: non trouvé');
     }
-
-    if (count($existing) > 1) {
-        logError('ALERTE doublons détectés côté Dolibarr => SKIP pour ne pas aggraver.');
-        return;
-    }
-
-    logInfo('Anti-doublon: aucune facture => création...');
 
     try {
         $matchesByLeague = countBillableMatchesByLeague($statsConn, $leagueIds, $periodeDebut, $periodeFin, $config['billing']['league_names']);
@@ -247,10 +260,22 @@ function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, s
 
     $notePublic = "Facturation SyncStats du {$periodeDebut} au {$periodeFin}";
 
-    if (!empty($config['billing']['dry_run'])) {
-        logInfo(sprintf('[DRY RUN] Facture non créée (qty=%d, prix=%.2f).', $nbMatchsTotal, $price));
+    $estimatedAmount = round($nbMatchsTotal * $price, 2);
+    logInfo(sprintf('Nb matchs facturables: %d', $nbMatchsTotal));
+    logInfo(sprintf('Montant estimé HT: %.2f', $estimatedAmount));
+
+    $effectiveDryRun = $forceDryRun || !empty($config['billing']['dry_run']);
+    if ($effectiveDryRun) {
+        logInfo('[DRY RUN] Aucune création de facture.');
         return;
     }
+
+    if ($hasDuplicate) {
+        logInfo('Anti-doublon: trouvé => SKIP création');
+        return;
+    }
+
+    logInfo('Anti-doublon: non trouvé => création...');
 
     try {
         $invoiceId = createInvoice($dolibarr, $tierId, $periodeFin, $signature, $notePublic);

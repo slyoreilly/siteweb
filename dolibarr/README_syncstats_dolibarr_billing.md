@@ -14,6 +14,27 @@ Options:
 - `--mode=brouillon|valider` (défaut `brouillon`)
 - `--limite_tiers=NN` (utile en test)
 - `--config=/chemin/vers/syncstats_dolibarr_billing.config.php`
+- `--tiers_id=ID` (forcer un tiers précis)
+- `--dry_run=1` (force le dry-run même si la config est à false)
+
+
+## Test dry-run contrôlé (1 tiers)
+
+```bash
+php dolibarr/syncstats_dolibarr_billing.php \
+  --periode_debut=2026-01-01 \
+  --periode_fin=2026-02-28 \
+  --tiers_id=123 \
+  --dry_run=1
+```
+
+Sorties attendues (sans création Dolibarr):
+- tiers traité
+- ligues associées
+- signature (`ref_client`)
+- anti-doublon (trouvé / non trouvé)
+- nb de matchs facturables
+- montant estimé HT
 
 ## Logique Dolibarr
 
