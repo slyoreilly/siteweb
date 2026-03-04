@@ -35,6 +35,7 @@ function main(array $argv): void
     $config = loadConfig($configFile);
 
     $statsConn = createStatsConnection($config);
+    $config = hydrateDolibarrConfigFromEnv($config);
     $dolibarr = new DolibarrClient($config['dolibarr']['base_url'], $config['dolibarr']['api_key']);
 
     $clients = fetchAllThirdParties($dolibarr, (int)($config['dolibarr']['page_size'] ?? 100));
@@ -52,17 +53,13 @@ function loadConfig(string $configFile): array
 {
     $config = [
         'mysql' => [
-            'host' => getenv('SYNCSTATS_DB_HOST') ?: '127.0.0.1',
-            'port' => (int)(getenv('SYNCSTATS_DB_PORT') ?: 3306),
-            'database' => getenv('SYNCSTATS_DB_NAME') ?: '',
-            'username' => getenv('SYNCSTATS_DB_USER') ?: '',
-            'password' => getenv('SYNCSTATS_DB_PASSWORD') ?: '',
-            'charset' => getenv('SYNCSTATS_DB_CHARSET') ?: 'utf8mb4',
+            'use_defenvvar' => true,
+            'defenvvar_path' => __DIR__ . '/../scriptsphp/defenvvar.php',
         ],
         'dolibarr' => [
-            'base_url' => rtrim((string)(getenv('DOLIBARR_BASE_URL') ?: ''), '/'),
-            'api_key' => (string)(getenv('DOLIBARR_API_KEY') ?: ''),
-            'page_size' => (int)(getenv('DOLIBARR_PAGE_SIZE') ?: 100),
+            'base_url' => '',
+            'api_key' => '',
+            'page_size' => 100,
         ],
         'billing' => [
             'price_per_match' => (float)(getenv('SYNCSTATS_PRICE_PER_MATCH') ?: 0),
@@ -82,12 +79,8 @@ function loadConfig(string $configFile): array
     $config['mysql']['use_defenvvar'] = $config['mysql']['use_defenvvar'] ?? true;
     $config['mysql']['defenvvar_path'] = $config['mysql']['defenvvar_path'] ?? (__DIR__ . '/../scriptsphp/defenvvar.php');
 
-    if (!$config['mysql']['use_defenvvar'] && ($config['mysql']['database'] === '' || $config['mysql']['username'] === '')) {
-        throw new RuntimeException('MySQL configuration is incomplete (database/username required) when use_defenvvar=false.');
-    }
-
-    if ($config['dolibarr']['base_url'] === '' || $config['dolibarr']['api_key'] === '') {
-        throw new RuntimeException('Dolibarr configuration is incomplete (base_url/api_key required).');
+    if (empty($config['mysql']['use_defenvvar'])) {
+        throw new RuntimeException('This script requires mysql.use_defenvvar=true.');
     }
 
     return $config;
@@ -95,45 +88,32 @@ function loadConfig(string $configFile): array
 
 function createStatsConnection(array $config): mysqli
 {
-    $mysqlConfig = $config['mysql'];
-
-    if (!empty($mysqlConfig['use_defenvvar'])) {
-        $defenvvarPath = (string)$mysqlConfig['defenvvar_path'];
-        if (!is_file($defenvvarPath)) {
-            throw new RuntimeException("defenvvar.php introuvable: {$defenvvarPath}");
-        }
-
-        require $defenvvarPath;
-        global $conn;
-
-        if (!isset($conn) || !($conn instanceof mysqli)) {
-            throw new RuntimeException('defenvvar.php n\'a pas initialisé $conn (mysqli).');
-        }
-
-        return $conn;
+    $defenvvarPath = (string)$config['mysql']['defenvvar_path'];
+    if (!is_file($defenvvarPath)) {
+        throw new RuntimeException("defenvvar.php introuvable: {$defenvvarPath}");
     }
 
-    $mysqli = mysqli_init();
-    if ($mysqli === false) {
-        throw new RuntimeException('Unable to initialize mysqli.');
+    require_once $defenvvarPath;
+    global $conn;
+
+    if (!isset($conn) || !($conn instanceof mysqli)) {
+        throw new RuntimeException('defenvvar.php n\'a pas initialisé $conn (mysqli).');
     }
 
-    $ok = mysqli_real_connect(
-        $mysqli,
-        (string)$mysqlConfig['host'],
-        (string)$mysqlConfig['username'],
-        (string)$mysqlConfig['password'],
-        (string)$mysqlConfig['database'],
-        (int)$mysqlConfig['port']
-    );
+    return $conn;
+}
 
-    if (!$ok) {
-        throw new RuntimeException('MySQL connection failed: ' . mysqli_connect_error());
+function hydrateDolibarrConfigFromEnv(array $config): array
+{
+    $config['dolibarr']['base_url'] = rtrim((string)($config['dolibarr']['base_url'] ?: getenv('DOLIBARR_BASE_URL') ?: ''), '/');
+    $config['dolibarr']['api_key'] = (string)($config['dolibarr']['api_key'] ?: getenv('DOLIBARR_API_KEY') ?: '');
+    $config['dolibarr']['page_size'] = (int)($config['dolibarr']['page_size'] ?: (getenv('DOLIBARR_PAGE_SIZE') ?: 100));
+
+    if ($config['dolibarr']['base_url'] === '' || $config['dolibarr']['api_key'] === '') {
+        throw new RuntimeException('Dolibarr configuration is incomplete (base_url/api_key required).');
     }
 
-    mysqli_set_charset($mysqli, (string)$mysqlConfig['charset']);
-
-    return $mysqli;
+    return $config;
 }
 
 function fetchAllThirdParties(DolibarrClient $client, int $pageSize): array

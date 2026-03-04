@@ -20,18 +20,13 @@ Optionnel:
 
 - Copier `dolibarr/syncstats_dolibarr_billing.config.sample.php`
   vers `dolibarr/syncstats_dolibarr_billing.config.php`.
-- Par défaut, le script réutilise `scriptsphp/defenvvar.php` (même mécanique que vos scripts existants).
-- Adapter l'URL Dolibarr, la clé API et `price_per_match`.
-- Optionnel: désactiver `use_defenvvar` pour forcer une connexion MySQL directe via les paramètres `host/port/database/username/password`.
+- Par défaut, le script réutilise `scriptsphp/defenvvar.php` (même mécanique que vos scripts existants) pour la connexion MySQL.
+- Créer `scriptsphp/defenvvar.php` à partir de `scriptsphp/defenvvar.sample.php` sur chaque environnement (fichier local non versionné).
+- Renseigner les paramètres Dolibarr (`DOLIBARR_BASE_URL`, `DOLIBARR_API_KEY`, `DOLIBARR_PAGE_SIZE`) dans `defenvvar.php` ou via variables d'environnement système.
+- Ajuster `price_per_match` et `dry_run` dans ce fichier de config.
 
-Le script supporte aussi les variables d'environnement:
+Variables d'environnement lues par le script:
 
-- `SYNCSTATS_DB_HOST` (si `use_defenvvar=false`)
-- `SYNCSTATS_DB_PORT` (si `use_defenvvar=false`)
-- `SYNCSTATS_DB_NAME` (si `use_defenvvar=false`)
-- `SYNCSTATS_DB_USER` (si `use_defenvvar=false`)
-- `SYNCSTATS_DB_PASSWORD` (si `use_defenvvar=false`)
-- `SYNCSTATS_DB_CHARSET` (si `use_defenvvar=false`)
 - `DOLIBARR_BASE_URL`
 - `DOLIBARR_API_KEY`
 - `DOLIBARR_PAGE_SIZE`
