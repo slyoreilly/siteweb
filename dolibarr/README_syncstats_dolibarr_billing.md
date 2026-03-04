@@ -1,49 +1,68 @@
-# Facturation SyncStats vers Dolibarr
+# Facturation SyncStats vers Dolibarr (mode tiers -> facture)
 
-Script CLI PHP: `syncstats_dolibarr_billing.php`
-
-## Paramètres
+## Exécution CLI
 
 ```bash
 php dolibarr/syncstats_dolibarr_billing.php \
-  --period_start=2026-01-01 \
-  --period_end=2026-02-28
+  --periode_debut=2026-01-01 \
+  --periode_fin=2026-02-28 \
+  --mode=brouillon
 ```
 
-Optionnel:
+Options:
 
-```bash
---config=/chemin/vers/syncstats_dolibarr_billing.config.php
-```
+- `--mode=brouillon|valider` (défaut `brouillon`)
+- `--limite_tiers=NN` (utile en test)
+- `--config=/chemin/vers/syncstats_dolibarr_billing.config.php`
+
+## Logique Dolibarr
+
+Pour chaque tiers Dolibarr (`/thirdparties`):
+
+1. Vérifie que le tiers est client (`client > 0`).
+2. Lit les extrafields:
+   - `array_options.options_facturation_syncstats_active`
+   - `array_options.options_ligues_syncstats`
+   - `array_options.options_prix_match_ht`
+3. Construit la signature stable:
+   - `SYNCSTATS|FACTURATION|{periode_debut}|{periode_fin}`
+4. Anti-doublon via API:
+   - `GET /invoices?sqlfilters=(fk_soc:=:{ID}) and (ref_client:=:'{signature}')`
+5. Si aucune facture:
+   - `POST /invoices` avec `socid`, `date`, `ref_client`, `note_public`
+   - `POST /invoices/{id}/lines` avec description détaillée, `qty`, `subprice`
+6. Si `--mode=valider`:
+   - `POST /invoices/{id}/validate`
+
+## Source des matchs
+
+Le script agrège les matchs facturables par ligue depuis MySQL stats:
+
+- `COUNT(DISTINCT tm.match_id)`
+- `INNER JOIN Video v ON tm.match_id = v.nomMatch`
 
 ## Configuration
 
-- Copier `dolibarr/syncstats_dolibarr_billing.config.sample.php`
-  vers `dolibarr/syncstats_dolibarr_billing.config.php`.
-- Par défaut, le script réutilise `scriptsphp/defenvvar.php` (même mécanique que vos scripts existants) pour la connexion MySQL.
-- Créer `scriptsphp/defenvvar.php` à partir de `scriptsphp/defenvvar.sample.php` sur chaque environnement (fichier local non versionné).
-- Renseigner les paramètres Dolibarr (`DOLIBARR_BASE_URL`, `DOLIBARR_API_KEY`, `DOLIBARR_PAGE_SIZE`) dans `defenvvar.php` ou via variables d'environnement système.
-- Ajuster `price_per_match` et `dry_run` dans ce fichier de config.
+Copier le sample:
 
-Variables d'environnement lues par le script:
+- `dolibarr/syncstats_dolibarr_billing.config.sample.php`
+  -> `dolibarr/syncstats_dolibarr_billing.config.php`
+
+Le script exige `defenvvar.php` pour la connexion MySQL:
+
+- `scriptsphp/defenvvar.php` (fichier local non versionné)
+- template disponible: `scriptsphp/defenvvar.sample.php`
+
+Variables d'environnement reconnues:
 
 - `DOLIBARR_BASE_URL`
 - `DOLIBARR_API_KEY`
 - `DOLIBARR_PAGE_SIZE`
-- `SYNCSTATS_PRICE_PER_MATCH`
+- `SYNCSTATS_DEFAULT_PRICE_PER_MATCH`
 - `SYNCSTATS_DRY_RUN`
 
-## Logique
+## Comportement erreur
 
-1. Récupère les tiers Dolibarr (`/thirdparties`).
-2. Lit l'extrafield `league_ids`.
-3. Compte les matchs facturables par ligue via MySQL (`COUNT(DISTINCT tm.match_id)` avec `INNER JOIN Video`).
-4. Vérifie l'absence d'une facture existante sur la période (`note_public`).
-5. Crée la facture puis ajoute la ligne avec quantité = total des matchs.
-6. Continue sur les autres clients même en cas d'erreur sur un client.
-
-## Important
-
-- Le script est stateless.
-- Le script ne crée aucune table et ne modifie pas MySQL stats.
-- Le script écrit uniquement via l'API Dolibarr (création facture + ligne).
+- Toute erreur API/SQL sur un tiers est logguée.
+- Le script continue avec le tiers suivant.
+- Le script reste stateless (aucune table créée/modifiée).

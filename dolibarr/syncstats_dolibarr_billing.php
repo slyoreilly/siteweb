@@ -3,50 +3,73 @@
 
 declare(strict_types=1);
 
-/**
- * SyncStats -> Dolibarr billing bridge.
- *
- * Usage:
- *   php syncstats_dolibarr_billing.php --period_start=YYYY-MM-DD --period_end=YYYY-MM-DD [--config=/path/to/config.php]
- */
-
 const DEFAULT_CONFIG_FILE = __DIR__ . '/syncstats_dolibarr_billing.config.php';
 
 main($argv);
 
 function main(array $argv): void
 {
-    $options = getopt('', ['period_start:', 'period_end:', 'config::']);
+    $options = getopt('', [
+        'periode_debut:',
+        'periode_fin:',
+        'mode::',
+        'limite_tiers::',
+        'config::',
+        // Compatibilité ancienne version
+        'period_start::',
+        'period_end::',
+    ]);
 
-    $periodStart = $options['period_start'] ?? null;
-    $periodEnd = $options['period_end'] ?? null;
+    $periodeDebut = $options['periode_debut'] ?? $options['period_start'] ?? null;
+    $periodeFin = $options['periode_fin'] ?? $options['period_end'] ?? null;
+    $mode = strtolower((string)($options['mode'] ?? 'brouillon'));
+    $limiteTiers = isset($options['limite_tiers']) ? (int)$options['limite_tiers'] : null;
 
-    if (!isValidDate($periodStart) || !isValidDate($periodEnd)) {
-        fwrite(STDERR, "Usage: php {$argv[0]} --period_start=YYYY-MM-DD --period_end=YYYY-MM-DD [--config=/path/to/config.php]\n");
+    if (!isValidDate($periodeDebut) || !isValidDate($periodeFin)) {
+        usage($argv[0]);
         exit(1);
     }
 
-    if ($periodStart > $periodEnd) {
-        fwrite(STDERR, "Error: period_start must be before or equal to period_end.\n");
+    if ($periodeDebut > $periodeFin) {
+        logError('periode_debut doit être <= periode_fin.');
         exit(1);
     }
 
-    $configFile = $options['config'] ?? DEFAULT_CONFIG_FILE;
-    $config = loadConfig($configFile);
+    if (!in_array($mode, ['brouillon', 'valider'], true)) {
+        logError('mode doit être "brouillon" ou "valider".');
+        exit(1);
+    }
 
+    $config = loadConfig((string)($options['config'] ?? DEFAULT_CONFIG_FILE));
     $statsConn = createStatsConnection($config);
     $config = hydrateDolibarrConfigFromEnv($config);
     $dolibarr = new DolibarrClient($config['dolibarr']['base_url'], $config['dolibarr']['api_key']);
 
-    $clients = fetchAllThirdParties($dolibarr, (int)($config['dolibarr']['page_size'] ?? 100));
+    $tiers = fetchAllThirdParties($dolibarr, (int)$config['dolibarr']['page_size']);
+    logInfo(sprintf('Tiers récupérés depuis Dolibarr: %d', count($tiers)));
 
-    logInfo(sprintf('Found %d clients from Dolibarr.', count($clients)));
+    $processed = 0;
+    foreach ($tiers as $tier) {
+        if ($limiteTiers !== null && $limiteTiers > 0 && $processed >= $limiteTiers) {
+            logInfo("Limite atteinte ({$limiteTiers}), arrêt de la boucle.");
+            break;
+        }
 
-    foreach ($clients as $client) {
-        processClient($client, $statsConn, $dolibarr, $periodStart, $periodEnd, $config);
+        try {
+            processTier($tier, $statsConn, $dolibarr, $periodeDebut, $periodeFin, $mode, $config);
+        } catch (Throwable $e) {
+            logError('Erreur non gérée sur un tiers: ' . $e->getMessage());
+        }
+
+        $processed++;
     }
 
-    logInfo('Billing run completed.');
+    logInfo('Exécution terminée.');
+}
+
+function usage(string $scriptName): void
+{
+    fwrite(STDERR, "Usage: php {$scriptName} --periode_debut=YYYY-MM-DD --periode_fin=YYYY-MM-DD [--mode=brouillon|valider] [--limite_tiers=N] [--config=/path/file.php]\n");
 }
 
 function loadConfig(string $configFile): array
@@ -57,12 +80,15 @@ function loadConfig(string $configFile): array
             'defenvvar_path' => __DIR__ . '/../scriptsphp/defenvvar.php',
         ],
         'dolibarr' => [
-            'base_url' => '',
-            'api_key' => '',
-            'page_size' => 100,
+            'base_url' => getenv('DOLIBARR_BASE_URL') ?: '',
+            'api_key' => getenv('DOLIBARR_API_KEY') ?: '',
+            'page_size' => (int)(getenv('DOLIBARR_PAGE_SIZE') ?: 100),
         ],
         'billing' => [
-            'price_per_match' => (float)(getenv('SYNCSTATS_PRICE_PER_MATCH') ?: 0),
+            'signature_prefix' => 'SYNCSTATS|FACTURATION',
+            'default_price_per_match' => getenv('SYNCSTATS_DEFAULT_PRICE_PER_MATCH') !== false
+                ? (float)getenv('SYNCSTATS_DEFAULT_PRICE_PER_MATCH')
+                : null,
             'dry_run' => filter_var(getenv('SYNCSTATS_DRY_RUN') ?: false, FILTER_VALIDATE_BOOL),
             'league_names' => [],
         ],
@@ -71,16 +97,13 @@ function loadConfig(string $configFile): array
     if (is_file($configFile)) {
         $fileConfig = require $configFile;
         if (!is_array($fileConfig)) {
-            throw new RuntimeException("Config file must return an array: {$configFile}");
+            throw new RuntimeException("Config invalide: {$configFile}");
         }
         $config = array_replace_recursive($config, $fileConfig);
     }
 
-    $config['mysql']['use_defenvvar'] = $config['mysql']['use_defenvvar'] ?? true;
-    $config['mysql']['defenvvar_path'] = $config['mysql']['defenvvar_path'] ?? (__DIR__ . '/../scriptsphp/defenvvar.php');
-
     if (empty($config['mysql']['use_defenvvar'])) {
-        throw new RuntimeException('This script requires mysql.use_defenvvar=true.');
+        throw new RuntimeException('mysql.use_defenvvar=true est requis.');
     }
 
     return $config;
@@ -97,7 +120,7 @@ function createStatsConnection(array $config): mysqli
     global $conn;
 
     if (!isset($conn) || !($conn instanceof mysqli)) {
-        throw new RuntimeException('defenvvar.php n\'a pas initialisé $conn (mysqli).');
+        throw new RuntimeException('defenvvar.php doit initialiser $conn (mysqli).');
     }
 
     return $conn;
@@ -105,12 +128,12 @@ function createStatsConnection(array $config): mysqli
 
 function hydrateDolibarrConfigFromEnv(array $config): array
 {
-    $config['dolibarr']['base_url'] = rtrim((string)($config['dolibarr']['base_url'] ?: getenv('DOLIBARR_BASE_URL') ?: ''), '/');
-    $config['dolibarr']['api_key'] = (string)($config['dolibarr']['api_key'] ?: getenv('DOLIBARR_API_KEY') ?: '');
-    $config['dolibarr']['page_size'] = (int)($config['dolibarr']['page_size'] ?: (getenv('DOLIBARR_PAGE_SIZE') ?: 100));
+    $config['dolibarr']['base_url'] = rtrim((string)$config['dolibarr']['base_url'], '/');
+    $config['dolibarr']['api_key'] = (string)$config['dolibarr']['api_key'];
+    $config['dolibarr']['page_size'] = max(1, (int)$config['dolibarr']['page_size']);
 
     if ($config['dolibarr']['base_url'] === '' || $config['dolibarr']['api_key'] === '') {
-        throw new RuntimeException('Dolibarr configuration is incomplete (base_url/api_key required).');
+        throw new RuntimeException('Configuration Dolibarr incomplète (base_url/api_key).');
     }
 
     return $config;
@@ -123,14 +146,14 @@ function fetchAllThirdParties(DolibarrClient $client, int $pageSize): array
 
     do {
         $data = $client->request('GET', '/thirdparties', [
-            'limit' => $pageSize,
-            'page' => $page,
             'sortfield' => 't.rowid',
             'sortorder' => 'ASC',
+            'limit' => $pageSize,
+            'page' => $page,
         ]);
 
         if (!is_array($data)) {
-            throw new RuntimeException('Unexpected thirdparties response format.');
+            throw new RuntimeException('Réponse /thirdparties inattendue.');
         }
 
         $chunk = array_values(array_filter($data, 'is_array'));
@@ -141,97 +164,181 @@ function fetchAllThirdParties(DolibarrClient $client, int $pageSize): array
     return $all;
 }
 
-function processClient(array $client, mysqli $statsConn, DolibarrClient $dolibarr, string $periodStart, string $periodEnd, array $config): void
+function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, string $periodeDebut, string $periodeFin, string $mode, array $config): void
 {
-    $clientId = (int)($client['id'] ?? $client['rowid'] ?? 0);
-    $clientName = (string)($client['name'] ?? $client['nom'] ?? ('#' . $clientId));
+    $tierId = (int)($tier['id'] ?? $tier['rowid'] ?? 0);
+    $tierName = (string)($tier['name'] ?? $tier['nom'] ?? ('#' . $tierId));
 
-    if ($clientId <= 0) {
-        logInfo('Skipping client with missing id.');
+    if ($tierId <= 0) {
+        logInfo('SKIP tiers sans id.');
         return;
     }
 
-    logInfo("Processing client: {$clientName} (ID {$clientId})");
+    logInfo("Traitement tiers {$tierId} - {$tierName}");
 
-    $leagueIds = extractLeagueIds($client);
+    if (!isBillableCustomer($tier)) {
+        logInfo('SKIP non-client.');
+        return;
+    }
+
+    $arrayOptions = is_array($tier['array_options'] ?? null) ? $tier['array_options'] : [];
+    $active = (string)($arrayOptions['options_facturation_syncstats_active'] ?? '0');
+
+    if ($active !== '1') {
+        logInfo('SKIP facturation SyncStats désactivée (options_facturation_syncstats_active != 1).');
+        return;
+    }
+
+    $leagueCsv = (string)($arrayOptions['options_ligues_syncstats'] ?? '');
+    $leagueIds = parseLeagueIds($leagueCsv);
+
     if ($leagueIds === []) {
-        logInfo('No league_ids configured, skipping client.');
+        logInfo('SKIP pas de ligues SyncStats.');
         return;
     }
 
-    logInfo('Leagues: ' . implode(',', $leagueIds));
+    $price = resolvePricePerMatch($arrayOptions, $config);
+    if ($price === null) {
+        logError('SKIP prix_match_ht absent/non numérique et aucun fallback configuré.');
+        return;
+    }
+
+    logInfo('Ligues SyncStats: ' . implode(',', $leagueIds));
+
+    $signature = buildSignature((string)$config['billing']['signature_prefix'], $periodeDebut, $periodeFin);
+    logInfo('Signature: ' . $signature);
 
     try {
-        $matchesByLeague = countBillableMatchesByLeague($statsConn, $leagueIds, $periodStart, $periodEnd, $config['billing']['league_names'] ?? []);
+        $existing = findExistingInvoicesBySignature($dolibarr, $tierId, $signature);
     } catch (Throwable $e) {
-        logError("Failed counting matches for client {$clientId}: {$e->getMessage()}");
+        logError("Anti-doublon ERREUR (tiers {$tierId}): {$e->getMessage()}");
         return;
     }
 
-    $totalMatches = array_sum(array_column($matchesByLeague, 'matches'));
-
-    if ($totalMatches <= 0) {
-        logInfo('No matches for this client.');
+    if (count($existing) === 1) {
+        $inv = $existing[0];
+        logInfo(sprintf(
+            'Anti-doublon: trouvé (id facture %s, ref %s) => SKIP',
+            (string)($inv['id'] ?? $inv['rowid'] ?? '?'),
+            (string)($inv['ref'] ?? 'n/a')
+        ));
         return;
     }
 
-    logInfo('Matches found:');
-    foreach ($matchesByLeague as $row) {
-        logInfo(sprintf('%s: %d', $row['league_name'], $row['matches']));
+    if (count($existing) > 1) {
+        logError('ALERTE doublons détectés côté Dolibarr => SKIP pour ne pas aggraver.');
+        return;
     }
-    logInfo("Total matches: {$totalMatches}");
 
-    $billingMarker = "SyncStats billing {$periodStart} → {$periodEnd}";
+    logInfo('Anti-doublon: aucune facture => création...');
 
     try {
-        if (invoiceAlreadyExists($dolibarr, $clientId, $billingMarker)) {
-            logInfo('Invoice already exists for this period, skipping client.');
-            return;
-        }
-
-        if (!empty($config['billing']['dry_run'])) {
-            logInfo('[DRY RUN] Invoice creation skipped.');
-            return;
-        }
-
-        $invoiceId = createInvoice($dolibarr, $clientId, $periodEnd, $billingMarker);
-        $description = buildInvoiceDescription($periodStart, $periodEnd, $matchesByLeague);
-        addInvoiceLine($dolibarr, $invoiceId, $description, $totalMatches, (float)$config['billing']['price_per_match']);
-
-        logInfo("Invoice created: {$invoiceId}");
+        $matchesByLeague = countBillableMatchesByLeague($statsConn, $leagueIds, $periodeDebut, $periodeFin, $config['billing']['league_names']);
     } catch (Throwable $e) {
-        logError("Client {$clientId} failed: {$e->getMessage()}");
+        logError("Erreur calcul matchs (tiers {$tierId}): {$e->getMessage()}");
+        return;
+    }
+
+    $nbMatchsTotal = array_sum(array_column($matchesByLeague, 'matches'));
+    if ($nbMatchsTotal <= 0) {
+        logInfo('SKIP aucun match facturable pour ce tiers.');
+        return;
+    }
+
+    $notePublic = "Facturation SyncStats du {$periodeDebut} au {$periodeFin}";
+
+    if (!empty($config['billing']['dry_run'])) {
+        logInfo(sprintf('[DRY RUN] Facture non créée (qty=%d, prix=%.2f).', $nbMatchsTotal, $price));
+        return;
+    }
+
+    try {
+        $invoiceId = createInvoice($dolibarr, $tierId, $periodeFin, $signature, $notePublic);
+        logInfo("Facture créée: {$invoiceId}");
+
+        $description = buildInvoiceDescription($periodeDebut, $periodeFin, $matchesByLeague);
+        addInvoiceLine($dolibarr, $invoiceId, $description, $nbMatchsTotal, $price);
+        logInfo('Ligne ajoutée: OK');
+    } catch (Throwable $e) {
+        logError("Création facture/ligne ERREUR (tiers {$tierId}): {$e->getMessage()}");
+        return;
+    }
+
+    if ($mode === 'valider') {
+        try {
+            validateInvoice($dolibarr, $invoiceId);
+            logInfo('Validation: OK');
+        } catch (Throwable $e) {
+            logError('Validation: ERREUR - ' . $e->getMessage());
+        }
+    } else {
+        logInfo('Validation: SKIP (mode brouillon)');
     }
 }
 
-function extractLeagueIds(array $client): array
+function isBillableCustomer(array $tier): bool
 {
-    $raw = null;
+    $client = $tier['client'] ?? 0;
+    return (int)$client > 0;
+}
 
-    if (isset($client['league_ids'])) {
-        $raw = $client['league_ids'];
-    } elseif (isset($client['extrafields']['league_ids'])) {
-        $raw = $client['extrafields']['league_ids'];
-    } elseif (isset($client['array_options']['options_league_ids'])) {
-        $raw = $client['array_options']['options_league_ids'];
-    }
-
-    if (!is_string($raw) || trim($raw) === '') {
+function parseLeagueIds(string $csv): array
+{
+    if (trim($csv) === '') {
         return [];
     }
 
-    $ids = array_values(array_unique(array_filter(array_map(
-        static function ($value) {
-            $value = trim($value);
-            return ctype_digit($value) ? (int)$value : null;
-        },
-        explode(',', $raw)
-    ))));
+    $ids = [];
+    foreach (explode(',', $csv) as $value) {
+        $value = trim($value);
+        if ($value !== '' && ctype_digit($value)) {
+            $ids[] = (int)$value;
+        }
+    }
 
-    return $ids;
+    return array_values(array_unique($ids));
 }
 
-function countBillableMatchesByLeague(mysqli $statsConn, array $leagueIds, string $periodStart, string $periodEnd, array $leagueNames): array
+function resolvePricePerMatch(array $arrayOptions, array $config): ?float
+{
+    $raw = trim((string)($arrayOptions['options_prix_match_ht'] ?? ''));
+    if ($raw !== '' && is_numeric($raw)) {
+        return (float)$raw;
+    }
+
+    $fallback = $config['billing']['default_price_per_match'] ?? null;
+    if ($fallback !== null && is_numeric((string)$fallback)) {
+        return (float)$fallback;
+    }
+
+    return null;
+}
+
+function buildSignature(string $prefix, string $periodeDebut, string $periodeFin): string
+{
+    return sprintf('%s|%s|%s', $prefix, $periodeDebut, $periodeFin);
+}
+
+function findExistingInvoicesBySignature(DolibarrClient $dolibarr, int $tierId, string $signature): array
+{
+    $escapedSignature = str_replace("'", "''", $signature);
+    $sqlfilters = sprintf("(fk_soc:=:%d) and (ref_client:=:'%s')", $tierId, $escapedSignature);
+
+    $data = $dolibarr->request('GET', '/invoices', [
+        'sqlfilters' => $sqlfilters,
+        'sortfield' => 't.rowid',
+        'sortorder' => 'DESC',
+        'limit' => 100,
+    ]);
+
+    if (!is_array($data)) {
+        return [];
+    }
+
+    return array_values(array_filter($data, 'is_array'));
+}
+
+function countBillableMatchesByLeague(mysqli $statsConn, array $leagueIds, string $periodeDebut, string $periodeFin, array $leagueNames): array
 {
     $placeholders = implode(',', array_fill(0, count($leagueIds), '?'));
 
@@ -253,7 +360,7 @@ function countBillableMatchesByLeague(mysqli $statsConn, array $leagueIds, strin
         throw new RuntimeException('MySQL prepare failed: ' . mysqli_error($statsConn));
     }
 
-    $params = array_merge($leagueIds, [$periodStart, $periodEnd]);
+    $params = array_merge($leagueIds, [$periodeDebut, $periodeFin]);
     $types = str_repeat('i', count($leagueIds)) . 'ss';
     bindParams($stmt, $types, $params);
 
@@ -261,32 +368,32 @@ function countBillableMatchesByLeague(mysqli $statsConn, array $leagueIds, strin
         throw new RuntimeException('MySQL execute failed: ' . mysqli_stmt_error($stmt));
     }
 
-    $queryResult = mysqli_stmt_get_result($stmt);
-    if ($queryResult === false) {
+    $result = mysqli_stmt_get_result($stmt);
+    if ($result === false) {
         throw new RuntimeException('MySQL result retrieval failed: ' . mysqli_stmt_error($stmt));
     }
 
-    $results = [];
-    while ($row = mysqli_fetch_assoc($queryResult)) {
+    $rows = [];
+    while ($row = mysqli_fetch_assoc($result)) {
         $leagueId = (int)$row['league_id'];
-        $results[] = [
+        $rows[] = [
             'league_id' => $leagueId,
             'league_name' => $leagueNames[$leagueId] ?? "Ligue {$leagueId}",
             'matches' => (int)$row['matches'],
         ];
     }
 
-    mysqli_free_result($queryResult);
+    mysqli_free_result($result);
     mysqli_stmt_close($stmt);
 
-    return $results;
+    return $rows;
 }
 
 function bindParams(mysqli_stmt $stmt, string $types, array $params): void
 {
     $refs = [];
-    foreach ($params as $idx => $value) {
-        $refs[$idx] = &$params[$idx];
+    foreach ($params as $k => $v) {
+        $refs[$k] = &$params[$k];
     }
 
     array_unshift($refs, $types);
@@ -295,43 +402,12 @@ function bindParams(mysqli_stmt $stmt, string $types, array $params): void
     }
 }
 
-function invoiceAlreadyExists(DolibarrClient $dolibarr, int $clientId, string $marker): bool
-{
-    $page = 0;
-    $limit = 100;
-
-    do {
-        $data = $dolibarr->request('GET', '/invoices', [
-            'socid' => $clientId,
-            'limit' => $limit,
-            'page' => $page,
-            'sortfield' => 't.rowid',
-            'sortorder' => 'DESC',
-        ]);
-
-        if (!is_array($data)) {
-            break;
-        }
-
-        $invoices = array_values(array_filter($data, 'is_array'));
-        foreach ($invoices as $invoice) {
-            $notePublic = (string)($invoice['note_public'] ?? '');
-            if (str_contains($notePublic, $marker)) {
-                return true;
-            }
-        }
-
-        $page++;
-    } while (count($invoices) === $limit);
-
-    return false;
-}
-
-function createInvoice(DolibarrClient $dolibarr, int $clientId, string $periodEnd, string $notePublic): int
+function createInvoice(DolibarrClient $dolibarr, int $tierId, string $periodeFin, string $signature, string $notePublic): int
 {
     $payload = [
-        'socid' => $clientId,
-        'date' => $periodEnd,
+        'socid' => $tierId,
+        'date' => $periodeFin,
+        'ref_client' => $signature,
         'note_public' => $notePublic,
     ];
 
@@ -347,7 +423,7 @@ function createInvoice(DolibarrClient $dolibarr, int $clientId, string $periodEn
         return (int)$response['id'];
     }
 
-    throw new RuntimeException('Unable to determine created invoice id.');
+    throw new RuntimeException('Impossible de déterminer id_facture.');
 }
 
 function addInvoiceLine(DolibarrClient $dolibarr, int $invoiceId, string $description, int $qty, float $subprice): void
@@ -361,16 +437,21 @@ function addInvoiceLine(DolibarrClient $dolibarr, int $invoiceId, string $descri
     $dolibarr->request('POST', "/invoices/{$invoiceId}/lines", [], $payload);
 }
 
-function buildInvoiceDescription(string $periodStart, string $periodEnd, array $matchesByLeague): string
+function validateInvoice(DolibarrClient $dolibarr, int $invoiceId): void
+{
+    $dolibarr->request('POST', "/invoices/{$invoiceId}/validate");
+}
+
+function buildInvoiceDescription(string $periodeDebut, string $periodeFin, array $matchesByLeague): string
 {
     $lines = [
         'Captation vidéo SyncStats',
-        "Période : {$periodStart} → {$periodEnd}",
+        "Période : {$periodeDebut} → {$periodeFin}",
         '',
     ];
 
-    foreach ($matchesByLeague as $row) {
-        $lines[] = sprintf('%s : %d matchs', $row['league_name'], $row['matches']);
+    foreach ($matchesByLeague as $item) {
+        $lines[] = sprintf('%s (ID %d) : %d matchs', $item['league_name'], $item['league_id'], $item['matches']);
     }
 
     return implode("\n", $lines);
@@ -381,7 +462,6 @@ function isValidDate(?string $date): bool
     if (!is_string($date)) {
         return false;
     }
-
     $dt = DateTimeImmutable::createFromFormat('Y-m-d', $date);
     return $dt !== false && $dt->format('Y-m-d') === $date;
 }
