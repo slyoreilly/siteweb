@@ -179,6 +179,51 @@ section.choisi a{
 }
 
 
+#newSitePopupOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+}
+
+#newSitePopup {
+    background: #fff;
+    max-width: 520px;
+    width: calc(100% - 30px);
+    border-radius: 8px;
+    padding: 22px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.3);
+    text-align: center;
+}
+
+#newSitePopup h2 {
+    margin-top: 0;
+    color: #034d57;
+}
+
+#newSitePopup a {
+    display: inline-block;
+    margin-top: 10px;
+    background: #00A7DB;
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+#newSitePopup button {
+    margin-top: 12px;
+    border: 0;
+    background: transparent;
+    color: #444;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
         </style>
 				<script type="text/javascript" charset="utf-8">
 				
@@ -446,6 +491,16 @@ $( document ).ready(function() {
 		</script>
 	</head>
 	<body id="mbody">
+
+        <div id="newSitePopupOverlay">
+            <div id="newSitePopup">
+                <h2>Nouveau site disponible</h2>
+                <p>SyncStats est maintenant disponible sur le nouveau site.</p>
+                <a href="https://syncstats.live" target="_blank" rel="noopener noreferrer">Aller sur syncstats.live</a>
+                <br/>
+                <button id="closeNewSitePopup" type="button">Rester sur ce site</button>
+            </div>
+        </div>
 
 		<div id="divHaut">
 			<div id="divTitreDoc">
@@ -960,12 +1015,42 @@ function compute_tournament(){
 	+perDayCost*parseInt($('#days_tournament').val())*parseInt($('#cam_tournament').val())+setUpFees;
 	$('#result_tournament').text(resTour+' $').append($('<sup></sup>').text('*'));
 }
+
+function showNewSitePopup(){
+    var overlay = document.getElementById('newSitePopupOverlay');
+    var closeBtn = document.getElementById('closeNewSitePopup');
+    if(!overlay || !closeBtn){
+        return;
+    }
+    overlay.style.display = 'flex';
+    closeBtn.onclick = function(){
+        overlay.style.display = 'none';
+        try { localStorage.setItem('syncstats_newsite_popup_seen', '1'); } catch(e){}
+    };
+    overlay.onclick = function(event){
+        if(event.target === overlay){
+            overlay.style.display = 'none';
+            try { localStorage.setItem('syncstats_newsite_popup_seen', '1'); } catch(e){}
+        }
+    };
+}
+
+function maybeShowNewSitePopup(){
+    var alreadySeen = false;
+    try { alreadySeen = localStorage.getItem('syncstats_newsite_popup_seen') === '1'; } catch(e){}
+    if(!alreadySeen){
+        showNewSitePopup();
+    }
+}
+
 function compute_team(){
 	const forTeamPerMonthCost=25;
 	resTeam = $('#month_team').val()*forTeamPerMonthCost
 	+parseInt($('#month_team').val())*(parseInt($('#cam_team').val())*perMonthPerCamCost+perMonthPerCamCostBase )+setUpFees;
 	$('#result_team').text(resTeam+' $').append($('<sup></sup>').text('*'));
 }
+
+maybeShowNewSitePopup();
 
 $('#cam_season').on('change',compute_season);
 $('#month_season').on('change',compute_season);
