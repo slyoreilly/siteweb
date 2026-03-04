@@ -15,7 +15,8 @@ Options:
 - `--limite_tiers=NN` (utile en test)
 - `--config=/chemin/vers/syncstats_dolibarr_billing.config.php`
 - `--tiers_id=ID` (forcer un tiers précis)
-- `--dry_run=1` (force le dry-run même si la config est à false)
+- `--dry_run=0|1` (force le dry-run en CLI)
+- `--verbose=1` (affiche des logs DEBUG supplémentaires)
 
 
 ## Test dry-run contrôlé (1 tiers)
@@ -35,6 +36,20 @@ Sorties attendues (sans création Dolibarr):
 - anti-doublon (trouvé / non trouvé)
 - nb de matchs facturables
 - montant estimé HT
+
+
+## Commande demandée (brouillon non-validé)
+
+```bash
+php dolibarr/syncstats_dolibarr_billing.php \
+  --periode_debut=2026-01-01 \
+  --periode_fin=2026-02-28 \
+  --mode=brouillon \
+  --limite_tiers=1
+```
+
+Cette commande crée une facture brouillon (non validée) si `dry_run` n'est pas actif.
+Pour forcer des logs détaillés, ajoutez `--verbose=1`.
 
 ## Logique Dolibarr
 

@@ -16,6 +16,7 @@ function main(array $argv): void
         'limite_tiers::',
         'tiers_id::',
         'dry_run::',
+        'verbose::',
         'config::',
         // Compatibilité ancienne version
         'period_start::',
@@ -27,9 +28,9 @@ function main(array $argv): void
     $mode = strtolower((string)($options['mode'] ?? 'brouillon'));
     $limiteTiers = isset($options['limite_tiers']) ? (int)$options['limite_tiers'] : null;
     $tiersId = isset($options['tiers_id']) ? (int)$options['tiers_id'] : null;
-    $forceDryRun = isset($options['dry_run'])
-        ? filter_var((string)$options['dry_run'], FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE) !== false
-        : false;
+    $forceDryRun = parseBoolOption($options, 'dry_run', false);
+    $verbose = parseBoolOption($options, 'verbose', false);
+    setVerbose($verbose);
 
     if (!isValidDate($periodeDebut) || !isValidDate($periodeFin)) {
         usage($argv[0]);
@@ -51,7 +52,21 @@ function main(array $argv): void
     $config = hydrateDolibarrConfigFromEnv($config);
     $dolibarr = new DolibarrClient($config['dolibarr']['base_url'], $config['dolibarr']['api_key']);
 
+    logInfo(sprintf('Paramètres: periode=%s -> %s, mode=%s, limite_tiers=%s, tiers_id=%s, dry_run_forcé=%s',
+        $periodeDebut,
+        $periodeFin,
+        $mode,
+        $limiteTiers === null ? 'none' : (string)$limiteTiers,
+        $tiersId === null ? 'none' : (string)$tiersId,
+        $forceDryRun ? 'oui' : 'non'
+    ));
+
+    if ($mode === 'brouillon') {
+        logInfo('Mode brouillon: les factures créées ne seront PAS validées.');
+    }
+
     $tiers = fetchAllThirdParties($dolibarr, (int)$config['dolibarr']['page_size']);
+    logDebug('Chargement tiers terminé.');
     logInfo(sprintf('Tiers récupérés depuis Dolibarr: %d', count($tiers)));
 
     $processed = 0;
@@ -79,7 +94,7 @@ function main(array $argv): void
 
 function usage(string $scriptName): void
 {
-    fwrite(STDERR, "Usage: php {$scriptName} --periode_debut=YYYY-MM-DD --periode_fin=YYYY-MM-DD [--mode=brouillon|valider] [--limite_tiers=N] [--tiers_id=ID] [--dry_run=1] [--config=/path/file.php]\n");
+    fwrite(STDERR, "Usage: php {$scriptName} --periode_debut=YYYY-MM-DD --periode_fin=YYYY-MM-DD [--mode=brouillon|valider] [--limite_tiers=N] [--tiers_id=ID] [--dry_run=0|1] [--verbose=1] [--config=/path/file.php]\n");
 }
 
 function loadConfig(string $configFile): array
@@ -192,6 +207,7 @@ function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, s
     }
 
     $arrayOptions = is_array($tier['array_options'] ?? null) ? $tier['array_options'] : [];
+    logDebug('array_options keys: ' . implode(',', array_keys($arrayOptions)));
     $active = (string)($arrayOptions['options_facturation_syncstats_active'] ?? '0');
 
     if ($active !== '1') {
@@ -266,7 +282,7 @@ function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, s
 
     $effectiveDryRun = $forceDryRun || !empty($config['billing']['dry_run']);
     if ($effectiveDryRun) {
-        logInfo('[DRY RUN] Aucune création de facture.');
+        logInfo('[DRY RUN] Aucune création de facture (simulation uniquement).');
         return;
     }
 
@@ -297,7 +313,7 @@ function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, s
             logError('Validation: ERREUR - ' . $e->getMessage());
         }
     } else {
-        logInfo('Validation: SKIP (mode brouillon)');
+        logInfo('Validation: SKIP (mode brouillon, facture laissée non validée).');
     }
 }
 
@@ -480,6 +496,41 @@ function buildInvoiceDescription(string $periodeDebut, string $periodeFin, array
     }
 
     return implode("\n", $lines);
+}
+
+
+function parseBoolOption(array $options, string $key, bool $default): bool
+{
+    if (!array_key_exists($key, $options)) {
+        return $default;
+    }
+
+    $raw = $options[$key];
+    if ($raw === false || $raw === '') {
+        return true;
+    }
+
+    $parsed = filter_var((string)$raw, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
+    return $parsed ?? $default;
+}
+
+function setVerbose(bool $enabled): void
+{
+    $GLOBALS['SYNCSTATS_VERBOSE'] = $enabled;
+}
+
+function isVerbose(): bool
+{
+    return !empty($GLOBALS['SYNCSTATS_VERBOSE']);
+}
+
+function logDebug(string $message): void
+{
+    if (!isVerbose()) {
+        return;
+    }
+    echo '[' . date('Y-m-d H:i:s') . "] DEBUG {$message}
+";
 }
 
 function isValidDate(?string $date): bool
