@@ -34,7 +34,7 @@ function main(array $argv): void
     $configFile = $options['config'] ?? DEFAULT_CONFIG_FILE;
     $config = loadConfig($configFile);
 
-    $pdo = createPdo($config['mysql']);
+    $statsConn = createStatsConnection($config);
     $dolibarr = new DolibarrClient($config['dolibarr']['base_url'], $config['dolibarr']['api_key']);
 
     $clients = fetchAllThirdParties($dolibarr, (int)($config['dolibarr']['page_size'] ?? 100));
@@ -42,7 +42,7 @@ function main(array $argv): void
     logInfo(sprintf('Found %d clients from Dolibarr.', count($clients)));
 
     foreach ($clients as $client) {
-        processClient($client, $pdo, $dolibarr, $periodStart, $periodEnd, $config);
+        processClient($client, $statsConn, $dolibarr, $periodStart, $periodEnd, $config);
     }
 
     logInfo('Billing run completed.');
@@ -79,8 +79,11 @@ function loadConfig(string $configFile): array
         $config = array_replace_recursive($config, $fileConfig);
     }
 
-    if ($config['mysql']['database'] === '' || $config['mysql']['username'] === '') {
-        throw new RuntimeException('MySQL configuration is incomplete (database/username required).');
+    $config['mysql']['use_defenvvar'] = $config['mysql']['use_defenvvar'] ?? true;
+    $config['mysql']['defenvvar_path'] = $config['mysql']['defenvvar_path'] ?? (__DIR__ . '/../scriptsphp/defenvvar.php');
+
+    if (!$config['mysql']['use_defenvvar'] && ($config['mysql']['database'] === '' || $config['mysql']['username'] === '')) {
+        throw new RuntimeException('MySQL configuration is incomplete (database/username required) when use_defenvvar=false.');
     }
 
     if ($config['dolibarr']['base_url'] === '' || $config['dolibarr']['api_key'] === '') {
@@ -90,22 +93,47 @@ function loadConfig(string $configFile): array
     return $config;
 }
 
-function createPdo(array $mysqlConfig): PDO
+function createStatsConnection(array $config): mysqli
 {
-    $dsn = sprintf(
-        'mysql:host=%s;port=%d;dbname=%s;charset=%s',
-        $mysqlConfig['host'],
-        $mysqlConfig['port'],
-        $mysqlConfig['database'],
-        $mysqlConfig['charset']
+    $mysqlConfig = $config['mysql'];
+
+    if (!empty($mysqlConfig['use_defenvvar'])) {
+        $defenvvarPath = (string)$mysqlConfig['defenvvar_path'];
+        if (!is_file($defenvvarPath)) {
+            throw new RuntimeException("defenvvar.php introuvable: {$defenvvarPath}");
+        }
+
+        require $defenvvarPath;
+        global $conn;
+
+        if (!isset($conn) || !($conn instanceof mysqli)) {
+            throw new RuntimeException('defenvvar.php n\'a pas initialisé $conn (mysqli).');
+        }
+
+        return $conn;
+    }
+
+    $mysqli = mysqli_init();
+    if ($mysqli === false) {
+        throw new RuntimeException('Unable to initialize mysqli.');
+    }
+
+    $ok = mysqli_real_connect(
+        $mysqli,
+        (string)$mysqlConfig['host'],
+        (string)$mysqlConfig['username'],
+        (string)$mysqlConfig['password'],
+        (string)$mysqlConfig['database'],
+        (int)$mysqlConfig['port']
     );
 
-    $pdo = new PDO($dsn, $mysqlConfig['username'], $mysqlConfig['password'], [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    ]);
+    if (!$ok) {
+        throw new RuntimeException('MySQL connection failed: ' . mysqli_connect_error());
+    }
 
-    return $pdo;
+    mysqli_set_charset($mysqli, (string)$mysqlConfig['charset']);
+
+    return $mysqli;
 }
 
 function fetchAllThirdParties(DolibarrClient $client, int $pageSize): array
@@ -133,7 +161,7 @@ function fetchAllThirdParties(DolibarrClient $client, int $pageSize): array
     return $all;
 }
 
-function processClient(array $client, PDO $pdo, DolibarrClient $dolibarr, string $periodStart, string $periodEnd, array $config): void
+function processClient(array $client, mysqli $statsConn, DolibarrClient $dolibarr, string $periodStart, string $periodEnd, array $config): void
 {
     $clientId = (int)($client['id'] ?? $client['rowid'] ?? 0);
     $clientName = (string)($client['name'] ?? $client['nom'] ?? ('#' . $clientId));
@@ -154,7 +182,7 @@ function processClient(array $client, PDO $pdo, DolibarrClient $dolibarr, string
     logInfo('Leagues: ' . implode(',', $leagueIds));
 
     try {
-        $matchesByLeague = countBillableMatchesByLeague($pdo, $leagueIds, $periodStart, $periodEnd, $config['billing']['league_names'] ?? []);
+        $matchesByLeague = countBillableMatchesByLeague($statsConn, $leagueIds, $periodStart, $periodEnd, $config['billing']['league_names'] ?? []);
     } catch (Throwable $e) {
         logError("Failed counting matches for client {$clientId}: {$e->getMessage()}");
         return;
@@ -223,7 +251,7 @@ function extractLeagueIds(array $client): array
     return $ids;
 }
 
-function countBillableMatchesByLeague(PDO $pdo, array $leagueIds, string $periodStart, string $periodEnd, array $leagueNames): array
+function countBillableMatchesByLeague(mysqli $statsConn, array $leagueIds, string $periodStart, string $periodEnd, array $leagueNames): array
 {
     $placeholders = implode(',', array_fill(0, count($leagueIds), '?'));
 
@@ -240,12 +268,26 @@ function countBillableMatchesByLeague(PDO $pdo, array $leagueIds, string $period
         ORDER BY tm.ligueRef ASC
     ";
 
-    $stmt = $pdo->prepare($sql);
+    $stmt = mysqli_prepare($statsConn, $sql);
+    if ($stmt === false) {
+        throw new RuntimeException('MySQL prepare failed: ' . mysqli_error($statsConn));
+    }
+
     $params = array_merge($leagueIds, [$periodStart, $periodEnd]);
-    $stmt->execute($params);
+    $types = str_repeat('i', count($leagueIds)) . 'ss';
+    bindParams($stmt, $types, $params);
+
+    if (!mysqli_stmt_execute($stmt)) {
+        throw new RuntimeException('MySQL execute failed: ' . mysqli_stmt_error($stmt));
+    }
+
+    $queryResult = mysqli_stmt_get_result($stmt);
+    if ($queryResult === false) {
+        throw new RuntimeException('MySQL result retrieval failed: ' . mysqli_stmt_error($stmt));
+    }
 
     $results = [];
-    while ($row = $stmt->fetch()) {
+    while ($row = mysqli_fetch_assoc($queryResult)) {
         $leagueId = (int)$row['league_id'];
         $results[] = [
             'league_id' => $leagueId,
@@ -254,7 +296,23 @@ function countBillableMatchesByLeague(PDO $pdo, array $leagueIds, string $period
         ];
     }
 
+    mysqli_free_result($queryResult);
+    mysqli_stmt_close($stmt);
+
     return $results;
+}
+
+function bindParams(mysqli_stmt $stmt, string $types, array $params): void
+{
+    $refs = [];
+    foreach ($params as $idx => $value) {
+        $refs[$idx] = &$params[$idx];
+    }
+
+    array_unshift($refs, $types);
+    if (!call_user_func_array([$stmt, 'bind_param'], $refs)) {
+        throw new RuntimeException('MySQL bind_param failed: ' . mysqli_stmt_error($stmt));
+    }
 }
 
 function invoiceAlreadyExists(DolibarrClient $dolibarr, int $clientId, string $marker): bool

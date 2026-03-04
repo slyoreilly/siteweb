@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 return [
     'mysql' => [
+        // Recommandé ici: réutiliser scriptsphp/defenvvar.php comme le reste du projet.
+        'use_defenvvar' => true,
+        'defenvvar_path' => __DIR__ . '/../scriptsphp/defenvvar.php',
+
+        // Fallback si use_defenvvar=false:
         'host' => '127.0.0.1',
         'port' => 3306,
         'database' => 'syncstats',
