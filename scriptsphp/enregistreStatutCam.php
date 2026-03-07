@@ -1,5 +1,11 @@
 <?php
-require '../scriptsphp/defenvvar.php';
+$defenvPath = __DIR__ . '/defenvvar.php';
+if (!is_file($defenvPath)) {
+    error_log('enregistreStatutCam: missing defenvvar.php at ' . $defenvPath);
+    http_response_code(500);
+    exit('Configuration error: defenvvar.php missing');
+}
+require $defenvPath;
 
 require  __DIR__ .'/../phpobjects/Sensor.php';
 require_once __DIR__ .'/../phpobjects/Alarm.php';
@@ -166,4 +172,5 @@ foreach($alarms as $alarm){
 	//mysqli_close($conn);	
 	
 ?>
+
 

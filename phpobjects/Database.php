@@ -16,7 +16,28 @@ class Database
 
     public static function initialize()
     {
-        require '../scriptsphp/defenvvar.php';
+        global $conn;
+
+        // Reuse global connection from defenvvar.php when already alive.
+        if ($conn instanceof mysqli && @$conn->ping()) {
+            self::$connPdo = $conn;
+            self::$init = TRUE;
+            return;
+        }
+
+        $defenvPath = __DIR__ . '/../scriptsphp/defenvvar.php';
+        if (!is_file($defenvPath)) {
+            throw new RuntimeException('Missing defenvvar.php: ' . $defenvPath);
+        }
+
+        // Avoid re-running side effects in defenvvar.php.
+        require_once $defenvPath;
+
+        if ($conn instanceof mysqli && @$conn->ping()) {
+            self::$connPdo = $conn;
+            self::$init = TRUE;
+            return;
+        }
 
         // Existing handle is usable: keep it.
         if (self::$connPdo instanceof mysqli) {
@@ -31,15 +52,16 @@ class Database
         }
 
         self::$lastError = '';
-        $conn = @new mysqli($db_host, $db_user, $db_pwd, $database);
-        if ($conn->connect_errno) {
-            self::$lastError = $conn->connect_error;
+        $localConn = @new mysqli($db_host, $db_user, $db_pwd, $database);
+        if ($localConn->connect_errno) {
+            self::$lastError = $localConn->connect_error;
             self::$connPdo = null;
             self::$init = FALSE;
             return;
         }
 
-        self::$connPdo = $conn;
+        self::$connPdo = $localConn;
+        $conn = $localConn;
         self::$init = TRUE;
     }
 }
