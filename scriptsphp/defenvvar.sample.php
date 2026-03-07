@@ -4,25 +4,29 @@ global $conn;
 
 $workEnv = getenv('WORK_ENV') ?: 'development';
 
-$db_user = 'CHANGE_DB_USER';
-$db_pwd = 'CHANGE_DB_PASSWORD';
+$db_user = "syncsta1_u01";
+$db_pwd  = "test";
 
-if ($workEnv === 'production') {
-    $db_host = 'localhost';
-    $database = 'CHANGE_DB_NAME_PROD';
+if ($workEnv == "production") {
+
+    $db_host = "localhost";
+    $database = 'syncsta1_900';
+
+    $image_loc = "clientfiles/";
+    $fileserver_loc_rep = "/home/";
+    $fileserver_baseurl = "https://syncstats.ca/";
+
     $db_port = null;
 
-    $image_loc = 'clientfiles/';
-    $fileserver_loc_rep = '/home/';
-    $fileserver_baseurl = 'https://syncstats.ca/';
 } else {
-    $db_host = ($workEnv === 'development') ? 'mysql-server' : 'localhost';
-    $database = 'CHANGE_DB_NAME_DEV';
+
+    $db_host = ($workEnv == "development") ? "mysql-server" : "localhost";
+    $database = 'syncsta1_901';
     $db_port = 3306;
 
-    $image_loc = 'devclientfiles/';
-    $fileserver_loc_rep = '/var/www/html/';
-    $fileserver_baseurl = 'https://syncstats.ddns.net/';
+    $image_loc = "devclientfiles/";
+    $fileserver_loc_rep = "/var/www/html/";
+    $fileserver_baseurl = "https://syncstats.ddns.net/";
 }
 
 // Paramètres Dolibarr nécessaires au script de facturation.
@@ -30,7 +34,7 @@ if (!getenv('DOLIBARR_BASE_URL')) {
     putenv('DOLIBARR_BASE_URL=https://dolibarr.example.com');
 }
 if (!getenv('DOLIBARR_API_KEY')) {
-    putenv('DOLIBARR_API_KEY=CHANGE_DOLIBARR_API_KEY');
+    putenv('DOLIBARR_API_KEY=CHANGE');
 }
 if (!getenv('DOLIBARR_PAGE_SIZE')) {
     putenv('DOLIBARR_PAGE_SIZE=100');

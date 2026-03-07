@@ -13,7 +13,6 @@ Options:
 
 - `--mode=brouillon|valider` (défaut `brouillon`)
 - `--limite_tiers=NN` (utile en test)
-- `--config=/chemin/vers/syncstats_dolibarr_billing.config.php`
 - `--tiers_id=ID` (forcer un tiers précis)
 - `--dry_run=0|1` (force le dry-run en CLI)
 - `--verbose=1` (affiche des logs DEBUG supplémentaires)
@@ -79,12 +78,8 @@ Le script agrège les matchs facturables par ligue depuis MySQL stats:
 
 ## Configuration
 
-Copier le sample:
+Le script s'appuie uniquement sur defenvvar.php pour la connexion MySQL:
 
-- `dolibarr/syncstats_dolibarr_billing.config.sample.php`
-  -> `dolibarr/syncstats_dolibarr_billing.config.php`
-
-Le script exige `defenvvar.php` pour la connexion MySQL:
 
 - `scriptsphp/defenvvar.php` (fichier local non versionné)
 - template disponible: `scriptsphp/defenvvar.sample.php`
