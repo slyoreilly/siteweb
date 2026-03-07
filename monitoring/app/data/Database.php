@@ -1,32 +1,51 @@
 <?php
-
-
 class Database
 {
-    /** TRUE if static variables have been initialized. FALSE otherwise
-    */
     private static $init = FALSE;
-    /** The mysqli connection object
-    */
-    public static $connPdo;
-    /** initializes the static class variables. Only runs initialization once.
-    * does not return anything.
-    */
-public static function getDB(){
-    Database::initialize();
-    return self::$connPdo;
-}
+    public static $connPdo = null;
+    public static $lastError = '';
 
-public function query($query_string){
-    return mysqli_query($this->getDB(), $query_string);
-  }
+    /**
+     * Returns a live mysqli connection or null if unavailable.
+     * Reconnects automatically if previous handle was closed.
+     */
+    public static function getDB(){
+        self::initialize();
+        return (self::$connPdo instanceof mysqli) ? self::$connPdo : null;
+    }
+
+    public function query($query_string){
+        $db = self::getDB();
+        if (!($db instanceof mysqli)) {
+            return false;
+        }
+        return mysqli_query($db, $query_string);
+    }
 
     public static function initialize()
     {
         require '../scriptsphp/defenvvar.php';
-        if (self::$init===TRUE)return;
+
+        if (self::$connPdo instanceof mysqli) {
+            if (@self::$connPdo->ping()) {
+                self::$init = TRUE;
+                return;
+            }
+            self::$connPdo = null;
+            self::$init = FALSE;
+        }
+
+        self::$lastError = '';
+        $conn = @new mysqli($db_host, $db_user, $db_pwd, $database);
+        if ($conn->connect_errno) {
+            self::$lastError = $conn->connect_error;
+            self::$connPdo = null;
+            self::$init = FALSE;
+            return;
+        }
+
+        self::$connPdo = $conn;
         self::$init = TRUE;
-        self::$connPdo = new mysqli($db_host, $db_user, $db_pwd, $database);
     }
 }
 

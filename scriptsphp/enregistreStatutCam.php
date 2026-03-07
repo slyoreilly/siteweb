@@ -4,6 +4,12 @@ require '../scriptsphp/defenvvar.php';
 require  __DIR__ .'/../phpobjects/Sensor.php';
 require_once __DIR__ .'/../phpobjects/Alarm.php';
 
+if (!isset($conn) || !($conn instanceof mysqli) || !@$conn->ping()) {
+    error_log('enregistreStatutCam: DB unavailable, aborting request.');
+    http_response_code(503);
+    exit('DB unavailable');
+}
+
 //$fichier = $_POST['fichier'];
 //echo $_POST['videos'];
 //$heure = $_POST['date'];
@@ -160,3 +166,4 @@ foreach($alarms as $alarm){
 	//mysqli_close($conn);	
 	
 ?>
+

@@ -37,7 +37,17 @@ class Message{
             $queryIns = "INSERT INTO SensorLog (sensorTypeId, telId,value,chrono) ".
             "VALUES ('{$this->sensorType}','{$this->telId}','{$this->value}','{$this->chrono}')";
 
-            $retVal =  mysqli_query(Database::getDB(),$queryIns) or die("Erreur: ".$queryIns."\n".mysqli_error(Database::getDB()));
+            $db = Database::getDB();
+            if (!($db instanceof mysqli) || !@$db->ping()) {
+                error_log('Message::db_dump skipped: DB unavailable. ' . Database::$lastError);
+                return false;
+            }
+
+            $retVal = $db->query($queryIns);
+            if ($retVal === false) {
+                error_log("Erreur: ".$queryIns."\n".$db->error);
+                return false;
+            }
  
         return  $retVal ;
     }
@@ -66,3 +76,4 @@ class Message{
 
 
 ?>
+

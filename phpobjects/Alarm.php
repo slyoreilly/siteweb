@@ -27,28 +27,40 @@ class Alarm{
     }
 
     public function loadAlarmsFromTelId($telId){
-        $ret = mysqli_query(Database::getDB(),
-                "SELECT *
-				FROM Alarms
-					WHERE telId='{$telId}'
-                ")or die(mysqli_error(Database::getDB())." SELECT");
-			while ($rangSel = mysqli_fetch_array($ret))
-			{
-                $this->setData(
-                    $rangSel['alarmId'],
-                    $rangSel['target'],
-                    $rangSel['telId'],
-                    $rangSel['operand'],
-                    $rangSel['sensorType'],
-                    $rangSel['value'],
-                    $rangSel['ringing'],
-                    $rangSel['cv'],
-                    $rangSel['alarmClass']
-                );
-            }
+        $db = Database::getDB();
+        if (!($db instanceof mysqli) || !@$db->ping()) {
+            error_log('Alarm::loadAlarmsFromTelId skipped: DB unavailable. ' . Database::$lastError);
+            return false;
+        }
 
+        $query = "SELECT *
+                FROM Alarms
+                    WHERE telId='{$telId}'
+                ";
+        $ret = $db->query($query);
+        if ($ret === false) {
+            error_log($db->error . " SELECT");
+            return false;
+        }
 
+        while ($rangSel = mysqli_fetch_array($ret))
+        {
+            $this->setData(
+                $rangSel['alarmId'],
+                $rangSel['target'],
+                $rangSel['telId'],
+                $rangSel['operand'],
+                $rangSel['sensorType'],
+                $rangSel['value'],
+                $rangSel['ringing'],
+                $rangSel['cv'],
+                $rangSel['alarmClass']
+            );
+        }
+
+        return true;
     }
+
     private function checkTimeActive($slot){
         if(strcasecmp(date("l"),$slot->start->day)==0){
             $timeStart = strtotime($slot->start->day." ".$slot->start->time);
@@ -186,14 +198,32 @@ class Alarm{
          $queryUp = "UPDATE Alarms 
              SET ringing=1 
              WHERE alarmId= '{$this->alarmId}'";
-         mysqli_query(Database::getDB(),$queryUp) or die("Erreur: ".$queryUp."\n".mysqli_error(Database::getDB()));
+         $db = Database::getDB();
+         if (!($db instanceof mysqli) || !@$db->ping()) {
+             error_log('Alarm::ring skipped: DB unavailable. ' . Database::$lastError);
+             return false;
+         }
+         if ($db->query($queryUp) === false) {
+             error_log("Erreur: ".$queryUp."\n".$db->error);
+             return false;
+         }
+         return true;
 
     }
     public function shut(){
         $queryUp = "UPDATE Alarms 
         SET ringing=0
         WHERE alarmId= '{$this->alarmId}'";
-    mysqli_query(Database::getDB(),$queryUp) or die("Erreur: ".$queryUp."\n".mysqli_error(Database::getDB()));
+        $db = Database::getDB();
+        if (!($db instanceof mysqli) || !@$db->ping()) {
+            error_log('Alarm::shut skipped: DB unavailable. ' . Database::$lastError);
+            return false;
+        }
+        if ($db->query($queryUp) === false) {
+            error_log("Erreur: ".$queryUp."\n".$db->error);
+            return false;
+        }
+        return true;
 
     }
 
@@ -213,7 +243,17 @@ class Alarm{
             $queryIns = "INSERT INTO SensorLog (sensorTypeId, telId,value,chrono) ".
             "VALUES ('{$this->sensorType}','{$this->telId}','{$this->value}','{$this->chrono}')";
 
-            $retVal =  mysqli_query(Database::getDB(),$queryIns) or die("Erreur: ".$queryIns."\n".mysqli_error(Database::getDB()));
+            $db = Database::getDB();
+            if (!($db instanceof mysqli) || !@$db->ping()) {
+                error_log('Alarm::create skipped: DB unavailable. ' . Database::$lastError);
+                return false;
+            }
+
+            $retVal = $db->query($queryIns);
+            if ($retVal === false) {
+                error_log("Erreur: ".$queryIns."\n".$db->error);
+                return false;
+            }
  
         return  $retVal ;
     }
@@ -223,3 +263,4 @@ class Alarm{
 
 
 ?>
+
