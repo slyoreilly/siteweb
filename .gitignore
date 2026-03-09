@@ -27,3 +27,4 @@ php.ini
 syncscript/error_log_vieux
 scriptsphp/error_log
 /*/*.bak
+/*/error_log

@@ -332,7 +332,7 @@
             };
         }
 
-        function analyseBDCameraLog(texteBrut) {
+        function analyseBDCameraLogLegacy(texteBrut) {
             var lignes = (texteBrut || '').split(/\r?\n/);
             var stats = {
                 lignesAnalysees: 0,
@@ -340,7 +340,8 @@
                 lignesInvalides: 0,
                 lignesNonReconues: [],
                 parsedRows: [],
-                types: {}
+                types: {},
+                source: 'legacy'
             };
 
             var dernierBase = null;
@@ -389,7 +390,215 @@
 
             return stats;
         }
+        function detecteSourceBDLog(texteBrut) {
+            var txt = String(texteBrut || '');
+            if (/\(room\)/i.test(txt) || /\[LEGACY_CP_VIEW\]/i.test(txt)) {
+                return 'room';
+            }
+            if (/(^|\n)\s*CP:\s*/i.test(txt)) {
+                return 'legacy';
+            }
+            return 'inconnue';
+        }
 
+        function extraitNomFichierDepuisDocId(docId) {
+            var v = String(docId || '').trim();
+            if (v === '') {
+                return '';
+            }
+            var slash = Math.max(v.lastIndexOf('/'), v.lastIndexOf('\\'));
+            return slash >= 0 ? v.substring(slash + 1) : v;
+        }
+
+        function parseEventTypeRoom(details, fallbackCode) {
+            if (details && details.eventCode != null && details.eventCode !== '') {
+                var evt = parseInt(details.eventCode, 10);
+                if (!isNaN(evt)) {
+                    return evt;
+                }
+            }
+            var f = parseInt(fallbackCode, 10);
+            return isNaN(f) ? 'inconnu' : f;
+        }
+
+        function analyseBDCameraLogRoom(texteBrut) {
+            var lignes = (texteBrut || '').split(/\r?\n/);
+            var stats = {
+                lignesAnalysees: 0,
+                lignesValides: 0,
+                lignesInvalides: 0,
+                lignesNonReconues: [],
+                parsedRows: [],
+                types: {},
+                source: 'room'
+            };
+
+            var inSection = false;
+            var rowPrefix = null;
+            var jsonBuffer = '';
+            var dernierBase = null;
+
+            function pousseTypeEtEtat(parsed) {
+                var typeKey = String(parsed.typeVideo);
+                var etatKey = String(parsed.etatSync);
+                if (stats.types[typeKey] == null) {
+                    stats.types[typeKey] = { total: 0, etats: {} };
+                }
+                stats.types[typeKey].total++;
+                if (stats.types[typeKey].etats[etatKey] == null) {
+                    stats.types[typeKey].etats[etatKey] = 0;
+                }
+                stats.types[typeKey].etats[etatKey]++;
+            }
+
+            function finaliseLigneRoom(prefix, jsonTxt, codeTxt, rawTxt) {
+                var details = {};
+                try {
+                    details = JSON.parse(jsonTxt || '{}');
+                } catch (e) {
+                    details = {};
+                }
+
+                var etatSync = parseInt(prefix.etatSyncTxt, 10);
+                if (isNaN(etatSync)) {
+                    etatSync = prefix.etatSyncTxt;
+                }
+
+                var chrono = parseInt(prefix.chronoTxt, 10);
+                if (isNaN(chrono)) {
+                    chrono = null;
+                }
+
+                var duree = parseInt(prefix.dureeTxt, 10);
+                if (isNaN(duree)) {
+                    duree = null;
+                }
+
+                var reference = parseInt(details.reference, 10);
+                if (isNaN(reference)) {
+                    reference = null;
+                }
+
+                var code = parseInt(codeTxt, 10);
+                if (isNaN(code)) {
+                    code = null;
+                }
+
+                var typeVideo = parseEventTypeRoom(details, code);
+                var typeVideoOriginal = typeVideo;
+                if (String(etatSync) === '2323') {
+                    typeVideo = 2323;
+                }
+
+                var nomFichier = extraitNomFichierDepuisDocId(prefix.cutDocId);
+                var camId = '';
+                var mCam = /_(\d+)\.[^.]+$/.exec(nomFichier);
+                if (mCam) {
+                    camId = mCam[1];
+                }
+
+                var parsed = {
+                    raw: rawTxt,
+                    idxLocal: prefix.idxLocalTxt,
+                    videoBase: prefix.baseDocId,
+                    nomFichier: nomFichier,
+                    nomMatch: prefix.matchIdTxt || '-',
+                    chrono: chrono,
+                    duree: duree,
+                    typeVideo: typeVideo,
+                    typeVideoOriginal: typeVideoOriginal,
+                    reference: reference,
+                    etatSync: etatSync,
+                    camId: camId
+                };
+
+                if (String(parsed.etatSync) === '2626' && dernierBase != null) {
+                    parsed.chronoBasePrecedent = dernierBase.chrono;
+                    parsed.dureeBasePrecedente = dernierBase.duree;
+                }
+
+                stats.parsedRows.push(parsed);
+                stats.lignesValides++;
+
+                if (String(parsed.etatSync) === '2323') {
+                    dernierBase = { chrono: parsed.chrono, duree: parsed.duree };
+                }
+                pousseTypeEtEtat(parsed);
+            }
+
+            for (var i = 0; i < lignes.length; i++) {
+                var ligneBrute = lignes[i];
+                var ligne = String(ligneBrute || '').trim();
+                if (ligne === '') {
+                    continue;
+                }
+
+                if (!inSection) {
+                    if (/^\[LEGACY_CP_VIEW\]\s*$/i.test(ligne)) {
+                        inSection = true;
+                    }
+                    continue;
+                }
+
+                if (rowPrefix == null) {
+                    if (/^_id\t/i.test(ligne)) {
+                        continue;
+                    }
+
+                    var mDeb = /^([0-9]+)\t([^\t]*)\t([^\t]*)\t([^\t]*)\t([0-9]+)\t([0-9]+)\t([0-9]+)\t(.*)$/.exec(ligneBrute);
+                    if (!mDeb) {
+                        stats.lignesAnalysees++;
+                        stats.lignesInvalides++;
+                        stats.lignesNonReconues.push(ligne);
+                        continue;
+                    }
+
+                    rowPrefix = {
+                        idxLocalTxt: mDeb[1],
+                        baseDocId: (mDeb[2] || '').trim(),
+                        cutDocId: (mDeb[3] || '').trim(),
+                        matchIdTxt: (mDeb[4] || '').trim(),
+                        chronoTxt: (mDeb[5] || '').trim(),
+                        dureeTxt: (mDeb[6] || '').trim(),
+                        etatSyncTxt: (mDeb[7] || '').trim()
+                    };
+
+                    jsonBuffer = (mDeb[8] || '').trim();
+                    stats.lignesAnalysees++;
+
+                    var mInline = /^(.*)\}\t([0-9]+)\s*$/.exec(jsonBuffer);
+                    if (mInline) {
+                        finaliseLigneRoom(rowPrefix, (mInline[1] + '}').trim(), mInline[2], ligneBrute);
+                        rowPrefix = null;
+                        jsonBuffer = '';
+                    }
+                    continue;
+                }
+
+                jsonBuffer += '\n' + ligneBrute;
+                var mFin = /^(.*)\}\t([0-9]+)\s*$/.exec(jsonBuffer);
+                if (mFin) {
+                    finaliseLigneRoom(rowPrefix, (mFin[1] + '}').trim(), mFin[2], rowPrefix.idxLocalTxt + '\t...');
+                    rowPrefix = null;
+                    jsonBuffer = '';
+                }
+            }
+
+            if (rowPrefix != null) {
+                stats.lignesInvalides++;
+                stats.lignesNonReconues.push((rowPrefix.idxLocalTxt || '?') + ' (ligne ROOM incomplete)');
+            }
+
+            return stats;
+        }
+
+        function analyseBDCameraLog(texteBrut) {
+            var source = detecteSourceBDLog(texteBrut);
+            if (source === 'room') {
+                return analyseBDCameraLogRoom(texteBrut);
+            }
+            return analyseBDCameraLogLegacy(texteBrut);
+        }
         function valideCorrespondancesVideo(rows, telId) {
             return $.ajax({
                 url: '/scriptsphp/valideBDLogVideo.php',
@@ -476,8 +685,13 @@
             container.append($('<p></p>').append(lienOriginal));
 
             if (resume.analyseBDCamera != null) {
+                container.append($('<p></p>').text('Source detectee: ' + (resume.analyseBDCamera.source || 'inconnue')));
                 container.append($('<p></p>').text('BD caméra: ' + resume.analyseBDCamera.lignesValides + ' lignes valides sur ' + resume.analyseBDCamera.lignesAnalysees + ' analysées.'));
-                container.append($('<p></p>').text('Règle type: la vidéo de base est déduite par étatSync=2323.'));
+                if (resume.analyseBDCamera.source === 'room') {
+                    container.append($('<p></p>').text('Regle Room: type derive de cleValeur.eventCode; video de base forcee a 2323 quand etatSync=2323.'));
+                } else {
+                    container.append($('<p></p>').text('Regle legacy: la video de base est deduite par etatSync=2323.'));
+                }
 
                 var table = $('<table></table>').addClass('c_tableau');
                 var thead = $('<thead></thead>').append(
@@ -786,6 +1000,9 @@
                 var contentType = jqXHR.getResponseHeader('Content-Type');
                 var resume = construitResume(responseText, contentType, urlNormalisee, infoUrl);
                 ajouteLogDebug('Log téléchargé. Lignes analysées: ' + (resume.analyseBDCamera ? resume.analyseBDCamera.lignesAnalysees : 0));
+                if (resume.analyseBDCamera) {
+                    ajouteLogDebug('Source detectee: ' + (resume.analyseBDCamera.source || 'inconnue'));
+                }
 
                 if (resume.analyseBDCamera != null) {
                     setProgress(55, 'Parsing terminé, validation concordance...');
@@ -928,3 +1145,4 @@
 <div id="divDroite"></div>
 </body>
 </html>
+

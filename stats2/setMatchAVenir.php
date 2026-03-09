@@ -28,9 +28,13 @@ $appareils = json_decode($appareils_json, true);
 
 $matchIdRef = substr($dateDeb, 0, 4) . "/" . substr($dateDeb, 5, 2) . "/" . substr($dateDeb, 8, 2) . "_" . $eqDom . "_" . $eqVis;
 
-$result = mysqli_query($conn,"select timediff(now(),convert_tz(now(),@@global.time_zone,'+00:00'))");
-$defTimeZone =mysqli_data_seek($result, 0);
-mysqli_query($conn,"SET time_zone='+0:00'");
+$result = mysqli_query($conn, "SELECT @@session.time_zone AS tz");
+$rowTz = $result ? mysqli_fetch_assoc($result) : null;
+$defTimeZone = isset($rowTz['tz']) ? (string)$rowTz['tz'] : '+00:00';
+if ($defTimeZone === '' || strtoupper($defTimeZone) === 'SYSTEM') {
+    $defTimeZone = '+00:00';
+}
+safeSetTimeZone($conn, '+00:00');
 
 
 
@@ -39,7 +43,7 @@ function getAlignement($connGA,$eqId,$defTimeZone)
 
 
 
-	mysqli_query($connGA,"SET time_zone='{$defTimeZone}'");
+	safeSetTimeZone($connGA, (string)$defTimeZone);
 	$resultJoueur = mysqli_query($connGA, "SELECT joueur_id
 													FROM TableJoueur
 													JOIN abonJoueurEquipe
@@ -47,7 +51,7 @@ function getAlignement($connGA,$eqId,$defTimeZone)
 														WHERE equipeId='{$eqId}'
 														AND debutAbon<=DATE(NOW())
 														AND finAbon>DATE(NOW())") or die(mysqli_error($connGA));
-	mysqli_query($connGA,"SET time_zone='+0:00'");
+    safeSetTimeZone($connGA, '+00:00');
 	$alignement=array();
 	//$alignement = "[";
 	while ($rangeeJoueur = mysqli_fetch_array($resultJoueur)) {
@@ -56,6 +60,26 @@ array_push($alignement,$rangeeJoueur['joueur_id']);
 }
 	return json_encode($alignement);
 
+}
+
+
+function safeSetTimeZone($conn, $timeZone)
+{
+    if (!($conn instanceof mysqli)) {
+        return false;
+    }
+
+    $tz = trim((string)$timeZone);
+    if ($tz === '') {
+        return false;
+    }
+
+    $escaped = mysqli_real_escape_string($conn, $tz);
+    try {
+        return @mysqli_query($conn, "SET time_zone='$escaped'") === true;
+    } catch (Throwable $e) {
+        return false;
+    }
 }
 
 function getAlignement2($connGA,$eqId)
