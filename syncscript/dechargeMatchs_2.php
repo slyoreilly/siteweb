@@ -1,10 +1,10 @@
 <?php
 
 include_once ($_SERVER['DOCUMENT_ROOT'].DIRECTORY_SEPARATOR . "syncstatsconfig.php");
-require("../scriptsphp/calculeMatch2.php");  /// N'appelle rien, défini seulement la fonction
+require("../scriptsphp/calculeMatch2.php");  /// N'appelle rien, dÃƒÂ©fini seulement la fonction
 											 /// CalculeMatch(ligueId);
 
-$arrMatchs=Array(); // On ne sait pas vraiment quoi faire avec ça...
+$arrMatchs=Array(); // On ne sait pas vraiment quoi faire avec ÃƒÂ§a...
 require '../scriptsphp/defenvvar.php';
 require_once '../scriptsphp/calculeUnMatch.php';
 
@@ -59,29 +59,14 @@ if (strcmp(TYPE_TERMINAL, 'syncboard') == 0) {
 foreach ($leMatch as $evenement) {
 	
 	
-	// Regarder si on a un nouveau match. Si oui (et que ce n'est pas le premier), calculer l'ancien.
 	if($memNoMatchId!=$noMatchId){
-		if($workEnv=="production"){
-			$url = 'http://syncstats.com/scriptsphp/calculeUnMatch.php';
-			 }else{
-				$url = 'http://vieuxsite.sm.syncstats.ca/scriptsphp/calculeUnMatch.php';
-			 }
-					#$url = 'http://syncstats.com/scriptsphp/calculeUnMatch.php';
-					$data = array('noMatchId' => $memNoMatchId);
-
-					// use key 'http' even if you send the request to https://...
-					$options = array(
-    					'http' => array(
-        				'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-        				'method'  => 'POST',
-        				'content' => http_build_query($data)
-    					)
-					);
-					$context  = stream_context_create($options);
-					$result = file_get_contents($url, false, $context);
-					if ($result === FALSE) { 						error_log("erreur dans calcule match, l. 86",0);
-					}
-					$memNoMatchId=$noMatchId;
+		if ($memNoMatchId != 0) {
+			$result = calculeUnMatchByNoMatchId($memNoMatchId);
+			if ($result === false) {
+                error_log("erreur dans calcule match, l. 86", 0);
+			}
+		}
+		$memNoMatchId=$noMatchId;
 	}
 //$message = "Seq evenement: ".$evenement['type'].PHP_EOL;
 	//$log  = $message;
@@ -112,7 +97,7 @@ foreach ($leMatch as $evenement) {
 				$qDel = "DELETE FROM TableEvenement0 WHERE chrono='{$evenement['chrono']}' AND match_event_id='{$evenement['match_id']}'";
 				mysqli_query($conn,$qDel) or die(mysqli_error($conn) . $qDel);
 			//	break;		 NO BREAK!!!!!!!
-			case 15 :  // Vérifie ou met à jour
+			case 15 :  // VÃƒÂ©rifie ou met ÃƒÂ  jour
 				$arrCheckButs= array();
 				$arrCheckPasses= array();
 				$arrCheckPlus= array();
@@ -485,7 +470,12 @@ foreach ($leMatch as $evenement) {
 			$noMatch = mysqli_fetch_row($resMatch);
 
 			$noMatchId = $noMatch[0];
-			include (__DIR__ . '/scriptsphp/calculeUnMatch.php');
+			if ($noMatchId != 0) {
+				$result = calculeUnMatchByNoMatchId($noMatchId);
+				if ($result === false) {
+					error_log("erreur dans calcule match, remove", 0);
+				}
+			}
 
 				
 
@@ -814,7 +804,7 @@ foreach ($leMatch as $evenement) {
 				/*?><?php*/
 				$qMatch = "SELECT cleValeur, match_id FROM TableMatch WHERE matchIdRef = '{$evenement['match_id']}'";
 				$testmatch = mysqli_query($conn,$qMatch) or die(mysqli_error($conn) . " Select " . $evenement['db_id']);
-				//echo "2";z°
+				//echo "2";zÃ‚Â°
 				if (mysqli_num_rows($testmatch) == 0) {
 					//echo "3";
 					//			include($_SERVER['DOCUMENT_ROOT'] . '/scriptsphp/actualiseMatch.php');
@@ -837,7 +827,7 @@ foreach ($leMatch as $evenement) {
 				//											echo $monCV['scoreFinal']." ".isset($monCV['scoreFinal'])." ".$evenement['cv'];
 				//echo "6";
 				
-				// Section enlevée pour accepter les cas d'utilisation de score entré par chacun des capitaines.
+				// Section enlevÃƒÂ©e pour accepter les cas d'utilisation de score entrÃƒÂ© par chacun des capitaines.
 				/*if (isset($evenement['cv']['scoreFinal'])) {
 
 					$i1 = stripos($evenement['cv']['scoreFinal'], '-');
@@ -908,7 +898,7 @@ foreach ($leMatch as $evenement) {
 	//echo json_encode($syncOK);
 }
 /*   Quarantaire 02-2026
-/// Voir explications début du foreach
+/// Voir explications dÃƒÂ©but du foreach
 	if($noMatchId!=0){
 		 if($workEnv=="production"){
 		$url = 'http://syncstats.com/scriptsphp/calculeUnMatch.php';
@@ -935,23 +925,18 @@ foreach ($leMatch as $evenement) {
 	}*/
 if ($noMatchId != 0) {
 
-    // Protection anti-boucle : éviter recalcul immédiat du même match
+    // Protection anti-boucle : eviter recalcul immediat du meme match
     if (!isset($memNoMatchId) || $memNoMatchId != $noMatchId) {
-
-        // Appel direct PHP au lieu d'un appel HTTP
-        $_POST['noMatchId'] = $noMatchId;
-
         try {
-
-            require_once($_SERVER['DOCUMENT_ROOT'] . "/scriptsphp/calculeUnMatch.php");
-
+            $result = calculeUnMatchByNoMatchId($noMatchId);
+            if ($result === false) {
+                error_log("Erreur calcule match (interne) : aucun match calcule pour noMatchId=" . $noMatchId);
+            }
         } catch (Throwable $e) {
-
             error_log("Erreur calcule match (interne) : " . $e->getMessage());
 
             // Protection anti-flood
             sleep(2);
-
         }
 
         $memNoMatchId = $noMatchId;
