@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require '../scriptsphp/defenvvar.php';
 $tableEq = 'TableEquipe';
@@ -8,14 +8,10 @@ $tableJoueur = 'TableJoueur';
 $tableAbon = 'AbonnementLigue';
 $tableUser = 'TableUser';
 
-$connMJ = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-// Check connection
+$connMJ = $conn;
 if (!$connMJ) {
-	die("Connection failed: " . mysqli_connect_error());
+    die("Connection failed: " . mysqli_connect_error());
 }
-
-mysqli_query($connMJ, "SET NAMES 'utf8'");
-mysqli_query($connMJ, "SET CHARACTER SET 'utf8'");
 	
 
 $videofile = $_GET['videofile'];
@@ -32,6 +28,5 @@ $nouvVideo  = $videofile.'?x='.rand(1000,9999);
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-mysqli_close($connMJ);
 
 ?>

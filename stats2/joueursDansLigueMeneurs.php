@@ -202,7 +202,7 @@ $resultEvent = mysqli_query($conn,"SELECT TableEvenement0.*, TableJoueur.NomJoue
 $vecTemps['postQ2'] = time();
 while ($rangeeEv = mysqli_fetch_array($resultEvent)) {
 	if (in_array($rangeeEv['event_id'], $evenement) == false) {
-		array_push($evenement, $JoueurSommeEvenement[$I0]['event_id']);
+		array_push($evenement, $rangeeEv['event_id']);
 		$JoueurSommeEvenement[$I0]['event_id'] = $rangeeEv['event_id'];
 		$JoueurSommeEvenement[$I0]['joueur_event_ref'] = $rangeeEv['joueur_event_ref'];
 		$JoueurSommeEvenement[$I0]['code'] = $rangeeEv['code'];

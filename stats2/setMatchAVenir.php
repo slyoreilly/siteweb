@@ -130,33 +130,47 @@ function getAlignement2($connGA,$eqId)
 function setPresences($connGA,$matchId,$alignement,$domVis)
 {
 	try{
+		$hasNumeroColumn = false;
+		$retNumero = mysqli_query($connGA, "SHOW COLUMNS FROM Presences LIKE 'numero'");
+		if ($retNumero && mysqli_num_rows($retNumero) > 0) {
+			$hasNumeroColumn = true;
+		}
 		foreach ($alignement as $joueur) {
-			$sql = "INSERT INTO Presences (joueurId, matchId, domVis, positionId, numero, statut, updatedAt, updatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-			ON DUPLICATE KEY UPDATE domVis = VALUES(domVis), positionId = VALUES(positionId), numero = VALUES(numero), statut = VALUES(statut), updatedAt = VALUES(updatedAt), updatedBy = VALUES(updatedBy)";
+			if ($hasNumeroColumn) {
+				$sql = "INSERT INTO Presences (joueurId, matchId, domVis, positionId, numero, statut, updatedAt, updatedBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+				ON DUPLICATE KEY UPDATE domVis = VALUES(domVis), positionId = VALUES(positionId), numero = VALUES(numero), statut = VALUES(statut), updatedAt = VALUES(updatedAt), updatedBy = VALUES(updatedBy)";
+			} else {
+				$sql = "INSERT INTO Presences (joueurId, matchId, domVis, positionId, statut, updatedAt, updatedBy) VALUES (?, ?, ?, ?, ?, ?, ?)
+				ON DUPLICATE KEY UPDATE domVis = VALUES(domVis), positionId = VALUES(positionId), statut = VALUES(statut), updatedAt = VALUES(updatedAt), updatedBy = VALUES(updatedBy)";
+			}
 		
-			// PrÃ©paration de la requÃªte
+			// Préparation de la requête
 			$stmt = $connGA->prepare($sql);
 			$createur = "syncstats.com";
 			$maDate = (new DateTime())->format('Y-m-d H:i:s');
 
-			$stmt->bind_param("iiiiiiss", $joueur['joueurId'], $matchId, $domVis,$joueur['position'],$joueur['numero'],$joueur['statut'],$maDate, $createur);
+			if ($hasNumeroColumn) {
+				$stmt->bind_param("iiiiiiss", $joueur['joueurId'], $matchId, $domVis,$joueur['position'],$joueur['numero'],$joueur['statut'],$maDate, $createur);
+			} else {
+				$stmt->bind_param("iiiiiss", $joueur['joueurId'], $matchId, $domVis,$joueur['position'],$joueur['statut'],$maDate, $createur);
+			}
 		
-			// ExÃ©cution de la requÃªte
+			// Exécution de la requête
 			$stmt->execute();
 			
-			// VÃ©rification des erreurs
+			// Vérification des erreurs
 			if ($stmt->errno) {
-				error_log("Erreur d'exÃ©cution de la requÃªte : (" . $stmt->errno . ") " . $stmt->error);
+				error_log("Erreur d'exécution de la requête : (" . $stmt->errno . ") " . $stmt->error);
 			}
 			
-			// VÃ©rification du nombre de lignes affectÃ©es
+			// Vérification du nombre de lignes affectées
 			if ($stmt->affected_rows == 0) {
-				error_log("Aucune ligne n'a Ã©tÃ© modifiÃ©e par la requÃªte.");
+				error_log("Aucune ligne n'a été modifiée par la requête.");
 			}
 			
-			// VÃ©rification des donnÃ©es
+			// Vérification des données
 			if ($stmt->affected_rows > 0 && $stmt->affected_rows != count($alignement)) {
-				error_log("Le nombre de lignes affectÃ©es ne correspond pas au nombre de joueurs dans l'alignement.");
+				error_log("Le nombre de lignes affectées ne correspond pas au nombre de joueurs dans l'alignement.");
 			}
 		}
 	}

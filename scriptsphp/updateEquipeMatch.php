@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 header('Content-Type: application/json; charset=utf-8');
 
 require '../scriptsphp/defenvvar.php';
@@ -24,21 +24,11 @@ if ($ancienneEquipeId === $nouvelleEquipeId) {
     exit;
 }
 
-if($workEnv=="production"){
-    $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-} else {
-    $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database, $db_port);
-}
-
 if (!$conn) {
     http_response_code(500);
     echo json_encode(array('ok' => false, 'error' => 'Connexion BD impossible.'));
     exit;
 }
-
-mysqli_query($conn, "SET NAMES 'utf8'");
-mysqli_query($conn, "SET CHARACTER SET 'utf8'");
-mysqli_set_charset($conn, 'utf8');
 
 $sqlPerm = "SELECT al.type AS permission
             FROM AbonnementLigue al
@@ -201,5 +191,4 @@ if ($ok) {
     echo json_encode(array('ok' => false, 'error' => 'Erreur lors de la mise à jour.'));
 }
 
-mysqli_close($conn);
 ?>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /////////////////////////////////////////////////////////////
 //
 //  Définitions des variables
@@ -31,20 +31,11 @@ $tableEquipe = 'TableEquipe';
 //
 ////////////////////////////////////////////////////////////
 if (!isset($deSyncMatch)) {
-	if($workEnv=="production"){
-$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-} else{
-	$conn = mysqli_connect($db_host, $db_user, $db_pwd, $database, $db_port);
-}
-// Check connection
-if (!$conn) {
-	die("Connection failed: " . mysqli_connect_error());
-}
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
+    }
 
-mysqli_query($conn, "SET NAMES 'utf8'");
-mysqli_query($conn, "SET CHARACTER SET 'utf8'");
-mysqli_set_charset($conn, "utf8");
-mysqli_query($conn, "
+    mysqli_query($conn, "
 SET SESSION sql_mode = REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', '')
 ");
 }

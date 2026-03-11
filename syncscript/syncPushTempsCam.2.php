@@ -12,7 +12,7 @@ if (isset( $_POST['arenaId'])) {$arena = $_POST['arenaId'];
 }
 
 $heure = $_POST['heure'];
-error_log("syncPushTempsCam.2 - recu POST: " . json_encode($_POST));
+//error_log("syncPushTempsCam.2 - recu POST: " . json_encode($_POST));
 $maxSec = 0;
 if (isset( $_POST['timeout'])) {$maxSec = $_POST['timeout'];
 }
@@ -375,7 +375,7 @@ if (!empty($demandesAjoutVideoModifiees) && isset($dernierMatch)) {
 foreach($matchPeriode as &$unMatch){
 
 	if(!is_null($unMatch['arenaId'])){
-		error_log("dans foreach ".$unMatch['arenaId'])	;
+//		error_log("dans foreach ".$unMatch['arenaId'])	;
 		$qSelArena="SELECT * From TableArena
 			WHERE arenaId={$unMatch['arenaId']}";
 		$resArena = mysqli_query($conn,$qSelArena) or die(mysqli_error($conn) . $qSelArena);
@@ -512,7 +512,7 @@ $comp =$maxSec-30000;
 
 //echo json_encode($Sommaire);
 $retourSyncPushTempsCam2 = json_encode($repSite);
-error_log("syncPushTempsCam.2 - retour: " . $retourSyncPushTempsCam2);
+//error_log("syncPushTempsCam.2 - retour: " . $retourSyncPushTempsCam2);
 echo $retourSyncPushTempsCam2;
 //mysqli_close($conn);
 //	header("HTTP/1.1 200 OK");

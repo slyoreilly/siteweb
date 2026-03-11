@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 header('Content-Type: application/json; charset=utf-8');
 
 require '../scriptsphp/defenvvar.php';
@@ -18,21 +18,11 @@ if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
     exit;
 }
 
-if($workEnv=="production"){
-    $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
-} else {
-    $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database, $db_port);
-}
-
 if (!$conn) {
     http_response_code(500);
     echo json_encode(array('error' => 'Connexion BD impossible.'));
     exit;
 }
-
-mysqli_query($conn, "SET NAMES 'utf8'");
-mysqli_query($conn, "SET CHARACTER SET 'utf8'");
-mysqli_set_charset($conn, 'utf8');
 
 $sql = "SELECT te.equipe_id AS id, te.nom_equipe AS nom
         FROM TableEquipe te
@@ -63,5 +53,4 @@ while ($row = mysqli_fetch_assoc($result)) {
 echo json_encode($equipes);
 
 mysqli_stmt_close($stmt);
-mysqli_close($conn);
 ?>

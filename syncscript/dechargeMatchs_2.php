@@ -6,6 +6,7 @@ require("../scriptsphp/calculeMatch2.php");  /// N'appelle rien, défini seuleme
 
 $arrMatchs=Array(); // On ne sait pas vraiment quoi faire avec ça...
 require '../scriptsphp/defenvvar.php';
+require_once '../scriptsphp/calculeUnMatch.php';
 
 
 

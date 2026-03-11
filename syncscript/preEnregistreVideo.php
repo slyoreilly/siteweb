@@ -11,7 +11,9 @@ error_log("preEnregistre: ".$_POST['videos']);
 $params =json_decode($_POST['videos'],true);
 $heure = $_POST['heure'];
 $emplacementTmp =  parse_url($_POST['emplacement']);
-$emplacement = $emplacementTmp['host'].$emplacementTmp['path'];
+$emplacementHost = is_array($emplacementTmp) && isset($emplacementTmp['host']) ? $emplacementTmp['host'] : '';
+$emplacementPath = is_array($emplacementTmp) && isset($emplacementTmp['path']) ? $emplacementTmp['path'] : '';
+$emplacement = $emplacementHost.$emplacementPath;
 $avanceServeur=time()*1000-$heure;
 
 	
@@ -193,3 +195,4 @@ $ret = json_encode($syncOK);
 	{echo "erreur, count(syncOK:): ".count($syncOK)."- count($params): ".count($params);}
 	//mysqli_close($conn);
 ?>
+
