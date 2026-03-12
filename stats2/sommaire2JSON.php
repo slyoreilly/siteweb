@@ -11,6 +11,13 @@
 
 require '../scriptsphp/defenvvar.php';
 
+// Logs serveur minimaux pour comprendre pourquoi des buts presents en
+// base peuvent disparaitre avant la reponse JSON finale.
+function sommaire2JsonLog($message)
+{
+	error_log('[sommaire2JSON] ' . $message);
+}
+
 
 //////////////////////////////////////////////////////
 //
@@ -142,7 +149,7 @@ $Sommaire['eqVisId']=$mEqVisId;
 	TableEvenement0
 		INNER JOIN
 	TableMatch ON (TableMatch.matchIdRef = TableEvenement0.match_event_id)
-		INNER JOIN
+		LEFT JOIN
 	TableJoueur ON (TableEvenement0.joueur_event_ref = TableJoueur.joueur_id)
 		INNER JOIN
 	TableEquipe ON (TableEquipe.equipe_id = TableEvenement0.equipe_event_id)
@@ -200,9 +207,27 @@ $Sommaire['eqVisId']=$mEqVisId;
 	
 
 $setupMySql = mysqli_query($conn,"SET SQL_BIG_SELECTS=1" ) or die('Cannot complete SETUP BIG SELECTS because: ' . mysqli_error($conn));
-$resultEvent = mysqli_query($conn,$qEv) or die(mysqli_error($conn));  	
+
+$resultCountButs = mysqli_query($conn,
+"SELECT
+    COUNT(*) AS nb_buts,
+    SUM(CASE WHEN TableJoueur.joueur_id IS NULL THEN 1 ELSE 0 END) AS nb_sans_joueur
+ FROM TableEvenement0
+ LEFT JOIN TableJoueur
+    ON (TableEvenement0.joueur_event_ref = TableJoueur.joueur_id)
+ WHERE match_event_id = '{$matchID}'
+    AND code = 0") or die(mysqli_error($conn));
+
+$rangeeCountButs = mysqli_fetch_assoc($resultCountButs);
+$nbButsBruts = isset($rangeeCountButs['nb_buts']) ? (int)$rangeeCountButs['nb_buts'] : 0;
+$nbButsSansJoueur = isset($rangeeCountButs['nb_sans_joueur']) ? (int)$rangeeCountButs['nb_sans_joueur'] : 0;
+
+sommaire2JsonLog('matchIdRef=' . $matchID . ', matchId=' . $matchPourVideos . ', clips=' . count($clips) . ', buts_bruts=' . $nbButsBruts . ', buts_sans_joueur=' . $nbButsSansJoueur);
+$resultEvent = mysqli_query($conn,$qEv) or die(mysqli_error($conn));  
 $buts=array();
-$Sommaire['qEv']=$qEv;
+$nbRowsResultEvent = mysqli_num_rows($resultEvent);
+$nbButsAvecVideo = 0;
+$nbButsSansVideo = 0;
 
 while($rangeeEv=mysqli_fetch_array($resultEvent))
 	{
@@ -261,18 +286,28 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 		$unVideo['emplacement']=$rangeeEv['emplacement'];
 		$unVideo['thumbnail']=$rangeeEv['nomThumbnail'];
 
-		array_push($unBut['video'],$unVideo);}
-		end($buts);
-		$key = key($buts);
-		$buts[$key]=$unBut;
-		reset($buts);
+        array_push($unBut['video'],$unVideo);
+        $nbButsAvecVideo++;
+        }
+        else {
+            $nbButsSansVideo++;
+        }
+        end($buts);
+        $key = key($buts);
+        $buts[$key]=$unBut;
+        reset($buts);
 		
 
 	}
 
 
 
-	$Sommaire['buts']=$buts;
+    sommaire2JsonLog('matchIdRef=' . $matchID . ', rows_buts_query=' . $nbRowsResultEvent . ', buts_json=' . count($buts) . ', videos_associees=' . $nbButsAvecVideo . ', lignes_sans_video=' . $nbButsSansVideo);
+    if (count($buts) === 0 && $nbButsBruts > 0) {
+        sommaire2JsonLog('aucun but dans le JSON alors que TableEvenement0 contient ' . $nbButsBruts . ' buts pour match_event_id=' . $matchID);
+    }
+
+    $Sommaire['buts']=$buts;
 
 //////////////////////////////////////////////
 // Section Pun.
