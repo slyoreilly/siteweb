@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 require __DIR__ . '/../../scriptsphp/defenvvar.php';
+require_once __DIR__ . '/SyncAckClient.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -166,6 +167,85 @@ function syncResolveMatch(mysqli $conn, int $gameComId): ?array
     return $row ?: null;
 }
 
+function syncNeedAck(string $actionType): bool
+{
+    return in_array($actionType, ['created', 'updated'], true);
+}
+
+function syncSourceEntityIdFromMessage(array $message): ?int
+{
+    $payload = $message['payload'] ?? [];
+    if (!is_array($payload)) {
+        return syncToNullableInt($message['aggregateId'] ?? null);
+    }
+
+    return syncToNullableInt(
+        $payload['id']
+        ?? $payload['sourceEntityId']
+        ?? $payload['GameLocId']
+        ?? $message['aggregateId']
+        ?? null
+    );
+}
+
+function syncAckClient(): SyncAckClient
+{
+    return SyncAckClient::fromEnv();
+}
+
+function syncCalculeUnMatchUrl(): string
+{
+    $workEnv = (string)(getenv('WORK_ENV') ?: 'development');
+    if ($workEnv === 'production') {
+        return 'https://syncstats.com/scriptsphp/calculeUnMatch.php';
+    }
+
+    return 'http://vieuxsite.sm.syncstats.ca/scriptsphp/calculeUnMatch.php';
+}
+
+function syncRelanceCalculeUnMatch(int $noMatchId): void
+{
+    if ($noMatchId <= 0) {
+        return;
+    }
+
+    $url = syncCalculeUnMatchUrl();
+    $postData = http_build_query(['noMatchId' => $noMatchId]);
+    $ch = curl_init($url);
+
+    if ($ch === false) {
+        error_log('[sync_inbound] calculeUnMatch init failed | match=' . $noMatchId);
+        return;
+    }
+
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => $postData,
+        CURLOPT_TIMEOUT => 10,
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTPHEADER => [
+            'Content-Type: application/x-www-form-urlencoded',
+            'Content-Length: ' . strlen($postData),
+        ],
+    ]);
+
+    $result = curl_exec($ch);
+    $httpCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlErr = curl_error($ch);
+    curl_close($ch);
+
+    if ($result === false || $httpCode !== 200) {
+        error_log('[sync_inbound] calculeUnMatch error | match=' . $noMatchId . ' | http=' . $httpCode . ' | err=' . $curlErr);
+        return;
+    }
+
+    if (trim((string)$result) === '') {
+        error_log('[sync_inbound] calculeUnMatch empty response | match=' . $noMatchId);
+    }
+}
+
 function syncInboxClaim(mysqli $conn, string $endpointName, array $message): array
 {
     $messageId = syncToNullableInt($message['messageId'] ?? null);
@@ -174,8 +254,8 @@ function syncInboxClaim(mysqli $conn, string $endpointName, array $message): arr
 
     $stmt = mysqli_prepare(
         $conn,
-        'INSERT INTO sync_inbox (endpoint, dedupeKey, messageId, aggregateType, aggregateId, actionType, payloadJson, status, retryCount, createdAt, updatedAt)
-         VALUES (?, ?, ?, ?, ?, ?, ?, "processing", 0, NOW(), NOW())'
+        'INSERT INTO sync_inbox (endpoint, dedupeKey, messageId, aggregateType, aggregateId, actionType, payloadJson, status, retryCount, ack_status, ack_attempts, createdAt, updatedAt)
+         VALUES (?, ?, ?, ?, ?, ?, ?, "processing", 0, "pending", 0, NOW(), NOW())'
     );
 
     if (!$stmt) {
@@ -197,7 +277,16 @@ function syncInboxClaim(mysqli $conn, string $endpointName, array $message): arr
     if (mysqli_stmt_execute($stmt)) {
         $id = mysqli_insert_id($conn);
         mysqli_stmt_close($stmt);
-        return ['claimed' => true, 'duplicate' => false, 'inboxId' => $id, 'status' => 'processing'];
+        return [
+            'claimed' => true,
+            'duplicate' => false,
+            'inboxId' => $id,
+            'status' => 'processing',
+            'ack_status' => 'pending',
+            'source_entity_id' => null,
+            'upstream_id' => null,
+            'ack_attempts' => 0,
+        ];
     }
 
     $errno = mysqli_errno($conn);
@@ -209,7 +298,8 @@ function syncInboxClaim(mysqli $conn, string $endpointName, array $message): arr
 
     $stmtSelect = mysqli_prepare(
         $conn,
-        'SELECT syncInboxId, status FROM sync_inbox WHERE endpoint = ? AND dedupeKey = ? LIMIT 1'
+        'SELECT syncInboxId, status, ack_status, source_entity_id, upstream_id, ack_attempts
+         FROM sync_inbox WHERE endpoint = ? AND dedupeKey = ? LIMIT 1'
     );
     if (!$stmtSelect) {
         throw new SyncTechnicalException('prepare inbox select failed: ' . mysqli_error($conn));
@@ -225,31 +315,22 @@ function syncInboxClaim(mysqli $conn, string $endpointName, array $message): arr
         throw new SyncTechnicalException('sync_inbox row not found after duplicate');
     }
 
-    $status = (string)$row['status'];
-    $inboxId = (int)$row['syncInboxId'];
-
-    if ($status === 'failed') {
-        $stmtRetry = mysqli_prepare(
-            $conn,
-            'UPDATE sync_inbox SET status = "processing", retryCount = retryCount + 1, errorMessage = NULL, updatedAt = NOW() WHERE syncInboxId = ?'
-        );
-        if (!$stmtRetry) {
-            throw new SyncTechnicalException('prepare inbox retry failed: ' . mysqli_error($conn));
-        }
-        mysqli_stmt_bind_param($stmtRetry, 'i', $inboxId);
-        mysqli_stmt_execute($stmtRetry);
-        mysqli_stmt_close($stmtRetry);
-
-        return ['claimed' => true, 'duplicate' => false, 'inboxId' => $inboxId, 'status' => 'processing'];
-    }
-
-    return ['claimed' => false, 'duplicate' => true, 'inboxId' => $inboxId, 'status' => $status];
+    return [
+        'claimed' => false,
+        'duplicate' => true,
+        'inboxId' => (int)$row['syncInboxId'],
+        'status' => (string)$row['status'],
+        'ack_status' => (string)($row['ack_status'] ?? 'pending'),
+        'source_entity_id' => syncToNullableInt($row['source_entity_id'] ?? null),
+        'upstream_id' => isset($row['upstream_id']) ? (string)$row['upstream_id'] : null,
+        'ack_attempts' => syncToInt($row['ack_attempts'] ?? 0),
+    ];
 }
 
-function syncInboxMark(mysqli $conn, int $inboxId, string $status, int $responseCode, ?string $errorMessage): void
+function syncInboxMarkStatus(mysqli $conn, int $inboxId, string $status, int $responseCode, ?string $errorMessage): void
 {
-    $processedAt = ($status === 'processed' || $status === 'rejected') ? 'NOW()' : 'NULL';
-    $sql = "UPDATE sync_inbox SET status = ?, responseCode = ?, errorMessage = ?, processedAt = {$processedAt}, updatedAt = NOW() WHERE syncInboxId = ?";
+    $doneAt = $status === 'done' ? 'NOW()' : 'doneAt';
+    $sql = "UPDATE sync_inbox SET status = ?, responseCode = ?, errorMessage = ?, doneAt = {$doneAt}, updatedAt = NOW() WHERE syncInboxId = ?";
 
     $stmt = mysqli_prepare($conn, $sql);
     if (!$stmt) {
@@ -261,8 +342,157 @@ function syncInboxMark(mysqli $conn, int $inboxId, string $status, int $response
     mysqli_stmt_close($stmt);
 }
 
-function syncLogResult(array $message, string $endpointName, string $result, int $httpCode, array $counters, ?string $errorMessage = null): void
+function syncInboxSetAckContext(mysqli $conn, int $inboxId, ?int $sourceEntityId, string $upstreamId): void
 {
+    $stmt = mysqli_prepare($conn, 'UPDATE sync_inbox SET source_entity_id = ?, upstream_id = ?, updatedAt = NOW() WHERE syncInboxId = ?');
+    if (!$stmt) {
+        throw new SyncTechnicalException('prepare inbox ack context failed: ' . mysqli_error($conn));
+    }
+
+    mysqli_stmt_bind_param($stmt, 'isi', $sourceEntityId, $upstreamId, $inboxId);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function syncInboxMarkAckSuccess(mysqli $conn, int $inboxId, int $attempts, int $httpCode): void
+{
+    $stmt = mysqli_prepare(
+        $conn,
+        'UPDATE sync_inbox
+         SET ack_status = "success", ack_attempts = ?, ack_http_code = ?, ack_last_error = NULL, ack_next_attempt_at = NULL, ack_at = NOW(), status = "done", doneAt = NOW(), updatedAt = NOW()
+         WHERE syncInboxId = ?'
+    );
+    if (!$stmt) {
+        throw new SyncTechnicalException('prepare ack success update failed: ' . mysqli_error($conn));
+    }
+
+    mysqli_stmt_bind_param($stmt, 'iii', $attempts, $httpCode, $inboxId);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function syncInboxMarkAckRetry(mysqli $conn, int $inboxId, int $attempts, ?int $httpCode, ?string $error, string $nextAttemptAt): void
+{
+    $stmt = mysqli_prepare(
+        $conn,
+        'UPDATE sync_inbox
+         SET ack_status = "retrying", ack_attempts = ?, ack_http_code = ?, ack_last_error = ?, ack_next_attempt_at = ?, updatedAt = NOW()
+         WHERE syncInboxId = ?'
+    );
+    if (!$stmt) {
+        throw new SyncTechnicalException('prepare ack retry update failed: ' . mysqli_error($conn));
+    }
+
+    mysqli_stmt_bind_param($stmt, 'iissi', $attempts, $httpCode, $error, $nextAttemptAt, $inboxId);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function syncInboxMarkAckRejected(mysqli $conn, int $inboxId, int $attempts, ?int $httpCode, ?string $error): void
+{
+    $stmt = mysqli_prepare(
+        $conn,
+        'UPDATE sync_inbox
+         SET ack_status = "rejected", ack_attempts = ?, ack_http_code = ?, ack_last_error = ?, ack_next_attempt_at = NULL, updatedAt = NOW(), status = "rejected", errorMessage = ?
+         WHERE syncInboxId = ?'
+    );
+    if (!$stmt) {
+        throw new SyncTechnicalException('prepare ack rejected update failed: ' . mysqli_error($conn));
+    }
+
+    $err = $error ?? 'ack rejected';
+    mysqli_stmt_bind_param($stmt, 'iissi', $attempts, $httpCode, $err, $err, $inboxId);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function syncInboxMarkAckFailedAuth(mysqli $conn, int $inboxId, int $attempts, ?int $httpCode, ?string $error): void
+{
+    $stmt = mysqli_prepare(
+        $conn,
+        'UPDATE sync_inbox
+         SET ack_status = "failed_auth", ack_attempts = ?, ack_http_code = ?, ack_last_error = ?, ack_next_attempt_at = NULL, updatedAt = NOW(), status = "failed_auth", errorMessage = ?
+         WHERE syncInboxId = ?'
+    );
+    if (!$stmt) {
+        throw new SyncTechnicalException('prepare ack failed_auth update failed: ' . mysqli_error($conn));
+    }
+
+    $err = $error ?? 'ack failed auth';
+    mysqli_stmt_bind_param($stmt, 'iissi', $attempts, $httpCode, $err, $err, $inboxId);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function syncInboxMarkAckMaxAttempts(mysqli $conn, int $inboxId, int $attempts, ?int $httpCode, ?string $error): void
+{
+    $stmt = mysqli_prepare(
+        $conn,
+        'UPDATE sync_inbox
+         SET ack_status = "rejected", ack_attempts = ?, ack_http_code = ?, ack_last_error = ?, ack_next_attempt_at = NULL, updatedAt = NOW(), status = "rejected", errorMessage = ?
+         WHERE syncInboxId = ?'
+    );
+    if (!$stmt) {
+        throw new SyncTechnicalException('prepare ack max attempts update failed: ' . mysqli_error($conn));
+    }
+
+    $err = $error ?? 'ack max attempts reached';
+    mysqli_stmt_bind_param($stmt, 'iissi', $attempts, $httpCode, $err, $err, $inboxId);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function syncAcquireRowLock(mysqli $conn, int $inboxId): bool
+{
+    $lockName = 'sync_inbox_ack_' . $inboxId;
+    $stmt = mysqli_prepare($conn, 'SELECT GET_LOCK(?, 0) AS l');
+    if (!$stmt) {
+        return false;
+    }
+    mysqli_stmt_bind_param($stmt, 's', $lockName);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $row = $res ? mysqli_fetch_assoc($res) : null;
+    mysqli_stmt_close($stmt);
+
+    return isset($row['l']) && (int)$row['l'] === 1;
+}
+
+function syncReleaseRowLock(mysqli $conn, int $inboxId): void
+{
+    $lockName = 'sync_inbox_ack_' . $inboxId;
+    $stmt = mysqli_prepare($conn, 'SELECT RELEASE_LOCK(?)');
+    if (!$stmt) {
+        return;
+    }
+    mysqli_stmt_bind_param($stmt, 's', $lockName);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function syncCreatedToAckLatencyMs(array $message): ?int
+{
+    if (!isset($message['createdAt']) || !is_string($message['createdAt'])) {
+        return null;
+    }
+
+    $ts = strtotime($message['createdAt']);
+    if ($ts === false) {
+        return null;
+    }
+
+    return (int)max(0, round((microtime(true) - $ts) * 1000));
+}
+
+function syncLogResult(
+    array $message,
+    string $endpointName,
+    string $result,
+    int $httpCode,
+    array $counters,
+    ?string $errorMessage = null,
+    ?array $ack = null
+): void {
     $logData = [
         'scope' => 'sync_inbound',
         'endpoint' => $endpointName,
@@ -272,7 +502,8 @@ function syncLogResult(array $message, string $endpointName, string $result, int
         'actionType' => $message['actionType'] ?? null,
         'result' => $result,
         'httpCode' => $httpCode,
-        'counters' => $counters,
+        'metrics' => $counters,
+        'ack' => $ack,
         'error' => $errorMessage,
     ];
 
@@ -281,14 +512,20 @@ function syncLogResult(array $message, string $endpointName, string $result, int
 
 function syncInitCounters(): array
 {
-    return ['success' => 0, 'failure' => 0, 'duplicate' => 0];
+    return [
+        'ack_success_count' => 0,
+        'ack_retry_count' => 0,
+        'ack_rejected_count' => 0,
+        'ack_failed_auth_count' => 0,
+        'ack_latency_ms' => null,
+    ];
 }
 
-function syncCounterAdd(array &$counters, string $counter): void
+function syncCounterInc(array &$counters, string $name): void
 {
-    if (!array_key_exists($counter, $counters)) {
-        $counters[$counter] = 0;
+    if (!array_key_exists($name, $counters) || !is_numeric($counters[$name])) {
+        $counters[$name] = 0;
     }
-    $counters[$counter]++;
+    $counters[$name] = (int)$counters[$name] + 1;
 }
 ?>

@@ -1,104 +1,111 @@
-# Runbook - Sync inbound (Presence/Event)
+# Runbook - Sync inbound + ACK prioritaire faible latence
 
-## 1) Prerequis
+## 1) Rappel du flux
 
-- Endpoint presence: `POST /api/sync/presence`
-- Endpoint event: `POST /api/sync/event`
-- Header de securite: `X-Sync-Token`
-- Variable serveur requise: `SYNC_INBOUND_TOKEN`
-- Table idempotence: `sync_inbox`
+Pour `Event` et `Presence` (created/updated):
+1. traitement metier amont
+2. callback ACK immediat vers aval
+3. inbox `done` uniquement si ACK `success`
 
-## 2) Mise en service
+Aucun fallback par cle metier.
 
-1. Appliquer la migration SQL:
-   - fichier: `db/20260316_create_sync_inbox.sql`
-2. Configurer `SYNC_INBOUND_TOKEN` sur l'environnement cible.
-3. Verifier le routage Apache du dossier `api/sync/.htaccess`.
-4. Tester avec cURL (valide puis invalide).
+## 2) Variables de config
 
-## 3) Semantique HTTP
+- `SYNC_INBOUND_TOKEN`
+- `SYNC_ACK_URL`
+- `SYNC_ACK_TOKEN`
+- `SYNC_ACK_HEADER` (defaut `X-Sync-Token`)
+- `SYNC_ACK_TIMEOUT_SECONDS`
+- `SYNC_ACK_MAX_ATTEMPTS`
 
-- `2xx`: message accepte/traite, retry stop cote outbox
-- `4xx`: erreur fonctionnelle non retryable
-- `5xx`: erreur technique retryable
+## 3) Migrations
 
-## 4) Idempotence
+1. Creation table (nouvelle install):
+- `db/20260316_create_sync_inbox.sql`
 
-- Cle idempotence: `(endpoint, dedupeKey)`
-- Message deja traite (`processed`/`rejected`/`processing`): renvoi `200` + `duplicate=true`
-- Message en echec precedent (`failed`): reprise de traitement autorisee
+2. Extension table existante:
+- `db/20260316_alter_sync_inbox_ack.sql`
 
-## 5) Observabilite
+## 4) Politique ACK
 
-Chaque requete journalise:
-- `messageId`
-- `dedupeKey`
-- `aggregateType`
-- `actionType`
-- resultat + code HTTP
-- compteurs (`success`, `failure`, `duplicate`)
+- `200` -> `ack_status=success`, `status=done`, `ack_at` rempli
+- `400/404/409` -> `ack_status=rejected`, `status=rejected`, pas de retry infini
+- `401/403` -> `ack_status=failed_auth`, `status=failed_auth`, alerte
+- timeout/reseau/`5xx` -> `ack_status=retrying`, `ack_next_attempt_at` calcule
+  backoff: `1s, 2s, 5s, 10s, 30s, 60s` (borne par `SYNC_ACK_MAX_ATTEMPTS`)
 
-Important: le token n'est jamais logge en clair.
+## 5) Worker ACK (continu)
 
-## 6) Exemples cURL
-
-### Token valide - Presence
+Commande:
 
 ```bash
-curl -i -X POST "https://votre-domaine/api/sync/presence" \
-  -H "Content-Type: application/json" \
-  -H "X-Sync-Token: change-me-dev" \
-  -d '{
-    "messageId": 101,
-    "aggregateType": "Presence",
-    "aggregateId": 678,
-    "actionType": "updated",
-    "dedupeKey": "presence-12345-678-updated-v1",
-    "createdAt": "2026-03-16T20:01:00Z",
-    "payload": {
-      "GameComId": 12345,
-      "joueurId": 678,
-      "positionId": 4,
-      "numero": "31",
-      "domVis": 2,
-      "statut": 1,
-      "updatedBy": "SyncStatsLive",
-      "updatedAt": "2026-03-16T20:00:59Z"
-    }
-  }'
+php api/sync/ack_worker.php --loop
 ```
 
-### Token valide - Event
+Le worker traite `sync_inbox.ack_status='retrying'` avec `ack_next_attempt_at <= NOW()`.
 
-```bash
-curl -i -X POST "https://votre-domaine/api/sync/event" \
-  -H "Content-Type: application/json" \
-  -H "X-Sync-Token: change-me-dev" \
-  -d '{
-    "messageId": 202,
-    "aggregateType": "Event",
-    "aggregateId": 9001,
-    "actionType": "created",
-    "dedupeKey": "event-12345-9001-created-v1",
-    "createdAt": "2026-03-16T20:05:00Z",
-    "payload": {
-      "GameComId": 12345,
-      "EventComId": 9001,
-      "TeamID": 12,
-      "PlayerComID": 678,
-      "code": 2,
-      "souscode": 1,
-      "chrono": 1773453075123,
-      "noSequence": 0
-    }
-  }'
+## 6) Rejouer manuellement les ACK en retry
+
+Relancer un lot en erreur technique:
+
+```sql
+UPDATE sync_inbox
+SET ack_status='retrying',
+    ack_next_attempt_at=NOW(),
+    updatedAt=NOW()
+WHERE ack_status='retrying';
 ```
 
-### Token invalide
+Relancer un item precise:
+
+```sql
+UPDATE sync_inbox
+SET ack_status='retrying',
+    ack_next_attempt_at=NOW(),
+    updatedAt=NOW()
+WHERE syncInboxId=<ID>;
+```
+
+## 7) Isoler les cas rejected / failed_auth
+
+```sql
+SELECT syncInboxId, endpoint, dedupeKey, ack_status, ack_attempts, ack_http_code, ack_last_error, updatedAt
+FROM sync_inbox
+WHERE ack_status IN ('rejected','failed_auth')
+ORDER BY updatedAt DESC;
+```
+
+## 8) Verification SQL rapide
+
+Messages non done:
+
+```sql
+SELECT syncInboxId, endpoint, dedupeKey, status, ack_status, ack_attempts, ack_next_attempt_at
+FROM sync_inbox
+WHERE status <> 'done'
+ORDER BY updatedAt DESC;
+```
+
+Latency ACK:
+
+```sql
+SELECT syncInboxId, endpoint, TIMESTAMPDIFF(MICROSECOND, createdAt, ack_at)/1000 AS ack_latency_ms
+FROM sync_inbox
+WHERE ack_at IS NOT NULL
+ORDER BY syncInboxId DESC
+LIMIT 100;
+```
+
+## 9) cURL reference ACK
 
 ```bash
-curl -i -X POST "https://votre-domaine/api/sync/presence" \
+curl -X POST "https://<AVAL>/api/sync/ack" \
   -H "Content-Type: application/json" \
-  -H "X-Sync-Token: mauvais-token" \
-  -d '{"messageId":1,"aggregateType":"Presence","actionType":"created","dedupeKey":"x","payload":{}}'
+  -H "X-Sync-Token: <SYNC_ACK_TOKEN>" \
+  -d '{
+    "entity":"Event",
+    "sourceEntityId":68,
+    "dedupeKey":"event:68:created:638...",
+    "upstreamId":"123456"
+  }'
 ```
