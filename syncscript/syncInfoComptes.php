@@ -7,13 +7,14 @@ $tableJoueur = 'TableJoueur';
 $tableAbon = 'AbonnementLigue';
 $tableUser = 'TableUser';
 
-$username = $_POST['username'];
-$telId = $_POST['telId'];
-$telHeure = $_POST['telHeure'];
+$username = $_POST['username'] ?? '';
+$telId = $_POST['telId'] ?? '';
+$telHeure = $_POST['telHeure'] ?? null;
 //$vielledate = $_POST['vielledate'];
 
 
 // Retrieve all the data from the "example" table
+$userSelect = null;
 $resultUser = mysqli_query($conn, "SELECT * FROM TableUser") or die(mysqli_error($conn));
 while ($rangeeUser = mysqli_fetch_array($resultUser)) {
 	if (!strcmp($rangeeUser['username'], $username)) {$userSelect = $rangeeUser['noCompte'];
@@ -26,30 +27,32 @@ $resultAbon = mysqli_query($conn,"SELECT * FROM AbonnementLigue ORDER BY ligueid
 $AbonSelect = array();
 $dernierLogApp = array();
 while ($rangeeAbon = mysqli_fetch_array($resultAbon)) {
-	if ($rangeeAbon['userid'] == $userSelect) {array_push($AbonSelect, $rangeeAbon['ligueid']);
+	if ($userSelect !== null && $rangeeAbon['userid'] == $userSelect) {array_push($AbonSelect, $rangeeAbon['ligueid']);
 		//array_push($AbonSelect, $dernierLogApp['dernierLogApp']);
 	}
 }
 
-$qAbonArb = "SELECT * FROM abonArbitreLigue 
-								JOIN TableArbitre
-									ON (TableArbitre.arbitreId=abonArbitreLigue.arbitreId)
-								JOIN TableUser
-									ON 	(TableArbitre.userId=TableUser.noCompte)
-								WHERE TableArbitre.userId='{$userSelect}'
-								ORDER BY ligueId";
-$resultAbonArb = mysqli_query($conn,$qAbonArb) or die(mysqli_error($conn) . $qAbonArb);
+if ($userSelect !== null) {
+	$qAbonArb = "SELECT * FROM abonArbitreLigue 
+									JOIN TableArbitre
+										ON (TableArbitre.arbitreId=abonArbitreLigue.arbitreId)
+									JOIN TableUser
+										ON 	(TableArbitre.userId=TableUser.noCompte)
+									WHERE TableArbitre.userId='{$userSelect}'
+									ORDER BY ligueId";
+	$resultAbonArb = mysqli_query($conn,$qAbonArb) or die(mysqli_error($conn) . $qAbonArb);
 
-while ($rangeeAbonArb = mysqli_fetch_array($resultAbonArb)) {
-	if (!in_array($rangeeAbonArb['ligueId'], $AbonSelect)) {array_push($AbonSelect, $rangeeAbonArb['ligueId']);
-	//	array_push($dernierLogApp, $rangeeAbonArb['dernierLogApp']);
+	while ($rangeeAbonArb = mysqli_fetch_array($resultAbonArb)) {
+		if (!in_array($rangeeAbonArb['ligueId'], $AbonSelect)) {array_push($AbonSelect, $rangeeAbonArb['ligueId']);
+		//	array_push($dernierLogApp, $rangeeAbonArb['dernierLogApp']);
+		}
 	}
 }
 
 // On obtient un array de ligueID auquel userSelect est abonn�.
 $serveurHeure = time()*1000;
 
-if(isset($_POST["telHeure"])){
+if ($telHeure !== null) {
 $query = "INSERT INTO TempsSync (telId,telHeure,serveurHeure,username) ".
 		"VALUES ('{$telId}','{$telHeure}','{$serveurHeure}','{$username}')";
 		mysqli_query($conn, $query) or die("Erreur: "+$query+"\n"+mysqli_error($conn));

@@ -1,8 +1,5 @@
 -- Extend existing sync_inbox for ACK low-latency mode
 
-ALTER TABLE `sync_inbox`
-  ADD INDEX `idx_sync_inbox_ack_status_next` (`ack_status`, `ack_next_attempt_at`);
-
 SET @db := DATABASE();
 
 -- source_entity_id

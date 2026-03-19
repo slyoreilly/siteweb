@@ -5,7 +5,7 @@ global $conn;
 $workEnv = getenv('WORK_ENV') ?: 'development';
 
 $db_user = "syncsta1_u01";
-$db_pwd  = "test";
+$db_pwd  = "<MOT DE PASSE>";
 
 if ($workEnv == "production") {
 
@@ -41,6 +41,33 @@ if (!getenv('DOLIBARR_PAGE_SIZE')) {
 }
 
 // Création ou recréation de la connexion si nécessaire
+// Parametres sync inbound/ack avec valeurs par defaut selon l'environnement.
+// Ces valeurs sont surchargees automatiquement si les variables d'environnement
+// existent deja (getenv prioritaire).
+$syncInboundTokenDefault = ($workEnv === 'production') ? 'change-me-inbound-prod' : 'change-me-inbound-dev';
+$syncAckUrlDefault = ($workEnv === 'production')
+    ? 'https://syncstats.live/api/sync/ack'
+    : 'https://localhost:44324/api/sync/ack';
+$syncAckTokenDefault = ($workEnv === 'production') ? 'change-me-ack-prod' : 'change-me-ack-dev';
+
+if (!getenv('SYNC_INBOUND_TOKEN')) {
+    putenv('SYNC_INBOUND_TOKEN=' . $syncInboundTokenDefault);
+}
+if (!getenv('SYNC_ACK_URL')) {
+    putenv('SYNC_ACK_URL=' . $syncAckUrlDefault);
+}
+if (!getenv('SYNC_ACK_TOKEN')) {
+    putenv('SYNC_ACK_TOKEN=' . $syncAckTokenDefault);
+}
+if (!getenv('SYNC_ACK_HEADER')) {
+    putenv('SYNC_ACK_HEADER=X-Sync-Token');
+}
+if (!getenv('SYNC_ACK_TIMEOUT_SECONDS')) {
+    putenv('SYNC_ACK_TIMEOUT_SECONDS=8');
+}
+if (!getenv('SYNC_ACK_MAX_ATTEMPTS')) {
+    putenv('SYNC_ACK_MAX_ATTEMPTS=6');
+}
 if (!isset($conn) || !($conn instanceof mysqli)) {
     if ($db_port !== null) {
         $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database, $db_port);

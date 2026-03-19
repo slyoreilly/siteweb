@@ -55,6 +55,7 @@ SET SESSION sql_mode = REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', '')
 
 
 	// Retrieve all the data from the "example" table
+$userSelect = null;
 $resultUser = mysqli_query($conn,"SELECT * FROM TableUser")
 or die(mysqli_error($conn));  
 while($rangeeUser=mysqli_fetch_array($resultUser))
@@ -74,24 +75,27 @@ $AbonSelect = array();
 $dernierLogApp= array();
 while($rangeeAbon=mysqli_fetch_array($resultAbon))
 	{
-		if($rangeeAbon['userid']==$userSelect)
+		if($userSelect !== null && $rangeeAbon['userid']==$userSelect)
 			{array_push($AbonSelect, $rangeeAbon['ligueid']);}
 	}
 	
-	$qAbonArb="SELECT * FROM TableArbitre 
+	if($userSelect !== null)
+	{
+		$qAbonArb="SELECT * FROM TableArbitre 
 								JOIN abonArbitreLigue
 									ON (TableArbitre.arbitreId=abonArbitreLigue.arbitreId)
 								JOIN TableUser
 									ON 	(TableArbitre.userId=TableUser.noCompte)
 								WHERE TableArbitre.userId='{$userSelect}'
 								ORDER BY ligueId";
-$resultAbonArb = mysqli_query($conn,$qAbonArb)
-or die(mysqli_error($conn).$qAbonArb);  
+	$resultAbonArb = mysqli_query($conn,$qAbonArb)
+	or die(mysqli_error($conn).$qAbonArb);  
 
 while($rangeeAbonArb=mysqli_fetch_array($resultAbonArb))
 	{
 		if(!in_array($rangeeAbonArb['ligueId'],$AbonSelect))
 			{array_push($AbonSelect, $rangeeAbonArb['ligueId']);}
+	}
 	}
 	array_push($controlTemps,time());
 	// On obtient un array de ligueID auquel userSelect est abonn�.
