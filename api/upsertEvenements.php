@@ -3,6 +3,7 @@
 include_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "syncstatsconfig.php");
 require("../scriptsphp/calculeMatch2.php");
 require '../scriptsphp/defenvvar.php';
+require_once __DIR__ . '/lib/upsert_evenements_rules.php';
 
 $heure = $_POST['heure'] ?? null;
 $heureServeur = time() * 1000;
@@ -57,6 +58,7 @@ if ($evenements != null) {
             $eventTypeID = (int)($evenement['EventTypeID'] ?? 0);
             $eventTypeDetailID = (int)($evenement['EventTypeDetailID'] ?? $evenement['eventTypeDetailId'] ?? $evenement['eventTypeDetailID'] ?? 0);
             $id = (int)($evenement['id'] ?? 0);
+            $noSequence = (int)($evenement['noSequence'] ?? 0);
 
             $code = null;
             $subcode = null;
@@ -110,17 +112,59 @@ if ($evenements != null) {
             }
 
             $eventComIdValue = $evenement['EventComId'] ?? null;
+            $decisionCreationLocale = upsertEvenementsDecisionCreationLocale($evenement);
 
-            if ($eventComIdValue === null || $eventComIdValue === '') {
+            if ($decisionCreationLocale['eventComIdVide'] === true) {
+                $sourceAutorisee = $decisionCreationLocale['autorise'] === true;
+
+                // Règle métier: création sans EventComId autorisée seulement depuis plateformeweb/plateforme.
+                if (!$sourceAutorisee) {
+                    $sourceReelle = isset($evenement['source']) ? trim((string)$evenement['source']) : '';
+                    error_log(
+                        "[upsertEvenements] EventComId vide refusé: source non autorisée | id_local={$id} | match={$gameStringID} | source={$sourceReelle}",
+                        0
+                    );
+                    continue;
+                }
+
+                // Déduplication défensive: si le même événement existe déjà, on réutilise son ID.
+                $stmtExiste = mysqli_prepare(
+                    $conn,
+                    "SELECT event_id
+                     FROM TableEvenement0
+                     WHERE match_event_id = ?
+                       AND equipe_event_id = ?
+                       AND joueur_event_ref = ?
+                       AND chrono = ?
+                       AND code = ?
+                       AND souscode = ?
+                       AND noSequence = ?
+                     ORDER BY event_id DESC
+                     LIMIT 1"
+                );
+                if ($stmtExiste) {
+                    mysqli_stmt_bind_param($stmtExiste, "siiiiii", $gameStringID, $teamID, $playerID, $chrono, $code, $subcode, $noSequence);
+                    mysqli_stmt_execute($stmtExiste);
+                    mysqli_stmt_bind_result($stmtExiste, $eventComIdExistant);
+                    $aTrouve = mysqli_stmt_fetch($stmtExiste);
+                    mysqli_stmt_close($stmtExiste);
+
+                    if ($aTrouve && !empty($eventComIdExistant)) {
+                        $eventComId = (int)$eventComIdExistant;
+                        $retObj = array("id" => $id, "EventComId" => $eventComId, "etatSync" => 12);
+                        array_push($syncOK, $retObj);
+                        continue;
+                    }
+                }
 
                 $stmt = mysqli_prepare(
                     $conn,
                     "INSERT INTO TableEvenement0 
                     (match_event_id, equipe_event_id, joueur_event_ref, chrono, code, souscode, noSequence) 
-                    VALUES (?, ?, ?, ?, ?, ?, 0)"
+                    VALUES (?, ?, ?, ?, ?, ?, ?)"
                 );
 
-                mysqli_stmt_bind_param($stmt, "siiiii", $gameStringID, $teamID, $playerID, $chrono, $code, $subcode);
+                mysqli_stmt_bind_param($stmt, "siiiiii", $gameStringID, $teamID, $playerID, $chrono, $code, $subcode, $noSequence);
                 $success = mysqli_stmt_execute($stmt);
 
                 if (!$success) {
@@ -161,11 +205,11 @@ if ($evenements != null) {
                          chrono = ?, 
                          code = ?, 
                          souscode = ?, 
-                         noSequence = 0 
+                         noSequence = ? 
                      WHERE event_id = ?"
                 );
 
-                mysqli_stmt_bind_param($stmt, "siiiiii", $gameStringID, $teamID, $playerID, $chrono, $code, $subcode, $eventComId);
+                mysqli_stmt_bind_param($stmt, "siiiiiii", $gameStringID, $teamID, $playerID, $chrono, $code, $subcode, $noSequence, $eventComId);
                 $success = mysqli_stmt_execute($stmt);
                 mysqli_stmt_close($stmt);
 

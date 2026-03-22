@@ -156,16 +156,17 @@ foreach ($leMatch as $evenement) {
 					if ($evenement['p2'] != 0) {mysqli_query($conn,$qInsP2) or die(mysqli_error($conn) . $qInsP2);
 						array_push($arrInsPasses,array("joueurId"=>$evenement['p2'],"webId"=>mysqli_insert_id($conn)));
 					}
-					$moins = $evenement['moins'];
-					for ($a = 0; $a < count($evenement['plus']); $a++) {
-						$qInsPlus = "INSERT INTO PlusMoins (matchId,joueurId, equipeId, ligueId, plusMoins, chrono) VALUES ('{$evenement['match_id']}','{$evenement['plus'][$a]}','{$evenement['eqId']}','{$ligueId}',1,'{$evenement['chrono']}')";
+					$plus = (isset($evenement['plus']) && is_array($evenement['plus'])) ? $evenement['plus'] : array();
+					$moins = (isset($evenement['moins']) && is_array($evenement['moins'])) ? $evenement['moins'] : array();
+					for ($a = 0; $a < count($plus); $a++) {
+						$qInsPlus = "INSERT INTO PlusMoins (matchId,joueurId, equipeId, ligueId, plusMoins, chrono) VALUES ('{$evenement['match_id']}','{$plus[$a]}','{$evenement['eqId']}','{$ligueId}',1,'{$evenement['chrono']}')";
 						mysqli_query($conn,$qInsPlus) or die(mysqli_error($conn) . $qInsPlus);
-						array_push($arrInsPlus,array("joueurId"=>$evenement['plus'][$a],"webId"=>mysqli_insert_id($conn)));
+						array_push($arrInsPlus,array("joueurId"=>$plus[$a],"webId"=>mysqli_insert_id($conn)));
 					}
-					for ($a = 0; $a < count($evenement['moins']); $a++) {
-						$qInsMoins = "INSERT INTO PlusMoins (matchId ,joueurId, equipeId, ligueId, plusMoins, chrono) VALUES ('{$evenement['match_id']}','{$evenement['moins'][$a]}','{$evenement['advId']}','{$ligueId}',-1,'{$evenement['chrono']}')";
+					for ($a = 0; $a < count($moins); $a++) {
+						$qInsMoins = "INSERT INTO PlusMoins (matchId ,joueurId, equipeId, ligueId, plusMoins, chrono) VALUES ('{$evenement['match_id']}','{$moins[$a]}','{$evenement['advId']}','{$ligueId}',-1,'{$evenement['chrono']}')";
 						mysqli_query($conn,$qInsMoins) or die(mysqli_error($conn) . $qInsMoins);
-						array_push($arrInsMoins,array("joueurId"=>$evenement['moins'][$a],"webId"=>mysqli_insert_id($conn)));
+						array_push($arrInsMoins,array("joueurId"=>$moins[$a],"webId"=>mysqli_insert_id($conn)));
 					}
 					array_push($syncOK, $retBut);
 					$retObj = array("type"=>"but","chronoInit"=>$retBut,"chronoFin"=>$evenement['chrono'],"webBut"=>$arrInsButs,"webPasses"=>$arrInsPasses,"webPlus"=>$arrInsPlus,"webMoins"=>$arrInsMoins );
@@ -681,21 +682,24 @@ foreach ($leMatch as $evenement) {
 				$arrMatch['alVis']=array();
 				$arrMatch['gDom']=array();
 				$arrMatch['gVis']=array();
-				while ($cDom < count($evenement['alDom'])) {
-					$qAlDom = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$evenement['match_id']}','{$evenement['eqDom']}','{$evenement['alDom'][$cDom]}','{$evenement['chrono']}',0,3)";
+				$alDom = (isset($evenement['alDom']) && is_array($evenement['alDom'])) ? $evenement['alDom'] : array();
+				$alVis = (isset($evenement['alVis']) && is_array($evenement['alVis'])) ? $evenement['alVis'] : array();
+				$alDef = (isset($evenement['alDef']) && is_array($evenement['alDef'])) ? $evenement['alDef'] : array();
+				while ($cDom < count($alDom)) {
+					$qAlDom = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$evenement['match_id']}','{$evenement['eqDom']}','{$alDom[$cDom]}','{$evenement['chrono']}',0,3)";
 					mysqli_query($conn,$qAlDom) or die(mysqli_error($conn) . $qAlDom);
-					array_push($arrMatch['alDom'],array('joueurId'=>$evenement['alDom'][$cDom],'webId'=>mysqli_insert_id($conn)));
+					array_push($arrMatch['alDom'],array('joueurId'=>$alDom[$cDom],'webId'=>mysqli_insert_id($conn)));
 					$cDom++;
 
 				}
-				while ($cVis < count($evenement['alVis'])) {
-					$qAlVis = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$evenement['match_id']}','{$evenement['eqVis']}','{$evenement['alVis'][$cVis]}','{$evenement['chrono']}',0,3)";
+				while ($cVis < count($alVis)) {
+					$qAlVis = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$evenement['match_id']}','{$evenement['eqVis']}','{$alVis[$cVis]}','{$evenement['chrono']}',0,3)";
 					mysqli_query($conn,$qAlVis) or die(mysqli_error($conn) . $qAlVis);
-					array_push($arrMatch['alVis'],array('joueurId'=>$evenement['alVis'][$cVis],'webId'=>mysqli_insert_id($conn)));
+					array_push($arrMatch['alVis'],array('joueurId'=>$alVis[$cVis],'webId'=>mysqli_insert_id($conn)));
 					$cVis++;
 				}
-				while ($cDef < count($evenement['alDef'])) {
-					$qAlDef = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$evenement['match_id']}','{$evenement['alDef'][$cDef]['eq']}','{$evenement['alDef'][$cDef]['joueur']}','{$evenement['chrono']}',0,3)";
+				while ($cDef < count($alDef)) {
+					$qAlDef = "INSERT INTO TableEvenement0 (match_event_id, equipe_event_id,joueur_event_ref,chrono,souscode,code) VALUES ('{$evenement['match_id']}','{$alDef[$cDef]['eq']}','{$alDef[$cDef]['joueur']}','{$evenement['chrono']}',0,3)";
 					mysqli_query($conn,$qAlDef) or die(mysqli_error($conn) . $qAlDef);
 					$cDef++;
 				}

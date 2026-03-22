@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 require '../scriptsphp/defenvvar.php';
 $tableEq = 'TableEquipe';

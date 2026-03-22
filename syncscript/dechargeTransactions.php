@@ -2,14 +2,20 @@
 
 
 $retTransJ=array();
+if(!is_array($decTransJ)){$decTransJ=array();}
 $a=0;
 while($a<count($decTransJ))
 {
 $traiteJ=$decTransJ[$a];	
+if(!is_array($traiteJ) || !isset($traiteJ['ligueId']) || !isset($traiteJ['nomJoueur']) || !isset($traiteJ['noJoueur']) || !isset($traiteJ['vieuId']))
+{
+	$a++;
+	continue;
+}
 $retTransJ[$a]=array();
 
 
-	$intEquipe = $traiteJ['equipeId'];
+	$intEquipe = isset($traiteJ['equipeId']) ? $traiteJ['equipeId'] : 0;
 	$intLigue = $traiteJ['ligueId'];
 	$intJoueur = $traiteJ['nomJoueur'];
 	$intNo = $traiteJ['noJoueur'];
@@ -53,10 +59,16 @@ if($a==0)
 
 
 $retTransE=array();
+if(!is_array($decTransE)){$decTransE=array();}
 $b=0;
 while($b<count($decTransE))
 {
 $traiteE=$decTransE[$b];	
+if(!is_array($traiteE) || !isset($traiteE['nom']) || !isset($traiteE['ligueId']) || !isset($traiteE['logo']) || !isset($traiteE['vieuId']))
+{
+	$b++;
+	continue;
+}
 $retTransE[$b]=array();
 
 

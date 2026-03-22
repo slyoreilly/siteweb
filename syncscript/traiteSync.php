@@ -5,31 +5,36 @@ require '../scriptsphp/defenvvar.php';
 //  pour à la fois télécharger les données des ligues et téléverser le contenu du téléphone.
 
 
-$username = $_POST['username'];
-$deviceId = $_POST['deviceId'];
-$versionCode = $_POST['versionCode'];
-$syncJ = $_POST['syncJ'];
-$syncMav = $_POST['syncMav'];
-$transE = $_POST['transE'];
+header('Content-Type: application/json; charset=utf-8');
+
+$username = $_POST['username'] ?? '';
+$deviceId = $_POST['deviceId'] ?? '';
+$versionCode = $_POST['versionCode'] ?? '';
+$syncJ = $_POST['syncJ'] ?? '[]';
+$syncMav = $_POST['syncMav'] ?? '[]';
+$transJPost = $_POST['transJ'] ?? '[]';
+$transE = $_POST['transE'] ?? '[]';
 //$transL = $_POST['transL'];
 //$transPJ = $_POST['transPJ'];
-$matchsTS = $_POST['matchs'];
-$heure = $_POST['heure'];
+$matchsTS = $_POST['matchs'] ?? '[]';
+$heure = $_POST['heure'] ?? 0;
 $heureServeur = time()*1000;
 $controlTemps=array();
 array_push($controlTemps,time());
 
 //echo $_POST['matchs'];
 //$t1 = $_POST['transJ'];
-$t1 = stripslashes(stripslashes(stripslashes($_POST['transJ'])));
+$t1 = stripslashes(stripslashes(stripslashes($transJPost)));
 $t2 = str_replace('"{','{',$t1);
 $transJ = str_replace('}"','}',$t2);
 $decTransJ = json_decode($transJ, true);
+if(!is_array($decTransJ)){$decTransJ=array();}
 
-$t1 = stripslashes(stripslashes(stripslashes($_POST['transE'])));
+$t1 = stripslashes(stripslashes(stripslashes($transE)));
 $t2 = str_replace('"{','{',$t1);
 $transE = str_replace('}"','}',$t2);
 $decTransE = json_decode($transE, true);
+if(!is_array($decTransE)){$decTransE=array();}
 
 
 
@@ -65,6 +70,21 @@ while($rangeeUser=mysqli_fetch_array($resultUser))
 	{$userSelect =$rangeeUser['noCompte'];
 	}
 		// Prend le ID du user pour trouver les ligues abonn�es.
+}
+
+if($userSelect === null)
+{
+	$rep = array();
+	$rep['syncOK'] = array();
+	$rep['syncOKdetail'] = array();
+	$rep['extra'] = array('erreur' => 'user_invalide');
+	$rep['transJ'] = array();
+	$rep['transE'] = array();
+	$rep['MAV'] = array();
+	$rep['MAV2'] = array();
+	$rep['ligues'] = array();
+	echo json_encode($rep);
+	exit;
 }
 array_push($controlTemps,time());
 
@@ -349,7 +369,27 @@ $rep['MAV']=$lesMAV;
 $rep['MAV2']=$lesMAV2;
 $rep['ligues']=$lesLigues;
 //echo json_encode($extra);
-echo json_encode($rep);
+$jsonFlags = JSON_UNESCAPED_UNICODE;
+if(defined('JSON_INVALID_UTF8_SUBSTITUTE')){$jsonFlags = $jsonFlags | JSON_INVALID_UTF8_SUBSTITUTE;}
+$jsonRep = json_encode($rep, $jsonFlags);
+if($jsonRep === false)
+{
+	error_log("traiteSync json_encode failed: ".json_last_error_msg());
+	$fallback = array();
+	$fallback['syncOK'] = array();
+	$fallback['syncOKdetail'] = array();
+	$fallback['extra'] = array('erreur' => 'json_encode_failed');
+	$fallback['transJ'] = array();
+	$fallback['transE'] = array();
+	$fallback['MAV'] = array();
+	$fallback['MAV2'] = array();
+	$fallback['ligues'] = array();
+	echo json_encode($fallback);
+}
+else
+{
+	echo $jsonRep;
+}
 
 //echo "\n".$matchjson."\n";
 

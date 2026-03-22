@@ -57,19 +57,28 @@ ORDER BY e.event_id DESC
 LIMIT 1
 ";
 
-$stmt = $conn->prepare($sql);
-if (!$stmt) {
-    respond(500, ['ok' => false, 'error' => $conn->error]);
+$stmt = null;
+$row = null;
+try {
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        respond(500, ['ok' => false, 'error' => 'DB prepare failed']);
+    }
+
+    $stmt->bind_param("is", $arenaId, $username);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    $row = $result ? $result->fetch_assoc() : null;
+} catch (mysqli_sql_exception $e) {
+    error_log('[getEvenementInstant] DB error: ' . $e->getMessage());
+    header('Retry-After: 2');
+    respond(503, ['ok' => false, 'error' => 'DB temporairement indisponible']);
+} finally {
+    if ($stmt instanceof mysqli_stmt) {
+        $stmt->close();
+    }
 }
-
-$stmt->bind_param("is", $arenaId, $username);
-
-if (!$stmt->execute()) {
-    respond(500, ['ok' => false, 'error' => $stmt->error]);
-}
-
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
 
 $hasNewEvent = false;
 $eventId = 0;
@@ -85,8 +94,6 @@ if ($row) {
         $hasNewEvent = true;
     }
 }
-
-$stmt->close();
 
 respond(200, [
     'ok' => true,
