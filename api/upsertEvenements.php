@@ -1,72 +1,122 @@
 <?php
 
-include_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "syncstatsconfig.php");
-require("../scriptsphp/calculeMatch2.php");
+declare(strict_types=1);
+
+include_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'syncstatsconfig.php');
+require '../scriptsphp/calculeMatch2.php';
 require '../scriptsphp/defenvvar.php';
 require_once __DIR__ . '/lib/upsert_evenements_rules.php';
+
+header('Content-Type: application/json; charset=utf-8');
+
+function upsertEvenementsTrouverMatchId(mysqli $conn, string $gameStringID): int
+{
+    $stmtMatch = mysqli_prepare($conn, 'SELECT match_id FROM TableMatch WHERE matchIdRef = ? LIMIT 1');
+    if (!$stmtMatch) {
+        return 0;
+    }
+
+    mysqli_stmt_bind_param($stmtMatch, 's', $gameStringID);
+    mysqli_stmt_execute($stmtMatch);
+    mysqli_stmt_bind_result($stmtMatch, $matchId);
+    mysqli_stmt_fetch($stmtMatch);
+    mysqli_stmt_close($stmtMatch);
+
+    return (int)($matchId ?? 0);
+}
 
 $heure = $_POST['heure'] ?? null;
 $heureServeur = time() * 1000;
 
-$preEvenements = null;
 $evenements = null;
 if (isset($_POST['evenements'])) {
-    $preEvenements = $_POST["evenements"];
-    $evenements = json_decode($preEvenements, true);
+    $evenements = json_decode((string)$_POST['evenements'], true);
 }
 
 $syncOK = array();
-
-$qRef = "SELECT event_id FROM TableEvenement0 WHERE 1 ORDER BY event_id DESC LIMIT 0,1";
-$rRef = mysqli_query($conn, $qRef) or die(mysqli_error($conn) . $qRef);
-$vRef = mysqli_fetch_row($rRef);
-
-$extra['DM'] = 3;
-$memNoMatchId = 0;
 $noMatchId = 0;
 
-if ($evenements != null) {
-
+if (is_array($evenements)) {
     foreach ($evenements as $evenement) {
+        if (!is_array($evenement)) {
+            continue;
+        }
 
-        $evenement['TeamID'] = $evenement['TeamID'] ?? null;
-        $evenement['PlayerComID'] = $evenement['PlayerComID'] ?? null;
-        $evenement['etatSync'] = $evenement['etatSync'] ?? null;
+        $id = (int)($evenement['id'] ?? 0);
+        $etatSync = (int)($evenement['etatSync'] ?? 0);
 
-        if (isset($heure) && isset($evenement['chrono'])) {
+        if (isset($heure) && isset($evenement['chrono']) && is_numeric($evenement['chrono'])) {
             $evenement['chrono'] = (int)$evenement['chrono'] + $heureServeur - (int)$heure;
         }
 
-        if ((int)$evenement['etatSync'] == 10) {
-
-            $eventComIdDel = mysqli_real_escape_string($conn, (string)($evenement['EventComId'] ?? ''));
-            $qDel = "DELETE FROM TableEvenement0 WHERE event_id='{$eventComIdDel}'";
-            mysqli_query($conn, $qDel) or die(mysqli_error($conn) . $qDel);
-
-            $retObj = array(
-                "id" => (int)($evenement['id'] ?? 0),
-                "EventComId" => mysqli_insert_id($conn),
-                "etatSync" => 10
+        $validationChrono = upsertEvenementsValidationChrono($evenement);
+        if ($validationChrono['ok'] !== true) {
+            $syncOK[] = array(
+                'id' => $id,
+                'EventComId' => null,
+                'etatSync' => $etatSync,
+                'ok' => false,
+                'error' => 'validation_echec',
+                'reason' => $validationChrono['raison']
             );
-            array_push($syncOK, $retObj);
+            continue;
+        }
 
-        } else {
-            $gameStringID = (string)($evenement['GameStringID'] ?? '');
-            $teamID = (int)($evenement['TeamID'] ?? 0);
-            $playerID = (int)($evenement['PlayerComID'] ?? 0);
-            $chrono = (int)($evenement['chrono'] ?? 0);
-            $eventTypeID = (int)($evenement['EventTypeID'] ?? 0);
-            $eventTypeDetailID = (int)($evenement['EventTypeDetailID'] ?? $evenement['eventTypeDetailId'] ?? $evenement['eventTypeDetailID'] ?? 0);
-            $id = (int)($evenement['id'] ?? 0);
-            $noSequence = (int)($evenement['noSequence'] ?? 0);
+        if ($etatSync === 10) {
+            $eventComIdDel = (int)($evenement['EventComId'] ?? 0);
+            if ($eventComIdDel <= 0) {
+                $syncOK[] = array(
+                    'id' => $id,
+                    'EventComId' => null,
+                    'etatSync' => 10,
+                    'ok' => false,
+                    'error' => 'delete_event_com_id_invalide'
+                );
+                continue;
+            }
 
-            $code = null;
-            $subcode = null;
+            $stmtDel = mysqli_prepare($conn, 'DELETE FROM TableEvenement0 WHERE event_id = ?');
+            if (!$stmtDel) {
+                $syncOK[] = array(
+                    'id' => $id,
+                    'EventComId' => $eventComIdDel,
+                    'etatSync' => 10,
+                    'ok' => false,
+                    'error' => 'delete_prepare_failed'
+                );
+                continue;
+            }
 
-            // 1) Priorité au EventTypeDetailID
-            if ($eventTypeDetailID > 0) {
-                $stmt = mysqli_prepare($conn, "SELECT Code, Subcode FROM EventTypeDetail WHERE EventTypeDetailId = ? LIMIT 1");
-                mysqli_stmt_bind_param($stmt, "i", $eventTypeDetailID);
+            mysqli_stmt_bind_param($stmtDel, 'i', $eventComIdDel);
+            $deleteOK = mysqli_stmt_execute($stmtDel);
+            $deleteAffected = mysqli_stmt_affected_rows($stmtDel);
+            mysqli_stmt_close($stmtDel);
+
+            $syncOK[] = array(
+                'id' => $id,
+                'EventComId' => $eventComIdDel,
+                'etatSync' => 10,
+                'ok' => $deleteOK ? true : false,
+                'deleted' => $deleteAffected > 0
+            );
+            continue;
+        }
+
+        $gameStringID = (string)($evenement['GameStringID'] ?? '');
+        $teamID = (int)($evenement['TeamID'] ?? 0);
+        $playerID = (int)($evenement['PlayerComID'] ?? 0);
+        $chrono = (int)($evenement['chrono'] ?? 0);
+        $eventTypeID = (int)($evenement['EventTypeID'] ?? 0);
+        $eventTypeDetailID = (int)($evenement['EventTypeDetailID'] ?? $evenement['eventTypeDetailId'] ?? $evenement['eventTypeDetailID'] ?? 0);
+        $noSequence = (int)($evenement['noSequence'] ?? 0);
+
+        $code = null;
+        $subcode = null;
+
+        if ($eventTypeDetailID > 0) {
+            $stmt = mysqli_prepare($conn, 'SELECT Code, Subcode FROM EventTypeDetail WHERE EventTypeDetailId = ? LIMIT 1');
+            if ($stmt) {
+                mysqli_stmt_bind_param($stmt, 'i', $eventTypeDetailID);
                 mysqli_stmt_execute($stmt);
                 mysqli_stmt_bind_result($stmt, $detailCode, $detailSubcode);
                 mysqli_stmt_fetch($stmt);
@@ -77,27 +127,25 @@ if ($evenements != null) {
                     $subcode = ($detailSubcode === null) ? 0 : (int)$detailSubcode;
                 }
             }
+        }
 
-            // 2) Fallback sur les champs entrants si EventTypeDetail introuvable
-            if ($code === null) {
-                if (isset($evenement['code']) && $evenement['code'] !== '' && $evenement['code'] !== null) {
-                    $code = (int)$evenement['code'];
+        if ($code === null && isset($evenement['code']) && $evenement['code'] !== '') {
+            $code = (int)$evenement['code'];
+        }
+
+        if ($subcode === null) {
+            foreach (array('souscode', 'subcode', 'subCode', 'Subcode', 'sc') as $k) {
+                if (isset($evenement[$k]) && $evenement[$k] !== '' && $evenement[$k] !== null) {
+                    $subcode = (int)$evenement[$k];
+                    break;
                 }
             }
+        }
 
-            if ($subcode === null) {
-                foreach (['souscode', 'subcode', 'subCode', 'Subcode', 'sc'] as $k) {
-                    if (isset($evenement[$k]) && $evenement[$k] !== '' && $evenement[$k] !== null) {
-                        $subcode = (int)$evenement[$k];
-                        break;
-                    }
-                }
-            }
-
-            // 3) Fallback final sur EventType
-            if ($code === null || $subcode === null) {
-                $stmt = mysqli_prepare($conn, "SELECT Code, Subcode FROM EventType WHERE EventTypeId = ? LIMIT 1");
-                mysqli_stmt_bind_param($stmt, "i", $eventTypeID);
+        if ($code === null || $subcode === null) {
+            $stmt = mysqli_prepare($conn, 'SELECT Code, Subcode FROM EventType WHERE EventTypeId = ? LIMIT 1');
+            if ($stmt) {
+                mysqli_stmt_bind_param($stmt, 'i', $eventTypeID);
                 mysqli_stmt_execute($stmt);
                 mysqli_stmt_bind_result($stmt, $typeCode, $typeSubcode);
                 mysqli_stmt_fetch($stmt);
@@ -110,184 +158,159 @@ if ($evenements != null) {
                     $subcode = ($typeSubcode === null) ? 0 : (int)$typeSubcode;
                 }
             }
+        }
 
-            $eventComIdValue = $evenement['EventComId'] ?? null;
-            $decisionCreationLocale = upsertEvenementsDecisionCreationLocale($evenement);
+        $eventComIdValue = $evenement['EventComId'] ?? null;
+        $decisionCreationLocale = upsertEvenementsDecisionCreationLocale($evenement);
 
-            if ($decisionCreationLocale['eventComIdVide'] === true) {
-                $sourceAutorisee = $decisionCreationLocale['autorise'] === true;
+        if ($decisionCreationLocale['eventComIdVide'] === true) {
+            $stmtExiste = mysqli_prepare(
+                $conn,
+                'SELECT event_id
+                 FROM TableEvenement0
+                 WHERE match_event_id = ?
+                   AND equipe_event_id = ?
+                   AND joueur_event_ref = ?
+                   AND chrono = ?
+                   AND code = ?
+                   AND souscode = ?
+                   AND noSequence = ?
+                 ORDER BY event_id DESC
+                 LIMIT 1'
+            );
 
-                // Règle métier: création sans EventComId autorisée seulement depuis plateformeweb/plateforme.
-                if (!$sourceAutorisee) {
-                    $sourceReelle = isset($evenement['source']) ? trim((string)$evenement['source']) : '';
-                    error_log(
-                        "[upsertEvenements] EventComId vide refusé: source non autorisée | id_local={$id} | match={$gameStringID} | source={$sourceReelle}",
-                        0
-                    );
+            if ($stmtExiste) {
+                mysqli_stmt_bind_param($stmtExiste, 'siiiiii', $gameStringID, $teamID, $playerID, $chrono, $code, $subcode, $noSequence);
+                mysqli_stmt_execute($stmtExiste);
+                mysqli_stmt_bind_result($stmtExiste, $eventComIdExistant);
+                $aTrouve = mysqli_stmt_fetch($stmtExiste);
+                mysqli_stmt_close($stmtExiste);
+
+                if ($aTrouve && !empty($eventComIdExistant)) {
+                    $eventComId = (int)$eventComIdExistant;
+                    $syncOK[] = array('id' => $id, 'EventComId' => $eventComId, 'etatSync' => 12, 'ok' => true, 'action' => 'reused');
                     continue;
                 }
-
-                // Déduplication défensive: si le même événement existe déjà, on réutilise son ID.
-                $stmtExiste = mysqli_prepare(
-                    $conn,
-                    "SELECT event_id
-                     FROM TableEvenement0
-                     WHERE match_event_id = ?
-                       AND equipe_event_id = ?
-                       AND joueur_event_ref = ?
-                       AND chrono = ?
-                       AND code = ?
-                       AND souscode = ?
-                       AND noSequence = ?
-                     ORDER BY event_id DESC
-                     LIMIT 1"
-                );
-                if ($stmtExiste) {
-                    mysqli_stmt_bind_param($stmtExiste, "siiiiii", $gameStringID, $teamID, $playerID, $chrono, $code, $subcode, $noSequence);
-                    mysqli_stmt_execute($stmtExiste);
-                    mysqli_stmt_bind_result($stmtExiste, $eventComIdExistant);
-                    $aTrouve = mysqli_stmt_fetch($stmtExiste);
-                    mysqli_stmt_close($stmtExiste);
-
-                    if ($aTrouve && !empty($eventComIdExistant)) {
-                        $eventComId = (int)$eventComIdExistant;
-                        $retObj = array("id" => $id, "EventComId" => $eventComId, "etatSync" => 12);
-                        array_push($syncOK, $retObj);
-                        continue;
-                    }
-                }
-
-                $stmt = mysqli_prepare(
-                    $conn,
-                    "INSERT INTO TableEvenement0 
-                    (match_event_id, equipe_event_id, joueur_event_ref, chrono, code, souscode, noSequence) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?)"
-                );
-
-                mysqli_stmt_bind_param($stmt, "siiiiii", $gameStringID, $teamID, $playerID, $chrono, $code, $subcode, $noSequence);
-                $success = mysqli_stmt_execute($stmt);
-
-                if (!$success) {
-                    die("Erreur d'insertion : " . mysqli_error($conn));
-                }
-
-                $eventComId = mysqli_insert_id($conn);
-
-                if ($eventComId <= 0) {
-                    die("Erreur : Aucun ID inséré.");
-                }
-
-                $stmtMatch = mysqli_prepare($conn, "SELECT match_id FROM TableMatch WHERE matchIdRef = ? LIMIT 1");
-                mysqli_stmt_bind_param($stmtMatch, "s", $gameStringID);
-                mysqli_stmt_execute($stmtMatch);
-                mysqli_stmt_bind_result($stmtMatch, $matchId);
-                mysqli_stmt_fetch($stmtMatch);
-                mysqli_stmt_close($stmtMatch);
-
-                if (!empty($matchId)) {
-                    $noMatchId = $matchId;
-                }
-
-                $retObj = array("id" => $id, "EventComId" => $eventComId, "etatSync" => 12);
-                array_push($syncOK, $retObj);
-
-                mysqli_stmt_close($stmt);
-
-            } else {
-                $eventComId = (int)$eventComIdValue;
-
-                $stmt = mysqli_prepare(
-                    $conn,
-                    "UPDATE TableEvenement0 
-                     SET match_event_id = ?, 
-                         equipe_event_id = ?, 
-                         joueur_event_ref = ?, 
-                         chrono = ?, 
-                         code = ?, 
-                         souscode = ?, 
-                         noSequence = ? 
-                     WHERE event_id = ?"
-                );
-
-                mysqli_stmt_bind_param($stmt, "siiiiiii", $gameStringID, $teamID, $playerID, $chrono, $code, $subcode, $noSequence, $eventComId);
-                $success = mysqli_stmt_execute($stmt);
-                mysqli_stmt_close($stmt);
-
-                if (!$success) {
-                    die(
-                        "Erreur: Mise à jour échouée pour event_id={$eventComId} " .
-                        "Tentative UPDATE avec paramètres : gameStringID=$gameStringID, teamID=$teamID, playerID=$playerID, chrono=$chrono, code=$code, subcode=$subcode, eventComId=$eventComId"
-                    );
-                }
-
-                $stmtMatch = mysqli_prepare($conn, "SELECT match_id FROM TableMatch WHERE matchIdRef = ? LIMIT 1");
-                mysqli_stmt_bind_param($stmtMatch, "s", $gameStringID);
-                mysqli_stmt_execute($stmtMatch);
-                mysqli_stmt_bind_result($stmtMatch, $matchId);
-                mysqli_stmt_fetch($stmtMatch);
-                mysqli_stmt_close($stmtMatch);
-
-                if (!empty($matchId)) {
-                    $noMatchId = $matchId;
-                }
-
-                $retObj = array("id" => $id, "EventComId" => $eventComId, "etatSync" => 12);
-                array_push($syncOK, $retObj);
             }
+
+            $stmtInsert = mysqli_prepare(
+                $conn,
+                'INSERT INTO TableEvenement0
+                 (match_event_id, equipe_event_id, joueur_event_ref, chrono, code, souscode, noSequence)
+                 VALUES (?, ?, ?, ?, ?, ?, ?)'
+            );
+
+            if (!$stmtInsert) {
+                $syncOK[] = array('id' => $id, 'EventComId' => null, 'etatSync' => 3, 'ok' => false, 'error' => 'insert_prepare_failed');
+                continue;
+            }
+
+            mysqli_stmt_bind_param($stmtInsert, 'siiiiii', $gameStringID, $teamID, $playerID, $chrono, $code, $subcode, $noSequence);
+            $insertOK = mysqli_stmt_execute($stmtInsert);
+
+            if (!$insertOK) {
+                $insertErr = mysqli_stmt_error($stmtInsert);
+                mysqli_stmt_close($stmtInsert);
+                $syncOK[] = array('id' => $id, 'EventComId' => null, 'etatSync' => 3, 'ok' => false, 'error' => 'insert_failed', 'detail' => $insertErr);
+                continue;
+            }
+
+            $eventComId = (int)mysqli_insert_id($conn);
+            mysqli_stmt_close($stmtInsert);
+
+            if ($eventComId <= 0) {
+                $syncOK[] = array('id' => $id, 'EventComId' => null, 'etatSync' => 3, 'ok' => false, 'error' => 'insert_no_event_com_id');
+                continue;
+            }
+
+            $matchId = upsertEvenementsTrouverMatchId($conn, $gameStringID);
+            if ($matchId > 0) {
+                $noMatchId = $matchId;
+            }
+
+            $syncOK[] = array('id' => $id, 'EventComId' => $eventComId, 'etatSync' => 12, 'ok' => true, 'action' => 'created');
+            continue;
         }
+
+        $eventComId = (int)$eventComIdValue;
+        if ($eventComId <= 0) {
+            $syncOK[] = array('id' => $id, 'EventComId' => null, 'etatSync' => 3, 'ok' => false, 'error' => 'event_com_id_invalide');
+            continue;
+        }
+
+        $stmtUpsert = mysqli_prepare(
+            $conn,
+            'INSERT INTO TableEvenement0
+            (event_id, match_event_id, equipe_event_id, joueur_event_ref, chrono, code, souscode, noSequence)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                match_event_id = VALUES(match_event_id),
+                equipe_event_id = VALUES(equipe_event_id),
+                joueur_event_ref = VALUES(joueur_event_ref),
+                chrono = VALUES(chrono),
+                code = VALUES(code),
+                souscode = VALUES(souscode),
+                noSequence = VALUES(noSequence)'
+        );
+
+        if (!$stmtUpsert) {
+            $syncOK[] = array('id' => $id, 'EventComId' => $eventComId, 'etatSync' => 3, 'ok' => false, 'error' => 'upsert_prepare_failed');
+            continue;
+        }
+
+        mysqli_stmt_bind_param($stmtUpsert, 'isiiiiii', $eventComId, $gameStringID, $teamID, $playerID, $chrono, $code, $subcode, $noSequence);
+        $upsertOK = mysqli_stmt_execute($stmtUpsert);
+        if (!$upsertOK) {
+            $upsertErr = mysqli_stmt_error($stmtUpsert);
+            mysqli_stmt_close($stmtUpsert);
+            $syncOK[] = array('id' => $id, 'EventComId' => $eventComId, 'etatSync' => 3, 'ok' => false, 'error' => 'upsert_failed', 'detail' => $upsertErr);
+            continue;
+        }
+        mysqli_stmt_close($stmtUpsert);
+
+        $matchId = upsertEvenementsTrouverMatchId($conn, $gameStringID);
+        if ($matchId > 0) {
+            $noMatchId = $matchId;
+        }
+
+        $syncOK[] = array('id' => $id, 'EventComId' => $eventComId, 'etatSync' => 12, 'ok' => true, 'action' => 'upserted');
     }
 }
 
-if ($noMatchId != 0) {
-
-    if ($workEnv == "production") {
+if ($noMatchId !== 0) {
+    if ($workEnv === 'production') {
         $url = 'https://syncstats.com/scriptsphp/calculeUnMatch.php';
     } else {
         $url = 'http://vieuxsite.sm.syncstats.ca/scriptsphp/calculeUnMatch.php';
     }
 
-    $postData = http_build_query([
-        'noMatchId' => (int)$noMatchId
-    ]);
-
+    $postData = http_build_query(array('noMatchId' => (int)$noMatchId));
     $ch = curl_init($url);
-
-    curl_setopt_array($ch, [
+    curl_setopt_array($ch, array(
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST => true,
         CURLOPT_POSTFIELDS => $postData,
         CURLOPT_TIMEOUT => 10,
         CURLOPT_CONNECTTIMEOUT => 5,
         CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTPHEADER => [
+        CURLOPT_HTTPHEADER => array(
             'Content-Type: application/x-www-form-urlencoded',
             'Content-Length: ' . strlen($postData)
-        ],
-    ]);
+        ),
+    ));
 
     $result = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $curlErr  = curl_error($ch);
-
+    $curlErr = curl_error($ch);
     curl_close($ch);
 
     if ($result === false || $httpCode !== 200) {
-        error_log(
-            "calculeUnMatch CURL ERROR | match={$noMatchId} | http={$httpCode} | err={$curlErr}",
-            0
-        );
-    } elseif (trim($result) === '') {
-        error_log(
-            "calculeUnMatch réponse vide | match={$noMatchId}",
-            0
-        );
+        error_log('calculeUnMatch CURL ERROR | match=' . $noMatchId . ' | http=' . $httpCode . ' | err=' . $curlErr, 0);
+    } elseif (trim((string)$result) === '') {
+        error_log('calculeUnMatch reponse vide | match=' . $noMatchId, 0);
     }
-
-    $memNoMatchId = $noMatchId;
 }
 
-$deSyncMatch = 1;
 echo json_encode($syncOK);
-//mysqli_close($conn);
 
 ?>

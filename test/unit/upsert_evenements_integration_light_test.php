@@ -36,34 +36,22 @@ try {
     assertTrue($casEventComIdPresent['autorise'], 'EventComId present doit toujours etre autorise');
     assertSame('event_com_id_present', $casEventComIdPresent['raison'], 'raison attendue EventComId present');
 
-    $casCreationLocaleValide = upsertEvenementsDecisionCreationLocale(array(
+    $casCreationLocaleMobile = upsertEvenementsDecisionCreationLocale(array(
         'EventComId' => '',
-        'source' => 'plateforme'
-    ));
-    assertTrue($casCreationLocaleValide['eventComIdVide'], 'EventComId vide attendu');
-    assertTrue($casCreationLocaleValide['autorise'], 'source plateforme doit autoriser la creation locale');
-    assertSame(
-        'event_com_id_vide_source_autorisee',
-        $casCreationLocaleValide['raison'],
-        'raison attendue source autorisee'
-    );
-
-    $casCreationLocaleRefusee = upsertEvenementsDecisionCreationLocale(array(
-        'EventComId' => null,
         'source' => 'mobile'
     ));
-    assertTrue($casCreationLocaleRefusee['eventComIdVide'], 'EventComId vide attendu');
-    assertFalse($casCreationLocaleRefusee['autorise'], 'source mobile doit etre refusee');
+    assertTrue($casCreationLocaleMobile['eventComIdVide'], 'EventComId vide attendu');
+    assertTrue($casCreationLocaleMobile['autorise'], 'EventComId vide autorise sans contrainte source');
     assertSame(
-        'event_com_id_vide_source_non_autorisee',
-        $casCreationLocaleRefusee['raison'],
-        'raison attendue source non autorisee'
+        'event_com_id_vide_autorise',
+        $casCreationLocaleMobile['raison'],
+        'raison attendue sans contrainte source'
     );
 
     $casSansSource = upsertEvenementsDecisionCreationLocale(array(
         'EventComId' => ''
     ));
-    assertFalse($casSansSource['autorise'], 'EventComId vide sans source doit etre refuse');
+    assertTrue($casSansSource['autorise'], 'EventComId vide sans source autorise');
 
     echo "OK upsert_evenements_integration_light_test\n";
     exit(0);

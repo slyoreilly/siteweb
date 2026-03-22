@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require '../scriptsphp/defenvvar.php'; // fournit $conn (mysqli)
+require_once __DIR__ . '/lib/evenements_read_contract.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -120,21 +121,7 @@ $result = $stmt->get_result();
 $events = [];
 
 while ($row = $result->fetch_assoc()) {
-    $events[] = [
-        'type'        => (int)$row['type'],
-        'eventId'     => (int)$row['eventId'],
-        'chrono'      => (int)$row['chrono'],
-        'matchIdRef'  => $row['matchIdRef'],
-        'matchId'     => (int)$row['matchId'],
-        'ligueId'     => (int)$row['ligueId'],
-        'arenaId'     => (int)$row['arenaId'],
-        'eqDom'       => (int)$row['eqDom'],
-        'eqVis'       => (int)$row['eqVis'],
-        'date'        => $row['date'],
-        'code'        => (int)$row['code'],
-        'sousCode'    => (int)$row['sousCode'],
-        'scoringEnd'  => isset($row['scoringEnd']) ? (int)$row['scoringEnd'] : null,
-    ];
+    $events[] = evenementsReadConstruireItem($row);
 }
 
 $stmt->close();

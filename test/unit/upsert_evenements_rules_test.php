@@ -33,20 +33,35 @@ try {
 
     assertTrue(
         upsertEvenementsSourceAutoriseePourCreationLocale(array('source' => 'plateforme')),
-        'source plateforme doit etre autorisee'
+        'source plateforme autorisee'
     );
     assertTrue(
-        upsertEvenementsSourceAutoriseePourCreationLocale(array('source' => 'PLATEFORMEWEB')),
-        'source plateformeweb doit etre autorisee'
-    );
-    assertFalse(
         upsertEvenementsSourceAutoriseePourCreationLocale(array('source' => 'mobile')),
-        'source mobile ne doit pas etre autorisee'
+        'source mobile autorisee'
     );
-    assertFalse(
+    assertTrue(
         upsertEvenementsSourceAutoriseePourCreationLocale(array()),
-        'source absente ne doit pas etre autorisee'
+        'source absente autorisee'
     );
+
+    $decisionCreationOK = upsertEvenementsDecisionCreationLocale(array('EventComId' => '', 'source' => 'plateforme'));
+    assertTrue($decisionCreationOK['autorise'], 'creation locale autorisee');
+    assertSame('event_com_id_vide_autorise', $decisionCreationOK['raison'], 'raison creation autorisee');
+
+    $decisionCreationSansSource = upsertEvenementsDecisionCreationLocale(array('EventComId' => ''));
+    assertTrue($decisionCreationSansSource['autorise'], 'creation locale sans source autorisee');
+    assertSame('event_com_id_vide_autorise', $decisionCreationSansSource['raison'], 'raison creation sans source');
+
+    $v1 = upsertEvenementsValidationChrono(array('chrono' => 100));
+    assertTrue($v1['ok'], 'chrono positif valide');
+
+    $v2 = upsertEvenementsValidationChrono(array('chrono' => -1));
+    assertFalse($v2['ok'], 'chrono negatif invalide');
+    assertSame('chrono_negatif', $v2['raison'], 'raison chrono negatif');
+
+    $v3 = upsertEvenementsValidationChrono(array());
+    assertFalse($v3['ok'], 'chrono absent invalide');
+    assertSame('chrono_absent', $v3['raison'], 'raison chrono absent');
 
     echo "OK upsert_evenements_rules_test\n";
     exit(0);

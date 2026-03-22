@@ -13,9 +13,7 @@ function upsertEvenementsSourceNormalisee($value): string
 
 function upsertEvenementsSourceAutoriseePourCreationLocale(array $evenement): bool
 {
-    $source = upsertEvenementsSourceNormalisee($evenement['source'] ?? null);
-
-    return in_array($source, array('plateforme', 'plateformeweb'), true);
+    return true;
 }
 
 function upsertEvenementsDecisionCreationLocale(array $evenement): array
@@ -31,20 +29,28 @@ function upsertEvenementsDecisionCreationLocale(array $evenement): array
         );
     }
 
-    $sourceAutorisee = upsertEvenementsSourceAutoriseePourCreationLocale($evenement);
-    if ($sourceAutorisee) {
-        return array(
-            'eventComIdVide' => true,
-            'autorise' => true,
-            'raison' => 'event_com_id_vide_source_autorisee'
-        );
-    }
-
     return array(
         'eventComIdVide' => true,
-        'autorise' => false,
-        'raison' => 'event_com_id_vide_source_non_autorisee'
+        'autorise' => true,
+        'raison' => 'event_com_id_vide_autorise'
     );
+}
+
+function upsertEvenementsValidationChrono(array $evenement): array
+{
+    if (!array_key_exists('chrono', $evenement)) {
+        return array('ok' => false, 'raison' => 'chrono_absent');
+    }
+
+    if (!is_numeric($evenement['chrono'])) {
+        return array('ok' => false, 'raison' => 'chrono_non_numerique');
+    }
+
+    if ((int)$evenement['chrono'] < 0) {
+        return array('ok' => false, 'raison' => 'chrono_negatif');
+    }
+
+    return array('ok' => true, 'raison' => 'ok');
 }
 
 ?>

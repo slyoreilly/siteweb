@@ -99,6 +99,7 @@ respond(200, [
     'ok' => true,
     'serverTime' => gmdate('c'),
     'hasNewEvent' => $hasNewEvent,
+    'EventComId' => $eventId > 0 ? $eventId : null,
     'eventId' => $eventId,
     'chrono' => $chrono
 ]);
