@@ -28,22 +28,6 @@ function assertSame($expected, $actual, string $message): void
 }
 
 try {
-    assertSame('plateforme', upsertEvenementsSourceNormalisee('  Plateforme  '), 'normalisation de source');
-    assertSame('', upsertEvenementsSourceNormalisee(null), 'normalisation null');
-
-    assertTrue(
-        upsertEvenementsSourceAutoriseePourCreationLocale(array('source' => 'plateforme')),
-        'source plateforme autorisee'
-    );
-    assertTrue(
-        upsertEvenementsSourceAutoriseePourCreationLocale(array('source' => 'mobile')),
-        'source mobile autorisee'
-    );
-    assertTrue(
-        upsertEvenementsSourceAutoriseePourCreationLocale(array()),
-        'source absente autorisee'
-    );
-
     $decisionCreationOK = upsertEvenementsDecisionCreationLocale(array('EventComId' => '', 'source' => 'plateforme'));
     assertTrue($decisionCreationOK['autorise'], 'creation locale autorisee');
     assertSame('event_com_id_vide_autorise', $decisionCreationOK['raison'], 'raison creation autorisee');

@@ -139,9 +139,20 @@ Reponse item:
 - `test/unit/upsert_evenements_rules_test.php`
 - `test/unit/upsert_evenements_integration_light_test.php`
 - `test/unit/evenements_read_contract_test.php`
+- `test/unit/upsert_match_rules_test.php`
 
 Objectifs couverts:
 - contrat create sans `EventComId`,
 - idempotence fonctionnelle de decision,
 - stabilite du contrat read (`EventComId` explicite).
+
+
+## Note Match (TableMatch)
+
+Pour reduire les doublons de matchs lors des retries app<->web:
+- `api/upsertMatch.php` utilise un verrou applicatif MySQL (`GET_LOCK`) par `matchLongId`.
+- `api/upsertClips.php` applique le meme principe pour la creation implicite de match.
+
+Action recommandee cote DB (fortement conseillee):
+- appliquer `db/2026-03-22_tablematch_unique_matchidref.sql` apres nettoyage des doublons existants.
 

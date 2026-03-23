@@ -2,20 +2,6 @@
 
 declare(strict_types=1);
 
-function upsertEvenementsSourceNormalisee($value): string
-{
-    if ($value === null) {
-        return '';
-    }
-
-    return strtolower(trim((string)$value));
-}
-
-function upsertEvenementsSourceAutoriseePourCreationLocale(array $evenement): bool
-{
-    return true;
-}
-
 function upsertEvenementsDecisionCreationLocale(array $evenement): array
 {
     $eventComIdValue = $evenement['EventComId'] ?? null;
