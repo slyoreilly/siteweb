@@ -20,8 +20,18 @@ Regles:
 - `EventComId` present: operation en upsert canonique par `event_id = EventComId`.
 - `etatSync = 10`: suppression physique (`DELETE`) de l'evenement cible.
 - Idempotence:
-  - create sans `EventComId`: dedupe defensive sur `(match_event_id, equipe_event_id, joueur_event_ref, chrono, code, souscode, noSequence)`.
+  - create sans `EventComId`:
+    - primaire: table `sync_evenement_idempotence` via triplet `(telID, id local evenement, identifiant instance appareil)`;
+    - secours: dedupe defensive sur `(match_event_id, equipe_event_id, joueur_event_ref, chrono, code, souscode, noSequence)` si les identifiants idempotence ne sont pas fournis.
   - update avec `EventComId`: `INSERT ... ON DUPLICATE KEY UPDATE`.
+ - Retention anti-doublon:
+   - les traces idempotence sont conservees 3 jours;
+   - purge probabiliste cote serveur (tirage aleatoire 1/100 executions).
+
+Champs recommandes a transmettre par evenement pour une idempotence forte:
+- `telID` (ou `telephoneId`) : identifiant stable du telephone
+- `id` : identifiant local de l'evenement sur le telephone
+- `deviceInstanceId` (ou `installationId`) : identifiant changeant lors d'un reset de BD/app
 
 Reponse (tableau d'objets):
 - `id`: id local client

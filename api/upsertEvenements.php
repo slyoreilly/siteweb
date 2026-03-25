@@ -9,6 +9,8 @@ require_once __DIR__ . '/lib/upsert_evenements_rules.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
+const TABLE_IDEMPOTENCE_EVENEMENTS = 'sync_evenement_idempotence';
+
 function upsertEvenementsTrouverMatchId(mysqli $conn, string $gameStringID): int
 {
     $stmtMatch = mysqli_prepare($conn, 'SELECT match_id FROM TableMatch WHERE matchIdRef = ? LIMIT 1');
@@ -25,6 +27,214 @@ function upsertEvenementsTrouverMatchId(mysqli $conn, string $gameStringID): int
     return (int)($matchId ?? 0);
 }
 
+function upsertEvenementsPremiereValeurNonVide(array $sources, array $cles): ?string
+{
+    foreach ($sources as $source) {
+        if (!is_array($source)) {
+            continue;
+        }
+
+        foreach ($cles as $cle) {
+            if (!array_key_exists($cle, $source)) {
+                continue;
+            }
+
+            $valeur = $source[$cle];
+            if ($valeur === null || is_array($valeur) || is_object($valeur)) {
+                continue;
+            }
+
+            $texte = trim((string)$valeur);
+            if ($texte !== '') {
+                return $texte;
+            }
+        }
+    }
+
+    return null;
+}
+
+function upsertEvenementsExtraireCleIdempotence(array $evenement, array $contexteRequete): array
+{
+    $identifiantTelephone = upsertEvenementsPremiereValeurNonVide(
+        array($evenement, $contexteRequete),
+        array('telID', 'TelID', 'telephoneId', 'TelephoneId', 'phoneId', 'deviceId', 'appareilId', 'AppareilID', 'username')
+    );
+
+    $identifiantEvenementLocal = upsertEvenementsPremiereValeurNonVide(
+        array($evenement),
+        array('id', 'eventLocalId', 'EventLocalId', 'eventLocId', 'EventLocId')
+    );
+
+    $identifiantInstance = upsertEvenementsPremiereValeurNonVide(
+        array($evenement, $contexteRequete),
+        array('deviceInstanceId', 'DeviceInstanceId', 'installationId', 'InstallationId', 'dbInstanceId', 'DbInstanceId')
+    );
+
+    if ($identifiantTelephone === null || $identifiantEvenementLocal === null || $identifiantInstance === null) {
+        return array(
+            'active' => false,
+            'telephoneId' => null,
+            'eventLocalId' => null,
+            'instanceId' => null,
+        );
+    }
+
+    return array(
+        'active' => true,
+        'telephoneId' => $identifiantTelephone,
+        'eventLocalId' => $identifiantEvenementLocal,
+        'instanceId' => $identifiantInstance,
+    );
+}
+
+function upsertEvenementsInscrireIdempotence(mysqli $conn, string $telephoneId, string $eventLocalId, string $instanceId): ?bool
+{
+    $stmt = mysqli_prepare(
+        $conn,
+        'INSERT IGNORE INTO ' . TABLE_IDEMPOTENCE_EVENEMENTS . '
+        (telephone_id, event_local_id, instance_id, createdAt, updatedAt)
+        VALUES (?, ?, ?, NOW(), NOW())'
+    );
+
+    if (!$stmt) {
+        error_log('[upsertEvenements] prepare idempotence insert impossible: ' . mysqli_error($conn));
+        return null;
+    }
+
+    mysqli_stmt_bind_param($stmt, 'sss', $telephoneId, $eventLocalId, $instanceId);
+    $ok = mysqli_stmt_execute($stmt);
+    $affectees = $ok ? mysqli_stmt_affected_rows($stmt) : -1;
+    mysqli_stmt_close($stmt);
+
+    if (!$ok) {
+        error_log('[upsertEvenements] execute idempotence insert impossible: ' . mysqli_error($conn));
+        return null;
+    }
+
+    return $affectees > 0;
+}
+
+function upsertEvenementsSupprimerIdempotence(mysqli $conn, string $telephoneId, string $eventLocalId, string $instanceId): void
+{
+    $stmt = mysqli_prepare(
+        $conn,
+        'DELETE FROM ' . TABLE_IDEMPOTENCE_EVENEMENTS . ' WHERE telephone_id = ? AND event_local_id = ? AND instance_id = ?'
+    );
+    if (!$stmt) {
+        return;
+    }
+
+    mysqli_stmt_bind_param($stmt, 'sss', $telephoneId, $eventLocalId, $instanceId);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function upsertEvenementsAssocierEventComIdIdempotence(mysqli $conn, string $telephoneId, string $eventLocalId, string $instanceId, int $eventComId): void
+{
+    if ($eventComId <= 0) {
+        return;
+    }
+
+    $stmt = mysqli_prepare(
+        $conn,
+        'UPDATE ' . TABLE_IDEMPOTENCE_EVENEMENTS . '
+         SET event_com_id = ?, updatedAt = NOW()
+         WHERE telephone_id = ? AND event_local_id = ? AND instance_id = ?'
+    );
+
+    if (!$stmt) {
+        return;
+    }
+
+    mysqli_stmt_bind_param($stmt, 'isss', $eventComId, $telephoneId, $eventLocalId, $instanceId);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
+function upsertEvenementsTrouverEventComIdParIdempotence(mysqli $conn, string $telephoneId, string $eventLocalId, string $instanceId): int
+{
+    $stmt = mysqli_prepare(
+        $conn,
+        'SELECT event_com_id
+         FROM ' . TABLE_IDEMPOTENCE_EVENEMENTS . '
+         WHERE telephone_id = ? AND event_local_id = ? AND instance_id = ?
+         LIMIT 1'
+    );
+
+    if (!$stmt) {
+        return 0;
+    }
+
+    mysqli_stmt_bind_param($stmt, 'sss', $telephoneId, $eventLocalId, $instanceId);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $eventComId);
+    mysqli_stmt_fetch($stmt);
+    mysqli_stmt_close($stmt);
+
+    return (int)($eventComId ?? 0);
+}
+
+function upsertEvenementsTrouverEventComIdExistant(
+    mysqli $conn,
+    string $gameStringID,
+    int $teamID,
+    int $playerID,
+    int $chrono,
+    int $code,
+    int $subcode,
+    int $noSequence
+): int {
+    $stmtExiste = mysqli_prepare(
+        $conn,
+        'SELECT event_id
+         FROM TableEvenement0
+         WHERE match_event_id = ?
+           AND equipe_event_id = ?
+           AND joueur_event_ref = ?
+           AND chrono = ?
+           AND code = ?
+           AND souscode = ?
+           AND noSequence = ?
+         ORDER BY event_id DESC
+         LIMIT 1'
+    );
+
+    if (!$stmtExiste) {
+        return 0;
+    }
+
+    mysqli_stmt_bind_param($stmtExiste, 'siiiiii', $gameStringID, $teamID, $playerID, $chrono, $code, $subcode, $noSequence);
+    mysqli_stmt_execute($stmtExiste);
+    mysqli_stmt_bind_result($stmtExiste, $eventComIdExistant);
+    $aTrouve = mysqli_stmt_fetch($stmtExiste);
+    mysqli_stmt_close($stmtExiste);
+
+    if (!$aTrouve || empty($eventComIdExistant)) {
+        return 0;
+    }
+
+    return (int)$eventComIdExistant;
+}
+
+function upsertEvenementsNettoyageProbabilisteIdempotence(mysqli $conn): void
+{
+    try {
+        $tirage = random_int(1, 100);
+    } catch (Throwable $e) {
+        $tirage = 100;
+    }
+
+    if ($tirage !== 1) {
+        return;
+    }
+
+    $sql = 'DELETE FROM ' . TABLE_IDEMPOTENCE_EVENEMENTS . ' WHERE createdAt < (NOW() - INTERVAL 3 DAY)';
+    if (!mysqli_query($conn, $sql)) {
+        error_log('[upsertEvenements] nettoyage idempotence impossible: ' . mysqli_error($conn));
+    }
+}
+
 $heure = $_POST['heure'] ?? null;
 $heureServeur = time() * 1000;
 
@@ -37,6 +247,8 @@ $syncOK = array();
 $noMatchId = 0;
 
 if (is_array($evenements)) {
+    upsertEvenementsNettoyageProbabilisteIdempotence($conn);
+
     foreach ($evenements as $evenement) {
         if (!is_array($evenement)) {
             continue;
@@ -162,32 +374,76 @@ if (is_array($evenements)) {
 
         $eventComIdValue = $evenement['EventComId'] ?? null;
         $decisionCreationLocale = upsertEvenementsDecisionCreationLocale($evenement);
+        $cleIdempotence = upsertEvenementsExtraireCleIdempotence($evenement, $_POST);
 
         if ($decisionCreationLocale['eventComIdVide'] === true) {
-            $stmtExiste = mysqli_prepare(
-                $conn,
-                'SELECT event_id
-                 FROM TableEvenement0
-                 WHERE match_event_id = ?
-                   AND equipe_event_id = ?
-                   AND joueur_event_ref = ?
-                   AND chrono = ?
-                   AND code = ?
-                   AND souscode = ?
-                   AND noSequence = ?
-                 ORDER BY event_id DESC
-                 LIMIT 1'
-            );
+            $idempotenceInseree = null;
+            if ($cleIdempotence['active'] === true) {
+                $idempotenceInseree = upsertEvenementsInscrireIdempotence(
+                    $conn,
+                    (string)$cleIdempotence['telephoneId'],
+                    (string)$cleIdempotence['eventLocalId'],
+                    (string)$cleIdempotence['instanceId']
+                );
 
-            if ($stmtExiste) {
-                mysqli_stmt_bind_param($stmtExiste, 'siiiiii', $gameStringID, $teamID, $playerID, $chrono, $code, $subcode, $noSequence);
-                mysqli_stmt_execute($stmtExiste);
-                mysqli_stmt_bind_result($stmtExiste, $eventComIdExistant);
-                $aTrouve = mysqli_stmt_fetch($stmtExiste);
-                mysqli_stmt_close($stmtExiste);
+                if ($idempotenceInseree === false) {
+                    $eventComId = upsertEvenementsTrouverEventComIdParIdempotence(
+                        $conn,
+                        (string)$cleIdempotence['telephoneId'],
+                        (string)$cleIdempotence['eventLocalId'],
+                        (string)$cleIdempotence['instanceId']
+                    );
 
-                if ($aTrouve && !empty($eventComIdExistant)) {
-                    $eventComId = (int)$eventComIdExistant;
+                    if ($eventComId <= 0) {
+                        $essai = 0;
+                        while ($essai < 5 && $eventComId <= 0) {
+                            $eventComId = upsertEvenementsTrouverEventComIdExistant(
+                                $conn,
+                                $gameStringID,
+                                $teamID,
+                                $playerID,
+                                $chrono,
+                                $code,
+                                $subcode,
+                                $noSequence
+                            );
+                            if ($eventComId > 0) {
+                                upsertEvenementsAssocierEventComIdIdempotence(
+                                    $conn,
+                                    (string)$cleIdempotence['telephoneId'],
+                                    (string)$cleIdempotence['eventLocalId'],
+                                    (string)$cleIdempotence['instanceId'],
+                                    $eventComId
+                                );
+                                break;
+                            }
+                            usleep(20000);
+                            $essai++;
+                        }
+                    }
+
+                    if ($eventComId > 0) {
+                        $syncOK[] = array('id' => $id, 'EventComId' => $eventComId, 'etatSync' => 12, 'ok' => true, 'action' => 'reused');
+                        continue;
+                    }
+
+                    $syncOK[] = array('id' => $id, 'EventComId' => null, 'etatSync' => $etatSync, 'ok' => false, 'error' => 'dedupe_pending');
+                    continue;
+                }
+            }
+
+            if ($idempotenceInseree === null) {
+                $eventComId = upsertEvenementsTrouverEventComIdExistant(
+                    $conn,
+                    $gameStringID,
+                    $teamID,
+                    $playerID,
+                    $chrono,
+                    $code,
+                    $subcode,
+                    $noSequence
+                );
+                if ($eventComId > 0) {
                     $syncOK[] = array('id' => $id, 'EventComId' => $eventComId, 'etatSync' => 12, 'ok' => true, 'action' => 'reused');
                     continue;
                 }
@@ -211,6 +467,14 @@ if (is_array($evenements)) {
             if (!$insertOK) {
                 $insertErr = mysqli_stmt_error($stmtInsert);
                 mysqli_stmt_close($stmtInsert);
+                if ($cleIdempotence['active'] === true && $idempotenceInseree === true) {
+                    upsertEvenementsSupprimerIdempotence(
+                        $conn,
+                        (string)$cleIdempotence['telephoneId'],
+                        (string)$cleIdempotence['eventLocalId'],
+                        (string)$cleIdempotence['instanceId']
+                    );
+                }
                 $syncOK[] = array('id' => $id, 'EventComId' => null, 'etatSync' => 3, 'ok' => false, 'error' => 'insert_failed', 'detail' => $insertErr);
                 continue;
             }
@@ -219,8 +483,26 @@ if (is_array($evenements)) {
             mysqli_stmt_close($stmtInsert);
 
             if ($eventComId <= 0) {
+                if ($cleIdempotence['active'] === true && $idempotenceInseree === true) {
+                    upsertEvenementsSupprimerIdempotence(
+                        $conn,
+                        (string)$cleIdempotence['telephoneId'],
+                        (string)$cleIdempotence['eventLocalId'],
+                        (string)$cleIdempotence['instanceId']
+                    );
+                }
                 $syncOK[] = array('id' => $id, 'EventComId' => null, 'etatSync' => 3, 'ok' => false, 'error' => 'insert_no_event_com_id');
                 continue;
+            }
+
+            if ($cleIdempotence['active'] === true) {
+                upsertEvenementsAssocierEventComIdIdempotence(
+                    $conn,
+                    (string)$cleIdempotence['telephoneId'],
+                    (string)$cleIdempotence['eventLocalId'],
+                    (string)$cleIdempotence['instanceId'],
+                    $eventComId
+                );
             }
 
             $matchId = upsertEvenementsTrouverMatchId($conn, $gameStringID);

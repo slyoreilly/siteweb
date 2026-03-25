@@ -1,0 +1,250 @@
+def detectPhase() {
+    if (env.TAG_NAME) {
+        return 'PROD'
+    }
+    if ((env.BRANCH_NAME ?: '').startsWith('release/') || (env.BRANCH_NAME ?: '').startsWith('rc/')) {
+        return 'PREPROD'
+    }
+    if ((env.BRANCH_NAME ?: '') == 'main' || (env.BRANCH_NAME ?: '') == 'master') {
+        return 'PROD'
+    }
+    if ((env.BRANCH_NAME ?: '') == 'develop' || (env.CHANGE_TARGET ?: '') == 'develop') {
+        return 'DEV'
+    }
+    return 'DEV'
+}
+
+def detectTimerBuild() {
+    def causes = currentBuild?.rawBuild?.getCauses() ?: []
+    return causes.any { cause -> cause.toString().contains('TimerTriggerCause') }
+}
+
+pipeline {
+    agent any
+
+    triggers {
+        cron('H 2 * * *')
+    }
+
+    options {
+        timestamps()
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '30'))
+    }
+
+    parameters {
+        booleanParam(name: 'RUN_INSTRUMENTED', defaultValue: true, description: 'Executer les tests instrumentes en PREPROD/PROD')
+        booleanParam(name: 'ALLOW_MISSING_EMULATOR', defaultValue: false, description: 'Autoriser le skip instrumente si aucun device/emulateur')
+        booleanParam(name: 'RUN_E2E_SMOKE_PR', defaultValue: true, description: 'Executer le gate E2E smoke critique pour les Pull Requests')
+        booleanParam(name: 'RUN_E2E_REGRESSION_DAILY', defaultValue: true, description: 'Executer la regression E2E sur les builds planifies')
+        booleanParam(name: 'RUN_E2E_RELEASE', defaultValue: true, description: 'Executer le gate E2E release strict en PREPROD/PROD')
+        string(name: 'TESTS_REPO_DIR', defaultValue: '../tests', description: 'Chemin du depot de tests Playwright (modele tests)')
+    }
+
+    stages {
+        stage('Initialiser phase') {
+            steps {
+                script {
+                    env.CI_PHASE = detectPhase()
+                    env.CI_IS_TIMER = detectTimerBuild() ? 'true' : 'false'
+                    currentBuild.displayName = "#${env.BUILD_NUMBER} ${env.BRANCH_NAME} ${env.CI_PHASE}"
+                    echo "Phase detectee: ${env.CI_PHASE}, timer=${env.CI_IS_TIMER}"
+                }
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Gates DEV (build + lint + unit)') {
+            steps {
+                sh 'chmod +x gradlew ci/*.sh || true'
+                sh './ci/run_dev_gates.sh syncstatsref'
+            }
+            post {
+                always {
+                    junit allowEmptyResults: true, testResults: '**/build/test-results/testDebugUnitTest/*.xml'
+                    archiveArtifacts allowEmptyArchive: true, artifacts: 'app/build/reports/**/*,app/build/outputs/apk/debug/*.apk'
+                }
+            }
+        }
+
+        stage('Gate rapide PR (smoke critique)') {
+            when {
+                expression { env.CHANGE_ID && params.RUN_E2E_SMOKE_PR }
+            }
+            steps {
+                sh 'chmod +x ci/*.sh || true'
+                sh './ci/run_tests_repo_pack.sh "$TESTS_REPO_DIR" smoke'
+                sh '''
+                  mkdir -p ci-artifacts/tests/smoke
+                  cp -R "$TESTS_REPO_DIR/reports" ci-artifacts/tests/smoke/ || true
+                  cp -R "$TESTS_REPO_DIR/test-results" ci-artifacts/tests/smoke/ || true
+                '''
+            }
+            post {
+                always {
+                    archiveArtifacts allowEmptyArchive: true, artifacts: 'ci-artifacts/tests/smoke/**/*'
+                }
+            }
+        }
+
+        stage('Regression quotidienne planifiee') {
+            when {
+                expression {
+                    params.RUN_E2E_REGRESSION_DAILY &&
+                    env.CI_IS_TIMER == 'true' &&
+                    ((env.BRANCH_NAME ?: '') == 'main' || (env.BRANCH_NAME ?: '') == 'master')
+                }
+            }
+            steps {
+                sh 'chmod +x ci/*.sh || true'
+                sh './ci/run_tests_repo_pack.sh "$TESTS_REPO_DIR" regression'
+                sh '''
+                  mkdir -p ci-artifacts/tests/regression
+                  cp -R "$TESTS_REPO_DIR/reports" ci-artifacts/tests/regression/ || true
+                  cp -R "$TESTS_REPO_DIR/test-results" ci-artifacts/tests/regression/ || true
+                '''
+            }
+            post {
+                always {
+                    archiveArtifacts allowEmptyArchive: true, artifacts: 'ci-artifacts/tests/regression/**/*'
+                }
+            }
+        }
+
+        stage('Preparation signature securisee') {
+            when {
+                expression { (env.CI_PHASE == 'PREPROD' || env.CI_PHASE == 'PROD') && env.CI_IS_TIMER != 'true' }
+            }
+            steps {
+                withCredentials([
+                    string(credentialsId: 'syncstats-android-keystore-base64', variable: 'ANDROID_KEYSTORE_BASE64'),
+                    string(credentialsId: 'syncstats-android-keystore-password', variable: 'ANDROID_KEYSTORE_PASSWORD'),
+                    string(credentialsId: 'syncstats-android-key-alias', variable: 'ANDROID_KEY_ALIAS'),
+                    string(credentialsId: 'syncstats-android-key-password', variable: 'ANDROID_KEY_PASSWORD')
+                ]) {
+                    sh '''
+                      set -euo pipefail
+                      mkdir -p .ci-secrets
+                      echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > .ci-secrets/release.keystore
+                      chmod 600 .ci-secrets/release.keystore
+                    '''
+                    script {
+                        env.ANDROID_KEYSTORE_PATH = "${pwd()}/.ci-secrets/release.keystore"
+                    }
+                }
+            }
+        }
+
+        stage('Build artefact candidat release') {
+            when {
+                expression { (env.CI_PHASE == 'PREPROD' || env.CI_PHASE == 'PROD') && env.CI_IS_TIMER != 'true' }
+            }
+            steps {
+                withCredentials([
+                    string(credentialsId: 'syncstats-android-keystore-password', variable: 'ANDROID_KEYSTORE_PASSWORD'),
+                    string(credentialsId: 'syncstats-android-key-alias', variable: 'ANDROID_KEY_ALIAS'),
+                    string(credentialsId: 'syncstats-android-key-password', variable: 'ANDROID_KEY_PASSWORD')
+                ]) {
+                    sh '''
+                      ./gradlew --no-daemon clean :app:assembleRelease \
+                        -PANDROID_KEYSTORE_PATH="$ANDROID_KEYSTORE_PATH" \
+                        -PANDROID_KEYSTORE_PASSWORD="$ANDROID_KEYSTORE_PASSWORD" \
+                        -PANDROID_KEY_ALIAS="$ANDROID_KEY_ALIAS" \
+                        -PANDROID_KEY_PASSWORD="$ANDROID_KEY_PASSWORD"
+                    '''
+                }
+                stash name: 'release-apk', includes: 'app/build/outputs/apk/release/*.apk'
+            }
+            post {
+                always {
+                    archiveArtifacts allowEmptyArchive: false, artifacts: 'app/build/outputs/apk/release/*.apk'
+                }
+            }
+        }
+
+        stage('Gate release strict (E2E + critique)') {
+            when {
+                expression {
+                    params.RUN_E2E_RELEASE &&
+                    (env.CI_PHASE == 'PREPROD' || env.CI_PHASE == 'PROD') &&
+                    env.CI_IS_TIMER != 'true'
+                }
+            }
+            steps {
+                sh 'chmod +x ci/*.sh || true'
+                sh './ci/run_tests_repo_pack.sh "$TESTS_REPO_DIR" release'
+                sh '''
+                  mkdir -p ci-artifacts/tests/release
+                  cp -R "$TESTS_REPO_DIR/reports" ci-artifacts/tests/release/ || true
+                  cp -R "$TESTS_REPO_DIR/test-results" ci-artifacts/tests/release/ || true
+                '''
+            }
+            post {
+                always {
+                    archiveArtifacts allowEmptyArchive: true, artifacts: 'ci-artifacts/tests/release/**/*'
+                }
+            }
+        }
+
+        stage('Validation PREPROD (instrumente + smoke sync)') {
+            when {
+                expression { (env.CI_PHASE == 'PREPROD' || env.CI_PHASE == 'PROD') && env.CI_IS_TIMER != 'true' }
+            }
+            steps {
+                script {
+                    if (env.CI_PHASE == 'PREPROD') {
+                        input message: 'Valider le lancement PREPROD (canal pilote controle) ?', ok: 'Demarrer PREPROD'
+                    }
+                }
+                sh "./ci/run_preprod_gates.sh syncstatsref ${params.RUN_INSTRUMENTED} ${params.ALLOW_MISSING_EMULATOR}"
+            }
+            post {
+                always {
+                    junit allowEmptyResults: true, testResults: '**/build/outputs/androidTest-results/**/*.xml,**/build/test-results/**/*.xml'
+                    archiveArtifacts allowEmptyArchive: true, artifacts: 'app/build/reports/**/*,app/build/outputs/androidTest-results/**/*'
+                }
+            }
+        }
+
+        stage('Distribution PREPROD (ring pilote)') {
+            when {
+                expression { env.CI_PHASE == 'PREPROD' && env.CI_IS_TIMER != 'true' }
+            }
+            steps {
+                unstash 'release-apk'
+                sh './ci/distribute_artifact.sh syncstatsref preprod app/build/outputs/apk/release'
+            }
+        }
+
+        stage('Gate QA PROD (aucun critique ouvert)') {
+            when {
+                expression { env.CI_PHASE == 'PROD' && env.CI_IS_TIMER != 'true' }
+            }
+            steps {
+                sh './ci/check_qa_blockers.sh'
+            }
+        }
+
+        stage('Promotion PROD manuelle') {
+            when {
+                expression { env.CI_PHASE == 'PROD' && env.CI_IS_TIMER != 'true' }
+            }
+            steps {
+                input message: 'Confirmer promotion PROD depuis artefact valide PREPROD ?', ok: 'Promouvoir PROD'
+                unstash 'release-apk'
+                sh './ci/distribute_artifact.sh syncstatsref prod app/build/outputs/apk/release'
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'rm -rf .ci-secrets || true'
+        }
+    }
+}
