@@ -20,6 +20,7 @@ php_error_log
 
 # Fichiers de configuration à ne pas versionner
 scriptsphp/defenvvar.php
+.env.transfert
 scriptserveur/syncsta1_900.sql
 scriptserveur/man
 php.ini
