@@ -25,7 +25,8 @@ DEPLOY_PORT="${DEPLOY_PORT:-21}"
 DEPLOY_REMOTE_DIR="${DEPLOY_REMOTE_DIR:-/public_html}"
 DEPLOY_SSL_VERIFY="${DEPLOY_SSL_VERIFY:-true}"
 DEPLOY_PARALLEL="${DEPLOY_PARALLEL:-2}"
-DEPLOY_DELETE="${DEPLOY_DELETE:-true}"
+DEPLOY_DELETE="${DEPLOY_DELETE:-false}"
+DEPLOY_MODE="${DEPLOY_MODE:-controlled}"
 
 echo "Deploiement demarre (hote=${DEPLOY_HOST}, protocole=${DEPLOY_PROTOCOL}, simulation=${mode_simulation})"
 
@@ -54,7 +55,13 @@ if [[ "$DEPLOY_DELETE" != "true" ]]; then
   option_suppression=""
 fi
 
-lftp <<EOF
+if [[ "$DEPLOY_MODE" != "controlled" && "$DEPLOY_MODE" != "full" ]]; then
+  echo "DEPLOY_MODE invalide: ${DEPLOY_MODE} (valeurs permises: controlled, full)" >&2
+  exit 1
+fi
+
+if [[ "$DEPLOY_MODE" == "full" ]]; then
+  lftp <<EOF
 set cmd:fail-exit true
 set xfer:clobber true
 set net:max-retries 2
@@ -89,5 +96,38 @@ mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${o
 
 bye
 EOF
+else
+  lftp <<EOF
+set cmd:fail-exit true
+set xfer:clobber true
+set net:max-retries 2
+set net:timeout 20
+set net:reconnect-interval-base 5
+set net:reconnect-interval-max 20
+set ssl:verify-certificate ${reglage_certificat}
+
+open -u "${DEPLOY_USER}","${DEPLOY_PASSWORD}" ${DEPLOY_PROTOCOL}://${DEPLOY_HOST}:${DEPLOY_PORT}
+
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} index.html ${DEPLOY_REMOTE_DIR}/index.html
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} phpobjects ${DEPLOY_REMOTE_DIR}/phpobjects
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} mobile ${DEPLOY_REMOTE_DIR}/mobile
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} ligues ${DEPLOY_REMOTE_DIR}/ligues
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} images ${DEPLOY_REMOTE_DIR}/images
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} admin ${DEPLOY_REMOTE_DIR}/admin
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} stats2 ${DEPLOY_REMOTE_DIR}/stats2
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} scripts ${DEPLOY_REMOTE_DIR}/scripts
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} style ${DEPLOY_REMOTE_DIR}/style
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} --exclude-glob detectAppChange.php syncscript ${DEPLOY_REMOTE_DIR}/syncscript
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} --exclude-glob defenvvar.php scriptsphp ${DEPLOY_REMOTE_DIR}/scriptsphp
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} zadmin ${DEPLOY_REMOTE_DIR}/zadmin
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} zstats ${DEPLOY_REMOTE_DIR}/zstats
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} zuser ${DEPLOY_REMOTE_DIR}/zuser
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} zdoc ${DEPLOY_REMOTE_DIR}/zdoc
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} zarbitre ${DEPLOY_REMOTE_DIR}/zarbitre
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} api ${DEPLOY_REMOTE_DIR}/api
+
+bye
+EOF
+fi
 
 echo "Deploiement termine avec succes."
