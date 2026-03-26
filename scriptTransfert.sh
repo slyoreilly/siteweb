@@ -108,7 +108,7 @@ set ssl:verify-certificate ${reglage_certificat}
 
 open -u "${DEPLOY_USER}","${DEPLOY_PASSWORD}" ${DEPLOY_PROTOCOL}://${DEPLOY_HOST}:${DEPLOY_PORT}
 
-mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} index.html ${DEPLOY_REMOTE_DIR}/index.html
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} --include-glob index.html --exclude-glob "*" . ${DEPLOY_REMOTE_DIR}
 mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} phpobjects ${DEPLOY_REMOTE_DIR}/phpobjects
 mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} mobile ${DEPLOY_REMOTE_DIR}/mobile
 mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} ligues ${DEPLOY_REMOTE_DIR}/ligues
