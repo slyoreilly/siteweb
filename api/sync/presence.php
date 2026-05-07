@@ -24,6 +24,11 @@ try {
     $claim = syncInboxClaim($conn, $endpointName, $message);
     $actionType = (string)$message['actionType'];
 
+    $sourceEntityIdFromMessage = syncToNullableInt($message['aggregateId'] ?? null);
+    if ($sourceEntityIdFromMessage === null) {
+        throw new SyncFunctionalException('missing aggregateId', 422);
+    }
+
     if ($claim['duplicate'] === true) {
         if (syncNeedAck($actionType) && !empty($claim['upstream_id']) && in_array((string)$claim['ack_status'], ['pending', 'retrying'], true)) {
             if (!syncAcquireRowLock($conn, (int)$claim['inboxId'])) {
@@ -31,7 +36,8 @@ try {
             }
 
             try {
-                $sourceEntityId = $claim['source_entity_id'] ?? syncSourceEntityIdFromMessage($message);
+                $sourceEntityId = $sourceEntityIdFromMessage;
+                syncInboxSetAckContext($conn, (int)$claim['inboxId'], $sourceEntityId, (string)$claim['upstream_id']);
                 $ackPayload = [
                     'entity' => 'Presence',
                     'sourceEntityId' => $sourceEntityId,
@@ -96,7 +102,7 @@ try {
         throw new SyncFunctionalException('unknown GameComId', 422);
     }
 
-    $joueurId = syncToNullableInt($payload['joueurId'] ?? $payload['playerId'] ?? $message['aggregateId'] ?? null);
+    $joueurId = syncToNullableInt($payload['joueurId'] ?? $payload['playerId'] ?? null);
     if ($joueurId === null) {
         throw new SyncFunctionalException('missing payload.joueurId', 422);
     }
@@ -209,7 +215,7 @@ try {
     }
 
     $businessProcessed = true;
-    $sourceEntityId = syncSourceEntityIdFromMessage($message);
+    $sourceEntityId = $sourceEntityIdFromMessage;
     syncInboxSetAckContext($conn, (int)$claim['inboxId'], $sourceEntityId, $upstreamId);
 
     $ackPayload = [

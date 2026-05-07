@@ -217,6 +217,36 @@ function upsertEvenementsTrouverEventComIdExistant(
     return (int)$eventComIdExistant;
 }
 
+function upsertEvenementsLoggerAmbiguIgnore(
+    int $id,
+    string $gameStringID,
+    int $teamID,
+    int $playerID,
+    int $chrono,
+    int $code,
+    int $subcode,
+    int $noSequence,
+    int $eventComId,
+    array $cleIdempotence,
+    ?bool $idempotenceInseree,
+    string $source
+): void {
+    error_log('[EVENT_AMBIGU_IGNORE] ' . json_encode(array(
+        'localId' => $id,
+        'gameStringID' => $gameStringID,
+        'teamID' => $teamID,
+        'playerID' => $playerID,
+        'chrono' => $chrono,
+        'code' => $code,
+        'subcode' => $subcode,
+        'noSequence' => $noSequence,
+        'eventComIdTrouve' => $eventComId > 0 ? $eventComId : null,
+        'idempotenceActive' => (bool)($cleIdempotence['active'] ?? false),
+        'idempotenceInseree' => $idempotenceInseree,
+        'source' => $source
+    )));
+}
+
 function upsertEvenementsNettoyageProbabilisteIdempotence(mysqli $conn): void
 {
     try {
@@ -423,11 +453,39 @@ if (is_array($evenements)) {
                     }
 
                     if ($eventComId > 0) {
-                        $syncOK[] = array('id' => $id, 'EventComId' => $eventComId, 'etatSync' => 12, 'ok' => true, 'action' => 'reused');
+                        upsertEvenementsLoggerAmbiguIgnore(
+                            $id,
+                            $gameStringID,
+                            $teamID,
+                            $playerID,
+                            $chrono,
+                            $code,
+                            $subcode,
+                            $noSequence,
+                            $eventComId,
+                            $cleIdempotence,
+                            $idempotenceInseree,
+                            'fallback_reused_blocked'
+                        );
+                        $syncOK[] = array('id' => $id, 'EventComId' => null, 'etatSync' => $etatSync, 'ok' => false, 'error' => 'ambiguous_event_match');
                         continue;
                     }
 
-                    $syncOK[] = array('id' => $id, 'EventComId' => null, 'etatSync' => $etatSync, 'ok' => false, 'error' => 'dedupe_pending');
+                    upsertEvenementsLoggerAmbiguIgnore(
+                        $id,
+                        $gameStringID,
+                        $teamID,
+                        $playerID,
+                        $chrono,
+                        $code,
+                        $subcode,
+                        $noSequence,
+                        0,
+                        $cleIdempotence,
+                        $idempotenceInseree,
+                        'idempotence_conflict_no_event_com_id'
+                    );
+                    $syncOK[] = array('id' => $id, 'EventComId' => null, 'etatSync' => $etatSync, 'ok' => false, 'error' => 'ambiguous_event_match');
                     continue;
                 }
             }
@@ -443,10 +501,22 @@ if (is_array($evenements)) {
                     $subcode,
                     $noSequence
                 );
-                if ($eventComId > 0) {
-                    $syncOK[] = array('id' => $id, 'EventComId' => $eventComId, 'etatSync' => 12, 'ok' => true, 'action' => 'reused');
-                    continue;
-                }
+                upsertEvenementsLoggerAmbiguIgnore(
+                    $id,
+                    $gameStringID,
+                    $teamID,
+                    $playerID,
+                    $chrono,
+                    $code,
+                    $subcode,
+                    $noSequence,
+                    $eventComId,
+                    $cleIdempotence,
+                    $idempotenceInseree,
+                    $eventComId > 0 ? 'idempotence_absente_reuse_blocked' : 'idempotence_absente_no_fallback'
+                );
+                $syncOK[] = array('id' => $id, 'EventComId' => null, 'etatSync' => $etatSync, 'ok' => false, 'error' => 'ambiguous_event_match');
+                continue;
             }
 
             $stmtInsert = mysqli_prepare(

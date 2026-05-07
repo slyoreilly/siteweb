@@ -24,6 +24,11 @@ try {
     $claim = syncInboxClaim($conn, $endpointName, $message);
     $actionType = (string)$message['actionType'];
 
+    $sourceEntityIdFromMessage = syncToNullableInt($message['aggregateId'] ?? null);
+    if ($sourceEntityIdFromMessage === null) {
+        throw new SyncFunctionalException('missing aggregateId', 422);
+    }
+
     if ($claim['duplicate'] === true) {
         if (syncNeedAck($actionType) && !empty($claim['upstream_id']) && in_array((string)$claim['ack_status'], ['pending', 'retrying'], true)) {
             if (!syncAcquireRowLock($conn, (int)$claim['inboxId'])) {
@@ -31,10 +36,12 @@ try {
             }
 
             try {
-                $sourceEntityId = $claim['source_entity_id'] ?? syncSourceEntityIdFromMessage($message);
+                $sourceEntityId = $sourceEntityIdFromMessage;
+                syncInboxSetAckContext($conn, (int)$claim['inboxId'], $sourceEntityId, (string)$claim['upstream_id']);
                 $ackPayload = [
                     'entity' => 'Event',
                     'sourceEntityId' => $sourceEntityId,
+                    'sourceEventId' => $sourceEntityId,
                     'dedupeKey' => (string)$message['dedupeKey'],
                     'upstreamId' => (string)$claim['upstream_id'],
                 ];
@@ -97,7 +104,7 @@ try {
     }
 
     $matchIdRef = (string)$match['matchIdRef'];
-    $eventId = syncToNullableInt($payload['EventComId'] ?? $payload['eventId'] ?? $payload['event_id'] ?? $message['aggregateId'] ?? null);
+    $eventId = syncToNullableInt($payload['EventComId'] ?? null);
 
     if ($actionType === 'deleted') {
         if ($eventId === null) {
@@ -123,6 +130,49 @@ try {
     $subcode = syncToInt($payload['souscode'] ?? $payload['subcode'] ?? $payload['Subcode'] ?? 0);
     $chrono = syncToInt($payload['chrono'] ?? 0);
     $noSequence = syncToInt($payload['noSequence'] ?? 0);
+    $eventTypeId = syncToNullableInt($payload['eventTypeId'] ?? $payload['EventTypeId'] ?? null);
+    $parentEventId = syncToNullableInt($payload['parentEventId'] ?? $payload['parentId'] ?? $payload['ParentEventId'] ?? null);
+    $isActiveRaw = $payload['isActive'] ?? null;
+
+    $isActive = null;
+    if (is_bool($isActiveRaw)) {
+        $isActive = $isActiveRaw;
+    } elseif (is_numeric($isActiveRaw)) {
+        $isActive = ((int)$isActiveRaw) === 1;
+    } elseif (is_string($isActiveRaw)) {
+        $normalise = strtolower(trim($isActiveRaw));
+        if (in_array($normalise, ['1', 'true', 'yes'], true)) {
+            $isActive = true;
+        } elseif (in_array($normalise, ['0', 'false', 'no'], true)) {
+            $isActive = false;
+        }
+    }
+
+    if ($isActive === false) {
+        $code = 15;
+    } elseif ($eventTypeId === 2 && $isActive === true) {
+        $code = 1;
+    }
+
+    if ($eventTypeId === 2 && $parentEventId !== null) {
+        $stmtParent = mysqli_prepare($conn, 'SELECT chrono FROM TableEvenement0 WHERE event_id = ? LIMIT 1');
+        if (!$stmtParent) {
+            throw new SyncTechnicalException('prepare parent chrono failed: ' . mysqli_error($conn));
+        }
+
+        mysqli_stmt_bind_param($stmtParent, 'i', $parentEventId);
+        mysqli_stmt_execute($stmtParent);
+        $resParent = mysqli_stmt_get_result($stmtParent);
+        $rowParent = $resParent ? mysqli_fetch_assoc($resParent) : null;
+        mysqli_stmt_close($stmtParent);
+
+        if (is_array($rowParent) && isset($rowParent['chrono']) && is_numeric($rowParent['chrono'])) {
+            $chrono = (int)$rowParent['chrono'];
+        } else {
+            error_log('[sync_inbound] assistance parent chrono introuvable | parentEventId=' . $parentEventId . ' | aggregateId=' . $sourceEntityIdFromMessage);
+        }
+    }
+
     $upstreamId = null;
     $eventCreeDepuisSyncInbox = false;
 
@@ -185,12 +235,13 @@ try {
     }
 
     $businessProcessed = true;
-    $sourceEntityId = syncSourceEntityIdFromMessage($message);
+    $sourceEntityId = $sourceEntityIdFromMessage;
     syncInboxSetAckContext($conn, (int)$claim['inboxId'], $sourceEntityId, $upstreamId);
 
     $ackPayload = [
         'entity' => 'Event',
         'sourceEntityId' => $sourceEntityId,
+        'sourceEventId' => $sourceEntityId,
         'dedupeKey' => (string)$message['dedupeKey'],
         'upstreamId' => $upstreamId,
     ];
@@ -240,3 +291,4 @@ try {
     syncRespond(500, ['ok' => false, 'error' => 'technical error']);
 }
 ?>
+

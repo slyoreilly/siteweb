@@ -12,7 +12,7 @@ Il sert aux opérateurs terrain, administrateurs de ligue, arbitres et utilisate
 
 Ce repo fait partie du système **SyncStats**.
 
-👉 Voir : SYSTEM.md pour la vue globale
+👉 Voir : `../syncstats-system/AGENTS_REGISTRY.md` pour la vue globale d'ownership
 
 ---
 
@@ -68,11 +68,20 @@ Doit être placer dans un dossier accessible par l'extérieur (ex var/html/www/)
 ## 🧪 Tests
 
 ### Lancer les tests
-- Pas de suite de tests automatisés standard détectée (à compléter)
+- Tests unitaires disponibles dans `test/unit` :
+  - `upsert_evenements_rules_test.php`
+  - `upsert_evenements_integration_light_test.php`
+  - `evenements_read_contract_test.php`
+  - `upsert_match_rules_test.php`
+
+Exécution (exemple) :
+```bash
+php test/unit/upsert_evenements_rules_test.php
+```
 
 ### Types de tests
-- Unitaires : non standardisés actuellement
-- Intégration : principalement validation manuelle des endpoints sync/API
+- Unitaires : présents sur le contrat des événements et règles d'upsert match/événements
+- Intégration : validation légère disponible pour l'upsert d'événements + validations manuelles des endpoints sync/API
 - E2E : non formalisés
 
 ---
@@ -86,6 +95,8 @@ Doit être placer dans un dossier accessible par l'extérieur (ex var/html/www/)
 | POST | `/syncscript/syncInfoComptes.php` | Sync d’info compte/temps |
 | POST | `/api/upsertEvenements.php` | Upsert d’événements |
 | POST | `/api/upsertMatch.php` | Upsert match |
+| POST | `/api/sync/event.php` | Inbound événement moderne (inbox + ACK) |
+| POST | `/api/sync/presence.php` | Inbound présence moderne (inbox + ACK) |
 | GET/POST | `/api/getMatchEnCours.php` | Récupération match en cours |
 
 ---

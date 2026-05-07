@@ -80,7 +80,23 @@ function syncReadMessage(): array
         throw new SyncFunctionalException('invalid JSON body', 400);
     }
 
-    return $decoded;
+    return syncNormalizeNullStrings($decoded);
+}
+
+function syncNormalizeNullStrings($value)
+{
+    if (is_array($value)) {
+        foreach ($value as $k => $v) {
+            $value[$k] = syncNormalizeNullStrings($v);
+        }
+        return $value;
+    }
+
+    if (is_string($value) && strtolower(trim($value)) === 'null') {
+        return null;
+    }
+
+    return $value;
 }
 
 function syncValidateEnvelope(array $message, string $expectedAggregateType): void

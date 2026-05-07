@@ -24,6 +24,7 @@ DEPLOY_PROTOCOL="${DEPLOY_PROTOCOL:-ftps}"
 DEPLOY_PORT="${DEPLOY_PORT:-21}"
 DEPLOY_REMOTE_DIR="${DEPLOY_REMOTE_DIR:-/public_html}"
 DEPLOY_SSL_VERIFY="${DEPLOY_SSL_VERIFY:-true}"
+DEPLOY_TLS_MODE="${DEPLOY_TLS_MODE:-explicit}"
 DEPLOY_PARALLEL="${DEPLOY_PARALLEL:-2}"
 DEPLOY_DELETE="${DEPLOY_DELETE:-false}"
 DEPLOY_MODE="${DEPLOY_MODE:-controlled}"
@@ -35,14 +36,30 @@ if [[ "$DEPLOY_PROTOCOL" != "ftps" && "$DEPLOY_PROTOCOL" != "ftp" ]]; then
   exit 1
 fi
 
-if [[ "$DEPLOY_PROTOCOL" == "ftp" ]]; then
-  echo "Avertissement: FTP non chiffre actif (DEPLOY_PROTOCOL=ftp)." >&2
+if [[ "$DEPLOY_TLS_MODE" != "explicit" && "$DEPLOY_TLS_MODE" != "implicit" && "$DEPLOY_TLS_MODE" != "off" ]]; then
+  echo "DEPLOY_TLS_MODE invalide: ${DEPLOY_TLS_MODE} (valeurs permises: explicit, implicit, off)" >&2
+  exit 1
 fi
 
 if [[ "$DEPLOY_SSL_VERIFY" == "true" ]]; then
   reglage_certificat="true"
 else
   reglage_certificat="false"
+fi
+
+url_connexion="ftp://${DEPLOY_HOST}:${DEPLOY_PORT}"
+reglage_ftp_ssl_allow="yes"
+reglage_ftp_ssl_force="yes"
+
+if [[ "$DEPLOY_TLS_MODE" == "implicit" ]]; then
+  url_connexion="ftps://${DEPLOY_HOST}:${DEPLOY_PORT}"
+  reglage_ftp_ssl_allow="yes"
+  reglage_ftp_ssl_force="yes"
+elif [[ "$DEPLOY_TLS_MODE" == "off" ]]; then
+  url_connexion="ftp://${DEPLOY_HOST}:${DEPLOY_PORT}"
+  reglage_ftp_ssl_allow="no"
+  reglage_ftp_ssl_force="no"
+  echo "Avertissement: TLS desactive (connexion FTP non chiffree)." >&2
 fi
 
 option_simulation=""
@@ -69,8 +86,10 @@ set net:timeout 20
 set net:reconnect-interval-base 5
 set net:reconnect-interval-max 20
 set ssl:verify-certificate ${reglage_certificat}
+set ftp:ssl-allow ${reglage_ftp_ssl_allow}
+set ftp:ssl-force ${reglage_ftp_ssl_force}
 
-open -u "${DEPLOY_USER}","${DEPLOY_PASSWORD}" ${DEPLOY_PROTOCOL}://${DEPLOY_HOST}:${DEPLOY_PORT}
+open -u "${DEPLOY_USER}","${DEPLOY_PASSWORD}" ${url_connexion}
 
 mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} \
   --exclude-glob .git/ \
@@ -105,8 +124,10 @@ set net:timeout 20
 set net:reconnect-interval-base 5
 set net:reconnect-interval-max 20
 set ssl:verify-certificate ${reglage_certificat}
+set ftp:ssl-allow ${reglage_ftp_ssl_allow}
+set ftp:ssl-force ${reglage_ftp_ssl_force}
 
-open -u "${DEPLOY_USER}","${DEPLOY_PASSWORD}" ${DEPLOY_PROTOCOL}://${DEPLOY_HOST}:${DEPLOY_PORT}
+open -u "${DEPLOY_USER}","${DEPLOY_PASSWORD}" ${url_connexion}
 
 mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} --include-glob index.html --exclude-glob "*" . ${DEPLOY_REMOTE_DIR}
 mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} phpobjects ${DEPLOY_REMOTE_DIR}/phpobjects
