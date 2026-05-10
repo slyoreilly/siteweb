@@ -2,10 +2,22 @@
 
 declare(strict_types=1);
 
+ini_set('display_errors', '0');
+
+$upsertEvenementsNiveauBufferInitial = ob_get_level();
+ob_start();
+
 include_once($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'syncstatsconfig.php');
 require '../scriptsphp/calculeMatch2.php';
 require '../scriptsphp/defenvvar.php';
 require_once __DIR__ . '/lib/upsert_evenements_rules.php';
+
+if (ob_get_level() > $upsertEvenementsNiveauBufferInitial) {
+    $upsertEvenementsSortieInitiale = ob_get_clean();
+    if ($upsertEvenementsSortieInitiale !== '') {
+        error_log('[upsertEvenements] output parasite supprime avant headers JSON | bytes=' . strlen($upsertEvenementsSortieInitiale));
+    }
+}
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -173,6 +185,52 @@ function upsertEvenementsTrouverEventComIdParIdempotence(mysqli $conn, string $t
     mysqli_stmt_close($stmt);
 
     return (int)($eventComId ?? 0);
+}
+
+function upsertEvenementsTrouverEventComIdParIdempotenceTelephoneEventLocal(mysqli $conn, string $telephoneId, string $eventLocalId): int
+{
+    $stmt = mysqli_prepare(
+        $conn,
+        'SELECT event_com_id
+         FROM ' . TABLE_IDEMPOTENCE_EVENEMENTS . '
+         WHERE telephone_id = ? AND event_local_id = ? AND event_com_id IS NOT NULL
+         ORDER BY updatedAt DESC
+         LIMIT 1'
+    );
+    if (!$stmt) {
+        return 0;
+    }
+
+    mysqli_stmt_bind_param($stmt, 'ss', $telephoneId, $eventLocalId);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $eventComId);
+    mysqli_stmt_fetch($stmt);
+    mysqli_stmt_close($stmt);
+
+    return (int)($eventComId ?? 0);
+}
+
+function upsertEvenementsIdempotenceExiste(mysqli $conn, string $telephoneId, string $eventLocalId, string $instanceId): bool
+{
+    $stmt = mysqli_prepare(
+        $conn,
+        'SELECT 1
+         FROM ' . TABLE_IDEMPOTENCE_EVENEMENTS . '
+         WHERE telephone_id = ? AND event_local_id = ? AND instance_id = ?
+         LIMIT 1'
+    );
+
+    if (!$stmt) {
+        return false;
+    }
+
+    mysqli_stmt_bind_param($stmt, 'sss', $telephoneId, $eventLocalId, $instanceId);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $trouve);
+    $aTrouve = mysqli_stmt_fetch($stmt);
+    mysqli_stmt_close($stmt);
+
+    return $aTrouve ? true : false;
 }
 
 function upsertEvenementsTrouverEventComIdExistant(
@@ -417,90 +475,91 @@ if (is_array($evenements)) {
                 );
 
                 if ($idempotenceInseree === false) {
+                    $telephoneIdIdem = (string)$cleIdempotence['telephoneId'];
+                    $eventLocalIdIdem = (string)$cleIdempotence['eventLocalId'];
+                    $instanceIdIdem = (string)$cleIdempotence['instanceId'];
+
                     $eventComId = upsertEvenementsTrouverEventComIdParIdempotence(
                         $conn,
-                        (string)$cleIdempotence['telephoneId'],
-                        (string)$cleIdempotence['eventLocalId'],
-                        (string)$cleIdempotence['instanceId']
+                        $telephoneIdIdem,
+                        $eventLocalIdIdem,
+                        $instanceIdIdem
                     );
 
-                    if ($eventComId <= 0) {
-                        $essai = 0;
-                        while ($essai < 5 && $eventComId <= 0) {
-                            $eventComId = upsertEvenementsTrouverEventComIdExistant(
-                                $conn,
-                                $gameStringID,
-                                $teamID,
-                                $playerID,
-                                $chrono,
-                                $code,
-                                $subcode,
-                                $noSequence
-                            );
-                            if ($eventComId > 0) {
-                                upsertEvenementsAssocierEventComIdIdempotence(
-                                    $conn,
-                                    (string)$cleIdempotence['telephoneId'],
-                                    (string)$cleIdempotence['eventLocalId'],
-                                    (string)$cleIdempotence['instanceId'],
-                                    $eventComId
-                                );
-                                break;
-                            }
-                            usleep(20000);
-                            $essai++;
-                        }
-                    }
-
                     if ($eventComId > 0) {
-                        upsertEvenementsLoggerAmbiguIgnore(
-                            $id,
-                            $gameStringID,
-                            $teamID,
-                            $playerID,
-                            $chrono,
-                            $code,
-                            $subcode,
-                            $noSequence,
-                            $eventComId,
-                            $cleIdempotence,
-                            $idempotenceInseree,
-                            'fallback_reused_blocked'
-                        );
-                        $syncOK[] = array('id' => $id, 'EventComId' => null, 'etatSync' => $etatSync, 'ok' => false, 'error' => 'ambiguous_event_match');
+                        $syncOK[] = array('id' => $id, 'EventComId' => $eventComId, 'etatSync' => 12, 'ok' => true, 'action' => 'reused');
                         continue;
                     }
 
-                    upsertEvenementsLoggerAmbiguIgnore(
-                        $id,
-                        $gameStringID,
-                        $teamID,
-                        $playerID,
-                        $chrono,
-                        $code,
-                        $subcode,
-                        $noSequence,
-                        0,
-                        $cleIdempotence,
-                        $idempotenceInseree,
-                        'idempotence_conflict_no_event_com_id'
-                    );
-                    $syncOK[] = array('id' => $id, 'EventComId' => null, 'etatSync' => $etatSync, 'ok' => false, 'error' => 'ambiguous_event_match');
+                    $idempotenceExiste = upsertEvenementsIdempotenceExiste($conn, $telephoneIdIdem, $eventLocalIdIdem, $instanceIdIdem);
+                    if ($idempotenceExiste === true) {
+                        $eventComId = upsertEvenementsTrouverEventComIdParIdempotenceTelephoneEventLocal(
+                            $conn,
+                            $telephoneIdIdem,
+                            $eventLocalIdIdem
+                        );
+                        if ($eventComId > 0) {
+                            upsertEvenementsAssocierEventComIdIdempotence(
+                                $conn,
+                                $telephoneIdIdem,
+                                $eventLocalIdIdem,
+                                $instanceIdIdem,
+                                $eventComId
+                            );
+                            error_log('[IDEMPOTENCE_INCOMPLETE] ' . json_encode(array(
+                                'telephoneId' => $telephoneIdIdem,
+                                'eventLocalId' => $eventLocalIdIdem,
+                                'instanceId' => $instanceIdIdem,
+                                'eventComId' => $eventComId,
+                                'reason' => 'repaired_from_same_phone_event_local'
+                            )));
+                            $syncOK[] = array('id' => $id, 'EventComId' => $eventComId, 'etatSync' => 12, 'ok' => true, 'action' => 'reused');
+                            continue;
+                        }
+
+                        error_log('[IDEMPOTENCE_INCOMPLETE] ' . json_encode(array(
+                            'telephoneId' => $telephoneIdIdem,
+                            'eventLocalId' => $eventLocalIdIdem,
+                            'instanceId' => $instanceIdIdem,
+                            'eventComId' => null,
+                            'reason' => 'mapping_missing_after_insert_ignore'
+                        )));
+                        error_log('[IDEMPOTENCE_ERROR] ' . json_encode(array(
+                            'telephoneId' => $telephoneIdIdem,
+                            'eventLocalId' => $eventLocalIdIdem,
+                            'instanceId' => $instanceIdIdem,
+                            'eventComId' => null,
+                            'reason' => 'missing_mapping'
+                        )));
+                        $syncOK[] = array('id' => $id, 'EventComId' => null, 'etatSync' => $etatSync, 'ok' => false, 'error' => 'idempotence_incomplete');
+                        continue;
+                    }
+
+                    error_log('[IDEMPOTENCE_ERROR] ' . json_encode(array(
+                        'telephoneId' => $telephoneIdIdem,
+                        'eventLocalId' => $eventLocalIdIdem,
+                        'instanceId' => $instanceIdIdem,
+                        'eventComId' => null,
+                        'reason' => 'key_not_found_after_insert_ignore'
+                    )));
+                    $syncOK[] = array('id' => $id, 'EventComId' => null, 'etatSync' => $etatSync, 'ok' => false, 'error' => 'idempotence_incomplete');
                     continue;
                 }
             }
 
             if ($idempotenceInseree === null) {
-                $eventComId = upsertEvenementsTrouverEventComIdExistant(
-                    $conn,
-                    $gameStringID,
-                    $teamID,
-                    $playerID,
-                    $chrono,
-                    $code,
-                    $subcode,
-                    $noSequence
-                );
+                if ($cleIdempotence['active'] === true) {
+                    error_log('[IDEMPOTENCE_ERROR] ' . json_encode(array(
+                        'telephoneId' => (string)$cleIdempotence['telephoneId'],
+                        'eventLocalId' => (string)$cleIdempotence['eventLocalId'],
+                        'instanceId' => (string)$cleIdempotence['instanceId'],
+                        'eventComId' => null,
+                        'reason' => 'idempotence_insert_unknown_state'
+                    )));
+                    $syncOK[] = array('id' => $id, 'EventComId' => null, 'etatSync' => $etatSync, 'ok' => false, 'error' => 'idempotence_incomplete');
+                    continue;
+                }
+
                 upsertEvenementsLoggerAmbiguIgnore(
                     $id,
                     $gameStringID,
@@ -510,10 +569,10 @@ if (is_array($evenements)) {
                     $code,
                     $subcode,
                     $noSequence,
-                    $eventComId,
+                    0,
                     $cleIdempotence,
                     $idempotenceInseree,
-                    $eventComId > 0 ? 'idempotence_absente_reuse_blocked' : 'idempotence_absente_no_fallback'
+                    'idempotence_absente_no_fallback'
                 );
                 $syncOK[] = array('id' => $id, 'EventComId' => null, 'etatSync' => $etatSync, 'ok' => false, 'error' => 'ambiguous_event_match');
                 continue;
@@ -573,6 +632,22 @@ if (is_array($evenements)) {
                     (string)$cleIdempotence['instanceId'],
                     $eventComId
                 );
+
+                $eventComIdVerif = upsertEvenementsTrouverEventComIdParIdempotence(
+                    $conn,
+                    (string)$cleIdempotence['telephoneId'],
+                    (string)$cleIdempotence['eventLocalId'],
+                    (string)$cleIdempotence['instanceId']
+                );
+                if ($eventComIdVerif <= 0) {
+                    error_log('[IDEMPOTENCE_ERROR] ' . json_encode(array(
+                        'telephoneId' => (string)$cleIdempotence['telephoneId'],
+                        'eventLocalId' => (string)$cleIdempotence['eventLocalId'],
+                        'instanceId' => (string)$cleIdempotence['instanceId'],
+                        'eventComId' => null,
+                        'reason' => 'mapping_null_after_association'
+                    )));
+                }
             }
 
             $matchId = upsertEvenementsTrouverMatchId($conn, $gameStringID);
@@ -664,5 +739,3 @@ if ($noMatchId !== 0) {
 }
 
 echo json_encode($syncOK);
-
-?>

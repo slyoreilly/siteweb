@@ -11,6 +11,31 @@
 
 require '../scriptsphp/defenvvar.php';
 
+header('Content-Type: application/json; charset=utf-8');
+
+function repondreErreurJson($codeHttp, $codeErreur, $message)
+{
+	http_response_code($codeHttp);
+	echo json_encode(array(
+		'ok' => false,
+		'error' => $codeErreur,
+		'message' => $message
+	));
+	exit;
+}
+
+function executerRequeteJson($conn, $requete, $codeErreur, $message)
+{
+	$resultat = mysqli_query($conn, $requete);
+	if($resultat === false)
+	{
+		error_log('[getMatchEnCours] ' . $codeErreur . ': ' . mysqli_error($conn));
+		repondreErreurJson(500, $codeErreur, $message);
+	}
+
+	return $resultat;
+}
+
 //////////////////////////////////////////////////////
 //
 //  	Section "Matchs"
@@ -18,7 +43,12 @@ require '../scriptsphp/defenvvar.php';
 //////////////////////////////////////////////////////
 	
 //$matchID = stripslashes(mysql_real_escape_string(stripslashes($_POST["matchId"])));
-$matchID = $_POST['matchId'];	
+$matchID = isset($_POST['matchId']) ? trim((string)$_POST['matchId']) : '';
+if($matchID === '' || strtolower($matchID) === 'null')
+{
+	repondreErreurJson(400, 'matchId_manquant', 'matchId est requis.');
+}
+$matchIDSql = mysqli_real_escape_string($conn, $matchID);
 //////////////////////////////////////////////
 
 $resultEvent = mysqli_query($conn,"SELECT TableMatch.*, TEdom.nom_equipe AS NEdom,TEvis.nom_equipe AS NEvis, TEdom.equipe_id AS eqDomId,TEvis.equipe_id AS eqVisId
@@ -27,12 +57,26 @@ $resultEvent = mysqli_query($conn,"SELECT TableMatch.*, TEdom.nom_equipe AS NEdo
 										ON (TableMatch.eq_dom=TEdom.equipe_id)
 									JOIN TableEquipe AS TEvis
 										ON (TableMatch.eq_vis=TEvis.equipe_id)
-									WHERE matchIdRef = '{$matchID}'")
-or die(mysqli_error($conn));  
+									WHERE matchIdRef = '{$matchIDSql}'");
+if($resultEvent === false)
+{
+	error_log('[getMatchEnCours] erreur SQL chargement match: ' . mysqli_error($conn));
+	repondreErreurJson(500, 'erreur_sql_match', 'Erreur lors du chargement du match.');
+}
 
+$matchTrouve = false;
+$mDate = null;
+$mEqDom = null;
+$mEqVis = null;
+$mEqDomId = null;
+$mEqVisId = null;
+$mStatut = null;
+$mLigueId = null;
+$mArenaId = null;
 
 while($rangeeEv=mysqli_fetch_array($resultEvent))
 {
+	$matchTrouve = true;
 	$mDate=$rangeeEv['date'];
 	$mEqDom=$rangeeEv['NEdom'];
 	$mEqVis=$rangeeEv['NEvis'];
@@ -43,11 +87,25 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 	$mArenaId = $rangeeEv['arenaId'];
 }
 
+if(!$matchTrouve)
+{
+	repondreErreurJson(404, 'match_introuvable', 'Aucun match ne correspond au matchId fourni.');
+}
+
 
 		$resultAssoc = mysqli_query($conn,"SELECT match_id
 									 FROM TableMatch 
-									WHERE matchIdRef = '{$matchID}'") or die(mysqli_error($conn));  
+									WHERE matchIdRef = '{$matchIDSql}'");
+	if($resultAssoc === false)
+	{
+		error_log('[getMatchEnCours] erreur SQL association match: ' . mysqli_error($conn));
+		repondreErreurJson(500, 'erreur_sql_match', 'Erreur lors du chargement de l association du match.');
+	}
 	$rangeeAssoc= mysqli_fetch_row($resultAssoc);
+	if($rangeeAssoc === null || $rangeeAssoc === false || !isset($rangeeAssoc[0]))
+	{
+		repondreErreurJson(404, 'match_introuvable', 'Aucun identifiant interne ne correspond au matchId fourni.');
+	}
 	$matchPourVideos=$rangeeAssoc[0];	
 
 
@@ -70,9 +128,8 @@ $qVids = "
 			 ON (Clips.clipId=Video.reference)
 		LEFT JOIN TypeClips 
 			ON (TypeClips.typeClipId = Clips.type)
-  	WHERE (nomMatch = '{$matchID}'  OR nomMatch = '{$matchPourVideos}') AND Video.type=5 ORDER BY clipId, angleOk DESC";
-$resultVids = mysqli_query($conn, $qVids)
-or die(mysqli_error($conn).$qVids);  	
+	WHERE (nomMatch = '{$matchIDSql}'  OR nomMatch = '{$matchPourVideos}') AND Video.type=5 ORDER BY clipId, angleOk DESC";
+$resultVids = executerRequeteJson($conn, $qVids, 'erreur_sql_clips', 'Erreur lors du chargement des clips.');
 
 $bufEvent=0;
 $clips=array();
@@ -206,8 +263,8 @@ if(!is_null($mArenaId)){$Sommaire['arenaId']=$mArenaId;}
 
 	
 
-$setupMySql = mysqli_query($conn,"SET SQL_BIG_SELECTS=1" ) or die('Cannot complete SETUP BIG SELECTS because: ' . mysqli_error($conn));
-$resultEvent = mysqli_query($conn,$qEv) or die(mysqli_error($conn));  	
+$setupMySql = executerRequeteJson($conn, "SET SQL_BIG_SELECTS=1", 'erreur_sql_setup', 'Erreur lors de la preparation de la requete.');
+$resultEvent = executerRequeteJson($conn, $qEv, 'erreur_sql_buts', 'Erreur lors du chargement des buts.');
 $buts=array();
 //$Sommaire['qEv']=$qEv;
 
@@ -293,7 +350,7 @@ while($rangeeEv=mysqli_fetch_array($resultEvent))
 // Section Pun.
 $SomPun = array();
 $IPun=0;
-$resultPun = mysqli_query($conn,
+$resultPun = executerRequeteJson($conn,
 "SELECT TableEvenement0.*, TableJoueur.NomJoueur, TableEquipe.nom_equipe 
  FROM TableEvenement0
  LEFT JOIN TableJoueur
@@ -301,8 +358,10 @@ $resultPun = mysqli_query($conn,
  LEFT JOIN TableEquipe
  	ON (TableEquipe.equipe_id=TableEvenement0.equipe_event_id)
 
- 	WHERE match_event_id = '{$matchID}' AND code = 4 ORDER BY chrono")
-or die(mysqli_error($conn));  	
+	WHERE match_event_id = '{$matchIDSql}' AND code = 4 ORDER BY chrono"),
+	'erreur_sql_punitions',
+	'Erreur lors du chargement des punitions.'
+);
 
 $punitions=array();
 
@@ -405,8 +464,7 @@ $Sommaire['punitions']=$punitions;
 ////////////////////////////////////////////
 
 
-$resultPeriode = mysqli_query($conn,"SELECT * FROM TableEvenement0 WHERE match_event_id = '{$matchID}' AND code = 11 ORDER BY souscode ASC")
-or die(mysqli_error($conn));  	
+$resultPeriode = executerRequeteJson($conn, "SELECT * FROM TableEvenement0 WHERE match_event_id = '{$matchIDSql}' AND code = 11 ORDER BY souscode ASC", 'erreur_sql_periodes', 'Erreur lors du chargement des periodes.');
 
 
 	$periode=Array();
@@ -446,15 +504,17 @@ $Sommaire['periodes']=$periode;
 
 
 
-$rFus = mysqli_query($conn,"SELECT TableEvenement0.*, Video.*, TableJoueur.*,TableEquipe.* FROM TableEvenement0 
+$rFus = executerRequeteJson($conn, "SELECT TableEvenement0.*, Video.*, TableJoueur.*,TableEquipe.* FROM TableEvenement0
 										JOIN TableJoueur
 											ON (TableEvenement0.joueur_event_ref=TableJoueur.joueur_id)
 										JOIN TableEquipe
 											ON (TableEvenement0.equipe_event_id=TableEquipe.equipe_id)
 										LEFT JOIN
 											Video ON (Video.reference = TableEvenement0.event_id)
-										WHERE match_event_id = '{$matchID}' AND code = 2 ORDER BY TableEvenement0.chrono")
-or die(mysqli_error($conn));  	
+										WHERE match_event_id = '{$matchIDSql}' AND code = 2 ORDER BY TableEvenement0.chrono"),
+	'erreur_sql_fusillade',
+	'Erreur lors du chargement de la fusillade.'
+);
 
 $fusillade =Array();
 	$IF=0;
@@ -529,7 +589,10 @@ foreach($Sommaire['buts'] as $buts )
 		for($a=0; $a<count($buts['video']);$a++)
 		{
 		$reqIns = "UPDATE Video SET tagPrincipal='{$buts['marqueurId']}' WHERE videoId='{$buts['video'][$a]['videoId']}'";
-		mysqli_query($conn, $reqIns)or die(mysqli_error($conn));
+		if(!mysqli_query($conn, $reqIns))
+		{
+			error_log('[getMatchEnCours] erreur SQL tag video: ' . mysqli_error($conn));
+		}
 		}
 	}
 }

@@ -12,6 +12,53 @@ $tableJoueur = 'TableJoueur';
 $tableEvent = 'TableEvenement0';
 $tableEquipe = 'TableEquipe';
 
+function calculeUnMatchLockName($noMatchId)
+{
+    return 'calcule_match_' . substr(sha1((string)$noMatchId), 0, 32);
+}
+
+function acquireCalculeUnMatchLock($noMatchId, $timeoutSeconds = 0)
+{
+    global $conn;
+
+    $lockName = calculeUnMatchLockName($noMatchId);
+    $stmt = mysqli_prepare($conn, 'SELECT GET_LOCK(?, ?)');
+    if (!$stmt) {
+        error_log('calculeUnMatch lock prepare failed | match=' . $noMatchId . ' | err=' . mysqli_error($conn), 0);
+        return null;
+    }
+
+    mysqli_stmt_bind_param($stmt, 'si', $lockName, $timeoutSeconds);
+    $ok = mysqli_stmt_execute($stmt);
+    if (!$ok) {
+        error_log('calculeUnMatch lock execute failed | match=' . $noMatchId . ' | err=' . mysqli_stmt_error($stmt), 0);
+        mysqli_stmt_close($stmt);
+        return null;
+    }
+
+    mysqli_stmt_bind_result($stmt, $lockResult);
+    mysqli_stmt_fetch($stmt);
+    mysqli_stmt_close($stmt);
+
+    return ((int)$lockResult) === 1;
+}
+
+function releaseCalculeUnMatchLock($noMatchId)
+{
+    global $conn;
+
+    $lockName = calculeUnMatchLockName($noMatchId);
+    $stmt = mysqli_prepare($conn, 'SELECT RELEASE_LOCK(?)');
+    if (!$stmt) {
+        error_log('calculeUnMatch lock release prepare failed | match=' . $noMatchId . ' | err=' . mysqli_error($conn), 0);
+        return;
+    }
+
+    mysqli_stmt_bind_param($stmt, 's', $lockName);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
+}
+
 function calculeUnMatchByNoMatchId($noMatchId)
 {
     global $conn;
@@ -20,6 +67,13 @@ function calculeUnMatchByNoMatchId($noMatchId)
         return false;
     }
 
+    $lockAcquired = acquireCalculeUnMatchLock($noMatchId, 0);
+    if ($lockAcquired === false) {
+        error_log('calculeUnMatch deja en cours | match=' . $noMatchId, 0);
+        return true;
+    }
+
+    try {
     $rEnr = mysqli_query($conn, "SELECT matchIdRef,eq_dom,eq_vis
                                     FROM TableMatch 
                                 WHERE match_id = '{$noMatchId}'") or die(mysqli_error($conn));
@@ -125,6 +179,11 @@ JOIN EventType
     }
 
     return ($retour !== false);
+    } finally {
+        if ($lockAcquired === true) {
+            releaseCalculeUnMatchLock($noMatchId);
+        }
+    }
 }
 
 if (isset($_POST['noMatchId'])) {

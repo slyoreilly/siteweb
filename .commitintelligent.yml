@@ -1,0 +1,29 @@
+type_depot: site_web
+
+portees:
+  - api
+  - php
+  - sync
+  - web
+  - db
+  - infra
+  - docs
+  - scripts
+  - config
+
+chemins_risque_eleve:
+  - api
+  - db
+  - scriptsphp
+  - scriptserveur
+  - sync
+  - syncstatsconfig.php
+  - php.ini
+  - .htaccess
+  - scriptTransfert.sh
+  - composer.lock
+  - Jenkinsfile
+  - docker-compose
+  - migrations
+  - vault
+  - inventory

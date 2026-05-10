@@ -38,5 +38,3 @@ function upsertEvenementsValidationChrono(array $evenement): array
 
     return array('ok' => true, 'raison' => 'ok');
 }
-
-?>

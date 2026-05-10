@@ -395,7 +395,3 @@ while($Iae<count($aEnr)) // Tous les matchs a être recalculés pour enregistrem
 	//echo $matchAEnr['date']." / ".$matchAEnr['dom']." / ".$matchAEnr['vis']." </br>";
 	}
 	}
-	
-
-?>
-
