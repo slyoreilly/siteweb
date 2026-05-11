@@ -84,6 +84,14 @@
 							$('<div></div>').addClass('row').append(
 								$('<div></div>').addClass('col-6').text('Version'),
 								$('<div></div>').addClass('col-6').text(repRap[0].version)
+							),
+							$('<div></div>').addClass('row').append(
+								$('<div></div>').addClass('col-6').text('Logs'),
+								$('<div></div>').addClass('col-6').append(
+									$('<input></input>').attr("type", "button").addClass("bouton_2").attr("value", "Logs SyncCam").on("click", function(){
+										window.location.href = "/zadmin/syncCamLogs.html?telId=" + encodeURIComponent(window.telId);
+									})
+								)
 							)
 							));
 							var lesSettings =JSON.parse(repRap[0].settings);

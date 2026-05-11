@@ -2,3 +2,4 @@ User-agent: *
 Disallow:/syncscript/
 Disallow:/scriptsphp/
 Disallow:/scripts/
+Disallow:/monitoring/

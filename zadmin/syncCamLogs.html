@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Logs SyncCam</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="/style/general_v4.css" type="text/css" />
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.2.min.js"></script>
+    <script src="/scripts/fonctions.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/scripts/constantes.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/scripts/affichage.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/scripts/afficheTableau.js" type="text/javascript" charset="utf-8"></script>
+
+    <style>
+        #zoneSyncCamLogs {
+            max-width: 1180px;
+            margin: 16px auto;
+            padding: 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        #barreCommandesLogs,
+        #barreActionsLogs {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+
+        #inputTelId,
+        #inputRechercheLog,
+        #selectDateLog {
+            padding: 7px;
+        }
+
+        #inputTelId {
+            min-width: 220px;
+        }
+
+        #inputRechercheLog {
+            min-width: 260px;
+            flex: 1;
+        }
+
+        #zoneMetaLog {
+            color: #444;
+            margin: 8px 0;
+        }
+
+        #zoneLogTexte {
+            margin-top: 12px;
+            background: #101418;
+            color: #e8edf2;
+            border: 1px solid #303840;
+            border-radius: 4px;
+            padding: 10px;
+            white-space: pre-wrap;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 12px;
+            line-height: 1.45;
+            max-height: 620px;
+            overflow: auto;
+        }
+
+        .messageErreur {
+            color: #b00020;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .messageOk {
+            color: #0a6d2b;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .btnSecondaire {
+            padding: 6px 10px;
+            border: 1px solid #9fb4c7;
+            background: #f5f9ff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .ligneErreur {
+            color: #ffb4a8;
+            font-weight: bold;
+        }
+
+        .ligneWarning {
+            color: #ffe08a;
+        }
+
+        mark {
+            background: #ffe66d;
+            color: #111;
+            padding: 0 2px;
+        }
+    </style>
+
+    <script type="text/javascript" charset="utf-8">
+        gereLangue();
+
+        var etatLog = {
+            telId: '',
+            date: '',
+            size: 0,
+            start: 0,
+            end: 0,
+            blockSize: 204800,
+            texteBrut: ''
+        };
+
+        function dateMonitoring(d) {
+            return d.getFullYear() + '_' + (d.getMonth() + 1) + '_' + d.getDate();
+        }
+
+        function afficheMessage(type, message) {
+            $('#messageSyncCamLogs').removeClass('messageErreur messageOk').addClass(type === 'ok' ? 'messageOk' : 'messageErreur').text(message || '');
+        }
+
+        function apiLogs(data) {
+            return $.ajax({
+                url: '/scriptsphp/getSyncCamLogs.php',
+                type: 'POST',
+                dataType: 'json',
+                data: data
+            });
+        }
+
+        function appliqueRechercheEtCouleur() {
+            var recherche = ($('#inputRechercheLog').val() || '').trim();
+            var lignes = (etatLog.texteBrut || '').split(/\r?\n/);
+            var html = [];
+            var regexRecherche = null;
+
+            if (recherche !== '') {
+                try {
+                    regexRecherche = new RegExp('(' + recherche.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+                } catch (e) {
+                    regexRecherche = null;
+                }
+            }
+
+            for (var i = 0; i < lignes.length; i++) {
+                var ligne = $('<div></div>').text(lignes[i]).html();
+                var classe = '';
+                if (/error|erreur|exception|crash|fail|fatal/i.test(lignes[i])) {
+                    classe = ' class="ligneErreur"';
+                } else if (/warn|warning|avertissement/i.test(lignes[i])) {
+                    classe = ' class="ligneWarning"';
+                }
+
+                if (regexRecherche != null) {
+                    ligne = ligne.replace(regexRecherche, '<mark>$1</mark>');
+                }
+
+                html.push('<div' + classe + '>' + ligne + '</div>');
+            }
+
+            $('#zoneLogTexte').html(html.join(''));
+        }
+
+        function afficheLog(rep) {
+            etatLog.texteBrut = rep.text || '';
+            etatLog.size = rep.size || 0;
+            etatLog.start = rep.start || 0;
+            etatLog.end = rep.end || 0;
+            appliqueRechercheEtCouleur();
+            $('#zoneMetaLog').text(
+                'Fichier: ' + etatLog.size + ' octets | Segment: ' + etatLog.start + '-' + etatLog.end
+                + (rep.truncatedBefore ? ' | contenu plus ancien disponible' : '')
+                + (rep.truncatedAfter ? ' | contenu plus recent disponible' : '')
+            );
+            var zone = document.getElementById('zoneLogTexte');
+            if (zone) {
+                zone.scrollTop = zone.scrollHeight;
+            }
+        }
+
+        function chargeDates(selection) {
+            var telId = ($('#inputTelId').val() || '').trim();
+            if (telId === '') {
+                afficheMessage('erreur', 'Veuillez entrer un telId.');
+                return;
+            }
+
+            afficheMessage('ok', 'Chargement des dates...');
+            apiLogs({ action: 'listDates', telId: telId }).done(function(rep) {
+                if (!rep || !rep.ok) {
+                    afficheMessage('erreur', rep && rep.message ? rep.message : 'Impossible de charger les dates.');
+                    return;
+                }
+
+                $('#selectDateLog').empty();
+                for (var i = 0; i < rep.dates.length; i++) {
+                    var d = rep.dates[i];
+                    $('#selectDateLog').append(
+                        $('<option></option>').val(d.date).text(d.date + ' (' + d.size + ' octets, ' + d.modifiedAt + ')')
+                    );
+                }
+
+                if (rep.dates.length === 0) {
+                    afficheMessage('erreur', 'Aucun syncamlog.txt trouve pour ce telId.');
+                    $('#zoneLogTexte').text('');
+                    $('#zoneMetaLog').text('');
+                    return;
+                }
+
+                if (selection && $('#selectDateLog option[value="' + selection + '"]').length > 0) {
+                    $('#selectDateLog').val(selection);
+                } else if (rep.latestDate) {
+                    $('#selectDateLog').val(rep.latestDate);
+                }
+
+                afficheMessage('ok', 'Dates chargees.');
+                chargeTail();
+            }).fail(function(xhr) {
+                afficheMessage('erreur', 'Acces refuse ou endpoint indisponible (' + xhr.status + ').');
+            });
+        }
+
+        function chargeTail() {
+            var telId = ($('#inputTelId').val() || '').trim();
+            var date = $('#selectDateLog').val();
+            if (telId === '' || !date) {
+                afficheMessage('erreur', 'Veuillez choisir un telId et une date.');
+                return;
+            }
+
+            etatLog.telId = telId;
+            etatLog.date = date;
+            afficheMessage('ok', 'Lecture du log recent...');
+            apiLogs({ action: 'tailLog', telId: telId, date: date, bytes: etatLog.blockSize }).done(function(rep) {
+                if (!rep || !rep.ok) {
+                    afficheMessage('erreur', rep && rep.message ? rep.message : 'Lecture impossible.');
+                    return;
+                }
+                afficheMessage('ok', 'Log charge.');
+                afficheLog(rep);
+            }).fail(function(xhr) {
+                afficheMessage('erreur', 'Lecture refusee ou impossible (' + xhr.status + ').');
+            });
+        }
+
+        function chargePlusAncien() {
+            if (etatLog.telId === '' || etatLog.date === '') {
+                chargeTail();
+                return;
+            }
+
+            if (etatLog.start <= 0) {
+                afficheMessage('ok', 'Debut du fichier deja atteint.');
+                return;
+            }
+
+            var nouveauStart = Math.max(0, etatLog.start - etatLog.blockSize);
+            var longueur = etatLog.start - nouveauStart;
+            afficheMessage('ok', 'Chargement du segment precedent...');
+            apiLogs({ action: 'readLog', telId: etatLog.telId, date: etatLog.date, offset: nouveauStart, length: longueur }).done(function(rep) {
+                if (!rep || !rep.ok) {
+                    afficheMessage('erreur', rep && rep.message ? rep.message : 'Lecture impossible.');
+                    return;
+                }
+                rep.text = (rep.text || '') + etatLog.texteBrut;
+                rep.end = etatLog.end;
+                rep.truncatedAfter = false;
+                afficheMessage('ok', 'Segment ajoute.');
+                afficheLog(rep);
+            }).fail(function(xhr) {
+                afficheMessage('erreur', 'Lecture refusee ou impossible (' + xhr.status + ').');
+            });
+        }
+
+        function telechargeLog() {
+            var telId = ($('#inputTelId').val() || '').trim();
+            var date = $('#selectDateLog').val();
+            if (telId === '' || !date) {
+                afficheMessage('erreur', 'Veuillez choisir un log a telecharger.');
+                return;
+            }
+
+            window.location.href = '/scriptsphp/getSyncCamLogs.php?action=download&telId=' + encodeURIComponent(telId) + '&date=' + encodeURIComponent(date);
+        }
+
+        function initialiseSyncCamLogs() {
+            try {
+                peupleDivHaut();
+            } catch (e) {
+            }
+
+            var telId = getValue('telId');
+            if (telId != null && telId !== '') {
+                $('#inputTelId').val(telId);
+            }
+
+            $('#btnChargerDates').on('click', function() { chargeDates(null); });
+            $('#btnAujourdhui').on('click', function() { chargeDates(dateMonitoring(new Date())); });
+            $('#btnHier').on('click', function() {
+                var d = new Date();
+                d.setDate(d.getDate() - 1);
+                chargeDates(dateMonitoring(d));
+            });
+            $('#btnDernierLog').on('click', function() { chargeDates(null); });
+            $('#btnRafraichirLog').on('click', chargeTail);
+            $('#btnPlusAncien').on('click', chargePlusAncien);
+            $('#btnTelechargerLog').on('click', telechargeLog);
+            $('#selectDateLog').on('change', chargeTail);
+            $('#inputRechercheLog').on('input', appliqueRechercheEtCouleur);
+            $('#inputTelId').on('keypress', function(event) {
+                if (event.which === 13) {
+                    chargeDates(null);
+                }
+            });
+
+            if ($('#inputTelId').val() !== '') {
+                chargeDates(null);
+            }
+        }
+    </script>
+</head>
+<body onload="initialiseSyncCamLogs()">
+<div id="divHaut"></div>
+<div id="divGauche"></div>
+<div id="divCentrale">
+    <div id="zoneSyncCamLogs">
+        <h2>Logs SyncCam</h2>
+
+        <div id="barreCommandesLogs">
+            <label for="inputTelId">telId</label>
+            <input id="inputTelId" type="text" placeholder="telId camera" />
+            <input id="btnChargerDates" type="button" value="Charger" />
+            <input id="btnAujourdhui" type="button" class="btnSecondaire" value="Aujourd'hui" />
+            <input id="btnHier" type="button" class="btnSecondaire" value="Hier" />
+            <input id="btnDernierLog" type="button" class="btnSecondaire" value="Dernier log" />
+        </div>
+
+        <div id="barreActionsLogs">
+            <label for="selectDateLog">Date</label>
+            <select id="selectDateLog"></select>
+            <input id="btnRafraichirLog" type="button" value="Rafraichir" />
+            <input id="btnPlusAncien" type="button" class="btnSecondaire" value="Charger plus ancien" />
+            <input id="btnTelechargerLog" type="button" class="btnSecondaire" value="Telecharger" />
+            <input id="inputRechercheLog" type="text" placeholder="Recherche locale dans le segment charge" />
+        </div>
+
+        <div id="messageSyncCamLogs"></div>
+        <div id="zoneMetaLog"></div>
+        <div id="zoneLogTexte"></div>
+    </div>
+</div>
+<div id="divDroite"></div>
+</body>
+</html>
