@@ -6,6 +6,7 @@ from configuration_depot import lire_configuration
 from formateur_commit import generer_message_commit
 from heuristiques import (
     detecter_changements,
+    detecter_intentions,
     detecter_portee,
     detecter_type_commit,
     evaluer_confiance,
@@ -154,10 +155,11 @@ def main():
     type_commit = detecter_type_commit(fichiers, diff_stat, diff)
     portee = detecter_portee(fichiers, diff_stat, diff, configuration)
     resume = generer_resume(type_commit, portee, fichiers, diff_stat, diff)
+    intentions = detecter_intentions(fichiers, diff_stat, diff, portee)
     changements = detecter_changements(fichiers, diff_stat, diff)
     risques = detecter_risques(fichiers, diff, configuration)
     confiance = evaluer_confiance(fichiers, risques)
-    message = generer_message_commit(type_commit, portee, resume, changements, risques, confiance)
+    message = generer_message_commit(type_commit, portee, resume, intentions, changements, risques, confiance)
 
     print("")
     print("========================================")

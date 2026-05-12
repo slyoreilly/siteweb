@@ -29,6 +29,10 @@ Le message suit ce format:
 ```text
 fix(video): corrige delta multi-row
 
+Intention:
+- stabiliser le flux video
+- reduire les erreurs de sequence temporelle
+
 Changements:
 - ajuste logique video
 

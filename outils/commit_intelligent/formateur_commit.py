@@ -1,10 +1,20 @@
-def generer_message_commit(type_commit, portee, resume, changements, risques, confiance):
+def generer_message_commit(type_commit, portee, resume, intentions, changements, risques, confiance):
     entete = f"{type_commit}({portee}): {resume}"
     lignes = [
         entete,
         "",
-        "Changements:",
+        "Intention:",
     ]
+
+    if intentions:
+        lignes.extend(f"- {intention}" for intention in intentions)
+    else:
+        lignes.append("- garder le depot coherent avec le changement local")
+
+    lignes.extend([
+        "",
+        "Changements:",
+    ])
 
     if changements:
         lignes.extend(f"- {changement}" for changement in changements)

@@ -125,6 +125,39 @@ def detecter_changements(fichiers, diff_stat, diff):
     return list(dict.fromkeys(changements))[:6]
 
 
+def detecter_intentions(fichiers, diff_stat, diff, portee):
+    fichiers = fichiers or []
+    portee = portee or "general"
+    texte = _texte_analyse(fichiers, diff_stat, diff)
+    intentions = []
+
+    if portee == "video" or "video" in texte or "chrono" in texte:
+        intentions.append("ameliorer la robustesse video")
+    if "nettoyage" in texte or "delete" in texte or "efface" in texte:
+        intentions.append("reduire les risques de saturation ou d'accumulation")
+    if portee == "sync" or "sync" in texte or "upsert" in texte or "ack" in texte:
+        intentions.append("stabiliser le flux de synchronisation")
+    if "upload" in texte or "transfert" in texte:
+        intentions.append("reduire les blocages de transfert")
+    if portee in ("api", "backend", "php") or ".php" in texte or "api/" in texte:
+        intentions.append("fiabiliser le comportement serveur")
+    if portee == "db" or "migration" in texte or "schema" in texte:
+        intentions.append("aligner la structure des donnees")
+    if portee in ("web", "ui") or ".html" in texte or ".css" in texte or ".js" in texte:
+        intentions.append("ameliorer l'experience web")
+    if portee in ("config", "infra", "build") or "docker" in texte or "gradle" in texte:
+        intentions.append("stabiliser la configuration d'execution")
+    if portee == "docs" or any(fichier.endswith((".md", ".txt")) for fichier in fichiers):
+        intentions.append("clarifier le cadre operationnel")
+    if portee == "tests" or "test" in texte:
+        intentions.append("renforcer la validation du comportement")
+
+    if not intentions:
+        intentions.append("garder le depot coherent avec le changement local")
+
+    return list(dict.fromkeys(intentions))[:4]
+
+
 def generer_resume(type_commit, portee, fichiers, diff_stat, diff):
     diff = diff or ""
     texte = _texte_analyse(fichiers, diff_stat, diff)
