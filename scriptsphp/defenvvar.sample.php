@@ -68,6 +68,9 @@ if (!getenv('SYNC_ACK_TIMEOUT_SECONDS')) {
 if (!getenv('SYNC_ACK_MAX_ATTEMPTS')) {
     putenv('SYNC_ACK_MAX_ATTEMPTS=6');
 }
+if (!getenv('MONITORING_FILES_INDEX_TOKEN')) {
+    putenv('MONITORING_FILES_INDEX_TOKEN=' . ($workEnv === 'production' ? 'change-me-monitoring-index-prod' : 'change-me-monitoring-index-dev'));
+}
 if (!isset($conn) || !($conn instanceof mysqli)) {
     if ($db_port !== null) {
         $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database, $db_port);
