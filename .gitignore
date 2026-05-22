@@ -30,3 +30,14 @@ scriptsphp/error_log
 /*/*.bak
 /*/error_log
 /*/error_log
+# Runtime monitoring SyncCam
+monitoring/[0-9]*/
+monitoring/20*/
+
+# Artefacts locaux
+*.apk*
+php.ini.old*
+
+# Python cache
+__pycache__/
+*.pyc
