@@ -3,7 +3,8 @@ require '../scriptsphp/defenvvar.php';
 
 define('MONITORING_INDEX_MAX_LIMIT', 100);
 define('MONITORING_INDEX_DEFAULT_LIMIT', 100);
-define('MONITORING_INDEX_ACTIVE_HOURS', 48);
+define('MONITORING_INDEX_ACTIVE_HOURS', 168);
+define('MONITORING_INDEX_MAX_DAYS', 7);
 
 $MONITORING_INDEX_ALLOWED_FILES = array(
     'BDLogFile.txt',
@@ -236,7 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 
 monitoringIndexValidateAuth();
 
-$days = monitoringIndexIntParam('days', 2, 1, 2);
+$days = monitoringIndexIntParam('days', 2, 1, MONITORING_INDEX_MAX_DAYS);
 $limit = monitoringIndexIntParam('limit', MONITORING_INDEX_DEFAULT_LIMIT, 1, MONITORING_INDEX_MAX_LIMIT);
 $offset = monitoringIndexIntParam('offset', 0, 0, 1000000);
 $telId = monitoringIndexParam('telId', '');
