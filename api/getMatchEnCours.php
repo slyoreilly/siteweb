@@ -358,7 +358,7 @@ $resultPun = executerRequeteJson($conn,
  LEFT JOIN TableEquipe
  	ON (TableEquipe.equipe_id=TableEvenement0.equipe_event_id)
 
-	WHERE match_event_id = '{$matchIDSql}' AND code = 4 ORDER BY chrono"),
+	WHERE match_event_id = '{$matchIDSql}' AND code = 4 ORDER BY chrono",
 	'erreur_sql_punitions',
 	'Erreur lors du chargement des punitions.'
 );
@@ -511,7 +511,7 @@ $rFus = executerRequeteJson($conn, "SELECT TableEvenement0.*, Video.*, TableJoue
 											ON (TableEvenement0.equipe_event_id=TableEquipe.equipe_id)
 										LEFT JOIN
 											Video ON (Video.reference = TableEvenement0.event_id)
-										WHERE match_event_id = '{$matchIDSql}' AND code = 2 ORDER BY TableEvenement0.chrono"),
+										WHERE match_event_id = '{$matchIDSql}' AND code = 2 ORDER BY TableEvenement0.chrono",
 	'erreur_sql_fusillade',
 	'Erreur lors du chargement de la fusillade.'
 );
