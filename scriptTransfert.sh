@@ -30,6 +30,23 @@ DEPLOY_DELETE="${DEPLOY_DELETE:-false}"
 DEPLOY_MODE="${DEPLOY_MODE:-controlled}"
 
 echo "Deploiement demarre (hote=${DEPLOY_HOST}, protocole=${DEPLOY_PROTOCOL}, simulation=${mode_simulation})"
+# ----------------------------
+# Generation version deployment
+# ----------------------------
+
+GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
+DEPLOY_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+cat > .deploy-version.json <<EOF
+{
+  "commit":"${GIT_COMMIT}",
+  "branch":"${GIT_BRANCH}",
+  "deployedAt":"${DEPLOY_DATE}"
+}
+EOF
+
+echo "Version preparee : ${GIT_COMMIT}"
 
 if [[ "$DEPLOY_PROTOCOL" != "ftps" && "$DEPLOY_PROTOCOL" != "ftp" ]]; then
   echo "DEPLOY_PROTOCOL invalide: ${DEPLOY_PROTOCOL} (valeurs permises: ftps, ftp)" >&2
@@ -112,7 +129,7 @@ mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${o
   --exclude-glob "*.log" \
   --exclude-glob "**/error_log" \
   . ${DEPLOY_REMOTE_DIR}
-
+put .deploy-version.json -o ${DEPLOY_REMOTE_DIR}/.deploy-version.json
 bye
 EOF
 else
@@ -147,8 +164,13 @@ mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${o
 mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} zarbitre ${DEPLOY_REMOTE_DIR}/zarbitre
 mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} api ${DEPLOY_REMOTE_DIR}/api
 
+put .deploy-version.json -o ${DEPLOY_REMOTE_DIR}/.deploy-version.json
+
 bye
 EOF
 fi
 
+rm -f .deploy-version.json
+
 echo "Deploiement termine avec succes."
+echo "Version deployee: ${GIT_COMMIT}"
