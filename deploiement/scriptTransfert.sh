@@ -2,7 +2,10 @@
 
 set -Eeuo pipefail
 
-fichier_env=".env.transfert"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+fichier_env="${ROOT_DIR}/.env.transfert"
 mode_simulation="false"
 
 if [[ "${1:-}" == "--dry-run" ]]; then
@@ -34,11 +37,13 @@ echo "Deploiement demarre (hote=${DEPLOY_HOST}, protocole=${DEPLOY_PROTOCOL}, si
 # Generation version deployment
 # ----------------------------
 
-GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
-GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
+GIT_COMMIT=$(git -C "${ROOT_DIR}" rev-parse --short HEAD 2>/dev/null || echo "unknown")
+GIT_BRANCH=$(git -C "${ROOT_DIR}" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")
 DEPLOY_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-cat > .deploy-version.json <<EOF
+VERSION_FILE="${ROOT_DIR}/.deploy-version.json"
+
+cat > "${VERSION_FILE}" <<EOF
 {
   "commit":"${GIT_COMMIT}",
   "branch":"${GIT_BRANCH}",
@@ -94,6 +99,9 @@ if [[ "$DEPLOY_MODE" != "controlled" && "$DEPLOY_MODE" != "full" ]]; then
   exit 1
 fi
 
+# cd vers la racine du projet pour que tous les chemins relatifs lftp soient corrects
+cd "${ROOT_DIR}"
+
 if [[ "$DEPLOY_MODE" == "full" ]]; then
   lftp <<EOF
 set cmd:fail-exit true
@@ -128,6 +136,8 @@ mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${o
   --exclude-glob .env.* \
   --exclude-glob "*.log" \
   --exclude-glob "**/error_log" \
+  --exclude-glob deploiement/ \
+  --exclude-glob deploiement/** \
   . ${DEPLOY_REMOTE_DIR}
 put .deploy-version.json -o ${DEPLOY_REMOTE_DIR}/.deploy-version.json
 bye
@@ -170,7 +180,7 @@ bye
 EOF
 fi
 
-rm -f .deploy-version.json
+rm -f "${VERSION_FILE}"
 
 echo "Deploiement termine avec succes."
 echo "Version deployee: ${GIT_COMMIT}"
