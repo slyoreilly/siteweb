@@ -132,6 +132,7 @@ mysqli_free_result($result);
 respond(200, [
     'ok'          => true,
     'serverTime'  => gmdate('c'),
+    'heure'       => time(),
     'tempsDepart' => $tempsDepart,
     'events'      => $events
 ]);
