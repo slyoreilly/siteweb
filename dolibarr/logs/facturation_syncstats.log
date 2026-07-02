@@ -957,3 +957,964 @@ Periode facturee : 2026-03-01 -> 2026-04-30
 [2026-06-14 21:29:16] INFO  Anti-doublon: trouve => SKIP creation
 [2026-06-14 21:29:16] INFO  Execution terminee.
 Execution terminee.
+
+===== 2026-06-14 21:57:43 =====
+Aucune facturation prevue ce mois.
+
+===== 2026-07-01 06:00:01 =====
+Periode facturee : 2026-05-01 -> 2026-06-30
+Status: 500 Internal Server Error
+Content-type: text/html; charset=UTF-8
+
+
+===== 2026-07-01 17:00:52 =====
+Periode facturee : 2026-05-01 -> 2026-06-30
+[2026-07-01 17:00:52] INFO  Parametres: periode=2026-05-01 -> 2026-06-30, mode=brouillon, limite_tiers=none, tiers_id=none, dry_run_force=non
+[2026-07-01 17:00:52] INFO  Mode brouillon: les factures creees ne seront PAS validees.
+[2026-07-01 17:00:54] DEBUG Chargement tiers termine.
+[2026-07-01 17:00:54] INFO  Tiers recuperes depuis Dolibarr: 102
+[2026-07-01 17:00:54] INFO  Traitement tiers 1 - Interdek Hockey inc.
+[2026-07-01 17:00:54] INFO  Extrafields tiers: produit_video_id=10, produit_kit_id=11, nb_kits_raw="1"=>1, prix_kit_semaine_raw="5.00000000"=>5.00, nb_mois=2, nb_semaines=8, qty_kit=8, should_add_kit=yes
+[2026-07-01 17:00:54] DEBUG array_options keys: options_ligues_syncstats,options_prix_match_ht,options_facturation_syncstats_active,options_nb_kits_syncstats,options_prix_kits_semaine_ht,options_produit_kit_id,options_produit_video_id
+[2026-07-01 17:00:54] INFO  Ligues SyncStats: 96,98,125
+[2026-07-01 17:00:54] INFO  Signature: SYNCSTATS|FACTURATION|2026-05-01|2026-06-30
+[2026-07-01 17:00:55] INFO  Anti-doublon: non trouve
+[2026-07-01 17:00:55] INFO  Produit video #10: ref=0001, label=Service de reprises vidéo, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 17:00:56] INFO  Produit kit #11: ref=0002, label=Location de trousse SyncStats, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 17:00:57] INFO  Nb matchs facturables: 26
+[2026-07-01 17:00:57] INFO  Montant estime HT (video): 130.00
+[2026-07-01 17:00:57] INFO  Montant estime HT (kit): 40.00
+[2026-07-01 17:00:57] INFO  Montant estime HT (total): 170.00
+[2026-07-01 17:00:57] INFO  [SIMULATION] Ligne video prevue: product_id=10, qty=26, pu_ht=5.00
+[2026-07-01 17:00:57] INFO  [SIMULATION] Ligne kit prevue: product_id=11, qty=8, pu_ht=5.00
+[2026-07-01 17:00:57] INFO  Anti-doublon: non trouve => creation...
+[2026-07-01 17:00:57] INFO  Facture creee: 194
+[2026-07-01 17:00:57] INFO  Creation ligne video: product_id=10, qty=26, pu_ht=5.00
+[2026-07-01 17:00:57] INFO  Payload ligne facture (invoice=194): {"fk_product":10,"qty":26,"subprice":5,"desc":"Captation video SyncStats\nPeriode : 2026-05-01 -> 2026-06-30\n\nInterdek Jeudi : 9 matchs\nInterdek Mardi : 17 matchs","tva_tx":5,"localtax1_tx":9.9749999999999996447286321199499070644378662109375,"localtax2_tx":0,"localtax1_type":1,"localtax2_type":0}
+[2026-07-01 17:00:58] INFO  Creation ligne kit: product_id=11, qty=8, pu_ht=5.00
+[2026-07-01 17:00:58] INFO  Payload ligne facture (invoice=194): {"fk_product":11,"qty":8,"subprice":5,"desc":"Location kits SyncStats\nPeriode : 2026-05-01 -> 2026-06-30\n\n1 kits x 8 semaines","tva_tx":5,"localtax1_tx":9.9749999999999996447286321199499070644378662109375,"localtax2_tx":0,"localtax1_type":1,"localtax2_type":0}
+[2026-07-01 17:00:59] INFO  Ligne kit ajoutee: 1 kits x 8 semaines (qty=8) a 5.00/sem.
+[2026-07-01 17:00:59] INFO  Ligne ajoutee: OK
+[2026-07-01 17:00:59] INFO  Validation: SKIP (mode brouillon, facture laissee non validee).
+[2026-07-01 17:00:59] INFO  Traitement tiers 2 - Véronique Dumont
+[2026-07-01 17:00:59] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:00:59] DEBUG array_options keys: 
+[2026-07-01 17:00:59] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:00:59] INFO  Traitement tiers 3 - Danick Boudreau LHCMD
+[2026-07-01 17:00:59] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:00:59] DEBUG array_options keys: 
+[2026-07-01 17:00:59] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:00:59] INFO  Traitement tiers 4 - DHL
+[2026-07-01 17:00:59] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:00:59] DEBUG array_options keys: 
+[2026-07-01 17:00:59] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:00:59] INFO  Traitement tiers 5 - Coupe Dek
+[2026-07-01 17:00:59] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:00:59] DEBUG array_options keys: 
+[2026-07-01 17:00:59] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:00:59] INFO  Traitement tiers 6 - MNH
+[2026-07-01 17:00:59] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:00:59] DEBUG array_options keys: 
+[2026-07-01 17:00:59] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:00:59] INFO  Traitement tiers 7 - PLB
+[2026-07-01 17:00:59] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:00:59] DEBUG array_options keys: 
+[2026-07-01 17:00:59] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:00:59] INFO  Traitement tiers 8 - Cosom Mixte
+[2026-07-01 17:00:59] INFO  Extrafields tiers: produit_video_id=10, produit_kit_id=11, nb_kits_raw="0"=>0, prix_kit_semaine_raw="6.00000000"=>6.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:00:59] DEBUG array_options keys: options_ligues_syncstats,options_prix_match_ht,options_facturation_syncstats_active,options_nb_kits_syncstats,options_prix_kits_semaine_ht,options_produit_kit_id,options_produit_video_id
+[2026-07-01 17:00:59] INFO  Ligues SyncStats: 66,78
+[2026-07-01 17:00:59] INFO  Signature: SYNCSTATS|FACTURATION|2026-05-01|2026-06-30
+[2026-07-01 17:00:59] INFO  Anti-doublon: non trouve
+[2026-07-01 17:01:00] INFO  Produit video #10: ref=0001, label=Service de reprises vidéo, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 17:01:00] INFO  Produit kit #11: ref=0002, label=Location de trousse SyncStats, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 17:01:01] INFO  SKIP aucun match facturable pour ce tiers.
+[2026-07-01 17:01:01] INFO  Traitement tiers 9 - Jean-Simon Boucher
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 10 - Mario Galego
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 11 - Patrick Fortin
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 12 - Masonic Challenge
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 13 - MBHL
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 14 - Tournée Alex Burrows
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 15 - LHDRS
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 16 - Dev Cheema
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 17 - Kim Thay
+[2026-07-01 17:01:01] INFO  SKIP non-client.
+[2026-07-01 17:01:01] INFO  Traitement tiers 18 - David Tremblay
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 19 - Stéphane Réhel
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 20 - Best Buy
+[2026-07-01 17:01:01] INFO  SKIP non-client.
+[2026-07-01 17:01:01] INFO  Traitement tiers 21 - Michel Bernier
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 22 - PSA Hockey
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 23 - Walmart US
+[2026-07-01 17:01:01] INFO  SKIP non-client.
+[2026-07-01 17:01:01] INFO  Traitement tiers 24 - Provigo
+[2026-07-01 17:01:01] INFO  SKIP non-client.
+[2026-07-01 17:01:01] INFO  Traitement tiers 25 - Michel Gagnon
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 26 - WCHL
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 27 - Hockey MDK
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 28 - Sociétés de transport
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 29 - Tournoi Labonté
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 30 - Hockey Montréal Élite
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 31 - Test
+[2026-07-01 17:01:01] INFO  SKIP non-client.
+[2026-07-01 17:01:01] INFO  Traitement tiers 32 - Structure Intégrée des Grenadiers
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 33 - Hockey West-Island
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 34 - École Secondaire des Sources
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 35 - Kevin Brogan
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 36 - WebOrka
+[2026-07-01 17:01:01] INFO  SKIP non-client.
+[2026-07-01 17:01:01] INFO  Traitement tiers 37 - CEPSUM
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:01] DEBUG array_options keys: 
+[2026-07-01 17:01:01] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:01] INFO  Traitement tiers 38 - MTLHL
+[2026-07-01 17:01:01] INFO  Extrafields tiers: produit_video_id=10, produit_kit_id=11, nb_kits_raw="5"=>5, prix_kit_semaine_raw="5.00000000"=>5.00, nb_mois=2, nb_semaines=8, qty_kit=40, should_add_kit=yes
+[2026-07-01 17:01:01] DEBUG array_options keys: options_ligues_syncstats,options_prix_match_ht,options_facturation_syncstats_active,options_nb_kits_syncstats,options_prix_kits_semaine_ht,options_produit_kit_id,options_produit_video_id
+[2026-07-01 17:01:01] INFO  Ligues SyncStats: 107
+[2026-07-01 17:01:01] INFO  Signature: SYNCSTATS|FACTURATION|2026-05-01|2026-06-30
+[2026-07-01 17:01:02] INFO  Anti-doublon: non trouve
+[2026-07-01 17:01:02] INFO  Produit video #10: ref=0001, label=Service de reprises vidéo, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 17:01:03] INFO  Produit kit #11: ref=0002, label=Location de trousse SyncStats, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 17:01:04] INFO  Nb matchs facturables: 101
+[2026-07-01 17:01:04] INFO  Montant estime HT (video): 505.00
+[2026-07-01 17:01:04] INFO  Montant estime HT (kit): 200.00
+[2026-07-01 17:01:04] INFO  Montant estime HT (total): 705.00
+[2026-07-01 17:01:04] INFO  [SIMULATION] Ligne video prevue: product_id=10, qty=101, pu_ht=5.00
+[2026-07-01 17:01:04] INFO  [SIMULATION] Ligne kit prevue: product_id=11, qty=40, pu_ht=5.00
+[2026-07-01 17:01:04] INFO  Anti-doublon: non trouve => creation...
+[2026-07-01 17:01:05] INFO  Facture creee: 195
+[2026-07-01 17:01:05] INFO  Creation ligne video: product_id=10, qty=101, pu_ht=5.00
+[2026-07-01 17:01:05] INFO  Payload ligne facture (invoice=195): {"fk_product":10,"qty":101,"subprice":5,"desc":"Captation video SyncStats\nPeriode : 2026-05-01 -> 2026-06-30\n\nMTLHL : 101 matchs","tva_tx":5,"localtax1_tx":9.9749999999999996447286321199499070644378662109375,"localtax2_tx":0,"localtax1_type":1,"localtax2_type":0}
+[2026-07-01 17:01:05] INFO  Creation ligne kit: product_id=11, qty=40, pu_ht=5.00
+[2026-07-01 17:01:05] INFO  Payload ligne facture (invoice=195): {"fk_product":11,"qty":40,"subprice":5,"desc":"Location kits SyncStats\nPeriode : 2026-05-01 -> 2026-06-30\n\n5 kits x 8 semaines","tva_tx":5,"localtax1_tx":9.9749999999999996447286321199499070644378662109375,"localtax2_tx":0,"localtax1_type":1,"localtax2_type":0}
+[2026-07-01 17:01:06] INFO  Ligne kit ajoutee: 5 kits x 8 semaines (qty=40) a 5.00/sem.
+[2026-07-01 17:01:06] INFO  Ligne ajoutee: OK
+[2026-07-01 17:01:06] INFO  Validation: SKIP (mode brouillon, facture laissee non validee).
+[2026-07-01 17:01:06] INFO  Traitement tiers 39 - Raphaël St-Yves
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 40 - Gregogy Alexander Brown
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 41 - Christian Leray
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 42 - France Levert
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 43 - Jean-Benoît Pelletier
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 44 - Claudio Bonnaud
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 45 - Sylvain O'Reilly
+[2026-07-01 17:01:06] INFO  SKIP non-client.
+[2026-07-01 17:01:06] INFO  Traitement tiers 46 - Association régionale de Ringuette Laval inc.
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 47 - Matti Szabo
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 48 - Dek St-Hyacinthe
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 49 - Ryerson University
+[2026-07-01 17:01:06] INFO  SKIP non-client.
+[2026-07-01 17:01:06] INFO  Traitement tiers 50 - Sam Plourde
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 51 - Peps
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 52 - Université de Sherbrooke
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 53 - Concordia
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 54 - LanceEtCompte
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 55 - LNO
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 56 - Dek Boucherville
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 57 - Ligue 4AS (Dek)
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 58 - Dek Anjou
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 59 - Powerball
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 60 - Dek Hockey St-Jean-sur-Richelieu
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 62 - Dek Varennes
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 63 - Complexe Éco-Sports
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 64 - Cosomplex
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 65 - Dek Hockey Lanaudière
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 66 - Dek Hockey St-Roch
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 67 - Flosport
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 68 - SportXpo
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 69 - Centre Hockey Ultime
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 70 - Centre-Sud
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 71 - Villeray
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 72 - Braves du Nord
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 73 - Fédé de l'Est
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 74 - Panthères de NDG
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 75 - Jeunes Sportifs d'Hochelaga
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 76 - Attacks du Sud-Ouest
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 77 - Hockey Anjou
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 78 - Hockey Montréal-Est
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 79 - AHM Pointe-Aux-Trembles
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 80 - Hockey Rosemont
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 81 - Hockey St-Donat
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 82 - AHM St-Léonard
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 83 - Hockey Montréal Élite
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 84 - Hockey Montréal Féminin
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 85 - AHM West-Island
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 86 - AHM Lakeshore
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 87 - AHM Lac St-Louis
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 88 - AHM Dollard-Des-Ormeaux
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 89 - AHM Pierrefonds
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 90 - AHM Ile-Bizard
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 91 - AHM Laval-Est
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 92 - AHM Delta
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 93 - AHM Laval-Nord
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 94 - AHM Express
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 95 - AHM Montreuil
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 96 - Dek Montérégie
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 97 - Dek Montérégie
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 98 - Julien Roussel
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 99 - Dek Hockey Kirkland
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 100 - Alfonso Reda
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 101 - Georges Jadotte
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 17:01:06] DEBUG array_options keys: 
+[2026-07-01 17:01:06] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 17:01:06] INFO  Traitement tiers 102 - Pierre-David Gagné
+[2026-07-01 17:01:06] INFO  Extrafields tiers: produit_video_id=10, produit_kit_id=11, nb_kits_raw="1"=>1, prix_kit_semaine_raw="5.00000000"=>5.00, nb_mois=2, nb_semaines=8, qty_kit=8, should_add_kit=yes
+[2026-07-01 17:01:06] DEBUG array_options keys: options_ligues_syncstats,options_prix_match_ht,options_facturation_syncstats_active,options_nb_kits_syncstats,options_prix_kits_semaine_ht,options_produit_kit_id,options_produit_video_id
+[2026-07-01 17:01:06] INFO  Ligues SyncStats: 303,309
+[2026-07-01 17:01:06] INFO  Signature: SYNCSTATS|FACTURATION|2026-05-01|2026-06-30
+[2026-07-01 17:01:06] INFO  Anti-doublon: non trouve
+[2026-07-01 17:01:07] INFO  Produit video #10: ref=0001, label=Service de reprises vidéo, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 17:01:07] INFO  Produit kit #11: ref=0002, label=Location de trousse SyncStats, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 17:01:08] INFO  SKIP aucun match facturable pour ce tiers.
+[2026-07-01 17:01:08] INFO  Traitement tiers 103 - Sagar Modi Consulting inc.
+[2026-07-01 17:01:08] INFO  Extrafields tiers: produit_video_id=10, produit_kit_id=11, nb_kits_raw="1"=>1, prix_kit_semaine_raw="6.00000000"=>6.00, nb_mois=2, nb_semaines=8, qty_kit=8, should_add_kit=yes
+[2026-07-01 17:01:08] DEBUG array_options keys: options_ligues_syncstats,options_prix_match_ht,options_facturation_syncstats_active,options_nb_kits_syncstats,options_prix_kits_semaine_ht,options_produit_kit_id,options_produit_video_id
+[2026-07-01 17:01:08] INFO  Ligues SyncStats: 269
+[2026-07-01 17:01:08] INFO  Signature: SYNCSTATS|FACTURATION|2026-05-01|2026-06-30
+[2026-07-01 17:01:09] INFO  Anti-doublon: non trouve
+[2026-07-01 17:01:09] INFO  Produit video #10: ref=0001, label=Service de reprises vidéo, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 17:01:10] INFO  Produit kit #11: ref=0002, label=Location de trousse SyncStats, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 17:01:11] INFO  Nb matchs facturables: 18
+[2026-07-01 17:01:11] INFO  Montant estime HT (video): 108.00
+[2026-07-01 17:01:11] INFO  Montant estime HT (kit): 48.00
+[2026-07-01 17:01:11] INFO  Montant estime HT (total): 156.00
+[2026-07-01 17:01:11] INFO  [SIMULATION] Ligne video prevue: product_id=10, qty=18, pu_ht=6.00
+[2026-07-01 17:01:11] INFO  [SIMULATION] Ligne kit prevue: product_id=11, qty=8, pu_ht=6.00
+[2026-07-01 17:01:11] INFO  Anti-doublon: non trouve => creation...
+[2026-07-01 17:01:11] INFO  Facture creee: 196
+[2026-07-01 17:01:11] INFO  Creation ligne video: product_id=10, qty=18, pu_ht=6.00
+[2026-07-01 17:01:11] INFO  Payload ligne facture (invoice=196): {"fk_product":10,"qty":18,"subprice":6,"desc":"Captation video SyncStats\nPeriode : 2026-05-01 -> 2026-06-30\n\nRec Montreal : 18 matchs","tva_tx":5,"localtax1_tx":9.9749999999999996447286321199499070644378662109375,"localtax2_tx":0,"localtax1_type":1,"localtax2_type":0}
+[2026-07-01 17:01:12] INFO  Creation ligne kit: product_id=11, qty=8, pu_ht=6.00
+[2026-07-01 17:01:12] INFO  Payload ligne facture (invoice=196): {"fk_product":11,"qty":8,"subprice":6,"desc":"Location kits SyncStats\nPeriode : 2026-05-01 -> 2026-06-30\n\n1 kits x 8 semaines","tva_tx":5,"localtax1_tx":9.9749999999999996447286321199499070644378662109375,"localtax2_tx":0,"localtax1_type":1,"localtax2_type":0}
+[2026-07-01 17:01:13] INFO  Ligne kit ajoutee: 1 kits x 8 semaines (qty=8) a 6.00/sem.
+[2026-07-01 17:01:13] INFO  Ligne ajoutee: OK
+[2026-07-01 17:01:13] INFO  Validation: SKIP (mode brouillon, facture laissee non validee).
+[2026-07-01 17:01:13] INFO  Execution terminee.
+Execution terminee.
+
+===== RESUME =====
+Date : 2026-07-01 17:01:13
+Factures creees :
+7
+Doublons detectes :
+26
+Erreurs :
+0
+===== FIN =====
+
+===== 2026-07-01 18:10:22 =====
+Periode facturee : 2026-05-01 -> 2026-06-30
+[2026-07-01 18:10:22] INFO  Parametres: periode=2026-05-01 -> 2026-06-30, mode=brouillon, limite_tiers=none, tiers_id=none, dry_run_force=non
+[2026-07-01 18:10:22] INFO  Mode brouillon: les factures creees ne seront PAS validees.
+[2026-07-01 18:10:24] DEBUG Chargement tiers termine.
+[2026-07-01 18:10:24] INFO  Tiers recuperes depuis Dolibarr: 102
+[2026-07-01 18:10:24] INFO  Traitement tiers 1 - Interdek Hockey inc.
+[2026-07-01 18:10:24] INFO  Extrafields tiers: produit_video_id=10, produit_kit_id=11, nb_kits_raw="1"=>1, prix_kit_semaine_raw="5.00000000"=>5.00, nb_mois=2, nb_semaines=8, qty_kit=8, should_add_kit=yes
+[2026-07-01 18:10:24] DEBUG array_options keys: options_ligues_syncstats,options_prix_match_ht,options_facturation_syncstats_active,options_nb_kits_syncstats,options_prix_kits_semaine_ht,options_produit_kit_id,options_produit_video_id
+[2026-07-01 18:10:24] INFO  Ligues SyncStats: 96,98,125
+[2026-07-01 18:10:24] INFO  Signature: SYNCSTATS|FACTURATION|2026-05-01|2026-06-30
+[2026-07-01 18:10:24] INFO  Anti-doublon: trouve (id facture 194, ref (PROV194))
+[2026-07-01 18:10:25] INFO  Produit video #10: ref=0001, label=Service de reprises vidéo, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 18:10:25] INFO  Produit kit #11: ref=0002, label=Location de trousse SyncStats, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 18:10:26] INFO  Nb matchs facturables: 26
+[2026-07-01 18:10:26] INFO  Montant estime HT (video): 130.00
+[2026-07-01 18:10:26] INFO  Montant estime HT (kit): 40.00
+[2026-07-01 18:10:26] INFO  Montant estime HT (total): 170.00
+[2026-07-01 18:10:26] INFO  [SIMULATION] Ligne video prevue: product_id=10, qty=26, pu_ht=5.00
+[2026-07-01 18:10:26] INFO  [SIMULATION] Ligne kit prevue: product_id=11, qty=8, pu_ht=5.00
+[2026-07-01 18:10:26] INFO  [SIMULATION] Doublon detecte. Ligne video qui serait creee: product_id=10, qty=26, pu_ht=5.00
+[2026-07-01 18:10:26] INFO  [SIMULATION] Doublon detecte. Ligne kit qui serait creee: product_id=11, qty=8, pu_ht=5.00
+[2026-07-01 18:10:26] INFO  Anti-doublon: trouve => SKIP creation
+[2026-07-01 18:10:26] INFO  Traitement tiers 2 - Véronique Dumont
+[2026-07-01 18:10:26] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:26] DEBUG array_options keys: 
+[2026-07-01 18:10:26] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:26] INFO  Traitement tiers 3 - Danick Boudreau LHCMD
+[2026-07-01 18:10:26] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:26] DEBUG array_options keys: 
+[2026-07-01 18:10:26] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:26] INFO  Traitement tiers 4 - DHL
+[2026-07-01 18:10:26] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:26] DEBUG array_options keys: 
+[2026-07-01 18:10:26] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:26] INFO  Traitement tiers 5 - Coupe Dek
+[2026-07-01 18:10:26] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:26] DEBUG array_options keys: 
+[2026-07-01 18:10:26] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:26] INFO  Traitement tiers 6 - MNH
+[2026-07-01 18:10:26] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:26] DEBUG array_options keys: 
+[2026-07-01 18:10:26] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:26] INFO  Traitement tiers 7 - PLB
+[2026-07-01 18:10:26] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:26] DEBUG array_options keys: 
+[2026-07-01 18:10:26] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:26] INFO  Traitement tiers 8 - Cosom Mixte
+[2026-07-01 18:10:26] INFO  Extrafields tiers: produit_video_id=10, produit_kit_id=11, nb_kits_raw="0"=>0, prix_kit_semaine_raw="6.00000000"=>6.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:26] DEBUG array_options keys: options_ligues_syncstats,options_prix_match_ht,options_facturation_syncstats_active,options_nb_kits_syncstats,options_prix_kits_semaine_ht,options_produit_kit_id,options_produit_video_id
+[2026-07-01 18:10:26] INFO  Ligues SyncStats: 66,78
+[2026-07-01 18:10:26] INFO  Signature: SYNCSTATS|FACTURATION|2026-05-01|2026-06-30
+[2026-07-01 18:10:27] INFO  Anti-doublon: non trouve
+[2026-07-01 18:10:27] INFO  Produit video #10: ref=0001, label=Service de reprises vidéo, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 18:10:28] INFO  Produit kit #11: ref=0002, label=Location de trousse SyncStats, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 18:10:29] INFO  SKIP aucun match facturable pour ce tiers.
+[2026-07-01 18:10:29] INFO  Traitement tiers 9 - Jean-Simon Boucher
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 10 - Mario Galego
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 11 - Patrick Fortin
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 12 - Masonic Challenge
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 13 - MBHL
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 14 - Tournée Alex Burrows
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 15 - LHDRS
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 16 - Dev Cheema
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 17 - Kim Thay
+[2026-07-01 18:10:29] INFO  SKIP non-client.
+[2026-07-01 18:10:29] INFO  Traitement tiers 18 - David Tremblay
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 19 - Stéphane Réhel
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 20 - Best Buy
+[2026-07-01 18:10:29] INFO  SKIP non-client.
+[2026-07-01 18:10:29] INFO  Traitement tiers 21 - Michel Bernier
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 22 - PSA Hockey
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 23 - Walmart US
+[2026-07-01 18:10:29] INFO  SKIP non-client.
+[2026-07-01 18:10:29] INFO  Traitement tiers 24 - Provigo
+[2026-07-01 18:10:29] INFO  SKIP non-client.
+[2026-07-01 18:10:29] INFO  Traitement tiers 25 - Michel Gagnon
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 26 - WCHL
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 27 - Hockey MDK
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 28 - Sociétés de transport
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 29 - Tournoi Labonté
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 30 - Hockey Montréal Élite
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 31 - Test
+[2026-07-01 18:10:29] INFO  SKIP non-client.
+[2026-07-01 18:10:29] INFO  Traitement tiers 32 - Structure Intégrée des Grenadiers
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 33 - Hockey West-Island
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 34 - École Secondaire des Sources
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 35 - Kevin Brogan
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 36 - WebOrka
+[2026-07-01 18:10:29] INFO  SKIP non-client.
+[2026-07-01 18:10:29] INFO  Traitement tiers 37 - CEPSUM
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:29] DEBUG array_options keys: 
+[2026-07-01 18:10:29] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:29] INFO  Traitement tiers 38 - MTLHL
+[2026-07-01 18:10:29] INFO  Extrafields tiers: produit_video_id=10, produit_kit_id=11, nb_kits_raw="5"=>5, prix_kit_semaine_raw="5.00000000"=>5.00, nb_mois=2, nb_semaines=8, qty_kit=40, should_add_kit=yes
+[2026-07-01 18:10:29] DEBUG array_options keys: options_ligues_syncstats,options_prix_match_ht,options_facturation_syncstats_active,options_nb_kits_syncstats,options_prix_kits_semaine_ht,options_produit_kit_id,options_produit_video_id
+[2026-07-01 18:10:29] INFO  Ligues SyncStats: 107
+[2026-07-01 18:10:29] INFO  Signature: SYNCSTATS|FACTURATION|2026-05-01|2026-06-30
+[2026-07-01 18:10:30] INFO  Anti-doublon: trouve (id facture 195, ref (PROV195))
+[2026-07-01 18:10:30] INFO  Produit video #10: ref=0001, label=Service de reprises vidéo, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 18:10:31] INFO  Produit kit #11: ref=0002, label=Location de trousse SyncStats, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 18:10:32] INFO  Nb matchs facturables: 101
+[2026-07-01 18:10:32] INFO  Montant estime HT (video): 505.00
+[2026-07-01 18:10:32] INFO  Montant estime HT (kit): 200.00
+[2026-07-01 18:10:32] INFO  Montant estime HT (total): 705.00
+[2026-07-01 18:10:32] INFO  [SIMULATION] Ligne video prevue: product_id=10, qty=101, pu_ht=5.00
+[2026-07-01 18:10:32] INFO  [SIMULATION] Ligne kit prevue: product_id=11, qty=40, pu_ht=5.00
+[2026-07-01 18:10:32] INFO  [SIMULATION] Doublon detecte. Ligne video qui serait creee: product_id=10, qty=101, pu_ht=5.00
+[2026-07-01 18:10:32] INFO  [SIMULATION] Doublon detecte. Ligne kit qui serait creee: product_id=11, qty=40, pu_ht=5.00
+[2026-07-01 18:10:32] INFO  Anti-doublon: trouve => SKIP creation
+[2026-07-01 18:10:32] INFO  Traitement tiers 39 - Raphaël St-Yves
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 40 - Gregogy Alexander Brown
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 41 - Christian Leray
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 42 - France Levert
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 43 - Jean-Benoît Pelletier
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 44 - Claudio Bonnaud
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 45 - Sylvain O'Reilly
+[2026-07-01 18:10:32] INFO  SKIP non-client.
+[2026-07-01 18:10:32] INFO  Traitement tiers 46 - Association régionale de Ringuette Laval inc.
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 47 - Matti Szabo
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 48 - Dek St-Hyacinthe
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 49 - Ryerson University
+[2026-07-01 18:10:32] INFO  SKIP non-client.
+[2026-07-01 18:10:32] INFO  Traitement tiers 50 - Sam Plourde
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 51 - Peps
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 52 - Université de Sherbrooke
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 53 - Concordia
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 54 - LanceEtCompte
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 55 - LNO
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 56 - Dek Boucherville
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 57 - Ligue 4AS (Dek)
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 58 - Dek Anjou
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 59 - Powerball
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 60 - Dek Hockey St-Jean-sur-Richelieu
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 62 - Dek Varennes
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 63 - Complexe Éco-Sports
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 64 - Cosomplex
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 65 - Dek Hockey Lanaudière
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 66 - Dek Hockey St-Roch
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 67 - Flosport
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 68 - SportXpo
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 69 - Centre Hockey Ultime
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 70 - Centre-Sud
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 71 - Villeray
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 72 - Braves du Nord
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 73 - Fédé de l'Est
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 74 - Panthères de NDG
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 75 - Jeunes Sportifs d'Hochelaga
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 76 - Attacks du Sud-Ouest
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 77 - Hockey Anjou
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 78 - Hockey Montréal-Est
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 79 - AHM Pointe-Aux-Trembles
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 80 - Hockey Rosemont
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 81 - Hockey St-Donat
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 82 - AHM St-Léonard
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 83 - Hockey Montréal Élite
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 84 - Hockey Montréal Féminin
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 85 - AHM West-Island
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 86 - AHM Lakeshore
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 87 - AHM Lac St-Louis
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 88 - AHM Dollard-Des-Ormeaux
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 89 - AHM Pierrefonds
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 90 - AHM Ile-Bizard
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 91 - AHM Laval-Est
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 92 - AHM Delta
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 93 - AHM Laval-Nord
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 94 - AHM Express
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 95 - AHM Montreuil
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 96 - Dek Montérégie
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 97 - Dek Montérégie
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 98 - Julien Roussel
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 99 - Dek Hockey Kirkland
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 100 - Alfonso Reda
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 101 - Georges Jadotte
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=null, produit_kit_id=null, nb_kits_raw=""=>0, prix_kit_semaine_raw=""=>0.00, nb_mois=2, nb_semaines=8, qty_kit=0, should_add_kit=no
+[2026-07-01 18:10:32] DEBUG array_options keys: 
+[2026-07-01 18:10:32] INFO  SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).
+[2026-07-01 18:10:32] INFO  Traitement tiers 102 - Pierre-David Gagné
+[2026-07-01 18:10:32] INFO  Extrafields tiers: produit_video_id=10, produit_kit_id=11, nb_kits_raw="1"=>1, prix_kit_semaine_raw="5.00000000"=>5.00, nb_mois=2, nb_semaines=8, qty_kit=8, should_add_kit=yes
+[2026-07-01 18:10:32] DEBUG array_options keys: options_ligues_syncstats,options_prix_match_ht,options_facturation_syncstats_active,options_nb_kits_syncstats,options_prix_kits_semaine_ht,options_produit_kit_id,options_produit_video_id
+[2026-07-01 18:10:32] INFO  Ligues SyncStats: 303,309,314
+[2026-07-01 18:10:32] INFO  Signature: SYNCSTATS|FACTURATION|2026-05-01|2026-06-30
+[2026-07-01 18:10:32] INFO  Anti-doublon: non trouve
+[2026-07-01 18:10:33] INFO  Produit video #10: ref=0001, label=Service de reprises vidéo, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 18:10:33] INFO  Produit kit #11: ref=0002, label=Location de trousse SyncStats, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 18:10:35] INFO  Nb matchs facturables: 13
+[2026-07-01 18:10:35] INFO  Montant estime HT (video): 65.00
+[2026-07-01 18:10:35] INFO  Montant estime HT (kit): 40.00
+[2026-07-01 18:10:35] INFO  Montant estime HT (total): 105.00
+[2026-07-01 18:10:35] INFO  [SIMULATION] Ligne video prevue: product_id=10, qty=13, pu_ht=5.00
+[2026-07-01 18:10:35] INFO  [SIMULATION] Ligne kit prevue: product_id=11, qty=8, pu_ht=5.00
+[2026-07-01 18:10:35] INFO  Anti-doublon: non trouve => creation...
+[2026-07-01 18:10:35] INFO  Facture creee: 197
+[2026-07-01 18:10:35] INFO  Creation ligne video: product_id=10, qty=13, pu_ht=5.00
+[2026-07-01 18:10:35] INFO  Payload ligne facture (invoice=197): {"fk_product":10,"qty":13,"subprice":5,"desc":"Captation video SyncStats\nPeriode : 2026-05-01 -> 2026-06-30\n\n3 vs 3 2026 : 13 matchs","tva_tx":5,"localtax1_tx":9.9749999999999996447286321199499070644378662109375,"localtax2_tx":0,"localtax1_type":1,"localtax2_type":0}
+[2026-07-01 18:10:36] INFO  Creation ligne kit: product_id=11, qty=8, pu_ht=5.00
+[2026-07-01 18:10:36] INFO  Payload ligne facture (invoice=197): {"fk_product":11,"qty":8,"subprice":5,"desc":"Location kits SyncStats\nPeriode : 2026-05-01 -> 2026-06-30\n\n1 kits x 8 semaines","tva_tx":5,"localtax1_tx":9.9749999999999996447286321199499070644378662109375,"localtax2_tx":0,"localtax1_type":1,"localtax2_type":0}
+[2026-07-01 18:10:36] INFO  Ligne kit ajoutee: 1 kits x 8 semaines (qty=8) a 5.00/sem.
+[2026-07-01 18:10:36] INFO  Ligne ajoutee: OK
+[2026-07-01 18:10:36] INFO  Validation: SKIP (mode brouillon, facture laissee non validee).
+[2026-07-01 18:10:36] INFO  Traitement tiers 103 - Sagar Modi Consulting inc.
+[2026-07-01 18:10:36] INFO  Extrafields tiers: produit_video_id=10, produit_kit_id=11, nb_kits_raw="1"=>1, prix_kit_semaine_raw="6.00000000"=>6.00, nb_mois=2, nb_semaines=8, qty_kit=8, should_add_kit=yes
+[2026-07-01 18:10:36] DEBUG array_options keys: options_ligues_syncstats,options_prix_match_ht,options_facturation_syncstats_active,options_nb_kits_syncstats,options_prix_kits_semaine_ht,options_produit_kit_id,options_produit_video_id
+[2026-07-01 18:10:36] INFO  Ligues SyncStats: 269
+[2026-07-01 18:10:36] INFO  Signature: SYNCSTATS|FACTURATION|2026-05-01|2026-06-30
+[2026-07-01 18:10:37] INFO  Anti-doublon: trouve (id facture 196, ref (PROV196))
+[2026-07-01 18:10:37] INFO  Produit video #10: ref=0001, label=Service de reprises vidéo, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 18:10:38] INFO  Produit kit #11: ref=0002, label=Location de trousse SyncStats, tva_tx=5.000, localtax1=9.975(type=1), localtax2=0.000(type=0)
+[2026-07-01 18:10:39] INFO  Nb matchs facturables: 18
+[2026-07-01 18:10:39] INFO  Montant estime HT (video): 108.00
+[2026-07-01 18:10:39] INFO  Montant estime HT (kit): 48.00
+[2026-07-01 18:10:39] INFO  Montant estime HT (total): 156.00
+[2026-07-01 18:10:39] INFO  [SIMULATION] Ligne video prevue: product_id=10, qty=18, pu_ht=6.00
+[2026-07-01 18:10:39] INFO  [SIMULATION] Ligne kit prevue: product_id=11, qty=8, pu_ht=6.00
+[2026-07-01 18:10:39] INFO  [SIMULATION] Doublon detecte. Ligne video qui serait creee: product_id=10, qty=18, pu_ht=6.00
+[2026-07-01 18:10:39] INFO  [SIMULATION] Doublon detecte. Ligne kit qui serait creee: product_id=11, qty=8, pu_ht=6.00
+[2026-07-01 18:10:39] INFO  Anti-doublon: trouve => SKIP creation
+[2026-07-01 18:10:39] INFO  Execution terminee.
+Execution terminee.
+
+===== RESUME =====
+Date : 2026-07-01 18:10:39
+Factures creees :
+8
+Doublons detectes :
+35
+Erreurs :
+0
+===== FIN =====

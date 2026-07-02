@@ -1,3 +1,14 @@
+# Contrat canonique d'encodage (ADR SYNC_ADR_ENCODAGE_001) : UTF-8 explicite, sans BOM.
+# Rend la console et le process Python deterministes, hors locale/codepage OEM.
+try {
+    $utf8SansBom = New-Object System.Text.UTF8Encoding($false)
+    [Console]::OutputEncoding = $utf8SansBom
+    [Console]::InputEncoding = $utf8SansBom
+} catch { }
+$OutputEncoding = New-Object System.Text.UTF8Encoding($false)
+$env:PYTHONUTF8 = "1"
+$env:PYTHONIOENCODING = "utf-8"
+
 $ErrorActionPreference = "Stop"
 
 $dossierScript = $PSScriptRoot

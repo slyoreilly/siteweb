@@ -11,11 +11,49 @@ php dolibarr/syncstats_dolibarr_billing.php \
 
 Options:
 
-- `--mode=brouillon|valider` (défaut `brouillon`)
+- `--mode=brouillon|valider|rapport` (défaut `brouillon`)
 - `--limite_tiers=NN` (utile en test)
 - `--tiers_id=ID` (forcer un tiers précis)
 - `--dry_run=0|1` (force le dry-run en CLI)
 - `--verbose=1` (affiche des logs DEBUG supplémentaires)
+
+## Mode rapport
+
+```bash
+php dolibarr/syncstats_dolibarr_billing.php \
+  --periode_debut=2026-05-01 \
+  --periode_fin=2026-05-31 \
+  --mode=rapport
+```
+
+Le mode rapport reutilise le meme traitement par tiers et les memes calculs que la creation de facture,
+mais s'arrete avant toute creation ou modification Dolibarr. Par defaut, les logs INFO sont masques pour
+garder une sortie console lisible; ajoutez `--verbose=1` pour revoir les details.
+
+Exemple de sortie:
+
+```text
+=======================================================================
+Facturation SyncStats
+Periode : 2026-05-01 -> 2026-05-31
+=======================================================================
+
+Client                      Matchs   Video HT   Kits HT   Total HT   Action
+-----------------------------------------------------------------------
+MTLHL                          101     505.00    200.00     705.00   Facturable
+Interdek                        26     130.00     40.00     170.00   Deja facture (signature existante)
+Deck Kirkland                    0       0.00      0.00       0.00   Aucun match
+
+-----------------------------------------------------------------------
+TOTAL
+
+Nombre de clients analyses     : 3
+Nombre de clients facturables  : 1
+Nombre total de matchs         : 127
+Montant video HT               : 635.00
+Montant kits HT                : 240.00
+Montant total HT               : 875.00
+```
 
 
 ## Test dry-run contrôlé (1 tiers)

@@ -15,6 +15,37 @@ from heuristiques import (
 from regles_risques import detecter_risques
 
 
+# --- Contrat canonique d'encodage (ADR SYNC_ADR_ENCODAGE_001) ---
+import os as _os_contrat
+import sys as _sys_contrat
+_sys_contrat.path.insert(0, _os_contrat.path.dirname(_os_contrat.path.abspath(__file__)))
+from contrat_encodage import configurer_io_utf8 as _configurer_io_utf8
+from contrat_encodage import inspecter_et_signaler as _inspecter_et_signaler
+_configurer_io_utf8()
+import subprocess as _subprocess_contrat
+_run_original_contrat = _subprocess_contrat.run
+
+
+def _run_inspecte_contrat(*args, **kwargs):
+    resultat = _run_original_contrat(*args, **kwargs)
+    try:
+        for _nom in ("stdout", "stderr"):
+            _contenu = getattr(resultat, _nom, None)
+            if isinstance(_contenu, str):
+                _inspecter_et_signaler(
+                    _contenu,
+                    script="commit_intelligent.py",
+                    fichier="subprocess:" + _nom,
+                    operation="subprocess.run",
+                )
+    except Exception:
+        pass
+    return resultat
+
+
+_subprocess_contrat.run = _run_inspecte_contrat
+# --- fin contrat encodage ---
+
 class ErreurGit(RuntimeError):
     def __init__(self, commande, code_retour=None, sortie="", erreur="", message=None):
         self.commande = commande

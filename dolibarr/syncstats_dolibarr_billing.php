@@ -40,10 +40,11 @@ function main(array $argv): void
         exit(1);
     }
 
-    if (!in_array($mode, ['brouillon', 'valider'], true)) {
-        logError('mode doit etre "brouillon" ou "valider".');
+    if (!in_array($mode, ['brouillon', 'valider', 'rapport'], true)) {
+        logError('mode doit etre "brouillon", "valider" ou "rapport".');
         exit(1);
     }
+    setQuietInfo($mode === 'rapport' && !$verbose);
 
     $config = loadConfig();
     $statsConn = createStatsConnection();
@@ -61,6 +62,8 @@ function main(array $argv): void
 
     if ($mode === 'brouillon') {
         logInfo('Mode brouillon: les factures creees ne seront PAS validees.');
+    } elseif ($mode === 'rapport') {
+        logInfo('Mode rapport: aucune facture ne sera creee, validee ou modifiee.');
     }
 
     $tiers = fetchAllThirdParties($dolibarr, (int)$config['dolibarr']['page_size']);
@@ -68,6 +71,7 @@ function main(array $argv): void
     logInfo(sprintf('Tiers recuperes depuis Dolibarr: %d', count($tiers)));
 
     $processed = 0;
+    $rapport = [];
     foreach ($tiers as $tier) {
         $currentTierId = (int)($tier['id'] ?? $tier['rowid'] ?? 0);
         if ($tiersId !== null && $tiersId > 0 && $currentTierId !== $tiersId) {
@@ -79,12 +83,22 @@ function main(array $argv): void
         }
 
         try {
-            processTier($tier, $statsConn, $dolibarr, $periodeDebut, $periodeFin, $mode, $config, $forceDryRun);
+            $ligneRapport = processTier($tier, $statsConn, $dolibarr, $periodeDebut, $periodeFin, $mode, $config, $forceDryRun);
+            if ($mode === 'rapport' && $ligneRapport !== null) {
+                $rapport[] = $ligneRapport;
+            }
         } catch (Throwable $e) {
             logError('Erreur non geree sur un tiers: ' . $e->getMessage());
+            if ($mode === 'rapport') {
+                $rapport[] = buildReportRow($tier, 0, 0.0, 0.0, 'Erreur: ' . $e->getMessage(), false);
+            }
         }
 
         $processed++;
+    }
+
+    if ($mode === 'rapport') {
+        afficherRapport($rapport, $periodeDebut, $periodeFin);
     }
 
     logInfo('Execution terminee.');
@@ -92,7 +106,7 @@ function main(array $argv): void
 
 function usage(string $scriptName): void
 {
-    fwrite(STDERR, "Usage: php {$scriptName} --periode_debut=YYYY-MM-DD --periode_fin=YYYY-MM-DD [--mode=brouillon|valider] [--limite_tiers=N] [--tiers_id=ID] [--dry_run=0|1] [--verbose=1]\n");
+    fwrite(STDERR, "Usage: php {$scriptName} --periode_debut=YYYY-MM-DD --periode_fin=YYYY-MM-DD [--mode=brouillon|valider|rapport] [--limite_tiers=N] [--tiers_id=ID] [--dry_run=0|1] [--verbose=1]\n");
 }
 
 function loadConfig(): array
@@ -195,21 +209,21 @@ function fetchAllThirdParties(DolibarrClient $client, int $pageSize): array
     return $all;
 }
 
-function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, string $periodeDebut, string $periodeFin, string $mode, array $config, bool $forceDryRun = false): void
+function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, string $periodeDebut, string $periodeFin, string $mode, array $config, bool $forceDryRun = false): ?array
 {
     $tierId = (int)($tier['id'] ?? $tier['rowid'] ?? 0);
     $tierName = (string)($tier['name'] ?? $tier['nom'] ?? ('#' . $tierId));
 
     if ($tierId <= 0) {
         logInfo('SKIP tiers sans id.');
-        return;
+        return buildReportRow($tier, 0, 0.0, 0.0, 'Ignore (tiers sans id)', false);
     }
 
     logInfo("Traitement tiers {$tierId} - {$tierName}");
 
     if (!isBillableCustomer($tier)) {
         logInfo('SKIP non-client.');
-        return;
+        return buildReportRow($tier, 0, 0.0, 0.0, 'Ignore (non-client)', false);
     }
 
     $arrayOptions = is_array($tier['array_options'] ?? null) ? $tier['array_options'] : [];
@@ -253,7 +267,7 @@ function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, s
 
     if ($active !== '1') {
         logInfo('SKIP facturation SyncStats desactivee (options_facturation_syncstats_active != 1).');
-        return;
+        return buildReportRow($tier, 0, 0.0, 0.0, 'Ignore (facturation desactivee)', false);
     }
 
     $leagueCsv = (string)($arrayOptions['options_ligues_syncstats'] ?? '');
@@ -261,13 +275,13 @@ function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, s
 
     if ($leagueIds === []) {
         logInfo('SKIP pas de ligues SyncStats.');
-        return;
+        return buildReportRow($tier, 0, 0.0, 0.0, 'Ignore (aucune ligue)', false);
     }
 
     $price = resolvePricePerMatch($arrayOptions, $config);
     if ($price === null) {
         logError('SKIP prix_match_ht absent/non numerique et aucun fallback configure.');
-        return;
+        return buildReportRow($tier, 0, 0.0, 0.0, 'Ignore (prix absent)', false);
     }
 
     logInfo('Ligues SyncStats: ' . implode(',', $leagueIds));
@@ -279,7 +293,7 @@ function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, s
         $existing = findExistingInvoicesBySignature($dolibarr, $tierId, $signature);
     } catch (Throwable $e) {
         logError("Anti-doublon ERREUR (tiers {$tierId}): {$e->getMessage()}");
-        return;
+        return buildReportRow($tier, 0, 0.0, 0.0, 'Erreur anti-doublon', false);
     }
 
     $hasDuplicate = false;
@@ -293,9 +307,9 @@ function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, s
         ));
     } elseif (count($existing) > 1) {
         logError('ALERTE doublons detectes cote Dolibarr.');
-        if (!$forceDryRun) {
+        if (!$forceDryRun && $mode !== 'rapport') {
             logError('SKIP pour ne pas aggraver.');
-            return;
+            return buildReportRow($tier, 0, 0.0, 0.0, 'Deja facture (doublons detectes)', false);
         }
         $hasDuplicate = true;
     } else {
@@ -365,13 +379,13 @@ function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, s
         $matchesByLeague = countBillableMatchesByLeague($statsConn, $leagueIds, $periodeDebut, $periodeFin, $config['billing']['league_names']);
     } catch (Throwable $e) {
         logError("Erreur calcul matchs (tiers {$tierId}): {$e->getMessage()}");
-        return;
+        return buildReportRow($tier, 0, 0.0, 0.0, 'Erreur calcul matchs', false);
     }
 
     $nbMatchsTotal = array_sum(array_column($matchesByLeague, 'matches'));
     if ($nbMatchsTotal <= 0) {
         logInfo('SKIP aucun match facturable pour ce tiers.');
-        return;
+        return buildReportRow($tier, 0, 0.0, 0.0, 'Aucun match', false);
     }
 
     $notePublic = "Facturation SyncStats du {$periodeDebut} au {$periodeFin}";
@@ -392,9 +406,14 @@ function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, s
         logInfo(sprintf('[SIMULATION] Ligne kit non prevue: nb_kits=%d, prix_kit_semaine=%.2f, qty_kit=%d', $nbKits, $prixKitSemaine, $qtyKit));
     }
 
+    if ($mode === 'rapport') {
+        $actionRapport = $hasDuplicate ? 'Deja facture (signature existante)' : 'Facturable';
+        return buildReportRow($tier, $nbMatchsTotal, $estimatedAmount, $estimatedKitAmount, $actionRapport, !$hasDuplicate);
+    }
+
     if ($effectiveDryRun) {
         logInfo('[DRY RUN] Aucune creation de facture (simulation uniquement).');
-        return;
+        return buildReportRow($tier, $nbMatchsTotal, $estimatedAmount, $estimatedKitAmount, 'Dry run', false);
     }
 
     if ($hasDuplicate) {
@@ -405,7 +424,7 @@ function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, s
             logInfo(sprintf('[SIMULATION] Doublon detecte. Ligne kit non prevue: nb_kits=%d, prix_kit_semaine=%.2f, qty_kit=%d', $nbKits, $prixKitSemaine, $qtyKit));
         }
         logInfo('Anti-doublon: trouve => SKIP creation');
-        return;
+        return buildReportRow($tier, $nbMatchsTotal, $estimatedAmount, $estimatedKitAmount, 'Deja facture (signature existante)', false);
     }
 
     logInfo('Anti-doublon: non trouve => creation...');
@@ -442,7 +461,7 @@ function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, s
         logInfo('Ligne ajoutee: OK');
     } catch (Throwable $e) {
         logError("Creation facture/ligne ERREUR (tiers {$tierId}): {$e->getMessage()}");
-        return;
+        return buildReportRow($tier, $nbMatchsTotal, $estimatedAmount, $estimatedKitAmount, 'Erreur creation facture', false);
     }
 
     if ($mode === 'valider') {
@@ -455,7 +474,122 @@ function processTier(array $tier, mysqli $statsConn, DolibarrClient $dolibarr, s
     } else {
         logInfo('Validation: SKIP (mode brouillon, facture laissee non validee).');
     }
+
+    return buildReportRow($tier, $nbMatchsTotal, $estimatedAmount, $estimatedKitAmount, 'Facture creee', false);
 }
+
+function buildReportRow(array $tier, int $nbMatchs, float $montantVideoHt, float $montantKitsHt, string $action, bool $facturable): array
+{
+    $tierId = (int)($tier['id'] ?? $tier['rowid'] ?? 0);
+    $tierName = trim((string)($tier['name'] ?? $tier['nom'] ?? ''));
+    if ($tierName === '') {
+        $tierName = '#' . $tierId;
+    }
+
+    return [
+        'client' => $tierName,
+        'matchs' => $nbMatchs,
+        'video_ht' => round($montantVideoHt, 2),
+        'kits_ht' => round($montantKitsHt, 2),
+        'total_ht' => round($montantVideoHt + $montantKitsHt, 2),
+        'action' => $action,
+        'facturable' => $facturable,
+    ];
+}
+
+function afficherRapport(array $rapport, string $periodeDebut, string $periodeFin): void
+{
+    $largeurClient = 26;
+    foreach ($rapport as $ligne) {
+        $largeurClient = max($largeurClient, min(40, strlen((string)$ligne['client'])));
+    }
+
+    $largeurTotale = $largeurClient + 61;
+    $separateur = str_repeat('=', $largeurTotale);
+    $trait = str_repeat('-', $largeurTotale);
+
+    echo "\n";
+    echo $separateur . "\n";
+    echo "Facturation SyncStats\n";
+    echo "Periode : {$periodeDebut} -> {$periodeFin}\n";
+    echo $separateur . "\n\n";
+
+    printf(
+        "%-{$largeurClient}s %7s %10s %9s %10s   %s\n",
+        'Client',
+        'Matchs',
+        'Video HT',
+        'Kits HT',
+        'Total HT',
+        'Action'
+    );
+    echo $trait . "\n";
+
+    foreach ($rapport as $ligne) {
+        printf(
+            "%-{$largeurClient}s %7d %10.2f %9.2f %10.2f   %s\n",
+            truncateReportText((string)$ligne['client'], $largeurClient),
+            (int)$ligne['matchs'],
+            (float)$ligne['video_ht'],
+            (float)$ligne['kits_ht'],
+            (float)$ligne['total_ht'],
+            (string)$ligne['action']
+        );
+    }
+
+    $totaux = calculerTotauxRapport($rapport);
+
+    echo "\n" . $trait . "\n";
+    echo "TOTAL\n\n";
+    printf("Nombre de clients analyses     : %d\n", $totaux['clients_analyses']);
+    printf("Nombre de clients facturables  : %d\n", $totaux['clients_facturables']);
+    printf("Nombre total de matchs         : %d\n", $totaux['matchs']);
+    printf("Montant video HT               : %.2f\n", $totaux['video_ht']);
+    printf("Montant kits HT                : %.2f\n", $totaux['kits_ht']);
+    printf("Montant total HT               : %.2f\n", $totaux['total_ht']);
+}
+
+function calculerTotauxRapport(array $rapport): array
+{
+    $totaux = [
+        'clients_analyses' => count($rapport),
+        'clients_facturables' => 0,
+        'matchs' => 0,
+        'video_ht' => 0.0,
+        'kits_ht' => 0.0,
+        'total_ht' => 0.0,
+    ];
+
+    foreach ($rapport as $ligne) {
+        if (!empty($ligne['facturable'])) {
+            $totaux['clients_facturables']++;
+        }
+        $totaux['matchs'] += (int)$ligne['matchs'];
+        $totaux['video_ht'] += (float)$ligne['video_ht'];
+        $totaux['kits_ht'] += (float)$ligne['kits_ht'];
+        $totaux['total_ht'] += (float)$ligne['total_ht'];
+    }
+
+    $totaux['video_ht'] = round($totaux['video_ht'], 2);
+    $totaux['kits_ht'] = round($totaux['kits_ht'], 2);
+    $totaux['total_ht'] = round($totaux['total_ht'], 2);
+
+    return $totaux;
+}
+
+function truncateReportText(string $texte, int $largeur): string
+{
+    if (strlen($texte) <= $largeur) {
+        return $texte;
+    }
+
+    if ($largeur <= 3) {
+        return substr($texte, 0, $largeur);
+    }
+
+    return substr($texte, 0, $largeur - 3) . '...';
+}
+
 function isBillableCustomer(array $tier): bool
 {
     $client = $tier['client'] ?? 0;
@@ -753,6 +887,11 @@ function setVerbose(bool $enabled): void
     $GLOBALS['SYNCSTATS_VERBOSE'] = $enabled;
 }
 
+function setQuietInfo(bool $enabled): void
+{
+    $GLOBALS['SYNCSTATS_QUIET_INFO'] = $enabled;
+}
+
 function isVerbose(): bool
 {
     return !empty($GLOBALS['SYNCSTATS_VERBOSE']);
@@ -778,6 +917,10 @@ function isValidDate(?string $date): bool
 
 function logInfo(string $message): void
 {
+    if (!empty($GLOBALS['SYNCSTATS_QUIET_INFO'])) {
+        return;
+    }
+
     echo '[' . date('Y-m-d H:i:s') . "] INFO  {$message}\n";
 }
 
