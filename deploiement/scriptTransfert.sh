@@ -173,6 +173,7 @@ mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${o
 mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} zdoc ${DEPLOY_REMOTE_DIR}/zdoc
 mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} zarbitre ${DEPLOY_REMOTE_DIR}/zarbitre
 mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} api ${DEPLOY_REMOTE_DIR}/api
+mirror -R -c --verbose=2 --parallel=${DEPLOY_PARALLEL} ${option_suppression} ${option_simulation} --exclude-glob logs/ --exclude-glob logs/** --exclude-glob "*.log" --exclude-glob "*.config.php" dolibarr ${DEPLOY_REMOTE_DIR}/dolibarr
 
 put .deploy-version.json -o ${DEPLOY_REMOTE_DIR}/.deploy-version.json
 
