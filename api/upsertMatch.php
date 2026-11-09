@@ -78,7 +78,7 @@ function upsertMatchByRef(mysqli $conn, array $m): array
             $stmtUpdate = mysqli_prepare(
                 $conn,
                 'UPDATE TableMatch
-                 SET eq_dom = ?, score_dom = ?, eq_vis = ?, score_vis = ?, statut = ?, ligueRef = ?, date = ?, cleValeur = ?, arenaId = ?, TSDMAJ = ?
+                 SET eq_dom = ?, score_dom = ?, eq_vis = ?, score_vis = ?, statut = ?, ligueRef = ?, cleValeur = ?, arenaId = ?, TSDMAJ = ?
                  WHERE match_id = ?'
             );
 
@@ -89,14 +89,13 @@ function upsertMatchByRef(mysqli $conn, array $m): array
             $arenaIdForBind = $m['arenaId'];
             mysqli_stmt_bind_param(
                 $stmtUpdate,
-                'iiiiiissisi',
+                'iiiiiisisi',
                 $m['eqDom'],
                 $m['scoreDom'],
                 $m['eqVis'],
                 $m['scoreVis'],
                 $m['etat'],
                 $m['ligueId'],
-                $m['dateSql'],
                 $m['cleValeur'],
                 $arenaIdForBind,
                 $m['TSDMAJ'],
