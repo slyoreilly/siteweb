@@ -12,7 +12,7 @@ require '../scriptsphp/defenvvar.php';
 	
 $username = $_POST['username'];
 
-$qString = "SELECT TableMatch.*, TableMatch.statut as statutMatch, Presences.*
+$qString = "SELECT TableMatch.*, TableMatch.statut as statutMatch, Presences.*, TableMatch.date AS dateMatchSource
             FROM TableMatch 
             JOIN abonEquipeLigue 
                 ON abonEquipeLigue.ligueId = TableMatch.ligueRef 
@@ -35,6 +35,7 @@ $retour = mysqli_query($conn,$qString) or die(mysqli_error($conn));
 $vecMatch = array();
 $vecMatchCompose = array();
 $matchIds = array();
+$fuseauMontreal = new DateTimeZone('America/Toronto');
 while($r = mysqli_fetch_array($retour,MYSQLI_ASSOC)) {
     $matchId = $r['match_id'];
     if (!in_array($matchId, $matchIds)) {
@@ -44,7 +45,8 @@ while($r = mysqli_fetch_array($retour,MYSQLI_ASSOC)) {
         $unMatch['matchLongId']=$r['matchIdRef'];
         $unMatch['eqDom']=$r['eq_dom'];
         $unMatch['eqVis']=$r['eq_vis'];
-        $unMatch['date']=strtotime($r['date'])*1000;
+        $dateMatch = new DateTimeImmutable($r['dateMatchSource'], $fuseauMontreal);
+        $unMatch['date'] = $dateMatch->getTimestamp() * 1000;
         $unMatch['ligueId']=$r['ligueRef'];
         $unMatch['arenaId']=$r['arenaId'];
         $unMatch['scoreDom']=$r['score_dom'];
