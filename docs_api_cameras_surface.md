@@ -5,6 +5,9 @@ positif correspondant à `Locations.SyncKey`, soit `TableArena.arenaId` dans
 le Legacy. Envoyez `Authorization: Bearer <jeton>` avec le jeton serveur
 déjà configuré dans `LEGACY_MATCH_ACTIF_TOKEN`.
 
+Voir la [configuration du jeton et le déploiement](docs_configuration_legacy_token.md)
+pour le chargement privé en DEV et PROD.
+
 Les réponses utilisent `Content-Type: application/json; charset=utf-8` et
 `Cache-Control: no-store`. Les exemples utilisent des identifiants fictifs.
 

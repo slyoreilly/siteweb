@@ -19,6 +19,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'GET') {
     return;
 }
 
+require_once __DIR__ . '/../scriptsphp/chargeSecrets.php';
 $jetonAttendu = getenv('LEGACY_MATCH_ACTIF_TOKEN');
 if ($jetonAttendu === false || trim($jetonAttendu) === '') {
     envoyerReponseCamerasSurface(503, ['etat' => 'service_non_configure']);

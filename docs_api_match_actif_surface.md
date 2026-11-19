@@ -12,6 +12,9 @@ la plateforme. Le jeton donne accès à la consultation de toutes les surfaces.
 Le proxy et le serveur HTTP doivent transmettre l’en-tête Authorization à PHP.
 Les réponses JSON portent `Cache-Control: no-store`.
 
+Voir la [configuration du jeton et le déploiement](docs_configuration_legacy_token.md)
+pour le chargement privé en DEV et PROD.
+
 ## Réponses
 
 | HTTP | `etat` | Champs supplémentaires |

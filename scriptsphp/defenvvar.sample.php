@@ -1,5 +1,11 @@
 <?php
 
+require_once __DIR__ . '/chargeSecrets.php';
+
+// Dans le .env.php privé à la racine (valeur fictive à remplacer) :
+// putenv('LEGACY_MATCH_ACTIF_TOKEN=EXEMPLE_FICTIF_A_REMPLACER');
+// Aucun jeton par défaut : une absence conserve le refus HTTP 503.
+
 global $conn;
 
 $workEnv = getenv('WORK_ENV') ?: 'development';
