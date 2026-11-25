@@ -19,6 +19,15 @@ unset($rangeeChrono);
 
 $rrs2 = $rSServ+1000;
 $cpt=0;
+require_once __DIR__ . '/attenteLongPollCam.php';
+$attenteCam = new AttenteLongPollCam($maxSec);
+$repSite = array('match' => array(), 'chronoBut' => array(), 'video' => array(),
+    'matchPeriode' => array(), 'matchs' => array());
+if (!$attenteCam->initialiser($conn, $repSite)) {
+    $attenteCam->repondre($repSite);
+    return;
+}
+
 
 ////////////////////  Sortir tous les matchs récents de l'utilisateur.
 //
@@ -26,7 +35,9 @@ $cpt=0;
 
 do {
     // Une connexion par lecture complète, aucune pendant l'attente.
-    require __DIR__ . '/../scriptsphp/defenvvar.php';
+    if (!$attenteCam->ouvrir($conn)) {
+        break;
+    }
 
 
 $chronoRetour = array();
@@ -204,27 +215,14 @@ $repSite['matchPeriode'] = $matchPeriode;
 $repSite['matchs'] = $matchs;
 //$repSite['info']=$resultMatch;
 // Tous les résultats utiles de cette itération ont été consommés.
-mysqli_close($conn);
-$conn = null;
-if($IM==0){
-	$mSleep = sleep(5);
-	flush();
-	$cpt = $cpt+5000;
-
-	
+$attenteCam->fermer($conn);
+if ($IM > 0 || !$attenteCam->attendre()) {
+    break;
 }
-
-//$repSite['IC'] =$IC;
-//$repSite['cpt'] =$cpt;
-//echo " -!- ". $maxSec." -!- ";
-
-$comp =$maxSec-30000;
-}
- while (($IM==0)&&($cpt<$comp));
-
+} while (true);
 
 //echo json_encode($Sommaire);
-echo json_encode($repSite);
+$attenteCam->repondre($repSite);
 //mysqli_close($conn);
 //	header("HTTP/1.1 200 OK");
 

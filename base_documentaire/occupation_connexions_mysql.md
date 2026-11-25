@@ -4,6 +4,13 @@ Mandat du 25 novembre 2026. Corrections locales seulement ; aucun commit, push,
 déploiement ou accès à la production. Les risques ci-dessous ne constituent pas
 une preuve de la cause historique de la saturation.
 
+**Complément pour les trois long polls caméra :** les reprises bornées et la
+sortie immédiate sur demande vidéo prête sont décrites dans
+[long_polling_cameras.md](long_polling_cameras.md). Pour ces trois scripts, ce
+complément remplace les descriptions initiales ci-dessous et ajoute le fichier
+obligatoire `syncscript/attenteLongPollCam.php` à toute promotion. La sélection
+des demandes reste effectuée une fois ; leur transmission n'attend plus une pause.
+
 ## Gestion observée
 
 - `scriptsphp/defenvvar.php` local (non suivi par Git) et son exemple ouvrent
@@ -148,7 +155,9 @@ php -n test/unit/ack_worker_connexions_test.php
 
 ## Fichiers applicatifs à déployer — liste exacte
 
-Huit fichiers, en conservant leurs chemins relatifs :
+Les huit fichiers initiaux et le helper ajouté par le complément caméra, en
+conservant leurs chemins relatifs (pour ce seul complément, voir sa liste de
+quatre fichiers dans `long_polling_cameras.md`) :
 
 ```text
 scriptsphp/enregistreStatutRemote.php
@@ -158,10 +167,11 @@ scriptsphp/getMonitoringFilesIndex.php
 syncscript/syncPushTempsCam.php
 syncscript/syncPushTempsCam.1.php
 syncscript/syncPushTempsCam.2.php
+syncscript/attenteLongPollCam.php
 api/sync/ack_worker.php
 ```
 
-Les quatre fichiers de tests et ce rapport sont des livrables de validation,
+Les fichiers de tests et les rapports sont des livrables de validation,
 pas des fichiers à publier sur le serveur web. Ne pas remplacer
 `defenvvar.php`, `defenvvar.sample.php`, `.env.php`, `Database.php` ou le schéma.
 

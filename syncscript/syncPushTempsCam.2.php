@@ -27,6 +27,16 @@ unset($rangeeChrono);
 
 $rrs2 = $rSServ+1000;
 $cpt=0;
+require_once __DIR__ . '/attenteLongPollCam.php';
+$attenteCam = new AttenteLongPollCam($maxSec);
+$repSite = array('match' => array(), 'chronoBut' => array(), 'video' => array(),
+    'matchPeriode' => array(), 'matchs' => array());
+$repSite['ligues'] = array();
+if (!$attenteCam->initialiser($conn, $repSite)) {
+    $attenteCam->repondre($repSite);
+    return;
+}
+
 
 
 function getArenaCiblePourDemandes($conn, $arenaId, $nomMatch) {
@@ -80,6 +90,10 @@ function getArenaDeEvent($conn, $eventId, $typeEvenement) {
 
 function traiteDemandesAjoutVideo($conn, $rrs2, $arenaId, $nomMatch) {
     $demandesModifiees = array();
+    // Sans match exploitable, ce consommateur ne peut pas recevoir ces demandes.
+    if (intval($nomMatch) <= 0) {
+        return $demandesModifiees;
+    }
     $arenaCible = getArenaCiblePourDemandes($conn, $arenaId, $nomMatch);
 
     if ($arenaCible <= 0) {
@@ -131,13 +145,12 @@ $nomMatch = '';
 if (isset($dernierMatch)) {
     $nomMatch = $dernierMatch;
 }
-require __DIR__ . '/../scriptsphp/defenvvar.php';
 $demandesAjoutVideoModifiees = traiteDemandesAjoutVideo($conn, $rrs2, $arena, $nomMatch);
 
 do {
     // Une connexion par lecture complète, aucune pendant l'attente.
-    if ($conn === null) {
-        require __DIR__ . '/../scriptsphp/defenvvar.php';
+    if (!$attenteCam->ouvrir($conn)) {
+        break;
     }
 
 
@@ -324,11 +337,6 @@ while ($rangeeMatch=mysqli_fetch_array($resultMatchs)){// && !$trouve) {
 
 
 if (!empty($demandesAjoutVideoModifiees) && isset($dernierMatch)) {
-    $qDemandesIds = array();
-    foreach ($demandesAjoutVideoModifiees as $demandeModifiee) {
-        array_push($qDemandesIds, intval($demandeModifiee['demandeId']));
-    }
-
     $matchIdDAV = intval($dernierMatch);
     $arenaIdDAV = null;
     $eqDomDAV = '';
@@ -345,12 +353,9 @@ if (!empty($demandesAjoutVideoModifiees) && isset($dernierMatch)) {
         }
     }
 
-    $qdMatchPeriodeDAV = "SELECT demandeId, eventId, typeEvenement, chronoVideo, cameraId
-"
-        . "FROM DemandeAjoutVideo WHERE progression=2 AND demandeId IN (" . implode(',', $qDemandesIds) . ") ORDER BY demandeId ASC LIMIT 0,50";
-    $resMatchPeriodeDAV = mysqli_query($conn, $qdMatchPeriodeDAV);
-    if ($resMatchPeriodeDAV && $matchIdDAV > 0) {
-        while ($rdDAV = mysqli_fetch_array($resMatchPeriodeDAV)) {
+    // Les demandes préparées sont déjà en mémoire ; aucune relecture n'est nécessaire.
+    if ($matchIdDAV > 0) {
+        foreach ($demandesAjoutVideoModifiees as $rdDAV) {
             $mGameIndex = array_push($matchPeriode, array(
                 'match_id' => $matchIdDAV,
                 'arenaId' => $arenaIdDAV,
@@ -410,6 +415,7 @@ foreach($matchPeriode as &$unMatch){
 	}
 }
 if($maxSec>0){
+$vecLigues = array();
 $qLigues = "SELECT * FROM Ligue
 			INNER JOIN AbonnementLigue
 				ON (Ligue.ID_Ligue=AbonnementLigue.ligueid)
@@ -499,29 +505,19 @@ $repSite['ligues'] =$vecLigues;
 $repSite['matchs'] = $matchs;
 //$repSite['info']=$resultMatch;
 // Tous les résultats utiles de cette itération ont été consommés.
-mysqli_close($conn);
-$conn = null;
-if($IM==0){
-	$mSleep = sleep(5);
-	flush();
-	$cpt = $cpt+5000;
-
-	
+$attenteCam->fermer($conn);
+$demandeVideoPrete = !empty($demandesAjoutVideoModifiees) && !empty($matchPeriode);
+if ($demandeVideoPrete) {
+    $attenteCam->journaliser('demandes_pretes ids='
+        . implode(',', array_map('intval', array_column($demandesAjoutVideoModifiees, 'demandeId'))));
 }
-
-//$repSite['IC'] =$IC;
-//$repSite['cpt'] =$cpt;
-//echo " -!- ". $maxSec." -!- ";
-
-$comp =$maxSec-30000;
+if ($IM > 0 || $demandeVideoPrete || !$attenteCam->attendre()) {
+    break;
 }
- while (($IM==0)&&($cpt<$comp));
-
+} while (true);
 
 //echo json_encode($Sommaire);
-$retourSyncPushTempsCam2 = json_encode($repSite);
-//error_log("syncPushTempsCam.2 - retour: " . $retourSyncPushTempsCam2);
-echo $retourSyncPushTempsCam2;
+$attenteCam->repondre($repSite);
 //mysqli_close($conn);
 //	header("HTTP/1.1 200 OK");
 
