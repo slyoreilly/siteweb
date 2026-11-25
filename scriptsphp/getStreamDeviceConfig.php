@@ -1,5 +1,5 @@
 <?php
-require '../scriptsphp/defenvvar.php';
+
 
 //$fichier = $_POST['fichier'];
 //echo $_POST['videos'];
@@ -13,6 +13,8 @@ $retourStream['lastUpdate']=$lastUpdate ;
 $cpt=0;
 $comp =$maxSec-0; ///  Le "0" est tunable, il sert a donner un espèce de marge sur le timeout
 do {
+    // Une connexion par lecture complète, aucune pendant l'attente.
+    require __DIR__ . '/../scriptsphp/defenvvar.php';
 
 
 
@@ -35,6 +37,9 @@ AND userId=$userId AND updatedAt>'{$lastUpdate}'";
         $retourStream['status']=$rangeeStream['status'];
         $IS++;
     }
+// Tous les résultats utiles de cette itération ont été consommés.
+mysqli_close($conn);
+$conn = null;
     if($IS==0){
         $mSleep = sleep(5);
         flush();

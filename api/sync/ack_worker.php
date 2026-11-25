@@ -109,7 +109,16 @@ function processDueAckBatch(mysqli $conn, SyncAckClient $client, int $batchSize)
 }
 
 do {
-    $count = processDueAckBatch($conn, $client, $batchSize);
+    if ($conn === null) {
+        require __DIR__ . '/../../scriptsphp/defenvvar.php';
+    }
+    try {
+        $count = processDueAckBatch($conn, $client, $batchSize);
+    } finally {
+        // Les verrous de ligne sont libérés ; aucune connexion entre les lots.
+        mysqli_close($conn);
+        $conn = null;
+    }
     if (!$loop) {
         break;
     }

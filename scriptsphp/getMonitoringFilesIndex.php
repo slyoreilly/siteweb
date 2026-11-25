@@ -256,8 +256,14 @@ try {
     $rows = monitoringIndexFetchCameras($conn, $limit + 1, $offset, $telId);
 } catch (Exception $e) {
     error_log('[monitoring_files_index] DB error | ' . $e->getMessage());
+    mysqli_close($conn);
+    $conn = null;
     monitoringIndexRespond(500, array('ok' => false, 'error' => 'database error'));
 }
+
+// Les lignes sont matérialisées : l'inspection des fichiers ne nécessite plus SQL.
+mysqli_close($conn);
+$conn = null;
 
 $hasMore = count($rows) > $limit;
 if ($hasMore) {

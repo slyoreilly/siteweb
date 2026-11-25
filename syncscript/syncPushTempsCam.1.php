@@ -1,5 +1,5 @@
 <?php
-require '../scriptsphp/defenvvar.php';
+
 
 $username = $_POST['username'];
 $recentSync = $_POST['recentSync'];
@@ -25,6 +25,8 @@ $cpt=0;
 ///					Pour les évènements, voir plus bas.
 
 do {
+    // Une connexion par lecture complète, aucune pendant l'attente.
+    require __DIR__ . '/../scriptsphp/defenvvar.php';
 
 
 $chronoRetour = array();
@@ -201,6 +203,9 @@ $repSite['matchPeriode'] = $matchPeriode;
 //$repSite['equipes'] = $Equipes;
 $repSite['matchs'] = $matchs;
 //$repSite['info']=$resultMatch;
+// Tous les résultats utiles de cette itération ont été consommés.
+mysqli_close($conn);
+$conn = null;
 if($IM==0){
 	$mSleep = sleep(5);
 	flush();

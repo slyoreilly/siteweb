@@ -45,7 +45,7 @@ $mTemps= $dt->format('Y-m-d H:i:s');
 		if($rangSel>0)
 			{$tmpSel=mysqli_fetch_row($resultSel );
 			
-			if($codeEtat=$tmpSel[0]){
+			if($codeEtat==$tmpSel[0]){
 				$queryMod = "UPDATE StatutRemote SET memoire = '{$memoire}', batterie = '{$batterie}',temperature='{$temperature}', dernierMaJ='{$mTemps}', version='{$version}', userId = '{$usager}', arenaId = '{$arenaId}',settings='{$settings}', codeEtat = '{$codeEtat}'
 					WHERE telId='{$telId}'";
 				mysqli_query($conn,$queryMod) or die("Erreur: ".$queryMod."\n".mysqli_error($conn));
