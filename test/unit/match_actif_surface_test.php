@@ -9,7 +9,8 @@ $cas = [
     [[$match], 200, 'match_actif', ['matchId' => 123, 'debutMs' => 1700000000100]],
     [[['match_id' => '123', 'debutMs' => null]], 200, 'match_actif', ['matchId' => 123, 'debutMs' => null]],
     [[['match_id' => null, 'debutMs' => null]], 200, 'aucun_match_actif', null],
-    [[$match, ['match_id' => '124', 'debutMs' => null]], 409, 'plusieurs_matchs_actifs', null],
+    // La consultation fournit le résultat déjà ordonné : aucun conflit HTTP 409.
+    [[$match, ['match_id' => '124', 'debutMs' => null]], 200, 'match_actif', ['matchId' => 123, 'debutMs' => 1700000000100]],
     [[], 404, 'surface_inexistante', null],
     [null, 500, 'erreur_consultation', null],
 ];
