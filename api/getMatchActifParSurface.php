@@ -46,17 +46,7 @@ if ($arenaId === false) {
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
     require __DIR__ . '/../scriptsphp/defenvvar.php';
 
-    $requete = $conn->prepare(REQUETE_MATCH_ACTIF_SURFACE);
-    $requete->bind_param('i', $arenaId);
-    $requete->execute();
-    $requete->bind_result($surface, $matchId, $debutMs);
-
-    $lignes = [];
-    while ($requete->fetch()) {
-        $lignes[] = ['match_id' => $matchId, 'debutMs' => $debutMs];
-    }
-    $requete->close();
-    return $lignes;
+    return consulterMatchActifSurface($conn, $arenaId);
 });
 
 envoyerReponseMatchActif($code, $corps);

@@ -100,8 +100,9 @@ comme des millisecondes Unix :
   fuseau du processus PHP de production. Aucun DDL de `TableMatch` dans ce
   dépôt ne permet de certifier le type de sa colonne `date` en production.
 
-La requête compare directement `date <= CURRENT_TIMESTAMP`, dans le fuseau
-de la session SQL Legacy. Elle ne transforme pas la colonne et conserve ainsi
+La sélection compare directement `date` à une borne `CURRENT_TIMESTAMP` lue
+une seule fois dans le fuseau de la session SQL Legacy. Elle ne transforme pas
+la colonne et conserve ainsi
 la possibilité d'utiliser son index. Pour un `TIMESTAMP`, MySQL applique son
 fuseau de session à la lecture et à la comparaison. Pour un `DATETIME`, la
 valeur ne contient aucun fuseau : ses heures doivent correspondre à celles
@@ -109,33 +110,51 @@ de la session SQL. Il faut confirmer cette convention sur les données réelles.
 Imposer UTC ou America/Toronto sans cette vérification pourrait déplacer les
 heures historiques. Cette correction ne change aucun producteur de dates.
 
-## Requête et index
+## Sélection séquentielle et performance
 
-La sous-requête corrélée cherche d'abord les matchs de la surface dont la
-date est admissible, dans l'ordre `date DESC, match_id DESC`, et s'arrête au
-premier match ouvert (`LIMIT 1`). La jointure externe conserve la distinction
-entre surface inexistante et surface sans match actif. Les événements sont
-consultés par des sondes scalaires corrélées `SELECT 1 ... LIMIT 1` sur la
-référence du candidat pour vérifier l'ouverture/fermeture; leur `MIN(chrono)`
-n'est calculé qu'après la sélection du gagnant. Aucun regroupement global
-de l'historique des événements n'est nécessaire.
+Les mesures de production fournies après la première correction sont : plus de
+30 secondes pour l'appel authentifié, contre 5,9 ms pour les 20 derniers matchs
+sur la surface 1 et 51,2 ms pour les événements de code 10 du match 24053.
+Ces mesures rendent pertinente la séparation des lectures. Elles ne prouvent
+pas à elles seules le plan coûteux précis de la requête corrélée, ni le temps
+HTTP qu'obtiendra la nouvelle version.
 
-Les commandes proposées sont séparées dans
-[`db/2026-11-26_match_actif_surface_index.sql`](db/2026-11-26_match_actif_surface_index.sql).
-Elles ne sont pas exécutées par l'API :
+L'API réutilise la connexion `$conn` et procède ainsi :
 
-- `(arenaId, date, match_id)` sur `TableMatch` permet la recherche par surface
-  et date, puis le parcours inverse pour les deux clés de tri décroissantes.
-- `(match_event_id, code, souscode, chrono)` sur `TableEvenement0` permet les
-  recherches ciblées de début/fin et couvre le calcul du premier chrono positif.
+1. Vérifier la surface et lire `CURRENT_TIMESTAMP` une seule fois pour conserver
+   la même borne temporelle pendant tout le parcours. Une surface inexistante
+   conserve sa réponse 404.
+2. Lire un lot de 20 candidats, avec `date <=` cette borne et sans les statuts
+   finaux `30`/`F`, dans l'ordre `date DESC, match_id DESC`. Le résultat du lot
+   est entièrement lu et la requête fermée avant de consulter les événements.
+   Cela permet d'utiliser la même connexion MySQL sans résultat en attente.
+3. Pour chaque candidat, exécuter la même requête préparée sur ses seuls
+   événements de code 10, liés par `match_event_id = matchIdRef`. Elle détermine
+   la présence de `10/0`, celle de `10/10`, et le premier chrono positif de début.
+   La fin prévaut; sinon le statut de démarrage ou l'événement de début suffit.
+4. Retourner immédiatement le premier candidat ouvert. Aucun événement des
+   candidats suivants n'est consulté. S'il n'y a aucun gagnant dans le lot,
+   poursuivre strictement après la dernière paire `(date, match_id)` visitée,
+   jusqu'à épuisement des candidats. Il n'y a ni `OFFSET`, ni plafond de lots,
+   ni limite totale de candidats, ni limite d'ancienneté.
 
-Vérifiez les index existants avant toute création pour éviter les doublons.
-Vérifiez aussi le type, la longueur et la collation des références de match :
-l'index proposé porte sur la référence entière et suppose un type indexable
-dans les limites du moteur. Aucun index ni plan d'exécution de production
-n'est présumé. Sans ces accès indexés, les recherches peuvent rester lentes.
-En absence de match ouvert, tous les matchs passés de la surface peuvent devoir
-être examinés, puisque la règle interdit de limiter l'ancienneté.
+Le lot de 20 borne uniquement la mémoire et le transfert de chaque lecture;
+ce n'est pas une restriction métier. Le curseur par date puis identifiant évite
+les doublons et les omissions entre lots, même à dates identiques. L'ensemble
+ne comporte plus de sous-requête corrélée ni de jointure avec les événements.
+Pour un gagnant dans le premier lot, il y a une lecture de surface, une lecture
+de candidats et une lecture d'événements par candidat réellement visité.
+
+Dans le cas observé, le match 24054 (`F`) est exclu dès la lecture des candidats.
+Le match 24053 (`10`, événement de début, aucun événement de fin) est sélectionné
+si aucun autre match ouvert plus récent ne le supplante.
+
+Aucune nouvelle migration ni création d'index n'accompagne cette correction.
+Le fichier SQL d'index proposé lors de la correction précédente reste une
+proposition historique, sans exécution automatique. Les mesures fournies ne
+justifient pas d'imposer des index supplémentaires. En absence de match ouvert,
+tous les candidats passés de la surface peuvent devoir être vérifiés : cela
+reste nécessaire pour préserver la règle sans limite d'ancienneté.
 
 ## Vérifications minimales après déploiement
 
@@ -154,21 +173,23 @@ En absence de match ouvert, tous les matchs passés de la surface peuvent devoir
    et un match futur connu avec leurs heures prévues réelles, `TableMatch.date`
    et, lorsqu'il existe, le chrono Unix de début. Confirmez l'absence de décalage
    de fuseau; si c'est un `DATETIME`, confirmez la convention commune des écritures.
-2. Faites un `EXPLAIN` de `REQUETE_MATCH_ACTIF_SURFACE` avec une surface réelle
-   à la place de `?`. Vérifiez la recherche des candidats par surface/date,
-   l'ordre fourni par l'index sans tri global, et les accès aux événements par
-   référence/code/souscode, sans matérialisation complète de leur historique.
-   Si nécessaire, faites examiner puis appliquer les index SQL séparés et
-   revérifiez le plan. Leur création peut prendre des verrous et du temps.
+2. Si les temps restent élevés, faites un `EXPLAIN` des requêtes simples
+   `REQUETE_CANDIDATS_MATCH_ACTIF` (avec `ORDRE_CANDIDATS_MATCH_ACTIF`, puis
+   `SUITE_CANDIDATS_MATCH_ACTIF` avant l'ordre pour un lot suivant) et
+   `REQUETE_EVENEMENTS_MATCH_ACTIF`, avec des paramètres réels. Vérifiez les
+   accès par surface/date et par référence/code. N'appliquez aucune migration
+   sur la seule base du temps de l'ancienne requête corrélée.
 3. Avec le jeton habituel, appelez l'API sur une surface ayant plusieurs matchs
-   ouverts : HTTP 200 et le match admissible le plus récent, aucun 409. Vérifiez
+   ouverts : HTTP 200 et le match admissible le plus récent, aucun 409. Pour la
+   surface 1, le résultat attendu est 24053 tant que les données décrites restent
+   inchangées et qu'aucun match ouvert plus récent n'est apparu. Vérifiez
    qu'un match futur ou terminé plus récent ne gagne pas. Vérifiez également
    une surface sans match actif (`match: null`) et une surface inexistante (404).
    Utilisez les données existantes, sans modifier les matchs de production.
 4. Mesurez plusieurs appels HTTPS authentifiés sur une surface chargée et sur
    une surface sans match actif, puis la découverte complète de SyncStats Live.
    L'appel doit laisser assez de marge pour que **toute la découverte reste
-   sous 8 secondes**. Comparez aux 20,8 secondes observées avant correction.
+   sous 8 secondes**. Comparez aux dépassements de 30 secondes observés.
    Aucun temps de production ne peut être garanti par les tests locaux.
 
 ## Tests locaux
@@ -177,11 +198,17 @@ En absence de match ouvert, tous les matchs passés de la surface peuvent devoir
 python test/unit/match_actif_surface_sql_test.py
 php test/unit/match_actif_surface_test.php
 php -l api/lib/match_actif_surface.php
+php -l api/getMatchActifParSurface.php
 ```
 
-Les tests SQL exécutent la requête réelle sur SQLite avec une horloge SQL figée,
-sans index pour les cas métier, puis avec les index proposés pour contrôler le
-plan local. Ils couvrent les sept situations métier demandées, la borne exacte
-de l'heure actuelle, les critères historiques, `debutMs`, les surfaces et les
-dates absentes. Ils ne remplacent pas la validation du plan MySQL en production.
-Le test PHP vérifie le contrat des réponses, dont l'absence de conflit 409.
+Les tests SQL exécutent les requêtes réelles sur SQLite avec une horloge SQL
+figée et reproduisent leur parcours par lots. Ils couvrent les sept situations
+métier, les critères historiques, `debutMs`, le cas 24054/24053, l'arrêt des
+lectures d'événements au gagnant, plus de trois lots, les égalités entre lots,
+un changement de date au curseur et l'épuisement après des lots complets.
+Ils ne mesurent ni MySQL ni le temps HTTP de production.
+
+Le test PHP vérifie le contrat des réponses et exerce directement la fonction
+de sélection : arrêt immédiat (y compris un générateur qui échoue s'il est
+repris), absence de plafond total, fin prioritaire et ouverture par statut ou
+événement. Ces tests ne nécessitent pas de base de production.

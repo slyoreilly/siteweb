@@ -9,7 +9,9 @@ RACINE = Path(__file__).resolve().parents[2]
 class MatchActifSurfaceTest(unittest.TestCase):
     def setUp(self):
         source = (RACINE / 'api/lib/match_actif_surface.php').read_text(encoding='utf-8')
-        self.requete = re.search(r'REQUETE_MATCH_ACTIF_SURFACE = "([^"]+)"', source).group(1)
+        self.requetes = dict(re.findall(r'const (\w+) = "([^"]+)";', source))
+        self.visites = []
+        self.lots = 0
         self.bd = sqlite3.connect(':memory:')
         self.addCleanup(self.bd.close)
         # Horloge SQL figée, indépendante du fuseau du poste.
@@ -35,7 +37,32 @@ class MatchActifSurfaceTest(unittest.TestCase):
                         (str(identifiant), code, souscode, chrono))
 
     def consulter(self, surface=1):
-        return self.bd.execute(self.requete, (surface,)).fetchall()
+        self.visites = []
+        self.lots = 0
+        horloge = self.bd.execute(self.requetes['REQUETE_SURFACE_MATCH_ACTIF'], (surface,)).fetchone()
+        if horloge is None:
+            return []
+        maintenant = horloge[0]
+        curseur = None
+        while True:
+            requete = self.requetes['REQUETE_CANDIDATS_MATCH_ACTIF']
+            parametres = [surface, maintenant]
+            if curseur is not None:
+                requete += self.requetes['SUITE_CANDIDATS_MATCH_ACTIF']
+                date, identifiant = curseur
+                parametres.extend([date, date, identifiant])
+            requete += self.requetes['ORDRE_CANDIDATS_MATCH_ACTIF']
+            candidats = self.bd.execute(requete, parametres).fetchall()
+            self.lots += 1
+            for identifiant, reference, demarre_par_statut, date in candidats:
+                self.visites.append(identifiant)
+                demarre, termine, debut = self.bd.execute(
+                    self.requetes['REQUETE_EVENEMENTS_MATCH_ACTIF'], (reference,)).fetchone()
+                if not termine and (demarre_par_statut or demarre):
+                    return [(surface, identifiant, debut)]
+                curseur = (date, identifiant)
+            if len(candidats) < 20:
+                return [(surface, None, None)]
 
     def test_un_seul_match_ouvert(self):
         self.ajouter_match(101)
@@ -114,14 +141,40 @@ class MatchActifSurfaceTest(unittest.TestCase):
         self.assertEqual(self.consulter(2), [(2, 101, None)])
         self.assertEqual(self.consulter(99), [])
 
-    def test_plan_local_avec_index_proposes(self):
-        self.bd.executescript((RACINE / 'db/2026-11-26_match_actif_surface_index.sql').read_text(encoding='utf-8'))
-        self.ajouter_match(101)
-        plan = [ligne[3] for ligne in self.bd.execute('EXPLAIN QUERY PLAN ' + self.requete, (1,))]
-        self.assertTrue(any('idx_match_surface_date_id' in ligne for ligne in plan), plan)
-        self.assertEqual(sum('idx_evenement_match_code_souscode_chrono' in ligne for ligne in plan), 3, plan)
-        self.assertFalse(any('USE TEMP B-TREE' in ligne or 'SCAN e' in ligne for ligne in plan), plan)
-        self.assertEqual(self.consulter(), [(1, 101, None)])
+    def test_cas_production_et_arret_au_premier_ouvert(self):
+        self.ajouter_match(24054, '2026-11-26 11:30:00', statut='F')
+        self.ajouter_match(24053)
+        self.evenement(24053)
+        self.ajouter_match(24052, '2026-11-25 11:00:00')
+        self.assertEqual(self.consulter(), [(1, 24053, 1700000001000)])
+        self.assertEqual(self.visites, [24053])
+        self.assertEqual(self.lots, 1)
+
+    def test_parcours_sans_limite_totale_et_egalites_entre_lots(self):
+        for identifiant in range(1, 66):
+            self.ajouter_match(identifiant, '2020-01-01 00:00:00')
+            if identifiant > 1:
+                self.evenement(identifiant, souscode=10)
+        self.assertEqual(self.consulter(), [(1, 1, None)])
+        self.assertEqual(self.visites, list(range(65, 0, -1)))
+        self.assertEqual(self.lots, 4)
+
+    def test_aucun_admissible_apres_plusieurs_lots_exacts(self):
+        for identifiant in range(1, 41):
+            self.ajouter_match(identifiant)
+            self.evenement(identifiant, souscode=10)
+        self.assertEqual(self.consulter(), [(1, None, None)])
+        self.assertEqual(self.visites, list(range(40, 0, -1)))
+        self.assertEqual(self.lots, 3)
+
+    def test_curseur_priorite_date_avant_identifiant(self):
+        self.ajouter_match(999, '2020-01-01 00:00:00')
+        for identifiant in range(1, 21):
+            self.ajouter_match(identifiant)
+            self.evenement(identifiant, souscode=10)
+        self.assertEqual(self.consulter(), [(1, 999, None)])
+        self.assertEqual(self.visites, list(range(20, 0, -1)) + [999])
+
 
 
 if __name__ == '__main__':
