@@ -192,6 +192,62 @@ reste nécessaire pour préserver la règle sans limite d'ancienneté.
    sous 8 secondes**. Comparez aux dépassements de 30 secondes observés.
    Aucun temps de production ne peut être garanti par les tests locaux.
 
+## Diagnostic temporaire de la requête lente
+
+Le marqueur de cette instrumentation est `match-actif-diag-v1`. Chaque appel
+à `error_log()` écrit immédiatement une étape, sans attendre la réponse HTTP
+ni une fonction de fin de requête. `debut=...` identifie le début de la requête
+en secondes Unix; `+... ms` mesure le temps depuis l'entrée dans le script avec
+`microtime(true)`. Regroupez les lignes ayant le même `debut` pour ne pas mélanger
+des appels simultanés. Aucun jeton, en-tête, mot de passe ou contenu d'environnement
+n'est ajouté aux traces.
+
+Les repères couvrent l'authentification, le chargement de `defenvvar.php`, la
+connexion (ou sa vérification/reconnexion), la lecture de surface, la préparation
+des événements, chaque lot de candidats, les identifiants de chaque candidat
+visité, chaque lecture d'événements, le match sélectionné (ou `aucun`) et l'envoi
+de la réponse, y compris les réponses d'erreur. Les traces sont actives uniquement
+lorsque le point d'entrée définit `tracerMatchActif()`.
+
+Attention au futur déploiement : `scriptsphp/defenvvar.php` est ignoré par Git et
+exclu du script de transfert. Le fichier local contient les repères de connexion;
+ils figurent aussi dans `scriptsphp/defenvvar.sample.php`. Reportez uniquement ces
+appels à `tracerMatchActif()` dans le fichier réel de l'hébergement, autour des
+connexions existantes. Ne remplacez pas sa configuration par celle du modèle.
+Sans ce report, `avant_defenvvar`/`apres_defenvvar` restent visibles, mais ne
+permettent pas d'isoler la connexion MySQL.
+
+Pour consulter les traces sans SSH après votre déploiement :
+
+1. Ouvrez le gestionnaire de fichiers du panneau d'hébergement ou votre client
+   FTPS habituel, à la racine du site (le transfert utilise `/public_html` par
+   défaut). Recherchez `api/error_log`, puis `error_log` à la racine du site.
+   Ce sont des emplacements possibles, pas un chemin de production confirmé.
+2. Depuis votre client habituel, lancez l'appel authentifié
+   `/api/getMatchActifParSurface.php?arenaId=1`, en conservant le jeton hors des
+   journaux. Actualisez ou retéléchargez le journal pendant l'appel, puis après
+   l'expiration. Recherchez `match-actif-diag-v1`.
+3. Si ces fichiers ne contiennent pas le marqueur, consultez la destination PHP
+   `error_log` dans le panneau. Sous cPanel, ouvrez **Logiciel → Éditeur INI
+   MultiPHP**, sélectionnez le domaine Legacy et recherchez `error_log` (au
+   besoin dans **Mode éditeur**). Ouvrez ou téléchargez ce fichier via le
+   gestionnaire de fichiers/FTPS; utilisez le chemin configuré, plutôt qu'un
+   emplacement présumé. La [documentation cPanel](https://docs.cpanel.net/cpanel/software/multiphp-ini-editor-for-cpanel/)
+   décrit cette interface. Le dépôt ne confirme ni le panneau ni la valeur
+   effective en production. Si le chemin est vide, `syslog`, inaccessible ou
+   imposé par PHP-FPM, demandez au support de l'hébergement l'accès au journal
+   PHP du domaine pour l'heure de l'appel et le marqueur ci-dessus. Aucun SSH
+   ni script `phpinfo()` public n'est nécessaire.
+4. Comparez les temps des paires `avant_...`/`apres_...`. Une paire incomplète
+   désigne l'opération en cours à la dernière trace; elle ne prouve pas à elle
+   seule la cause interne. Un délai côté client de 30 secondes peut laisser
+   PHP poursuivre : consultez aussi les lignes arrivées après l'expiration.
+   Sans `entree_script`, vérifiez d'abord la version déployée et la destination
+   du journal; aucune étape PHP ne peut alors être incriminée.
+
+Retirez cette instrumentation après le diagnostic. Aucun commit, transfert ou
+déploiement n'a été effectué pour l'ajouter.
+
 ## Tests locaux
 
 ```sh

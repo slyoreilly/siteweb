@@ -78,11 +78,13 @@ if (!getenv('MONITORING_FILES_INDEX_TOKEN')) {
     putenv('MONITORING_FILES_INDEX_TOKEN=' . ($workEnv === 'production' ? 'change-me-monitoring-index-prod' : 'change-me-monitoring-index-dev'));
 }
 if (!isset($conn) || !($conn instanceof mysqli)) {
+    if (function_exists('tracerMatchActif')) tracerMatchActif('avant_connexion_mysql');
     if ($db_port !== null) {
         $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database, $db_port);
     } else {
         $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
     }
+    if (function_exists('tracerMatchActif')) tracerMatchActif('apres_connexion_mysql');
 
     if (!$conn) {
         error_log('DB Connection failed: ' . mysqli_connect_error());
@@ -92,12 +94,15 @@ if (!isset($conn) || !($conn instanceof mysqli)) {
 
     mysqli_set_charset($conn, 'utf8');
 } else {
+    if (function_exists('tracerMatchActif')) tracerMatchActif('avant_verification_connexion_mysql');
     if (!@mysqli_query($conn, 'SELECT 1')) {
+        if (function_exists('tracerMatchActif')) tracerMatchActif('avant_reconnexion_mysql');
         if ($db_port !== null) {
             $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database, $db_port);
         } else {
             $conn = mysqli_connect($db_host, $db_user, $db_pwd, $database);
         }
+        if (function_exists('tracerMatchActif')) tracerMatchActif('apres_reconnexion_mysql');
 
         if (!$conn) {
             error_log('DB Reconnection failed: ' . mysqli_connect_error());
@@ -107,4 +112,5 @@ if (!isset($conn) || !($conn instanceof mysqli)) {
 
         mysqli_set_charset($conn, 'utf8');
     }
+    if (function_exists('tracerMatchActif')) tracerMatchActif('apres_verification_connexion_mysql');
 }

@@ -33,6 +33,7 @@ function candidatsMatchActifSurface(mysqli $conn, int $arenaId, string $maintena
         if ($datePrecedente !== null) {
             $sql .= SUITE_CANDIDATS_MATCH_ACTIF;
         }
+        if (function_exists('tracerMatchActif')) tracerMatchActif('avant_lot_candidats curseur=' . ($idPrecedent ?? 'premier'));
         $requete = $conn->prepare($sql . ORDRE_CANDIDATS_MATCH_ACTIF);
         try {
             if ($datePrecedente === null) {
@@ -52,6 +53,7 @@ function candidatsMatchActifSurface(mysqli $conn, int $arenaId, string $maintena
             // Libérer le résultat avant les lectures d'événements sur la même connexion.
             $requete->close();
         }
+        if (function_exists('tracerMatchActif')) tracerMatchActif('apres_lot_candidats nombre=' . count($lot));
         foreach ($lot as $candidat) {
             yield $candidat;
             $datePrecedente = $candidat['date'];
@@ -63,6 +65,8 @@ function candidatsMatchActifSurface(mysqli $conn, int $arenaId, string $maintena
 function premierMatchOuvertSurface(iterable $candidats, callable $consulterEvenements): ?array
 {
     foreach ($candidats as $candidat) {
+        if (function_exists('tracerMatchActif')) tracerMatchActif('candidat ' . json_encode([
+            'match_id' => $candidat['match_id'], 'matchIdRef' => $candidat['matchIdRef']]));
         $evenements = $consulterEvenements($candidat['matchIdRef']);
         if ((int)$evenements['termine'] === 1) {
             continue;
@@ -76,6 +80,7 @@ function premierMatchOuvertSurface(iterable $candidats, callable $consulterEvene
 
 function consulterMatchActifSurface(mysqli $conn, int $arenaId): array
 {
+    if (function_exists('tracerMatchActif')) tracerMatchActif('avant_lecture_surface arenaId=' . $arenaId);
     $surface = $conn->prepare(REQUETE_SURFACE_MATCH_ACTIF);
     try {
         $surface->bind_param('i', $arenaId);
@@ -87,24 +92,30 @@ function consulterMatchActifSurface(mysqli $conn, int $arenaId): array
     } finally {
         $surface->close();
     }
+    if (function_exists('tracerMatchActif')) tracerMatchActif('apres_lecture_surface');
 
+    if (function_exists('tracerMatchActif')) tracerMatchActif('avant_preparation_evenements');
     $evenements = $conn->prepare(REQUETE_EVENEMENTS_MATCH_ACTIF);
+    if (function_exists('tracerMatchActif')) tracerMatchActif('apres_preparation_evenements');
     try {
         $match = premierMatchOuvertSurface(
             candidatsMatchActifSurface($conn, $arenaId, $maintenant),
             static function (?string $reference) use ($evenements): array {
+                if (function_exists('tracerMatchActif')) tracerMatchActif('avant_consultation_evenements reference=' . json_encode($reference));
                 $evenements->bind_param('s', $reference);
                 $evenements->execute();
                 $evenements->store_result();
                 $evenements->bind_result($demarre, $termine, $debutMs);
                 $evenements->fetch();
                 $evenements->free_result();
+                if (function_exists('tracerMatchActif')) tracerMatchActif('apres_consultation_evenements reference=' . json_encode($reference));
                 return ['demarre' => $demarre, 'termine' => $termine, 'debutMs' => $debutMs];
             }
         );
     } finally {
         $evenements->close();
     }
+    if (function_exists('tracerMatchActif')) tracerMatchActif('match_selectionne match_id=' . ($match['match_id'] ?? 'aucun'));
     return [$match ?? ['match_id' => null, 'debutMs' => null]];
 }
 
