@@ -43,7 +43,10 @@ Les méthodes restent GET :
 - `/equipes/{id}/joueurs?ligueId=…&saisonId=…` : joueurs et inscriptions dans
   cette ligue/période ; une cible hors contexte est refusée.
 - `/joueurs/recherche?nom=…` : recherche globale nominative (3 à 120 octets),
-  50 candidats maximum. Les caractères `%`, `_`, `!` sont littéraux.
+  50 candidats maximum. Les caractères `%`, `_`, `!` sont littéraux. L'extension
+  Legacy du 27 novembre ci-dessous décrit les paramètres à relayer lors d'un
+  prochain raccordement Backend/SyncUp ; leur prise en charge aval n'est pas
+  attestée par cette livraison Legacy.
 
 Enveloppe backend : `{legacyDisponible, erreurMessage, elements, lectureComplete}`.
 Le champ `lectureComplete=false` signale une recherche tronquée ; une erreur
@@ -170,3 +173,153 @@ Aucune écriture métier, création de joueur, modification d’inscription,
 publication, migration, livraison distante, opération de push ou commit n’a été
 effectuée. Les modifications préexistantes/concurrentes concernant le
 laboratoire audiovisuel n’ont pas été incluses dans ce travail.
+
+## Option B — contrat Legacy pour Backend et SyncUp (27 novembre 2026)
+
+Cette extension concerne exclusivement `api/getPublicationRechercheJoueurs.php`.
+Elle conserve le Bearer interservices, GET, JSON UTF-8, `Cache-Control: no-store`
+et la transaction `READ ONLY` de `publication_lecture.php`. Aucun changement
+Backend ou SyncUp n'est livré ici. Les consommateurs devront relayer les
+paramètres et conserver les deux nouveaux champs sans en déduire une écriture.
+
+### Paramètres de requête
+
+| Paramètre | Contrat |
+| --- | --- |
+| `nom` | Obligatoire, chaîne ; au moins 3 octets après `trim`, au plus 120 octets avant `trim`, comme auparavant. Recherche de sous-chaîne ; `%`, `_`, `!` sont littéraux et les apostrophes restent des valeurs liées. Casse et accents suivent la collation SQL Legacy. |
+| `ligueId` | Facultatif, entier positif de 1 à 2147483647. Absent : recherche globale conservée sur `TableJoueur`, sans filtre d'inscription. Présent : identités inscrites à une équipe de cette ligue dans la période retenue. |
+| `saisonId` | Facultatif, même domaine entier ; exige `ligueId`. La saison doit appartenir à la ligue et fournir une unique période exploitable via `publicationPeriode`. Absent : les deux bornes sont le même `NOW()` SQL, capturé une fois. |
+| `equipeId` | Facultatif, même domaine entier ; exige `ligueId`. La cible doit avoir une inscription `abonEquipeLigue` admissible dans la période. Elle sert à prioriser les candidats, sans exclure ceux des autres équipes de la ligue. |
+
+Un paramètre entier vide, nul au sens HTTP (`"null"`), nul numérique, négatif,
+hors borne ou de type tableau est invalide. Sans `ligueId`, fournir `saisonId`
+ou `equipeId` produit HTTP 400 ; la recherche globale simple reste inchangée.
+Une ligue sans inscription admissible renvoie une liste vide, sans nouvelle
+erreur « ligue inconnue ». Les contrôles saison/cible existants restent les
+références de contexte.
+
+### Réponse HTTP 200
+
+L'objet possède `elements` (tableau, jamais null, de 0 à 50 identités distinctes)
+et `lectureComplete` (booléen). Une identité est `TableJoueur.joueur_id` : deux
+homonymes restent deux candidats. Le 51e candidat distinct sert uniquement à
+détecter la troncature ; `lectureComplete` est vrai pour 0 à 50 candidats et
+faux à partir de 51. Il n'y a pas de pagination ni de total exposé.
+
+| Champ d'un candidat | Type JSON et sens |
+| --- | --- |
+| `id` | entier, identifiant Legacy du joueur |
+| `prenom` | null |
+| `nom` | chaîne, nom complet Legacy |
+| `hcr` | null |
+| `numeroChandail` | chaîne ou null, valeur existante de `TableJoueur` |
+| `position` | chaîne ou null, valeur existante de `TableJoueur` |
+| `inscriptionId` | null : la recherche ne choisit aucune inscription parmi les appartenances |
+| `provenanceInscription` | chaîne constante `"inconnu"` |
+| `debutAbon`, `finAbon` | null, aucune période unique présumée |
+| `equipesDansLigue` | tableau distinct de `{id: entier, nom: chaîne}` pour les appartenances admissibles dans la ligue/période ; tri nom d'équipe puis identifiant ; toutes les équipes des candidats retenus sont rendues |
+| `presentDansEquipeCible` | booléen strict ; vrai si au moins une appartenance admissible concerne `equipeId` |
+
+En recherche globale, `equipesDansLigue=[]` et
+`presentDansEquipeCible=false` : aucune ligue/cible n'est évaluée. Avec une
+ligue sans cible, les appartenances sont renseignées et le booléen vaut false.
+Ces valeurs ne prouvent pas l'absence d'appartenance dans un autre contexte.
+
+L'admissibilité utilise `abonJoueurEquipe` et `abonEquipeLigue`, avec
+`permission < 31` sur les deux. Il doit exister une **intersection commune** :
+`GREATEST(debutEquipeLigue, debutJoueurEquipe, debutPeriode) <=
+LEAST(finEquipeLigue, finJoueurEquipe, finPeriode)`. Les bornes sont inclusives.
+Deux inscriptions séparées dans la même saison ne suffisent donc pas. Une
+période nulle ne satisfait pas cette comparaison. `abonJoueurLigue` n'est
+jamais exigée. Les inscriptions multiples ne multiplient ni les identités ni
+les équipes du JSON.
+
+L'ordre des candidats est : présence cible décroissante, nom Legacy, puis
+identifiant joueur croissant, **avant** la limite de 50 identités. Si plus de
+50 joueurs de la cible correspondent au nom, seuls les 50 premiers selon ce
+tri sont rendus et `lectureComplete=false`. Les inscriptions multiples
+doivent toujours être relues par la route d'effectif avant toute décision
+ultérieure ; ce JSON n'est pas un contrat d'affectation.
+
+Exemple fictif :
+
+```http
+GET /api/getPublicationRechercheJoueurs.php?nom=O%27Neil&ligueId=314&saisonId=42&equipeId=2500
+Authorization: Bearer <secret interservices côté serveur>
+```
+
+```json
+{
+  "elements": [
+    {
+      "id": 9001,
+      "prenom": null,
+      "nom": "Élodie O'Neil",
+      "hcr": null,
+      "numeroChandail": "0",
+      "position": "C",
+      "inscriptionId": null,
+      "provenanceInscription": "inconnu",
+      "debutAbon": null,
+      "finAbon": null,
+      "equipesDansLigue": [
+        {"id": 2500, "nom": "Blancs"},
+        {"id": 2508, "nom": "Rouges"}
+      ],
+      "presentDansEquipeCible": true
+    }
+  ],
+  "lectureComplete": true
+}
+```
+
+### Erreurs et interprétation aval
+
+Les erreurs gardent leur objet `{etat, detail?}`, sans enveloppe de succès :
+
+| HTTP | `etat` | Condition |
+| --- | --- | --- |
+| 400 | `parametre_invalide` | Nom/entier invalide (`detail` existant) ou contexte sans ligue (`detail: "ligueId requis avec saisonId ou equipeId"`) |
+| 401 | `non_autorise` | Bearer absent ou incorrect |
+| 405 | `methode_non_autorisee` | Méthode autre que GET ; `Allow: GET` |
+| 422 | `saison_inexploitable` | Saison absente de la ligue, multiple, dates manquantes ou inversées |
+| 422 | `equipe_hors_contexte` | Cible sans inscription ligue/période admissible |
+| 503 | `service_non_configure` | Secret interservices non configuré |
+| 503 | `erreur_consultation` | Erreur de lecture ou de sérialisation |
+
+L'authentification reste contrôlée avant les paramètres, puis le nom, les
+entiers, la dépendance à la ligue, la saison et enfin la cible. Backend doit
+préserver la distinction entre erreur, résultat vide et résultat tronqué dans
+son enveloppe existante. SyncUp doit envoyer la sélection courante à chaque
+recherche, invalider les résultats lorsque ce contexte change, afficher les
+appartenances et utiliser le booléen de présence pour la présentation. Aucune
+absence, même avec `lectureComplete=true`, ne confirme une nouvelle identité.
+
+### Vérifications locales et SQL à réception
+
+Commandes sans base réelle :
+
+```text
+python test/unit/publication_recherche_sql_test.py
+php -n test/unit/publication_recherche_test.php
+php test/unit/publication_lecture_test.php
+php -l api/getPublicationRechercheJoueurs.php
+```
+
+Les tests SQL utilisent les requêtes de production sur SQLite avec adaptation
+de `GREATEST`/`LEAST` ; ils ne valident ni la collation, ni les index, ni le
+schéma vivant MySQL/MariaDB. Les tests PHP exercent la route et les fonctions
+de validation/sérialisation réelles, avec lectures simulées. Aucun accès réel
+n'est supposé ou effectué pour cette extension.
+
+Vous pouvez exécuter le script de lecture
+`test/sql/publication_recherche_verifications.sql` sur votre environnement
+Legacy autorisé, en adaptant les identifiants, dates et motif littéral. Il
+permet de vérifier le schéma, les 51 identités ordonnées, les appartenances
+distinctes d'un candidat et les inscriptions multiples sous-jacentes. Pour
+une saison, reprenez exactement `premierMatch`/`dernierMatch` ; sans saison,
+utilisez le même instant pour les deux bornes. Comparez ensuite les 50
+premières identités et le marqueur de troncature avec la réponse GET. Vérifiez
+aussi une cible hors contexte et une saison d'une autre ligue (HTTP 422).
+Une vérification des plans `EXPLAIN` sur ces SELECT reste nécessaire avant
+livraison sur un gros catalogue. Ce lot n'ajoute aucun index ni migration.
