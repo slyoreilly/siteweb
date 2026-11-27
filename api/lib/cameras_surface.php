@@ -5,12 +5,20 @@ declare(strict_types=1);
 const REQUETE_CAMERAS_SURFACE = "
     SELECT DISTINCT camera.camId
       FROM TableArena surface
-      LEFT JOIN abonAppareilSurface association ON association.surfaceId = surface.arenaId
-       AND (association.role > 99 OR association.role < 1)
-      LEFT JOIN Telephones appareil ON appareil.telId = association.telId
-       AND appareil.telId > 0
-      LEFT JOIN StatutCam camera ON camera.telId = appareil.telId
+      LEFT JOIN StatutCam camera ON camera.telId > 0
        AND camera.camId > 0
+       AND camera.dernierMaJ >= UTC_TIMESTAMP() - INTERVAL 7 DAY
+       AND camera.dernierMaJ <= UTC_TIMESTAMP()
+       AND (
+           camera.arenaId = surface.arenaId
+           OR EXISTS (
+               SELECT 1
+                 FROM abonAppareilSurface association
+                WHERE association.surfaceId = surface.arenaId
+                  AND association.telId = camera.telId
+                  AND (association.role > 99 OR association.role < 1)
+           )
+       )
      WHERE surface.arenaId = ?
      ORDER BY camera.camId";
 
