@@ -25,17 +25,17 @@ Les réponses utilisent `Content-Type: application/json; charset=utf-8` et
 ## Identifiant et association
 
 - `cameraIds` contient les identifiants entiers positifs de l'inventaire
-  `Telephones.telId`, triés et dédupliqués. SyncCam transmet son réglage
-  `camID` dans le champ `telId` dans `NetworkUtilities.java`.
-  L'identifiant désigne l'appareil enregistré dans le Legacy. Le réglage
-  SyncCam est modifiable et le code consulté ne garantit pas l'immuabilité
-  de l'identifiant d'une caméra physique ni l'absence de réattribution.
-  Les contraintes de la base déployée restent à vérifier.
+  `StatutCam.camId`, triés et dédupliqués, pour la diffusion.
+  `camId` et `telId` sont historiquement distincts, même si leurs valeurs
+  sont généralement identiques depuis 2019-2020. Un identifiant matériel
+  `telId` ne doit donc pas être retourné à la place de `camId`.
 - `abonAppareilSurface.surfaceId` référence `TableArena.arenaId` et
   `abonAppareilSurface.telId` référence `Telephones.telId`. Le filtre
   `role > 99 OR role < 1` reprend la sélection caméra de
   `scriptsphp/getAppareilsAbonne.php`. Une association sans appareil dans
-  l'inventaire est ignorée.
+  l'inventaire est ignorée. `StatutCam` est relié à cet inventaire par
+  `telId`; sans `camId` positif, aucune caméra n'est retournée pour cet
+  appareil. Aucun repli sur `telId` n'est effectué.
 - Une association est courante tant que sa ligne existe. L'interface
   `zadmin/interfaceAppareil.html` supprime la ligne par `abonAppSurfId`
   lors du retrait. Le code consulté n'applique ni intervalle de validité
@@ -47,6 +47,8 @@ Les réponses utilisent `Content-Type: application/json; charset=utf-8` et
 
 - `python test/unit/cameras_surface_sql_test.py` exécute la requête sur
   SQLite avec des associations dupliquées, supprimées, orphelines, des
-  rôles distincts et des surfaces vides ou inconnues.
+  rôles distincts et des surfaces vides ou inconnues. Il vérifie aussi
+  des `telId` matériels de 15 chiffres distincts des `camId`, ainsi que
+  les statuts absents et les `camId` absents ou non positifs.
 - `php test/unit/cameras_surface_test.php` couvre les réponses de
   consultation, le typage des identifiants et l'échec technique simulé.

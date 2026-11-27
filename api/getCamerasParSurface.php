@@ -53,11 +53,11 @@ if ($arenaId === false) {
     $requete = $conn->prepare(REQUETE_CAMERAS_SURFACE);
     $requete->bind_param('i', $arenaId);
     $requete->execute();
-    $requete->bind_result($telId);
+    $requete->bind_result($camId);
 
     $lignes = [];
     while ($requete->fetch()) {
-        $lignes[] = $telId;
+        $lignes[] = $camId;
     }
     $requete->close();
     return $lignes;

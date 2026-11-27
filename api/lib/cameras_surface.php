@@ -3,14 +3,16 @@
 declare(strict_types=1);
 
 const REQUETE_CAMERAS_SURFACE = "
-    SELECT DISTINCT appareil.telId
+    SELECT DISTINCT camera.camId
       FROM TableArena surface
       LEFT JOIN abonAppareilSurface association ON association.surfaceId = surface.arenaId
        AND (association.role > 99 OR association.role < 1)
       LEFT JOIN Telephones appareil ON appareil.telId = association.telId
        AND appareil.telId > 0
+      LEFT JOIN StatutCam camera ON camera.telId = appareil.telId
+       AND camera.camId > 0
      WHERE surface.arenaId = ?
-     ORDER BY appareil.telId";
+     ORDER BY camera.camId";
 
 function reponseCamerasSurface(int $arenaId, callable $consulter): array
 {
@@ -26,9 +28,9 @@ function reponseCamerasSurface(int $arenaId, callable $consulter): array
     }
 
     $cameras = [];
-    foreach ($lignes as $telId) {
-        if ($telId !== null) {
-            $cameras[] = (int) $telId;
+    foreach ($lignes as $camId) {
+        if ($camId !== null) {
+            $cameras[] = (int) $camId;
         }
     }
 
