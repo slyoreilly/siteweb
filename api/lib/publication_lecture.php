@@ -17,6 +17,17 @@ function publicationConnexion(): mysqli
         header('Allow: GET');
         publicationRepondre(405, ['etat' => 'methode_non_autorisee']);
     }
+    publicationAuthentifier();
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+    require __DIR__ . '/../../scriptsphp/defenvvar.php';
+    $conn->set_charset('utf8mb4');
+    $conn->query('START TRANSACTION READ ONLY');
+    return $conn;
+}
+
+// Réutilisable sans connexion SQL par le destinataire d'écriture bloqué.
+function publicationAuthentifier(): void
+{
     require_once __DIR__ . '/../../scriptsphp/chargeSecrets.php';
     $attendu = getenv('LEGACY_MATCH_ACTIF_TOKEN');
     if ($attendu === false || trim($attendu) === '') {
@@ -27,11 +38,6 @@ function publicationConnexion(): mysqli
         header('WWW-Authenticate: Bearer');
         publicationRepondre(401, ['etat' => 'non_autorise']);
     }
-    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-    require __DIR__ . '/../../scriptsphp/defenvvar.php';
-    $conn->set_charset('utf8mb4');
-    $conn->query('START TRANSACTION READ ONLY');
-    return $conn;
 }
 
 function publicationEntier(string $cle, bool $facultatif = false): ?int
