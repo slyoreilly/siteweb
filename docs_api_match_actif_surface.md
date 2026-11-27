@@ -203,19 +203,18 @@ des appels simultanés. Aucun jeton, en-tête, mot de passe ou contenu d'environ
 n'est ajouté aux traces.
 
 Les repères couvrent l'authentification, le chargement de `defenvvar.php`, la
-connexion (ou sa vérification/reconnexion), la lecture de surface, la préparation
+lecture de surface, la préparation
 des événements, chaque lot de candidats, les identifiants de chaque candidat
 visité, chaque lecture d'événements, le match sélectionné (ou `aucun`) et l'envoi
 de la réponse, y compris les réponses d'erreur. Les traces sont actives uniquement
 lorsque le point d'entrée définit `tracerMatchActif()`.
 
-Attention au futur déploiement : `scriptsphp/defenvvar.php` est ignoré par Git et
-exclu du script de transfert. Le fichier local contient les repères de connexion;
-ils figurent aussi dans `scriptsphp/defenvvar.sample.php`. Reportez uniquement ces
-appels à `tracerMatchActif()` dans le fichier réel de l'hébergement, autour des
-connexions existantes. Ne remplacez pas sa configuration par celle du modèle.
-Sans ce report, `avant_defenvvar`/`apres_defenvvar` restent visibles, mais ne
-permettent pas d'isoler la connexion MySQL.
+L'instrumentation se déploie par le mécanisme habituel avec les fichiers de
+l'API, sans intervention sur les fichiers de configuration de production.
+`scriptsphp/defenvvar.php` et `scriptsphp/defenvvar.sample.php` ne contiennent
+aucune trace de cette instrumentation. Les repères `avant_defenvvar` et
+`apres_defenvvar` dans le point d'entrée mesurent l'ensemble du chargement,
+y compris la connexion MySQL qu'il effectue, sans isoler ces opérations internes.
 
 Pour consulter les traces sans SSH après votre déploiement :
 
